@@ -22,41 +22,24 @@
 
 ### 1: Document Issue
 
-**Requirement**: Create issue description before making changes
+**Requirement**: Record design issue before making changes
 
-**Required Actions**:
-```bash
-cd architecture/features/feature-{slug}/
+**Location**: `architecture/features/feature-{slug}/DESIGN_ISSUES.md`
 
-# Create or append to DESIGN_ISSUES.md
-cat >> DESIGN_ISSUES.md << EOF
+**Required Information**:
+- **Issue Title**: Brief description
+- **Date**: When discovered
+- **Discovered During**: Implementation phase (e.g., coding, testing)
+- **Problem**: Detailed description of what's wrong or missing
+- **Impact**: What this affects (implementation, testing, other features)
+- **Proposed Solution**: How to fix it
 
----
+**Expected Outcome**: Issue documented for tracking and future reference
 
-## Issue: {Brief Description}
-
-**Date**: $(date +%Y-%m-%d)  
-**Discovered During**: {Implementation phase}
-
-### Problem
-
-{Detailed description of what's wrong or missing}
-
-### Impact
-
-{What this affects - implementation, testing, etc.}
-
-### Proposed Solution
-
-{How to fix it}
-
----
-EOF
-
-echo "✓ Issue documented"
-```
-
-**Expected Outcome**: Issue recorded
+**Validation Criteria**:
+- Issue clearly described
+- Impact assessment included
+- Solution approach outlined
 
 ---
 
@@ -69,7 +52,7 @@ echo "✓ Issue documented"
 **Guidelines**:
 - Update relevant sections (A-F)
 - Maintain section structure
-- Keep ADL syntax in Section C
+- Keep FDL syntax in Section C (see `../FDL.md`)
 - Update OpenSpec changes if needed
 
 **Example Changes**:
@@ -82,40 +65,39 @@ echo "✓ Issue documented"
 
 ### 3: Validate Updated Design
 
-**Requirement**: Re-run design validation
+**Requirement**: Re-run design validation after changes
 
-**Required Actions**:
-```bash
-# Reference validation workflow
-echo "Run validation: 06-validate-feature.md {slug}"
+**Validation Steps**: Follow workflow `06-validate-feature.md` for feature `{slug}`
 
-# Manual execution
-cd ../../
-# Follow validation steps
-```
+**Expected Outcome**: Design validation passes 100/100 + 100% completeness
 
-**Expected Outcome**: Validation passes 100/100
+**Validation Criteria**:
+- All sections A-F still compliant
+- Size constraints met
+- FDL syntax correct
+- No TODO/TBD markers
+- No type redefinitions
+- Changes don't break existing validation rules
 
 ---
 
 ### 4: Update OpenSpec if Needed
 
-**Requirement**: Create new change if implementation must change
+**Requirement**: Assess if implementation must change due to design fix
 
-**Required Actions**:
-```bash
-cd architecture/features/feature-{slug}/
+**Decision Criteria**:
+- **No code changes needed**: Design clarification only, continue with existing implementation
+- **Minor code changes needed**: Update existing OpenSpec change tasks
+- **Major code changes needed**: Create new OpenSpec change (use workflow `11-openspec-next.md`)
 
-# Check if implementation changes needed
-if [ -d openspec ]; then
-  echo "Consider if new OpenSpec change needed for implementation updates"
-  echo "If yes, run: 09-openspec-init.md {slug}"
-fi
-```
+**Expected Outcome**: Implementation plan aligned with updated design
 
-**Expected Outcome**: OpenSpec updated if implementation affected
+**Validation Criteria**:
+- Design changes mapped to implementation impact
+- OpenSpec reflects any necessary code changes
+- Dependencies between changes updated if needed
 
-**Note**: Design clarifications may not require code changes
+**Note**: Pure design clarifications may not require code changes
 
 ---
 
@@ -123,33 +105,22 @@ fi
 
 **Requirement**: Record how issue was resolved
 
-**Required Actions**:
-```bash
-# Update issue with resolution
-cat >> DESIGN_ISSUES.md << EOF
+**Location**: Append to same issue in `DESIGN_ISSUES.md`
 
-### Resolution
+**Required Information**:
+- **Resolution Date**: When fixed
+- **Changes Made**: List changes by section (A-F)
+- **Validation Status**: Confirmation validation passed (100/100)
+- **Implementation Impact**: None / Minor / Major
+- **Related OpenSpec Changes**: IDs if implementation affected
 
-**Date**: $(date +%Y-%m-%d)
+**Expected Outcome**: Complete audit trail of issue and resolution
 
-{Describe what was changed in DESIGN.md}
-
-**Changes Made**:
-- Section B: {changes}
-- Section C: {changes}
-- Section E: {changes}
-
-**Validation**: ✅ Passed (100/100)
-
-**Implementation Impact**: {None/Minor/Major}
-
----
-EOF
-
-echo "✓ Resolution documented"
-```
-
-**Expected Outcome**: Complete issue record
+**Validation Criteria**:
+- Resolution clearly documented
+- All changes listed by section
+- Validation status confirmed
+- Implementation impact assessed
 
 ---
 

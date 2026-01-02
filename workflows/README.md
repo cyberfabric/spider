@@ -18,7 +18,7 @@ These workflows are **IDE and agent-agnostic** - they describe the FDD methodolo
 
 ## Workflow Categories
 
-**Status**: ✅ All 12 workflows complete
+**Status**: ✅ All 13 workflows complete
 
 ### Phase 1: Architecture Design
 
@@ -29,20 +29,18 @@ These workflows are **IDE and agent-agnostic** - they describe the FDD methodolo
 
 3. ✅ **`03-init-features.md`** - Generate features from Overall Design
 4. ✅ **`04-validate-features.md`** - Validate FEATURES.md manifest
-
-### Phase 3: Feature Development
-
 5. ✅ **`05-init-feature.md`** - Initialize single feature
 6. ✅ **`06-validate-feature.md`** - Validate Feature Design
-7. ✅ **`07-complete-feature.md`** - Mark feature as complete
-8. ✅ **`08-fix-design.md`** - Fix design issues during implementation
 
-### OpenSpec Integration
+### Phase 3: Feature Implementation
 
 9. ✅ **`09-openspec-init.md`** - Initialize OpenSpec for feature
 10. ✅ **`10-openspec-change-implement.md`** - Implement OpenSpec change
 11. ✅ **`11-openspec-change-complete.md`** - Complete and archive change
-12. ✅ **`12-openspec-validate.md`** - Validate OpenSpec specs
+12. ✅ **`12-openspec-change-next.md`** - Create next change from DESIGN.md
+13. ✅ **`13-openspec-validate.md`** - Validate OpenSpec structure
+7. ✅ **`07-complete-feature.md`** - Mark feature as complete
+8. ✅ **`08-fix-design.md`** - Fix design issues during implementation
 
 ---
 

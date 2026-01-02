@@ -20,68 +20,82 @@
 
 ## Requirements
 
-### 1: Navigate to Change Directory
+### 1: Review Change with OpenSpec
 
-**Requirement**: Enter change directory
+**Requirement**: Use OpenSpec to review change details
 
-**Required Actions**:
+**Command**:
 ```bash
-cd architecture/features/feature-{slug}/openspec/changes/{change-id}-*/
-
-echo "Current change: $(basename $(pwd))"
-ls -la
+cd architecture/features/feature-{slug}/openspec/
+openspec show {change-id}
 ```
 
-**Expected Outcome**: In change directory, see proposal.md, tasks.md, specs/
+**What This Shows**:
+- Change status and metadata
+- Proposal summary
+- Tasks checklist
+- Specification files
+
+**Location**: `changes/{change-id}-{name}/`
+
+**Required Files**:
+- `proposal.md` - Change rationale
+- `tasks.md` - Implementation checklist
+- `specs/` - Technical specifications
+
+**Expected Outcome**: Understanding of what needs to be implemented
+
+**Verification**: Use `openspec list` to see all changes
 
 ---
 
-### 2: Review Proposal and Specs
+### 2: Review All Change Documents
 
-**Requirement**: Read all specification documents
+**Requirement**: Understand implementation requirements completely
 
-**Required Actions**:
-```bash
-# Review proposal
-echo "=== PROPOSAL ==="
-cat proposal.md
+**Review Checklist**:
+- **proposal.md**: Why this change exists, what problem it solves
+- **design.md** (if exists): Technical decisions and architecture
+- **tasks.md**: Checklist of implementation steps
+- **specs/{capability}/spec.md**: Delta specifications with requirements
 
-# Review specs
-echo ""
-echo "=== SPECS ==="
-ls specs/
-for spec in specs/*.md; do
-  echo ""
-  echo "--- $spec ---"
-  cat "$spec"
-done
-```
+**Feature Context**:
+- **../../DESIGN.md**: Feature-level design (not in openspec/)
+- Check Feature DESIGN.md Section F for change context
 
-**Expected Outcome**: Clear understanding of what to implement
+**Understanding Required**:
+- Implementation scope and boundaries
+- Technical requirements and constraints
+- Testing criteria and verification methods
+- Dependencies on other changes or components
 
-**Manual Step**: Ensure you understand:
-- Implementation scope
-- Technical requirements
-- Testing criteria
+**Expected Outcome**: Complete understanding of what needs to be implemented
+
+**Validation Criteria**:
+- Can explain change purpose in own words
+- Understands all technical specifications
+- Knows verification approach
+- Aware of feature-level design context
 
 ---
 
-### 3: Update Status to IN_PROGRESS
+### 3: Mark Change as Started (Manual)
 
-**Requirement**: Mark change as started
+**Requirement**: Manually update status to IN_PROGRESS
 
-**Required Actions**:
-```bash
-# Update proposal status
-sed -i.bak 's/⏳ NOT_STARTED/🔄 IN_PROGRESS/' proposal.md
+**Files to Update**:
+- `proposal.md` - Change status header
+- `tasks.md` - Change status header
 
-# Update tasks
-sed -i.bak 's/⏳ NOT_STARTED/🔄 IN_PROGRESS/' tasks.md
-
-echo "✓ Status updated to IN_PROGRESS"
+**Status Change**:
+```markdown
+**Status**: 🔄 IN_PROGRESS
+**Started**: YYYY-MM-DD
 ```
 
-**Expected Outcome**: Status changed in both files
+**Expected Outcome**: Change marked as active
+
+**Note**: OpenSpec does not have a `start` command. Status is managed manually in files.
 
 ---
 
@@ -102,142 +116,141 @@ echo "✓ Status updated to IN_PROGRESS"
 
 ### 5: Update Tasks Checklist
 
-**Requirement**: Mark completed tasks
+**Requirement**: Track implementation progress continuously
 
-**Required Actions**:
-```bash
-# Example: Mark task as done
-# Replace "- [ ] Task 1" with "- [x] Task 1"
+**Checklist Format**:
+- Incomplete: `- [ ] Task description`
+- Complete: `- [x] Task description`
 
-# Check progress
-TOTAL=$(grep -c "^- \[" tasks.md)
-DONE=$(grep -c "^- \[x\]" tasks.md)
-PROGRESS=$((DONE * 100 / TOTAL))
+**Update Practice**:
+- Mark tasks complete as you finish them
+- Update after each significant milestone
+- Track overall progress (e.g., 5/10 tasks complete)
 
-echo "Progress: $DONE/$TOTAL tasks ($PROGRESS%)"
-```
+**Expected Outcome**: tasks.md accurately reflects implementation progress
 
-**Expected Outcome**: Checklist tracks progress
-
-**Validation**: Update after each significant task completion
+**Validation Criteria**:
+- Checklist updated regularly
+- Completed tasks marked with [x]
+- Progress is visible and trackable
 
 ---
 
 ### 6: Run Tests Continuously
 
-**Requirement**: Verify implementation as you go
+**Requirement**: Verify implementation incrementally with tests
 
-**Examples** (framework-specific):
+**Testing Practice**:
+- Run tests after each task completion
+- Verify all tests pass before moving to next task
+- Add new tests as needed for new functionality
+- Run both unit and integration tests
 
-**Rust**:
-```bash
-# Run tests
-cargo test --package {module}
+**Expected Outcome**: All tests passing continuously
 
-# Run specific test
-cargo test --package {module} test_name
-```
+**Framework Examples** (reference only):
+- Rust: `cargo test`
+- TypeScript/Node.js: `npm test`
+- Python: `pytest`
+- Java: `mvn test`
+- Go: `go test`
 
-**TypeScript**:
-```bash
-npm test -- {feature}
-```
-
-**Python**:
-```bash
-pytest tests/features/{slug}/
-```
-
-**Expected Outcome**: Tests pass
+**Validation Criteria**:
+- Zero test failures
+- Tests cover implemented functionality
+- Test output confirms correctness
 
 ---
 
 ### 7: Verify Against Specs
 
-**Requirement**: Check implementation matches specifications
+**Requirement**: Ensure implementation matches all specifications
 
-**Required Actions**:
-```bash
-# Review each spec file and verify implementation
-for spec in specs/*.md; do
-  echo "Verifying: $spec"
-  echo "Manual check required:"
-  cat "$spec"
-  echo ""
-  read -p "Does implementation match this spec? (y/n) " answer
-  if [ "$answer" != "y" ]; then
-    echo "ERROR: Implementation doesn't match spec"
-    exit 1
-  fi
-done
+**Verification Process**:
+- Review each spec file in `specs/` directory
+- Compare implementation against spec requirements
+- Verify all specified behaviors implemented
+- Check edge cases and error handling
 
-echo "✓ All specs verified"
-```
+**Verification Checklist** (per spec):
+- [ ] All requirements from spec implemented
+- [ ] Implementation behavior matches spec description
+- [ ] Edge cases handled as specified
+- [ ] Error scenarios implemented correctly
+- [ ] No scope creep beyond spec
 
-**Expected Outcome**: Implementation matches all specs
+**Expected Outcome**: Implementation fully compliant with all specs
+
+**Validation Criteria**:
+- Every spec requirement implemented
+- No deviations from specifications
+- Complete coverage of spec scope
 
 ---
 
 ### 8: Complete Final Checks
 
-**Requirement**: Run all verification criteria
+**Requirement**: Verify all completion criteria met
 
-**Required Actions**:
-```bash
-# Check all tasks complete
-INCOMPLETE=$(grep -c "^- \[ \]" tasks.md)
+**Final Verification Checklist**:
+- [ ] All tasks in tasks.md marked complete (100%)
+- [ ] All tests passing
+- [ ] Code compiles/builds without errors
+- [ ] Implementation matches all specs
+- [ ] No incomplete or TODO markers in code
+- [ ] Code reviewed (if team workflow requires)
 
-if [ $INCOMPLETE -gt 0 ]; then
-  echo "WARNING: $INCOMPLETE tasks still incomplete"
-  grep "^- \[ \]" tasks.md
-fi
+**Expected Outcome**: Change implementation fully complete
 
-# Verify tests passing
-echo "Running full test suite..."
-# Run appropriate test command for your framework
-
-echo "✓ Final checks complete"
-```
-
-**Expected Outcome**: All tasks done, tests pass
+**Validation Criteria**:
+- Zero incomplete tasks
+- Zero test failures
+- Zero compilation errors
+- All specs satisfied
+- Ready for completion workflow
 
 ---
 
 ### 9: Document Implementation Notes
 
-**Requirement**: Add notes about implementation decisions
+**Requirement**: Record implementation details and decisions
 
-**Required Actions**:
-```bash
-# Add notes section to tasks.md
-cat >> tasks.md << EOF
+**Location**: Append to `tasks.md`
 
+**Required Information**:
+- **Date Completed**: When implementation finished
+- **Key Decisions**: Important technical choices and rationale
+- **Challenges Encountered**: Problems faced and how resolved
+- **Performance Considerations**: Any performance-related notes
+- **Technical Debt**: Items to address later (if any)
+
+**Format**:
+```markdown
 ---
 
 ## Implementation Notes
 
-**Date Completed**: $(date +%Y-%m-%d)
+**Date Completed**: YYYY-MM-DD
 
 **Key Decisions**:
-- Decision 1: {Rationale}
-- Decision 2: {Rationale}
+- Decision 1: Rationale
 
 **Challenges Encountered**:
-- Challenge 1: {How resolved}
+- Challenge 1: How resolved
 
 **Performance Considerations**:
-- {Any performance notes}
+- Performance notes
 
 **Technical Debt** (if any):
-- {Items to address later}
-
----
-EOF
-
-echo "✓ Implementation notes added"
+- Items to address later
 ```
 
-**Expected Outcome**: Complete implementation record
+**Expected Outcome**: Complete audit trail of implementation
+
+**Validation Criteria**:
+- Notes provide context for future maintainers
+- Key decisions documented with rationale
+- Challenges and resolutions recorded
 
 ---
 

@@ -8,7 +8,7 @@
 ## Prerequisites
 
 - `architecture/DESIGN.md` exists and has content
-- Domain model specification directory exists (format per adapter)
+- DML specification directory exists (format per adapter)
 - API contract specification directory exists (format per adapter)
 
 ## Input Parameters
@@ -101,23 +101,23 @@ None (validates current architecture)
 
 ### 5. Validate Section C Content
 
-**Requirement**: Section C must define domain model formally
+**Requirement**: Section C must define Domain Model formally
 
 **Required Content**:
-- Domain type specifications (format per adapter: JSON Schema, TypeScript, Protobuf, etc.)
-- Link to domain model directory
+- Domain type specifications (format per adapter: GTS, CTI, or other formats)
+- Link to DML directory
 - Description of key domain types
 - Type versioning approach
 
 **Required Resources**:
-- Domain model specification directory exists (location per adapter)
+- DML specification directory exists (location per adapter)
 
-**Expected Outcome**: Section C establishes domain model
+**Expected Outcome**: Section C establishes DML
 
 **Validation Criteria**:
 - Domain types formally specified
 - Notation/format consistent (per adapter)
-- Domain model directory exists
+- DML directory exists
 - Types align with system capabilities
 
 ---
@@ -132,7 +132,7 @@ None (validates current architecture)
 - Link to API specification file(s)
 
 **Required Resources**:
-- API contract specification file(s) exist (format per adapter: OpenAPI, GraphQL Schema, gRPC, etc.)
+- API contract specification file(s) exist (format per adapter: GTS, CTI, OpenAPI, GraphQL Schema, gRPC, etc.)
 - Specification is valid per chosen format
 
 **Expected Outcome**: Section D defines API surface
@@ -192,7 +192,7 @@ None (validates current architecture)
 - Must include namespace/module identifier
 - Must include type name
 - Must include version
-- Format defined by adapter (e.g., `gts.namespace.type.v1~` for JSON Schema adapter)
+- Format defined by adapter (e.g., `gts.namespace.type.v1~` for GTS adapter)
 
 **Prohibited Format**:
 - Short form without namespace
@@ -219,7 +219,7 @@ Overall Design validation is complete when:
 - [ ] All sections A-F present with proper headings
 - [ ] Section A defines vision and capabilities
 - [ ] Section B lists actors and use cases
-- [ ] Section C defines domain model formally
+- [ ] Section C defines DML formally
 - [ ] Section D documents API contract with specification existing
 - [ ] Section E describes architecture components
 - [ ] Section F defines non-functional requirements
@@ -235,9 +235,9 @@ Overall Design validation is complete when:
 
 **Resolution**: Review FDD methodology for section requirements. Each section serves specific purpose in design. Complete all sections before proceeding.
 
-### Challenge: Missing Domain Model Directory
+### Challenge: Missing DML Directory
 
-**Resolution**: Initialize domain model structure as defined in project initialization workflow and adapter documentation. Required for type system integration.
+**Resolution**: Initialize DML structure as defined in project initialization workflow and adapter documentation. Required for type system integration.
 
 ### Challenge: Unclear Type Namespace/Notation
 
@@ -253,7 +253,7 @@ After validation succeeds:
    - Analyzes capabilities from Section A
    - Creates feature breakdown
    - Establishes dependency graph
-   - Generates init-module
+   - Generates init
 
 2. **Develop Diagrams**: Create visual documentation
    - System architecture overview

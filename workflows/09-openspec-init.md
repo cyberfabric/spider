@@ -20,283 +20,217 @@
 
 ## Requirements
 
-### 1: Create OpenSpec Directory Structure
+### 1: Initialize OpenSpec with CLI Tool
 
-**Requirement**: Initialize openspec directories
+**Requirement**: Use `openspec init` to create structure
 
-**Required Structure**:
+**Command**:
 ```bash
 cd architecture/features/feature-{slug}/
-
-# Create directory structure
-mkdir -p openspec/specs
-mkdir -p openspec/changes
-
-echo "✓ OpenSpec structure created"
+openspec init
 ```
 
-**Expected Outcome**: Directory structure exists
+**What This Does**:
+- Creates `openspec/` directory structure
+- Creates `openspec/specs/` for source of truth
+- Creates `openspec/changes/` for active changes
+- Initializes configuration
+
+**Expected Outcome**: OpenSpec initialized with proper structure
+
+**Verification**: Run `openspec list` to confirm initialization
 
 ---
 
-### 2: Initialize Specs Directory
+### 2: Create First Change Manually
 
-**Requirement**: Create placeholder for source of truth specs
+**Requirement**: Manually create change directory structure
 
-**Required Structure**:
+**Commands**:
 ```bash
-cat > openspec/specs/README.md << 'EOF'
-# OpenSpec Specs - Source of Truth
-
-This directory contains the **source of truth** specifications after changes are merged.
-
-## Structure
-
-Each spec file represents a completed change's specifications:
-- `{spec-name}.md` - Specification document
-
-## Workflow
-
-1. Changes start in `changes/{id}-{name}/specs/`
-2. After implementation and validation, specs are merged here
-3. This becomes the authoritative source
-
-## Status
-
-Empty initially - specs will be added as changes complete.
-EOF
-
-echo "✓ Specs directory initialized"
+cd openspec/
+mkdir -p changes/{change-name}/specs
 ```
 
-**Expected Outcome**: README created
+**What This Does**:
+- Creates `changes/{change-name}/` directory
+- Creates `specs/` subdirectory for delta specifications
+
+**Expected Outcome**: Change directory structure created
+
+**Note**: OpenSpec does not have a `create` command. Changes are created manually.
 
 ---
 
-### 3: Create First Change
+### 3: Create Proposal Document
 
-**Requirement**: Initialize change 001
+**Requirement**: Write proposal.md following OpenSpec format
 
-**Required Structure**:
+**Location**: `openspec/changes/{change-name}/proposal.md`
+
+**Required Structure** (OpenSpec standard):
+```markdown
+# Change: {Brief description of change}
+
+## Why
+{1-2 sentences on problem/opportunity}
+
+## What Changes
+- {Bullet list of changes}
+- {Mark breaking changes with **BREAKING**}
+
+## Impact
+- Affected specs: {list capabilities}
+- Affected code: {key files/systems}
+```
+
+**Content Source**: Extract from `../../DESIGN.md` Section F
+
+**Expected Outcome**: Proposal created with proper OpenSpec format
+
+**Note**: Use OpenSpec standard format, not custom templates
+
+---
+
+### 4: Create Tasks Checklist
+
+**Requirement**: Write tasks.md with implementation steps
+
+**Location**: `openspec/changes/{change-name}/tasks.md`
+
+**Required Structure** (OpenSpec standard):
+```markdown
+## 1. Implementation
+- [ ] 1.1 Create database schema
+- [ ] 1.2 Implement API endpoint
+- [ ] 1.3 Add frontend component
+- [ ] 1.4 Write tests
+```
+
+**Guidelines**:
+- Number tasks sequentially
+- Break down into specific, actionable items
+- Include testing and documentation tasks
+
+**Expected Outcome**: Clear implementation checklist
+
+---
+
+### 5: Create Delta Specifications
+
+**Requirement**: Write delta specs using OpenSpec format
+
+**Location**: `openspec/changes/{change-name}/specs/{capability}/spec.md`
+
+**Delta Operations** (use these headers):
+- `## ADDED Requirements` - New capabilities
+- `## MODIFIED Requirements` - Changed behavior
+- `## REMOVED Requirements` - Deprecated features
+- `## RENAMED Requirements` - Name changes
+
+**Required Format**:
+```markdown
+## ADDED Requirements
+### Requirement: New Feature
+The system SHALL provide...
+
+#### Scenario: Success case
+- **WHEN** user performs action
+- **THEN** expected result
+```
+
+**Critical Rules**:
+- Every requirement MUST have at least one `#### Scenario:`
+- Use `**WHEN**` and `**THEN**` in scenarios
+- Use SHALL/MUST for normative requirements
+- For MODIFIED: copy full requirement from `openspec/specs/`, then edit
+
+**Expected Outcome**: Delta specs created per affected capability
+
+---
+
+### 6: Create design.md (Optional)
+
+**Requirement**: Create design.md only if needed
+
+**Location**: `openspec/changes/{change-name}/design.md`
+
+**Create design.md if ANY apply**:
+- Cross-cutting change (multiple services/modules)
+- New external dependency
+- Significant data model changes
+- Security, performance, or migration complexity
+- Technical decisions needed before coding
+
+**Otherwise**: Skip this file
+
+**Minimal Structure**:
+```markdown
+## Context
+{Background, constraints}
+
+## Goals / Non-Goals
+- Goals: {...}
+- Non-Goals: {...}
+
+## Decisions
+- Decision: {What and why}
+- Alternatives: {Options + rationale}
+
+## Risks / Trade-offs
+- {Risk} → Mitigation
+
+## Migration Plan
+{Steps, rollback}
+```
+
+**Note**: Feature DESIGN.md is at `../../DESIGN.md` - reference it, don't duplicate
+
+**Expected Outcome**: design.md created only if complexity requires it
+
+---
+
+### 7: Validate with OpenSpec
+
+**Requirement**: Validate change structure and specs
+
+**Command**:
 ```bash
-# Create change directory
-mkdir -p openspec/changes/001-{change-name}
-cd openspec/changes/001-{change-name}
-
-# Create subdirectories
-mkdir -p specs
-
-echo "✓ Change 001 structure created"
+openspec validate {change-name} --strict
 ```
 
-**Expected Outcome**: Change directory exists
+**What This Checks**:
+- Change has at least one delta
+- All requirements have scenarios
+- Scenario format correct (`#### Scenario:`)
+- Files not empty
+- Delta operations properly formatted
+
+**Expected Outcome**: Validation passes with zero errors
+
+**Resolution if Failed**: Fix reported issues, then re-validate
 
 ---
 
-### 4: Create Proposal Document
+### 8: Link to Feature DESIGN.md
 
-**Requirement**: Generate proposal.md for the change
+**Requirement**: Reference OpenSpec change in Feature DESIGN.md
 
-**Required Structure**:
-```bash
-cat > proposal.md << 'EOF'
-# Change 001: {Change Name}
+**Location**: `../../DESIGN.md` (Feature DESIGN.md, not openspec/design.md)
 
-**Status**: ⏳ NOT_STARTED  
-**Feature**: feature-{slug}  
-**Created**: $(date +%Y-%m-%d)
+**Add to Section F**:
+```markdown
+## F. Validation & Implementation
 
----
+### OpenSpec Changes
 
-## Overview
-
-{Brief description of what this change implements}
-
-## Scope
-
-**In Scope**:
-- Item 1
-- Item 2
-
-**Out of Scope**:
-- Item 1
-- Item 2
-
-## Dependencies
-
-{List dependencies or "None"}
-
-## Effort Estimate
-
-**Estimated Time**: {Hours}
-
----
-
-## Implementation Plan
-
-### Phase 1: {Phase Name}
-
-Steps:
-1. Step 1
-2. Step 2
-
-### Phase 2: {Phase Name}
-
-Steps:
-1. Step 1
-2. Step 2
-
----
-
-## Testing Strategy
-
-**Unit Tests**:
-- Test 1
-- Test 2
-
-**Integration Tests**:
-- Test 1
-- Test 2
-
----
-
-## Verification Criteria
-
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] All tests pass
-- [ ] Documentation updated
-
----
-EOF
-
-echo "✓ Proposal document created"
+See `openspec/changes/` for implementation details:
+- `{change-name}` - {Brief description}
 ```
 
-**Expected Outcome**: proposal.md exists
+**Expected Outcome**: Feature DESIGN.md references OpenSpec change
 
----
-
-### 5: Create Tasks Document
-
-**Requirement**: Generate tasks.md with implementation checklist
-
-**Required Structure**:
-```bash
-cat > tasks.md << 'EOF'
-# Implementation Tasks - Change 001
-
-**Status**: ⏳ NOT_STARTED
-
----
-
-## Task Checklist
-
-### Setup
-- [ ] Review proposal.md
-- [ ] Review specs
-- [ ] Prepare environment
-
-### Implementation
-- [ ] Task 1: {Description}
-- [ ] Task 2: {Description}
-- [ ] Task 3: {Description}
-
-### Testing
-- [ ] Write unit tests
-- [ ] Write integration tests
-- [ ] All tests passing
-
-### Documentation
-- [ ] Code comments
-- [ ] Update README if needed
-- [ ] Document any gotchas
-
-### Verification
-- [ ] Manual testing
-- [ ] Code review (if applicable)
-- [ ] Performance check
-
----
-
-## Notes
-
-{Any implementation notes or decisions}
-
----
-EOF
-
-echo "✓ Tasks document created"
-```
-
-**Expected Outcome**: tasks.md exists
-
----
-
-### 6: Create Initial Spec Files
-
-**Requirement**: Create spec placeholders based on DESIGN.md Section F
-
-**Manual Step**: Extract specs from DESIGN.md Section F
-
-**Required Structure**:
-```bash
-# Example: Create spec files for different aspects
-cat > specs/api-spec.md << 'EOF'
-# API Specification
-
-{Describe API changes/additions}
-
-## Endpoints
-
-### Endpoint 1
-
-**Method**: GET/POST/etc  
-**Path**: `/api/v1/{path}`
-
-**Request**:
-\`\`\`json
-{request example}
-\`\`\`
-
-**Response**:
-\`\`\`json
-{response example}
-\`\`\`
-
----
-EOF
-
-# Add more specs as needed:
-# - database-spec.md (schema changes)
-# - integration-spec.md (external integrations)
-# - security-spec.md (auth/authz)
-
-echo "✓ Initial spec files created"
-```
-
-**Expected Outcome**: Spec files exist in `specs/`
-
----
-
-### 7: Update Feature DESIGN.md
-
-**Requirement**: Reference OpenSpec in Section F
-
-**Required Structure**:
-```bash
-cd ../../../
-
-# Verify Section F references OpenSpec
-if ! grep -q "openspec" DESIGN.md; then
-  echo "WARNING: DESIGN.md Section F should reference openspec/"
-  echo "Add: See openspec/changes/001-{change-name}/ for implementation details"
-fi
-
-echo "✓ DESIGN.md check complete"
-```
-
-**Expected Outcome**: Section F links to OpenSpec
+**Note**: Feature design is in `architecture/features/feature-{slug}/DESIGN.md`
 
 ---
 
@@ -305,11 +239,14 @@ echo "✓ DESIGN.md check complete"
 OpenSpec initialization complete when:
 
 - [ ] `openspec/specs/` directory exists
-- [ ] `openspec/changes/001-{change-name}/` created
-- [ ] `proposal.md` created with implementation plan
-- [ ] `tasks.md` created with checklist
-- [ ] Spec files created in `changes/001-{change-name}/specs/`
-- [ ] DESIGN.md Section F references OpenSpec
+- [ ] `openspec/changes/{change-name}/` created manually
+- [ ] `proposal.md` follows OpenSpec format (Why, What Changes, Impact)
+- [ ] `tasks.md` has numbered implementation checklist
+- [ ] Delta specs created in `specs/{capability}/spec.md` with ADDED/MODIFIED/etc
+- [ ] Each requirement has at least one `#### Scenario:`
+- [ ] `design.md` created if complexity requires it (optional)
+- [ ] `openspec validate {change-name} --strict` passes
+- [ ] Feature DESIGN.md (../../DESIGN.md) Section F references change
 - [ ] Ready to start implementation
 
 ---

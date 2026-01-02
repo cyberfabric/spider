@@ -9,7 +9,7 @@
 
 - Features manifest exists: `architecture/features/FEATURES.md`
 - Feature listed in manifest
-- All feature dependencies are IMPLEMENTED
+- All feature dependencies have validated designs (DESIGN.md complete)
 
 ## Input Parameters
 
@@ -32,16 +32,16 @@
 
 ### 2. Verify Dependency Status
 
-**Requirement**: All feature dependencies must be fully implemented
+**Requirement**: All feature dependencies must have validated designs
 
 **Dependency Check**:
 - Extract "Depends On" from feature entry in FEATURES.md
 - If "None" - proceed (no dependencies)
-- If dependencies listed - verify each has status IMPLEMENTED
+- If dependencies listed - verify each has validated DESIGN.md (passed workflow 06)
 
 **Expected Outcome**: Prerequisites satisfied
 
-**Validation Criteria**: All dependencies show IMPLEMENTED status
+**Validation Criteria**: All dependencies have complete and validated designs
 
 ---
 
@@ -64,7 +64,8 @@
 **Required File**: `architecture/features/feature-{slug}/DESIGN.md`
 
 **Template Structure**:
-  cat > DESIGN.md << 'EOF'
+```bash
+cat > DESIGN.md << 'EOF'
 # {Feature Name} - Feature Design
 
 **Status**: 🔄 IN_PROGRESS  
@@ -231,7 +232,7 @@ fi
 Feature initialization complete when:
 
 - [ ] Feature exists in FEATURES.md
-- [ ] All dependencies IMPLEMENTED
+- [ ] All dependencies have validated designs
 - [ ] Feature directory created
 - [ ] DESIGN.md created with full template
 - [ ] Feature status IN_PROGRESS
@@ -243,7 +244,7 @@ Feature initialization complete when:
 
 ### Issue: Dependencies Not Met
 
-**Resolution**: Implement dependencies first. Follow implementation order in FEATURES.md
+**Resolution**: Complete and validate dependency designs first (workflow 06). Design order should follow dependency graph in FEATURES.md
 
 ### Issue: Feature Not in Manifest
 

@@ -71,6 +71,73 @@ FDD helps teams build software by:
 | ❌ Can't track feature dependencies | ✅ FEATURES.md shows dependency graph |
 | ❌ Rework after stakeholder review | ✅ Stakeholders review design before coding |
 
+### Why OpenSpec Alone Is Not Enough
+
+**OpenSpec is excellent for change management**, but it solves only part of the problem:
+
+**What OpenSpec Does Well** ✅:
+- Tracks atomic changes
+- Manages delta specifications
+- Archives implementation history
+- Validates change structure
+
+**What OpenSpec Doesn't Solve** ❌:
+- **No Overall Design**: Where do domain types come from? Who defines actors?
+- **No Feature Planning**: How to break a large system into features?
+- **No Cross-Feature Validation**: How to ensure features don't duplicate types or contradict each other?
+- **No Actor Flows**: How to describe what users do in plain English?
+- **No Design Review**: When and how to validate designs before coding?
+- **No Dependency Management**: Which features depend on which?
+
+**The Problem with OpenSpec-Only Approach**:
+
+```
+Developer creates openspec change 001
+   ↓
+Implements feature based on their understanding
+   ↓
+Another developer creates change 002 for different feature
+   ↓
+Discovers they need same types but defined differently
+   ↓
+No Overall Design to reference → inconsistency
+   ↓
+Refactoring needed, wasted time
+```
+
+**How FDD + OpenSpec Work Together**:
+
+```
+1. FDD: Create Overall Design
+   - Define all domain types ONCE
+   - Define all API contracts ONCE
+   - Define all actors and use cases
+   
+2. FDD: Generate Features from Overall Design
+   - Each feature has complete design
+   - Features reference Overall Design (no duplication)
+   - Dependencies explicitly tracked
+   
+3. FDD: Validate Feature Design
+   - Check for type redefinitions
+   - Validate actor flows
+   - Ensure consistency with Overall Design
+   
+4. OpenSpec: Break feature into atomic changes
+   - Each change implements part of validated design
+   - Changes reference feature design specs
+   - Implementation is traceable
+   
+5. OpenSpec: Track implementation
+   - Archive completed changes
+   - Merge specs to source of truth
+   - Full audit trail
+```
+
+**TL;DR**: OpenSpec manages **how you implement**, FDD defines **what you implement**. You need both for large projects.
+
+---
+
 ### When NOT to Use FDD
 
 FDD adds structure and validation. Skip it if:
@@ -423,7 +490,8 @@ guidelines/FDD/                                 # Core FDD (standalone, universa
     ├── 09-openspec-init.md                    # Initialize OpenSpec
     ├── 10-openspec-change-implement.md        # Implement change
     ├── 11-openspec-change-complete.md         # Complete change
-    └── 12-openspec-validate.md                # Validate OpenSpec
+    ├── 12-openspec-change-next.md             # Create next change
+    └── 13-openspec-validate.md                # Validate OpenSpec
 
 guidelines/your-project-fdd-adapter/            # Your project adapter (create this)
 ├── README.md                                   # Integration overview
@@ -581,6 +649,64 @@ Implement user authentication with email/password.
 - [ ] Add login page
 - [ ] Add tests
 ```
+
+---
+
+## Roadmap
+
+### FDD CLI Tool (Planned)
+
+**Goal**: Create an `fdd` CLI tool to automate FDD workflows, similar to how OpenSpec automates change management.
+
+**Why**: Currently, FDD workflows are manual guides that require AI assistants or humans to execute. The `fdd` tool will provide:
+- ✅ Automated structure initialization
+- ✅ Design validation automation
+- ✅ Feature manifest generation
+- ✅ Consistency checks across designs
+- ✅ Integration with OpenSpec for seamless workflow
+
+**Planned Commands**:
+```bash
+# Project initialization
+fdd init                           # Initialize FDD structure
+fdd init --adapter <name>          # Initialize with specific adapter
+
+# Architecture workflows
+fdd validate architecture          # Validate Overall Design
+fdd validate architecture --report # Generate detailed validation report
+
+# Feature management
+fdd features generate              # Generate FEATURES.md from Overall Design
+fdd features validate              # Validate FEATURES.md consistency
+fdd feature init <slug>            # Initialize new feature
+fdd feature validate <slug>        # Validate feature design
+fdd feature complete <slug>        # Mark feature as complete
+
+# Design inspection
+fdd show architecture              # Show Overall Design summary
+fdd show feature <slug>            # Show feature design summary
+fdd list features                  # List all features with status
+fdd list features --status IN_PROGRESS  # Filter by status
+
+# OpenSpec integration
+fdd openspec init <slug>           # Initialize OpenSpec for feature
+fdd openspec validate <slug>       # Validate OpenSpec structure
+
+# Validation helpers
+fdd check types <slug>             # Check for type redefinitions
+fdd check links <slug>             # Check cross-references validity
+fdd check fdl <slug>               # Validate FDL syntax
+```
+
+**Implementation Approach**:
+- **Language**: Node.js/TypeScript (for cross-platform compatibility)
+- **Package**: `npm install -g @fdd/cli` or similar
+- **Integration**: Works alongside `openspec` CLI tool
+- **Adapters**: Support pluggable adapters for different tech stacks
+
+**Timeline**: To be determined based on community feedback and adoption.
+
+**Status**: 📋 Planning phase - gathering requirements and use cases.
 
 ---
 

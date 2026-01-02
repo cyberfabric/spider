@@ -49,7 +49,7 @@ Always read the specific workflow file before executing. This guide helps you ch
 
 **06-validate-feature.md** - Validate Feature Design
 - **Use when**: `architecture/features/feature-{slug}/DESIGN.md` is complete
-- **Validates**: Sections A-F, Actor Flows, ADL algorithms, no type redefinitions
+- **Validates**: Sections A-F, Actor Flows, FDL algorithms, no type redefinitions
 - **Required score**: 100/100 + 100% completeness
 - **Next step**: OpenSpec initialization (workflow 09)
 
@@ -64,36 +64,35 @@ Always read the specific workflow file before executing. This guide helps you ch
 - **Creates**: `openspec/` structure, first change (001-*)
 - **Next step**: Implement first OpenSpec change (workflow 10)
 
-**10-openspec-implement.md** - Implement OpenSpec change
-- **Use when**: Active change exists in `openspec/changes/{id}-*/`
+**10-openspec-change-implement.md** - Implement OpenSpec change
+- **Use when**: Active change exists in `openspec/changes/{change-name}/`
 - **Implements**: Code according to proposal.md and tasks.md
 - **Validates**: Tasks checklist completion
-- **Next step**: Complete change (workflow 12) or continue implementation
+- **Next step**: Complete change (workflow 11) or continue implementation
 
-**12-openspec-complete.md** - Complete OpenSpec change
+**11-openspec-change-complete.md** - Complete OpenSpec change
 - **Use when**: Change implementation finished and tested
 - **Merges**: Change specs to `openspec/specs/`
-- **Archives**: Change to `openspec/archive/`
-- **Next step**: Next change (workflow 11) or complete feature (workflow 08)
+- **Archives**: Change to `changes/archive/`
+- **Next step**: Create next change (workflow 12) or validate all (workflow 13)
 
-**11-openspec-next.md** - Start next OpenSpec change
-- **Use when**: Current change completed, more changes needed
-- **Creates**: Next change directory and structure
+**12-openspec-change-next.md** - Create next OpenSpec change
+- **Use when**: Current change complete, more changes planned in DESIGN.md
+- **Creates**: Next change directory and files from Feature DESIGN.md Section F
 - **Next step**: Implement next change (workflow 10)
 
-**08-complete-feature.md** - Complete feature
+**13-openspec-validate.md** - Validate OpenSpec structure
+- **Use when**: Need to verify OpenSpec consistency
+- **Validates**: Structure, specs, changes consistency
+- **Next step**: Complete feature (workflow 07) if all changes done
+
+**07-complete-feature.md** - Complete feature
 - **Use when**: All OpenSpec changes implemented and tested
 - **Validates**: Compilation, tests pass, no pending changes
 - **Marks**: Feature as complete in `FEATURES.md`
 - **Next step**: Next feature or project complete
 
----
-
-## Phase 4: Maintenance & Debugging
-
-### When: Issues discovered during implementation
-
-**07-fix-design.md** - Fix design issues
+**08-fix-design.md** - Fix design issues
 - **Use when**: Implementation reveals design problem
 - **Updates**: DESIGN.md with corrections
 - **Re-validates**: Feature Design after fix
@@ -124,12 +123,13 @@ Start FDD work
 │  └─> Use workflow 09 (openspec-init)
 │
 ├─ Active OpenSpec change?
-│  ├─ Need to implement? → Use workflow 10 (openspec-implement)
-│  ├─ Implementation done? → Use workflow 12 (openspec-complete)
-│  └─ Need next change? → Use workflow 11 (openspec-next)
+│  ├─ Need to implement? → Use workflow 10 (openspec-change-implement)
+│  ├─ Implementation done? → Use workflow 11 (openspec-change-complete)
+│  ├─ Need next change? → Use workflow 12 (openspec-change-next)
+│  └─ Need to validate? → Use workflow 13 (openspec-validate)
 │
 ├─ All changes complete?
-│  └─> Use workflow 08 (complete-feature)
+│  └─> Use workflow 07 (complete-feature)
 │
 └─ Design issue found?
    └─> Use workflow 07 (fix-design)
@@ -142,27 +142,28 @@ Start FDD work
 **New project from scratch**:
 ```
 01-init-project → 02-validate-architecture → 03-init-features
-→ 06-validate-feature → 09-openspec-init → 10-openspec-implement
-→ 12-openspec-complete → 08-complete-feature
+→ 06-validate-feature → 09-openspec-init → 10-openspec-change-implement
+→ 11-openspec-change-complete → 13-openspec-validate → 07-complete-feature
 ```
 
 **Add single feature to existing project**:
 ```
 05-init-feature → 06-validate-feature → 09-openspec-init
-→ 10-openspec-implement → 12-openspec-complete → 08-complete-feature
+→ 10-openspec-change-implement → 11-openspec-change-complete
+→ 13-openspec-validate → 07-complete-feature
 ```
 
 **Feature with multiple OpenSpec changes**:
 ```
-09-openspec-init → 10-openspec-implement → 12-openspec-complete
-→ 11-openspec-next → 10-openspec-implement → 12-openspec-complete
-→ 08-complete-feature
+09-openspec-init → 10-openspec-change-implement → 11-openspec-change-complete
+→ 12-openspec-change-next → 10-openspec-change-implement
+→ 11-openspec-change-complete → 13-openspec-validate → 07-complete-feature
 ```
 
 **Fix design during implementation**:
 ```
-10-openspec-implement → [issue found] → 07-fix-design
-→ 06-validate-feature → 10-openspec-implement (continue)
+10-openspec-change-implement → [issue found] → 08-fix-design
+→ 06-validate-feature → 10-openspec-change-implement (continue)
 ```
 
 ---
@@ -186,13 +187,14 @@ Start FDD work
 /fdd-validate-features                # 04: Validate FEATURES.md
 /fdd-init-feature {slug}              # 05: Initialize single feature
 /fdd-validate-feature {slug}          # 06: Validate Feature Design
-/fdd-fix-design {slug}                # 07: Fix design issues
-/fdd-complete-feature {slug}          # 08: Complete feature
+/fdd-complete-feature {slug}          # 07: Complete feature
+/fdd-fix-design {slug}                # 08: Fix design issues
 
 /openspec-init {slug}                 # 09: Initialize OpenSpec
 /openspec-change-implement {slug} {id}  # 10: Implement change
-/openspec-change-next {slug}          # 11: Start next change
-/openspec-change-complete {slug} {id}   # 12: Complete change
+/openspec-change-complete {slug} {id}   # 11: Complete change
+/openspec-change-next {slug}          # 12: Create next change
+/openspec-validate {slug}             # 13: Validate OpenSpec
 ```
 
 ---

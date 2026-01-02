@@ -23,90 +23,81 @@
 
 ### 1: Verify All Tasks Complete
 
-**Requirement**: Check tasks.md is 100% done
+**Requirement**: All tasks in tasks.md must be completed (100%)
 
-**Required Actions**:
-```bash
-cd architecture/features/feature-{slug}/openspec/changes/{change-id}-*/
+**Location**: `architecture/features/feature-{slug}/openspec/changes/{change-id}-{name}/tasks.md`
 
-# Count tasks
-TOTAL=$(grep -c "^- \[" tasks.md)
-DONE=$(grep -c "^- \[x\]" tasks.md)
+**Validation Criteria**:
+- All checklist items marked with [x]
+- No items remaining with [ ]
+- Task count: X/X (100%)
 
-if [ $DONE -ne $TOTAL ]; then
-  echo "ERROR: Only $DONE/$TOTAL tasks complete"
-  echo "Incomplete tasks:"
-  grep "^- \[ \]" tasks.md
-  exit 1
-fi
+**Expected Outcome**: 100% tasks completed
 
-echo "✓ All tasks complete ($DONE/$TOTAL)"
-```
-
-**Expected Outcome**: 100% tasks done
+**Resolution if Failed**: Return to workflow 10, complete remaining tasks
 
 ---
 
 ### 2: Run Final Tests
 
-**Requirement**: Execute full test suite one last time
+**Requirement**: Execute full test suite for final verification
 
-**Examples** (framework-specific):
-```bash
-echo "Run your framework's test command"
-echo "Example: cargo test, npm test, pytest"
-```
+**Test Coverage**:
+- All unit tests for this change
+- Integration tests if applicable
+- Regression tests to ensure no breaking changes
 
-**Expected Outcome**: All tests pass
+**Expected Outcome**: 100% tests passing, zero failures
+
+**Framework Examples** (reference only):
+- Rust: `cargo test`
+- Node.js: `npm test`
+- Python: `pytest`
+- Java: `mvn test`
+- Go: `go test`
+
+**Resolution if Failed**: Fix test failures before completing change
 
 ---
 
 ### 3: Verify Specs Implemented
 
-**Requirement**: Manual verification against each spec
+**Requirement**: Confirm implementation matches all specifications
 
-**Required Actions**:
-```bash
-# List all specs
-echo "Verifying specs:"
-ls specs/
+**Location**: `specs/` directory in change folder
 
-for spec in specs/*.md; do
-  echo ""
-  echo "=== $(basename $spec) ==="
-  cat "$spec"
-  echo ""
-  read -p "Spec fully implemented? (y/n) " answer
-  if [ "$answer" != "y" ]; then
-    echo "ERROR: Spec not fully implemented"
-    exit 1
-  fi
-done
+**Verification Process** (for each spec file):
+- Review spec requirements
+- Verify all requirements implemented in code
+- Check implementation behavior matches spec description
+- Confirm edge cases and error handling complete
 
-echo "✓ All specs verified"
-```
+**Verification Checklist** (per spec):
+- [ ] All spec requirements implemented
+- [ ] Implementation tested and verified
+- [ ] No deviations from specification
+- [ ] Edge cases handled correctly
 
-**Expected Outcome**: All specifications implemented
+**Expected Outcome**: All specifications fully implemented and verified
+
+**Resolution if Failed**: Complete missing implementation before marking change done
 
 ---
 
 ### 4: Update Change Status
 
-**Requirement**: Mark change as COMPLETED
+**Requirement**: Mark change as COMPLETED in proposal.md
 
-**Required Actions**:
-```bash
-# Update proposal
-sed -i.bak 's/🔄 IN_PROGRESS/✅ COMPLETED/' proposal.md
+**Status Update**:
+- Change status from 🔄 IN_PROGRESS to ✅ COMPLETED
 
-# Add completion date
-cat >> proposal.md << EOF
-
+**Add Completion Section** to proposal.md:
+```markdown
 ---
 
 ## Completion
 
-**Date**: $(date +%Y-%m-%d)  
+**Date**: YYYY-MM-DD  
 **Status**: ✅ COMPLETED
 
 **Verification**:
@@ -115,143 +106,132 @@ cat >> proposal.md << EOF
 - All specs implemented
 
 ---
-EOF
-
-echo "✓ Change marked as COMPLETED"
 ```
 
-**Expected Outcome**: proposal.md updated
+**Expected Outcome**: proposal.md reflects completion
+
+**Validation Criteria**:
+- Status updated to COMPLETED
+- Completion date recorded
+- Verification checklist included
 
 ---
 
-### 5: Archive Specs to Source of Truth
+### 5: Archive Change with OpenSpec
 
-**Requirement**: Merge specs to `openspec/specs/`
+**Requirement**: Archive change using OpenSpec tool
 
-**Required Actions**:
+**Location**: `architecture/features/feature-{slug}/openspec/`
+
+**Command**:
 ```bash
-cd ../../..  # Back to feature directory
-
-# Copy specs to source of truth
-CHANGE_NAME=$(basename openspec/changes/{change-id}-*)
-
-for spec in openspec/changes/{change-id}-*/specs/*.md; do
-  SPEC_NAME=$(basename "$spec")
-  
-  # If spec exists, append change info
-  if [ -f "openspec/specs/$SPEC_NAME" ]; then
-    echo "" >> "openspec/specs/$SPEC_NAME"
-    echo "---" >> "openspec/specs/$SPEC_NAME"
-    echo "Updated by: $CHANGE_NAME" >> "openspec/specs/$SPEC_NAME"
-    cat "$spec" >> "openspec/specs/$SPEC_NAME"
-  else
-    # New spec
-    cat > "openspec/specs/$SPEC_NAME" << EOF
-# $(basename "$SPEC_NAME" .md)
-
-**Source**: $CHANGE_NAME  
-**Date**: $(date +%Y-%m-%d)
-
----
-
-EOF
-    cat "$spec" >> "openspec/specs/$SPEC_NAME"
-  fi
-  
-  echo "Archived: $SPEC_NAME"
-done
-
-echo "✓ Specs archived to source of truth"
+cd architecture/features/feature-{slug}/openspec/
+openspec archive {change-id}
 ```
 
-**Expected Outcome**: Specs in `openspec/specs/`
-
----
-
-### 6: Create Completed Metadata
-
-**Requirement**: Add completion record
-
-**Required Actions**:
+**For Non-Interactive/Automation**:
 ```bash
-cd openspec/changes/{change-id}-*/
-
-cat > COMPLETED.md << EOF
-# Change Completed
-
-**Change**: {change-id}-{name}  
-**Feature**: feature-{slug}  
-**Completed**: $(date +%Y-%m-%d)
-
-## Summary
-
-{Brief summary of what was implemented}
-
-## Specs Archived
-
-$(ls specs/*.md | sed 's/specs\//- /')
-
-## Verification
-
-- ✅ All tasks completed
-- ✅ All tests passing
-- ✅ All specs implemented
-- ✅ Specs archived to source of truth
-
----
-EOF
-
-echo "✓ Completion record created"
+openspec archive {change-id} --yes
 ```
 
-**Expected Outcome**: COMPLETED.md exists
-
----
-
-### 7: Move to Completed (Optional)
-
-**Requirement**: Organize completed changes
-
-**Required Actions**:
+**For Tooling-Only Changes** (no spec updates):
 ```bash
-cd ../..  # Back to openspec/
-
-# Create completed directory if needed
-mkdir -p completed
-
-# Move change to completed
-mv changes/{change-id}-* completed/
-
-echo "✓ Change moved to completed/"
+openspec archive {change-id} --skip-specs --yes
 ```
 
-**Expected Outcome**: Change in `openspec/completed/`
+**What This Does**:
+- Merges delta specs to `openspec/specs/{capability}/spec.md`
+- Applies ADDED/MODIFIED/REMOVED/RENAMED operations
+- Moves change to `changes/archive/YYYY-MM-DD-{change-id}/`
+- Preserves full change history
 
-**Note**: This step is optional - some prefer keeping changes in place
+**Critical**: Always pass change-id explicitly
+
+**Expected Outcome**: Change archived, specs merged
+
+**Verification**: 
+- Run `openspec list` - change not in active list
+- Run `openspec list --specs` - capabilities updated
+- Run `openspec validate --strict` - structure valid
 
 ---
 
-### 8: Update Feature Status
+### 6: Verify Archive with OpenSpec
 
-**Requirement**: Check if feature is complete
+**Requirement**: Confirm change properly archived
 
-**Required Actions**:
+**Command**:
 ```bash
-cd ../../..  # Back to features/
-
-# Check if more changes needed
-REMAINING=$(find feature-{slug}/openspec/changes -type d -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)
-
-if [ $REMAINING -eq 0 ]; then
-  echo "✅ All changes complete - feature ready to complete"
-  echo "Run: 07-complete-feature.md {slug}"
-else
-  echo "⏳ $REMAINING changes remaining"
-  find feature-{slug}/openspec/changes -type d -mindepth 1 -maxdepth 1
-fi
+openspec show {change-id}
 ```
 
-**Expected Outcome**: Status update
+**What to Verify**:
+- Status shows ✅ COMPLETED
+- Completion date recorded
+- All specs listed as archived
+- Change in archive location (if using archives)
+
+**Alternative Command**:
+```bash
+openspec list --archived
+```
+
+**What This Shows**: All archived/completed changes
+
+**Expected Outcome**: Change confirmed as complete with full audit trail
+
+**Note**: OpenSpec automatically creates completion metadata during archive
+
+---
+
+### 7: Clean Up (Handled by OpenSpec)
+
+**Requirement**: Archive handles cleanup automatically
+
+**What OpenSpec Does**:
+- Moves change from `changes/` to archive location
+- Keeps clean separation of active vs completed
+- Maintains full history in archive
+- Preserves all files for audit trail
+
+**Configuration**: Archive behavior configured in OpenSpec settings
+
+**Options**:
+- Move to `completed/` directory (default)
+- Keep in `changes/` with COMPLETED status
+- Custom archive location
+
+**Expected Outcome**: Clean structure maintained automatically
+
+**Note**: This is handled by `openspec archive` command, no manual action needed
+
+---
+
+### 8: Check Feature Status with OpenSpec
+
+**Requirement**: Assess if feature implementation is complete
+
+**Command**:
+```bash
+openspec list
+```
+
+**Status Assessment**:
+- **If no active changes**: Feature implementation complete
+  - Ready to run workflow `07-complete-feature.md`
+  - All OpenSpec changes done
+  - Run `openspec list --archived` to see all completed work
+
+- **If changes remaining**: Continue implementation
+  - List shows remaining active changes
+  - Prioritize next change
+  - Use workflow `10-openspec-change-implement.md`
+
+**Expected Outcome**: Clear feature completion status
+
+**Next Steps**:
+- No active changes → Complete feature (workflow 07)
+- Active changes remain → Implement next change (workflow 10)
 
 ---
 
@@ -264,8 +244,7 @@ Change completion verified when:
 - [ ] All specs implemented and verified
 - [ ] Change status updated to COMPLETED
 - [ ] Specs archived to `openspec/specs/`
-- [ ] Completion record created (COMPLETED.md)
-- [ ] Change moved to completed/ (optional)
+- [ ] Change archived with `openspec archive`
 - [ ] Feature status checked
 
 ---
@@ -313,10 +292,9 @@ openspec/
 │   └── ...
 ├── completed/                # Archived changes (optional)
 │   └── 001-{name}/
-│       ├── proposal.md
-│       ├── tasks.md
-│       ├── COMPLETED.md
-│       └── specs/
+│       ├── proposal.md      # With completion metadata
+│       ├── tasks.md         # With completion status
+│       └── specs/           # Original specs
 └── changes/                  # Active changes only
     └── (empty or next change)
 ```

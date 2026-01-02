@@ -38,29 +38,65 @@ CODE (implementation)
 
 ## OpenSpec Integration (REQUIRED)
 
-**What You Must Know**:
-- OpenSpec manages atomic implementation changes
-- Every feature breaks down into OpenSpec changes
-- Changes are tracked in `openspec/changes/`, merged to `openspec/specs/` when complete
+**CRITICAL**: Before using any OpenSpec commands (workflows 09-12), **you MUST read the full OpenSpec specification** at `openspec/AGENTS.md`
 
-**Structure**:
+### Core OpenSpec Principles
+
+**What is OpenSpec**:
+- Atomic change management system for feature implementation
+- Each change is self-contained, traceable, and deployable
+- Changes tracked in `openspec/changes/`, merged to `openspec/specs/`
+
+**Key Rules**:
+1. **Use `openspec` CLI tool** - All operations through CLI, not manual scripts
+2. **Changes are atomic** - One change = one deployable unit
+3. **Changes created manually** - Create directory structure manually (no `create` command)
+4. **Required files** - Every change has `proposal.md`, `tasks.md`, `specs/`, optional `design.md`
+5. **Source of truth** - `openspec/specs/` contains merged specifications
+
+**OpenSpec Commands**:
+- `openspec init [path]` - Initialize OpenSpec structure
+- `openspec list` - List active changes
+- `openspec list --specs` - List specifications
+- `openspec show [item]` - Show change or spec details
+- `openspec validate [item]` - Validate changes or specs
+- `openspec validate [item] --strict` - Comprehensive validation
+- `openspec archive <change-id>` - Archive completed change
+- `openspec archive <change-id> --skip-specs --yes` - Archive without spec updates
+
+**Change Structure**:
 ```
 feature-{slug}/
 └── openspec/
-    ├── specs/          # Source of truth (merged changes)
-    └── changes/        # Active changes
-        └── 001-{name}/
-            ├── proposal.md   # Why (rationale)
-            ├── tasks.md      # Checklist
-            └── specs/        # What changes (delta)
+    ├── project.md       # Project conventions
+    ├── specs/           # Source of truth (merged specs)
+    │   └── [capability]/
+    │       ├── spec.md
+    │       └── design.md
+    └── changes/         # Active and archived changes
+        ├── [change-name]/        # Active change (kebab-case)
+        │   ├── proposal.md       # Why, what, impact
+        │   ├── tasks.md          # Implementation checklist
+        │   ├── design.md         # Technical decisions (optional)
+        │   └── specs/            # Delta specifications
+        │       └── [capability]/
+        │           └── spec.md   # ADDED/MODIFIED/REMOVED
+        └── archive/              # Completed changes
+            └── YYYY-MM-DD-[change-name]/
 ```
 
-**Commands**:
-- `openspec init` - Initialize OpenSpec for feature
-- `openspec list` - List all changes
-- `openspec show <change>` - Show change details
-- `openspec validate` - Validate specs
-- `openspec archive <change>` - Merge and delete change
+**Three-Stage Workflow**:
+```
+1. Creating Changes - Scaffold proposal, tasks, design (optional), delta specs
+2. Implementing Changes - Read docs, implement sequentially, update checklist
+3. Archiving Changes - Use `openspec archive <change-id>`, moves to archive/
+```
+
+**When to Use OpenSpec**:
+- Workflows 09-12 are OpenSpec workflows
+- Use after Feature Design is validated (workflow 06)
+- Each feature breaks into multiple OpenSpec changes
+- Changes implement code according to Feature Design
 
 **Workflows**:
 - Initialize OpenSpec → `workflows/09-openspec-init.md`
@@ -69,9 +105,10 @@ feature-{slug}/
 - Validate specs → `workflows/12-openspec-validate.md`
 
 **Resources**:
-- Website: https://openspec.dev/
-- GitHub: https://github.com/Fission-AI/OpenSpec
-- Install: `npm install -g @fission-ai/openspec@latest`
+- **Full Specification**: `openspec/AGENTS.md` ⚠️ READ BEFORE USE
+- **Website**: https://openspec.dev
+- **GitHub**: https://github.com/Fission-AI/OpenSpec
+- **Install**: `npm install -g @fission-ai/openspec@latest`
 
 ---
 

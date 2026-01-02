@@ -46,7 +46,7 @@
 **Requirement**: Break down capabilities into implementable features
 
 **Planning Guidelines**:
-- **First feature**: Always `feature-init-module` (infrastructure, no dependencies)
+- **First feature**: Always `feature-init` (infrastructure, no dependencies)
 - **Capability mapping**: Create 1-3 features per major capability
 - **Feature scope**: Each feature focused and independently testable
 - **Dependencies**: Define clear dependency relationships
@@ -62,7 +62,7 @@
 - All capabilities covered by features
 - Feature scopes clearly defined
 - Dependencies identified
-- init-module is first feature
+- init is first feature
 
 ---
 
@@ -79,7 +79,7 @@
 - Overall status (PLANNING initially)
 
 **For Each Feature**:
-- **Feature slug**: Unique identifier (e.g., `feature-init-module`)
+- **Feature slug**: Unique identifier (e.g., `feature-init`)
 - **Status**: Current state (⏳ NOT_STARTED, 🔄 IN_PROGRESS, ✅ IMPLEMENTED)
 - **Priority**: Importance level (CRITICAL, HIGH, MEDIUM, LOW)
 - **Depends On**: List of prerequisite features or "None"
@@ -91,8 +91,8 @@
 - **Implementation Order**: Numbered list in execution order
 
 **Critical Requirements**:
-- `feature-init-module` MUST be feature #1
-- init-module MUST have "Depends On: None"
+- `feature-init` MUST be feature #1
+- init MUST have "Depends On: None"
 - Dependencies must form valid DAG (no cycles)
 - Implementation order must respect dependencies
 
@@ -101,20 +101,20 @@
 **Validation Criteria**:
 - File `architecture/features/FEATURES.md` exists
 - All features documented with required fields
-- init-module is first feature
+- init is first feature
 - Dependency graph is acyclic
 - Implementation order valid
 
 ---
 
-### 4. Initialize Init Module Design Document
+### 4. Initialize Init Design Document
 
-**Requirement**: Create design document for init-module feature
+**Requirement**: Create design document for init feature
 
-**Required File**: `architecture/features/feature-init-module/DESIGN.md`
+**Required File**: `architecture/features/feature-init/DESIGN.md`
 
 **Content Requirements**:
-- **Section A**: Feature context (minimal for init-module)
+- **Section A**: Feature context (minimal for init)
 - **Section B**: Actor flows (intentionally minimal - structural task)
 - **Section C**: Algorithms (intentionally minimal - structural task)
 - **Section D**: States (not applicable)
@@ -122,27 +122,27 @@
 - **Section F**: Validation & implementation (compilation tests)
 
 **Critical Constraints**:
-- Init module is **structural only** - NO business logic
-- Minimal sections B and C acceptable for init-module
+- Init is **structural only** - NO business logic
+- Minimal sections B and C acceptable for init
 - Focus on what structure is created, not what it does
 
 **Note**: Framework-specific init templates defined in project adapter documentation
 
-**Expected Outcome**: Init module design document exists
+**Expected Outcome**: Init design document exists
 
 **Validation Criteria**:
-- File `architecture/features/feature-init-module/DESIGN.md` exists
+- File `architecture/features/feature-init/DESIGN.md` exists
 - Contains all sections A-F
 - Clearly defines structural scope
 - No business logic described
 
 **Commands**:
 ```bash
-mkdir -p features/feature-init-module
+mkdir -p features/feature-init
 
-# Generic init module template
-cat > features/feature-init-module/DESIGN.md << 'EOF'
-# Init Module - Feature Design
+# Generic init template
+cat > features/feature-init/DESIGN.md << 'EOF'
+# Init - Feature Design
 
 **Status**: ⏳ NOT_STARTED  
 **Module**: {Module Name}
@@ -153,20 +153,20 @@ cat > features/feature-init-module/DESIGN.md << 'EOF'
 
 ### Overview
 
-Create minimal module structure. This establishes the compilable skeleton for business features.
+Create minimal project structure. This establishes the compilable skeleton for business features.
 
 **Critical Scope Constraint**: Init creates **structure only**, NO business logic.
 
 ### Purpose
 
-Initialize the {module} module with:
+Initialize the project with:
 - Empty compilable structure
 - Framework integration
 - Layer folders ready for features
 
 ### Actors
 
-- **Developer/Architect**: Creates module structure
+- **Developer/Architect**: Creates project structure
 
 ### References
 
@@ -175,7 +175,7 @@ Initialize the {module} module with:
 ### What Init IS vs IS NOT
 
 **Init creates** (✅):
-- Module structure
+- Project structure
 - Configuration scaffolding
 - Empty layers/folders
 
@@ -189,7 +189,7 @@ Initialize the {module} module with:
 
 ## B. Actor Flows
 
-*Intentionally minimal for init-module.*
+*Intentionally minimal for init.*
 
 Developer runs init → creates skeleton → verifies compilation.
 
@@ -197,7 +197,7 @@ Developer runs init → creates skeleton → verifies compilation.
 
 ## C. Algorithms
 
-*Intentionally minimal for init-module.*
+*Intentionally minimal for init.*
 
 See implementation for details.
 
@@ -205,7 +205,7 @@ See implementation for details.
 
 ## D. States
 
-*Not applicable*
+*Not applicable* (use FDL if needed - see `../FDL.md`)
 
 ---
 
@@ -232,7 +232,7 @@ Implementation steps defined in framework adapter.
 EOF
 ```
 
-**Expected Result**: Init module DESIGN.md created
+**Expected Result**: Init DESIGN.md created
 
 **Note**: For framework-specific init templates, see project adapter documentation
 
@@ -244,7 +244,7 @@ EOF
 
 **Required Files**:
 - One DESIGN.md per feature in `architecture/features/feature-{slug}/`
-- Exclude init-module (already created in previous requirement)
+- Exclude init (already created in previous requirement)
 
 **Content Requirements**:
 - Basic template with sections A-F
@@ -264,7 +264,7 @@ EOF
 
 **Commands**:
 ```bash
-# For each feature (except init-module)
+# For each feature (except init)
 for FEATURE in feature-{name} feature-{name2}; do
   mkdir -p features/$FEATURE
   
@@ -299,7 +299,7 @@ for FEATURE in feature-{name} feature-{name2}; do
 
 ## D. States
 
-{To be designed if needed}
+{To be designed if needed - use FDL, see `../FDL.md`}
 
 ---
 
@@ -328,15 +328,15 @@ done
 
 **Commands**:
 ```bash
-# Check init-module is first
+# Check init is first
 FIRST_FEATURE=$(grep "^### [0-9]\." features/FEATURES.md | head -1)
-if ! echo "$FIRST_FEATURE" | grep -q "init-module"; then
-  echo "ERROR: init-module must be first feature"
+if ! echo "$FIRST_FEATURE" | grep -q "feature-init"; then
+  echo "ERROR: init must be first feature"
   exit 1
 fi
 
 # Check dependencies valid
-echo "✓ init-module is first feature"
+echo "✓ init is first feature"
 echo "✓ Features manifest created"
 ```
 
@@ -349,9 +349,9 @@ echo "✓ Features manifest created"
 Feature initialization is complete when:
 
 - [ ] FEATURES.md created with all features listed
-- [ ] init-module is first feature
+- [ ] init is first feature
 - [ ] All features have: status, priority, dependencies, scope
-- [ ] feature-init-module/DESIGN.md created
+- [ ] feature-init/DESIGN.md created
 - [ ] Placeholder designs created for other features
 - [ ] Feature dependency graph valid (no cycles)
 
@@ -377,8 +377,8 @@ Feature initialization is complete when:
 
 After feature initialization:
 
-1. **Develop Init Module**: Start feature development workflow for init-module
-   - Complete init-module DESIGN.md
+1. **Develop Init**: Start feature development workflow for init
+   - Complete init DESIGN.md
    - Validate design
    - Implement structure
 

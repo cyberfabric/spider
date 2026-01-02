@@ -30,15 +30,15 @@ None (validates entire FEATURES.md)
 
 ---
 
-### 2. Verify Init Module Priority
+### 2. Verify Init Priority
 
-**Requirement**: Init-module must be first feature in implementation order
+**Requirement**: Init must be first feature in implementation order
 
-**Rationale**: Init module has no dependencies and creates foundation
+**Rationale**: Init has no dependencies and creates foundation
 
-**Expected Outcome**: Feature #1 is init-module
+**Expected Outcome**: Feature #1 is init
 
-**Validation Criteria**: First numbered feature is `feature-init-module`
+**Validation Criteria**: First numbered feature is `feature-init`
 
 ---
 
@@ -81,7 +81,7 @@ None (validates entire FEATURES.md)
 
 **Dependency Rules**:
 - Each dependency must be valid feature slug from manifest
-- "None" indicates no dependencies (valid for init-module only)
+- "None" indicates no dependencies (valid for init only)
 - Multiple dependencies comma-separated
 
 **Expected Outcome**: No broken dependency references
@@ -132,8 +132,8 @@ feature-B depends on feature-A
 
 **Example Valid Order**:
 ```
-1. feature-init-module (no deps)
-2. feature-user-crud (depends on init-module)
+1. feature-init (no deps)
+2. feature-user-crud (depends on init)
 3. feature-user-auth (depends on user-crud)
 ```
 
@@ -148,7 +148,7 @@ feature-B depends on feature-A
 Manifest validation complete when:
 
 - [ ] FEATURES.md exists
-- [ ] init-module is first feature
+- [ ] init is first feature
 - [ ] All features have: status, priority, dependencies, purpose, scope
 - [ ] All statuses valid (NOT_STARTED, IN_PROGRESS, IMPLEMENTED)
 - [ ] All dependencies reference existing features
@@ -174,8 +174,8 @@ Manifest validation complete when:
 
 After validation passes:
 
-1. **Start Implementation**: Begin with feature #1 (init-module)
-   - Run: `05-init-feature.md init-module`
+1. **Start Implementation**: Begin with feature #1 (init)
+   - Run: `05-init-feature.md init`
    - Fill in DESIGN.md
    - Validate and implement
 

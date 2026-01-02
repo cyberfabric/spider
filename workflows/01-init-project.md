@@ -22,7 +22,7 @@
 - `architecture/` - Overall Design and feature designs
   - `architecture/features/` - Feature-specific designs
   - `architecture/diagrams/` - Architecture diagrams
-- Domain model specification directory (location per adapter)
+- DML specification directory (location per adapter)
 - API contract specification directory (location per adapter)
 
 **Expected Outcome**: All required directories exist and are accessible
@@ -30,7 +30,7 @@
 **Validation Criteria**:
 - Directory `architecture/features/` exists
 - Directory `architecture/diagrams/` exists
-- Domain model specification directory exists (per adapter)
+- DML specification directory exists (per adapter)
 - API contract specification directory exists (per adapter)
 
 **Note**: Specific directory structure (e.g., `gts/`, `openapi/`) defined by adapter
@@ -51,7 +51,7 @@
   - Use case descriptions
 - **Section C**: Domain Model Specification
   - Domain type definitions
-  - Link to domain model directory
+  - Link to DML directory
   - Type versioning approach
 - **Section D**: API Contract Specification
   - API endpoint list
@@ -82,7 +82,7 @@
 
 **Required Content** (format per adapter):
 - API specification file(s) in adapter-defined location
-- Valid specification format (e.g., OpenAPI 3.0+, GraphQL Schema, gRPC .proto)
+- Valid specification format (e.g., GTS, CTI, OpenAPI 3.0+, GraphQL Schema, gRPC .proto)
 - Basic metadata (title, version, description)
 - Server/endpoint configuration
 - At least one sample endpoint defined (e.g., health check)
@@ -142,7 +142,7 @@ Project initialization is complete when:
 - [ ] All required directories exist and are accessible
 - [ ] `architecture/DESIGN.md` exists with all sections A-F structured
 - [ ] API contract specification file(s) exist and valid
-- [ ] Domain model specification directory initialized
+- [ ] DML specification directory initialized
 - [ ] `architecture/features/FEATURES.md` placeholder exists
 - [ ] Directory structure follows FDD conventions and adapter requirements
 - [ ] All files have appropriate placeholders for content

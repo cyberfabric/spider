@@ -21,168 +21,111 @@
 
 ### 1: Validate File Exists and Size
 
-**Requirement**: Check that DESIGN.md exists and has reasonable size
+**Requirement**: DESIGN.md must exist with appropriate size
 
-**Validation Approach**:
-```bash
-cd architecture/features/feature-{slug}/
+**Location**: `architecture/features/feature-{slug}/DESIGN.md`
 
-# Check file exists
-if [ ! -f DESIGN.md ]; then
-  echo "ERROR: DESIGN.md not found"
-  exit 1
-fi
+**Size Constraints**:
+- **Recommended**: ≤3000 lines
+- **Hard limit**: ≤4000 lines
 
-# Check file size
-LINE_COUNT=$(wc -l < DESIGN.md)
-echo "DESIGN.md size: $LINE_COUNT lines"
+**Expected Outcome**: File exists and is within size limits
 
-# Recommended: ≤3000 lines
-# Hard limit: ≤4000 lines
-if [ $LINE_COUNT -gt 4000 ]; then
-  echo "WARNING: File too large ($LINE_COUNT > 4000 lines)"
-fi
-```
-
-**Expected Outcome**: File exists with reasonable size
-
-**Validation Criteria**: File size displayed, no errors
+**Validation Criteria**:
+- File `DESIGN.md` exists in feature directory
+- File size is reasonable (warning if >3000 lines, error if >4000 lines)
+- File has substantial content (not empty or placeholder-only)
 
 ---
 
 ### 2: Validate Section Structure
 
-**Requirement**: Check that all required sections A-F are present
+**Requirement**: All required sections A-F must be present
 
-**Validation Approach**:
-```bash
-# Check for all sections
-grep -E "^## (A|B|C|D|E|F)\." DESIGN.md
+**Required Sections**:
+- **Section A**: Feature Context
+- **Section B**: Actor Flows
+- **Section C**: Algorithms
+- **Section D**: States
+- **Section E**: Technical Details
+- **Section F**: Validation & Implementation
 
-# Should output 6 lines (one for each section)
-SECTION_COUNT=$(grep -E "^## (A|B|C|D|E|F)\." DESIGN.md | wc -l)
+**Expected Outcome**: All 6 sections present with proper headings
 
-if [ $SECTION_COUNT -ne 6 ]; then
-  echo "ERROR: Expected 6 sections (A-F), found $SECTION_COUNT"
-  exit 1
-fi
-
-echo "✓ All sections A-F present"
-```
-
-**Expected Outcome**: 6 sections found
-
-**Validation Criteria**: Message "All sections A-F present"
+**Validation Criteria**:
+- Each section heading follows format `## A.`, `## B.`, etc.
+- All 6 sections found in correct order
+- No duplicate sections
 
 ---
 
 ### 3: Validate Section A (Feature Context)
 
-**Requirement**: Check Section A size and content
+**Requirement**: Section A must document feature context
 
-**Validation Approach**:
-```bash
-# Extract Section A (from ## A. to ## B.)
-SECTION_A=$(sed -n '/^## A\./,/^## B\./p' DESIGN.md | head -n -1)
-SECTION_A_LINES=$(echo "$SECTION_A" | wc -l)
+**Size Constraint**: ≤500 lines recommended
 
-echo "Section A size: $SECTION_A_LINES lines"
+**Required Subsections**:
+- **Overview**: What this feature does
+- **Purpose**: Why it exists, what problem it solves
+- **Actors**: Who interacts with this feature
+- **References**: Links to Overall Design and dependencies
 
-# Recommended: ≤500 lines
-if [ $SECTION_A_LINES -gt 500 ]; then
-  echo "WARNING: Section A too large ($SECTION_A_LINES > 500 lines)"
-fi
+**Expected Outcome**: Complete feature context documented
 
-# Check for required subsections
-echo "$SECTION_A" | grep -q "### Overview" || echo "WARNING: Missing Overview subsection"
-echo "$SECTION_A" | grep -q "### Purpose" || echo "WARNING: Missing Purpose subsection"
-echo "$SECTION_A" | grep -q "### Actors" || echo "WARNING: Missing Actors subsection"
-
-echo "✓ Section A validated"
-```
-
-**Expected Outcome**: Section A has reasonable size and required subsections
-
-**Validation Criteria**: Warnings for missing content
+**Validation Criteria**:
+- All required subsections present
+- Section size reasonable (≤500 lines)
+- References to Overall Design included
+- Dependencies listed (if any)
 
 ---
 
 ### 4: Validate Section B (Actor Flows)
 
-**Requirement**: Check that actor flows are documented
+**Requirement**: Section B must document actor flows in FDL
 
-**Validation Approach**:
-```bash
-# Extract Section B
-SECTION_B=$(sed -n '/^## B\./,/^## C\./p' DESIGN.md | head -n -1)
-SECTION_B_LINES=$(echo "$SECTION_B" | wc -l)
+**Size Constraint**: ≥50 lines (standard features)
 
-echo "Section B size: $SECTION_B_LINES lines"
+**Content Requirements**:
+- Actor flows written in FDL (see `../FDL.md`)
+- Each flow includes: Actor, Steps, Success Scenarios, Error Scenarios
+- Flows are comprehensive and cover main use cases
+- No code blocks - only FDL syntax
 
-# Exception for init-module
-if [ "{slug}" = "init-module" ]; then
-  echo "Note: init-module has intentionally minimal Section B"
-  if [ $SECTION_B_LINES -lt 5 ]; then
-    echo "✓ Section B minimal (as expected for init-module)"
-  fi
-else
-  # Standard features: ≥50 lines
-  if [ $SECTION_B_LINES -lt 50 ]; then
-    echo "ERROR: Section B too short ($SECTION_B_LINES < 50 lines)"
-    exit 1
-  fi
-  echo "✓ Section B has adequate content"
-fi
-```
+**Expected Outcome**: Complete actor flows documented
 
-**Expected Outcome**: Section B has actor flows documented
+**Validation Criteria**:
+- Section has substantial content (≥50 lines for standard features)
+- Flows use FDL syntax, not code
+- All major actors and interactions covered
 
-**Validation Criteria**: Size check passes
-
-**Note**: Some frameworks may have init-module exceptions - see project adapter documentation
+**Exception**: Init feature may have intentionally minimal Section B (structural task only)
 
 ---
 
 ### 5: Validate Section C (Algorithms)
 
-**Requirement**: Check algorithms are in ADL (not code)
+**Requirement**: Section C must document algorithms in FDL (not code)
 
-**Validation Approach**:
-```bash
-# Extract Section C
-SECTION_C=$(sed -n '/^## C\./,/^## D\./p' DESIGN.md | head -n -1)
-SECTION_C_LINES=$(echo "$SECTION_C" | wc -l)
+**Size Constraint**: ≥100 lines (standard features)
 
-echo "Section C size: $SECTION_C_LINES lines"
+**Content Requirements**:
+- Algorithms written in FDL (see `../FDL.md`)
+- Each algorithm includes: Input, Output, Steps in FDL
+- No programming language code blocks (no `rust`, `typescript`, `javascript`, `python`, `java`, etc.)
+- No programming syntax (`fn`, `function`, `def`, `class`, `interface`)
+- Use FDL control structures: **IF/THEN/ELSE**, **FOR EACH**, **WHILE**, etc.
 
-# Exception for init-module
-if [ "{slug}" = "init-module" ]; then
-  echo "Note: init-module has intentionally minimal Section C"
-else
-  # Standard features: ≥100 lines
-  if [ $SECTION_C_LINES -lt 100 ]; then
-    echo "ERROR: Section C too short ($SECTION_C_LINES < 100 lines)"
-    exit 1
-  fi
-  
-  # Check for prohibited code blocks
-  if echo "$SECTION_C" | grep -E "^\`\`\`(rust|typescript|javascript|python|java)" > /dev/null; then
-    echo "ERROR: Code blocks found in Section C - use ADL instead"
-    exit 1
-  fi
-  
-  # Check for programming syntax
-  if echo "$SECTION_C" | grep -E "(fn |function |def |class |interface )" > /dev/null; then
-    echo "WARNING: Programming syntax found - should use ADL"
-  fi
-  
-  echo "✓ Section C uses ADL"
-fi
-```
+**Expected Outcome**: Algorithms documented in FDL
 
-**Expected Outcome**: Algorithms in ADL, no code blocks
+**Validation Criteria**:
+- Section has substantial content (≥100 lines for standard features)
+- Uses FDL syntax, not code
+- No code blocks with programming languages
+- Algorithms are clear and implementable
 
-**Validation Criteria**: No programming language syntax
+**Exception**: Init feature may have intentionally minimal Section C (structural task only)
 
 **Reference**: See `../FDL.md` for FDL syntax
 
@@ -190,95 +133,90 @@ fi
 
 ### 6: Validate Section E (Technical Details)
 
-**Requirement**: Check technical details are documented
+**Requirement**: Section E must document technical implementation details
 
-**Validation Approach**:
-```bash
-# Extract Section E
-SECTION_E=$(sed -n '/^## E\./,/^## F\./p' DESIGN.md | head -n -1)
-SECTION_E_LINES=$(echo "$SECTION_E" | wc -l)
+**Size Constraint**: ≥200 lines recommended
 
-echo "Section E size: $SECTION_E_LINES lines"
+**Content Requirements**:
+- **Database Schema**: Tables/entities, columns, relationships
+- **API Endpoints**: Endpoint list with descriptions (reference API specification)
+- **Security**: Authorization rules, access control
+- **Error Handling**: Error types and handling approaches
 
-# Recommended: ≥200 lines
-if [ $SECTION_E_LINES -lt 200 ]; then
-  echo "WARNING: Section E may lack detail ($SECTION_E_LINES < 200 lines)"
-fi
+**Expected Outcome**: Complete technical details documented
 
-echo "✓ Section E validated"
-```
-
-**Expected Outcome**: Technical details documented
+**Validation Criteria**:
+- Section has substantial content (≥200 lines recommended)
+- All technical aspects covered
+- Details sufficient for implementation
+- References to external specs where appropriate
 
 ---
 
 ### 7: Check for Type Redefinitions
 
-**Requirement**: Ensure feature references domain model types, not redefines them
+**Requirement**: Feature must reference DML types, not redefine them
 
-**Validation Approach**:
-```bash
-# Search for type definitions (should reference, not define)
-if grep -i "type definition" DESIGN.md > /dev/null; then
-  echo "WARNING: Found 'type definition' - should reference domain model types instead"
-fi
+**Prohibited Content**:
+- New type definitions (should reference Overall Design DML)
+- JSON/YAML schema definitions
+- Type redefinitions or duplicates
 
-# Look for schema definitions
-if grep -E "^\`\`\`(json|yaml)" DESIGN.md | grep -i "schema" > /dev/null; then
-  echo "WARNING: Found schema definitions - should reference domain model types"
-fi
+**Expected Behavior**:
+- All types referenced from Overall Design
+- Use DML references format (per adapter)
+- No duplicate type definitions
 
-echo "✓ No obvious type redefinitions"
-```
+**Expected Outcome**: Feature references existing types only
 
-**Expected Outcome**: Feature references existing types
-
-**Validation Criteria**: No new type definitions
+**Validation Criteria**:
+- No phrases like "type definition" found
+- No schema definitions in JSON/YAML blocks
+- All types referenced, not defined
 
 ---
 
 ### 8: Check for TODO/TBD Markers
 
-**Requirement**: Ensure design is complete, no placeholder content
+**Requirement**: Design must be complete with no placeholder content
 
-**Validation Approach**:
-```bash
-# Check for incomplete markers
-TODO_COUNT=$(grep -i "TODO\|TBD\|FIXME\|XXX" DESIGN.md | wc -l)
+**Prohibited Markers**:
+- `TODO`
+- `TBD`
+- `FIXME`
+- `XXX`
+- `{placeholder}` or similar
 
-if [ $TODO_COUNT -gt 0 ]; then
-  echo "ERROR: Found $TODO_COUNT TODO/TBD markers:"
-  grep -n -i "TODO\|TBD\|FIXME\|XXX" DESIGN.md
-  exit 1
-fi
+**Expected Outcome**: Design is complete and ready for implementation
 
-echo "✓ No TODO/TBD markers"
-```
-
-**Expected Outcome**: No incomplete markers
-
-**Validation Criteria**: Clean design document
+**Validation Criteria**:
+- No TODO/TBD/FIXME/XXX markers found
+- No placeholder content remaining
+- All sections fully written
+- Design is implementation-ready
 
 ---
 
-### Step 9: Validate OpenSpec Changes Listed
+### 9: Validate OpenSpec Changes Listed
 
-**Requirement**: Check that Section F lists OpenSpec changes
+**Requirement**: Section F must list planned OpenSpec changes
 
-**Validation Approach**:
-```bash
-# Extract Section F
-SECTION_F=$(sed -n '/^## F\./,$ p' DESIGN.md)
+**Required Content**:
+- **Testing Scenarios**: Test cases for validation
+- **OpenSpec Changes**: List of implementation changes
+  - Change numbering (001, 002, etc.)
+  - Change descriptions
+  - Scope and dependencies
+  - Effort estimates
+  - Verification criteria
 
-# Check for OpenSpec mention
-if ! echo "$SECTION_F" | grep -i "openspec" > /dev/null; then
-  echo "WARNING: Section F should list OpenSpec changes"
-fi
+**Expected Outcome**: Implementation plan documented
 
-echo "✓ Section F validated"
-```
-
-**Expected Outcome**: OpenSpec changes documented
+**Validation Criteria**:
+- Section F contains OpenSpec changes
+- Changes are numbered and described
+- Testing scenarios defined
+- Implementation is plannable
 
 ---
 
@@ -289,8 +227,8 @@ Validation complete when:
 - [ ] File size ≤4000 lines (recommended ≤3000)
 - [ ] All sections A-F present
 - [ ] Section A ≤500 lines
-- [ ] Section B ≥50 lines (or minimal for init-module)
-- [ ] Section C ≥100 lines, uses ADL (or minimal for init-module)
+- [ ] Section B ≥50 lines (or minimal for init)
+- [ ] Section C ≥100 lines, uses FDL (or minimal for init)
 - [ ] Section E ≥200 lines
 - [ ] No type redefinitions
 - [ ] No TODO/TBD markers
@@ -310,7 +248,7 @@ Validation complete when:
 
 ### Issue: Type Definitions Found
 
-**Resolution**: Remove definitions, reference domain model types from Overall Design instead
+**Resolution**: Remove definitions, reference DML types from Overall Design instead
 
 ---
 
