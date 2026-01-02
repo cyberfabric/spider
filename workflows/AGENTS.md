@@ -1,0 +1,203 @@
+# AI Agent Instructions for FDD Workflows
+
+Instructions for AI assistants on when and which FDD workflow to use.
+
+---
+
+## Workflow Selection Guide
+
+Always read the specific workflow file before executing. This guide helps you choose which workflow to use.
+
+---
+
+## Phase 1: Architecture Design
+
+### When: Starting new FDD project or module
+
+**01-init-project.md** - Initialize FDD structure
+- **Use when**: No `architecture/` directory exists
+- **Creates**: Directory structure, DESIGN.md template, feature folders
+- **Next step**: User creates Overall Design content
+
+**02-validate-architecture.md** - Validate Overall Design
+- **Use when**: `architecture/DESIGN.md` is complete
+- **Validates**: Vision, actors, domain model, API contracts, diagrams
+- **Required score**: 100/100 + 100% completeness
+- **Next step**: Feature planning (workflow 03 or 04)
+
+---
+
+## Phase 2: Feature Planning
+
+### When: Overall Design validated, need to plan features
+
+**03-init-features.md** - Generate features from Overall Design
+- **Use when**: Need to extract features from Overall Design automatically
+- **Creates**: `FEATURES.md` manifest, feature directories
+- **Analyzes**: Overall Design to identify feature list
+- **Next step**: Create DESIGN.md for each feature
+
+**04-validate-features.md** - Validate FEATURES.md manifest
+- **Use when**: `FEATURES.md` exists and need consistency check
+- **Validates**: Manifest completeness, feature list consistency
+- **Next step**: Initialize or validate individual features
+
+**05-init-feature.md** - Initialize single feature
+- **Use when**: Creating one feature manually (not via 03)
+- **Creates**: Feature directory, DESIGN.md template, openspec structure
+- **Next step**: User creates Feature Design content
+
+**06-validate-feature.md** - Validate Feature Design
+- **Use when**: `architecture/features/feature-{slug}/DESIGN.md` is complete
+- **Validates**: Sections A-F, Actor Flows, ADL algorithms, no type redefinitions
+- **Required score**: 100/100 + 100% completeness
+- **Next step**: OpenSpec initialization (workflow 09)
+
+---
+
+## Phase 3: Feature Implementation
+
+### When: Feature Design validated, ready to implement
+
+**09-openspec-init.md** - Initialize OpenSpec for feature
+- **Use when**: Feature Design validated, ready to start implementation
+- **Creates**: `openspec/` structure, first change (001-*)
+- **Next step**: Implement first OpenSpec change (workflow 10)
+
+**10-openspec-implement.md** - Implement OpenSpec change
+- **Use when**: Active change exists in `openspec/changes/{id}-*/`
+- **Implements**: Code according to proposal.md and tasks.md
+- **Validates**: Tasks checklist completion
+- **Next step**: Complete change (workflow 12) or continue implementation
+
+**12-openspec-complete.md** - Complete OpenSpec change
+- **Use when**: Change implementation finished and tested
+- **Merges**: Change specs to `openspec/specs/`
+- **Archives**: Change to `openspec/archive/`
+- **Next step**: Next change (workflow 11) or complete feature (workflow 08)
+
+**11-openspec-next.md** - Start next OpenSpec change
+- **Use when**: Current change completed, more changes needed
+- **Creates**: Next change directory and structure
+- **Next step**: Implement next change (workflow 10)
+
+**08-complete-feature.md** - Complete feature
+- **Use when**: All OpenSpec changes implemented and tested
+- **Validates**: Compilation, tests pass, no pending changes
+- **Marks**: Feature as complete in `FEATURES.md`
+- **Next step**: Next feature or project complete
+
+---
+
+## Phase 4: Maintenance & Debugging
+
+### When: Issues discovered during implementation
+
+**07-fix-design.md** - Fix design issues
+- **Use when**: Implementation reveals design problem
+- **Updates**: DESIGN.md with corrections
+- **Re-validates**: Feature Design after fix
+- **Next step**: Continue implementation with corrected design
+
+---
+
+## Decision Tree
+
+```
+Start FDD work
+│
+├─ No architecture/ directory?
+│  └─> Use workflow 01 (init-project)
+│
+├─ architecture/DESIGN.md complete?
+│  └─> Use workflow 02 (validate-architecture)
+│
+├─ Need to plan features?
+│  ├─ Extract from Overall Design? → Use workflow 03 (init-features)
+│  ├─ Validate FEATURES.md? → Use workflow 04 (validate-features)
+│  └─ Create single feature? → Use workflow 05 (init-feature)
+│
+├─ Feature DESIGN.md complete?
+│  └─> Use workflow 06 (validate-feature)
+│
+├─ Ready to implement feature?
+│  └─> Use workflow 09 (openspec-init)
+│
+├─ Active OpenSpec change?
+│  ├─ Need to implement? → Use workflow 10 (openspec-implement)
+│  ├─ Implementation done? → Use workflow 12 (openspec-complete)
+│  └─ Need next change? → Use workflow 11 (openspec-next)
+│
+├─ All changes complete?
+│  └─> Use workflow 08 (complete-feature)
+│
+└─ Design issue found?
+   └─> Use workflow 07 (fix-design)
+```
+
+---
+
+## Common Sequences
+
+**New project from scratch**:
+```
+01-init-project → 02-validate-architecture → 03-init-features
+→ 06-validate-feature → 09-openspec-init → 10-openspec-implement
+→ 12-openspec-complete → 08-complete-feature
+```
+
+**Add single feature to existing project**:
+```
+05-init-feature → 06-validate-feature → 09-openspec-init
+→ 10-openspec-implement → 12-openspec-complete → 08-complete-feature
+```
+
+**Feature with multiple OpenSpec changes**:
+```
+09-openspec-init → 10-openspec-implement → 12-openspec-complete
+→ 11-openspec-next → 10-openspec-implement → 12-openspec-complete
+→ 08-complete-feature
+```
+
+**Fix design during implementation**:
+```
+10-openspec-implement → [issue found] → 07-fix-design
+→ 06-validate-feature → 10-openspec-implement (continue)
+```
+
+---
+
+## Critical Rules
+
+- **Always read workflow file before executing** - Don't skip this step
+- **Follow workflows sequentially** - Don't jump phases
+- **Validate before proceeding** - Use validation workflows at checkpoints
+- **One workflow at a time** - Complete current before starting next
+- **Re-validate after fixes** - Use workflow 06 after workflow 07
+
+---
+
+## Quick Workflow Reference
+
+```bash
+/fdd-init-project                     # 01: Initialize FDD structure
+/fdd-validate-architecture            # 02: Validate Overall Design
+/fdd-init-features                    # 03: Generate features from Overall Design
+/fdd-validate-features                # 04: Validate FEATURES.md
+/fdd-init-feature {slug}              # 05: Initialize single feature
+/fdd-validate-feature {slug}          # 06: Validate Feature Design
+/fdd-fix-design {slug}                # 07: Fix design issues
+/fdd-complete-feature {slug}          # 08: Complete feature
+
+/openspec-init {slug}                 # 09: Initialize OpenSpec
+/openspec-change-implement {slug} {id}  # 10: Implement change
+/openspec-change-next {slug}          # 11: Start next change
+/openspec-change-complete {slug} {id}   # 12: Complete change
+```
+
+---
+
+## See Also
+
+- **Core Methodology**: `../AGENTS.md` - FDD principles
+- **FDL Syntax**: `../FDL.md` - Flow and algorithm syntax

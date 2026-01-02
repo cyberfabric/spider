@@ -1,0 +1,652 @@
+# Feature-Driven Design (FDD)
+
+**Version**: 1.0  
+**Status**: Active  
+**Audience**: Development teams, technical leads, architects
+
+Feature-Driven Design is a **universal methodology** for building software systems with clear traceability from requirements to implementation.
+
+**Built for modern development**: FDD works with AI coding assistants, supports any tech stack, and provides structured workflows that teams can follow manually or automate.
+
+---
+
+## What is FDD?
+
+FDD helps teams build software by:
+
+1. **Designing before coding**: Document what you're building in clear, reviewable formats
+2. **Breaking work into features**: Each feature is independent and testable
+3. **Using plain English**: Algorithms described in FDL (not code), reviewable by non-programmers
+4. **Tracking changes atomically**: OpenSpec ensures every change is traceable
+5. **Validating designs**: Catch issues before implementation
+
+---
+
+## Why Use FDD?
+
+### What You Get With FDD
+
+**For Single Expert / Architect**:
+- 🤖 **AI does 80% of the work**: Design → validation → implementation automated
+- 📋 **Living documentation**: Designs stay up-to-date with code (enforced by validation)
+- 🔍 **Full traceability**: From business requirement → design → code change
+- ⚡ **Faster delivery**: AI handles boilerplate, you focus on business logic
+- 🎯 **Catch issues early**: Validation happens before coding
+
+**For Teams**:
+- 👥 **Stakeholders can review**: Actor flows in plain English, no code knowledge needed
+- 🔄 **Clear handoffs**: Feature designs are complete specs, not ambiguous tickets
+- 📊 **Progress tracking**: FEATURES.md shows exactly what's done/in-progress/pending
+- 🛡️ **Consistency**: Workflows enforce same standards across all features
+- 📚 **Onboarding**: New team members read designs, not reverse-engineer code
+
+**For Business**:
+- 💰 **Lower costs**: Less rework, fewer bugs, faster development
+- 📈 **Predictability**: Features have complete designs before implementation
+- 🔒 **Risk reduction**: Validation catches architectural issues early
+- 📖 **Audit trail**: Every change is documented and traceable
+
+### What Happens Without FDD
+
+**The typical scenario**:
+1. 📝 Developer starts coding from vague requirements
+2. 🤔 Discovers edge cases during implementation
+3. 🔄 Goes back to architect/PM for clarification
+4. ⏰ Delays accumulate, scope creeps
+5. 🐛 Bugs discovered after deployment (logic wasn't reviewed)
+6. 📉 Technical debt grows (no overall design document)
+7. 🔥 Refactoring becomes risky (no source of truth)
+
+**Specific problems FDD prevents**:
+
+| Without FDD | With FDD |
+|-------------|----------|
+| ❌ Requirements in scattered Jira tickets | ✅ Complete Overall Design in one place |
+| ❌ Stakeholders can't review logic | ✅ Actor flows reviewable by non-programmers |
+| ❌ Type definitions duplicated across features | ✅ Domain model in Overall Design, referenced everywhere |
+| ❌ API changes break other features | ✅ API contracts defined upfront, validated |
+| ❌ "Documentation" outdated or missing | ✅ Designs validated against code, stay current |
+| ❌ Developer interprets requirements differently | ✅ Feature Design is unambiguous spec |
+| ❌ AI assistant generates inconsistent code | ✅ AI follows workflows, enforces patterns |
+| ❌ Can't track feature dependencies | ✅ FEATURES.md shows dependency graph |
+| ❌ Rework after stakeholder review | ✅ Stakeholders review design before coding |
+
+### When NOT to Use FDD
+
+FDD adds structure and validation. Skip it if:
+- ❌ Prototype/throwaway code (no need for design docs)
+- ❌ Trivial changes (single-line fixes)
+- ❌ Well-understood patterns (no architectural decisions)
+
+**Use FDD when**:
+- ✅ Building production systems
+- ✅ Working with AI assistants
+- ✅ Need stakeholder review
+- ✅ Multiple features with dependencies
+- ✅ Long-term maintenance expected
+
+---
+
+## Core Components
+
+### 1. Two-Level Design
+
+**Overall Design** (`architecture/DESIGN.md`):
+- System vision and capabilities
+- All actors and use cases
+- Domain model types (formally specified)
+- API contracts (formally specified)
+- Architecture diagrams
+
+**Feature Design** (`architecture/features/feature-{slug}/DESIGN.md`):
+- What this feature does
+- Actor flows (how users interact)
+- Algorithms in FDL (plain English logic)
+- Technical details (database, security, etc.)
+- Testing scenarios
+
+### 2. FDL (FDD Description Language)
+
+Plain English pseudocode for describing logic:
+
+```
+1. User submits login form
+2. System validates email format
+   2.1. IF invalid format
+       2.1.1. Show error "Invalid email"
+       2.1.2. STOP
+3. System checks credentials in database
+4. IF credentials match
+   4.1. Create session
+   4.2. Redirect to dashboard
+5. ELSE
+   5.1. Show error "Invalid credentials"
+```
+
+**Benefits**:
+- Non-programmers can review
+- Language-agnostic
+- Focuses on logic, not syntax
+
+### 3. OpenSpec (Change Management)
+
+Break features into atomic, traceable changes:
+
+```
+feature-login/
+└── openspec/
+    ├── specs/          # Completed changes
+    └── changes/        # Active work
+        └── 001-authentication/
+            ├── proposal.md   # Why
+            ├── tasks.md      # What to do
+            └── specs/        # Implementation details
+```
+
+### 4. Formal Specifications
+
+**DML (Domain Model Language)** - you choose format:
+- [GTS](https://github.com/GlobalTypeSystem/gts-spec), [CTI](https://github.com/acronis/go-cti/blob/main/cti-spec/SPEC.md), JSON Schema, RAML, Protobuf etc.
+- Must be documented before implementation
+- Should be machine-readable and versionable (recommended)
+
+**API Contracts** - you choose format:
+- OpenAPI, GraphQL Schema, gRPC, RAML, etc.
+- Must be documented before implementation
+
+---
+
+## Getting Started
+
+### 1. Quick Overview (5 minutes)
+
+**Read these files**:
+1. `README.md` (this file) - Overview
+2. `FDL.md` - Learn plain English algorithm syntax
+3. `workflows/README.md` - Understand workflow system
+
+### 2. Add FDD to Your Project (15 minutes)
+
+**Option A: Copy FDD core**
+```bash
+# In your project root
+mkdir -p guidelines
+cp -r /path/to/FDD guidelines/FDD
+```
+
+**Option B: Git submodule** (recommended for shared projects)
+```bash
+git submodule add <fdd-repo-url> guidelines/FDD
+```
+
+### 3. Create Project Adapter (1-2 hours) 🤖
+
+Follow the detailed guide: **`ADAPTER_GUIDE.md`**
+
+Quick steps:
+1. Create `guidelines/your-project-fdd-adapter/`
+2. Choose domain model format (GTS, CTI, JSON Schema, TypeScript, Protobuf, etc.)
+3. Choose API contract format (OpenAPI, RAML, GraphQL, gRPC, etc.)
+4. Document patterns in `PATTERNS.md`
+5. Set up validation in `VALIDATION.md`
+
+**AI agent can help**: Generate adapter structure and templates from `ADAPTER_GUIDE.md`
+
+### 4. Initialize Architecture (30 minutes) 🤖
+
+**AI agent workflow**: Ask your AI agent to follow `workflows/01-init-project.md`
+
+Or manually:
+```bash
+# Create structure
+mkdir -p architecture/features
+mkdir -p architecture/diagrams
+
+# Create Overall Design
+cat > architecture/DESIGN.md << 'EOF'
+# Overall Design
+
+## A. Business Context
+...
+EOF
+```
+
+### 5. Start First Feature (1-2 hours) 🤖
+
+**AI agent workflow**: Ask your AI agent to follow `workflows/05-init-feature.md`
+
+Or manually:
+```bash
+# Create feature
+mkdir -p architecture/features/feature-{name}
+
+# Create design
+cat > architecture/features/feature-{name}/DESIGN.md << 'EOF'
+# Feature: {Name}
+
+## A. Feature Overview
+...
+EOF
+```
+
+---
+
+## IDE Setup
+
+### VS Code / Cursor / Windsurf
+
+**Recommended Extensions**:
+- Markdown All in One (preview, TOC)
+- Draw.io Integration (architecture diagrams)
+- OpenAPI (Swagger) Editor (if using OpenAPI)
+
+**Workspace Settings** (`.vscode/settings.json`):
+```json
+{
+  "files.associations": {
+    "**/architecture/**/*.md": "markdown",
+    "**/workflows/*.md": "markdown"
+  },
+  "markdown.extension.toc.levels": "2..6",
+  "editor.wordWrap": "on"
+}
+```
+
+**Snippets** (optional, `.vscode/fdd.code-snippets`):
+```json
+{
+  "FDL Algorithm": {
+    "prefix": "fdl-algo",
+    "body": [
+      "### Algorithm: ${1:Name}",
+      "",
+      "1. ${2:First step}",
+      "2. ${3:Second step}",
+      "   2.1. IF ${4:condition}",
+      "       2.1.1. ${5:action}",
+      "3. ${6:Third step}"
+    ]
+  }
+}
+```
+
+---
+
+## Working with AI Assistants
+
+FDD is designed to work with AI coding assistants (but doesn't require them).
+
+### Setup AI Assistant for FDD
+
+**1. Configure AI to read FDD docs**:
+
+Add to your IDE's AI assistant configuration or user rules:
+```
+Always read @guidelines/FDD/AGENTS.md for FDD methodology.
+Always read @guidelines/{project}-fdd-adapter/AGENTS.md for project-specific patterns.
+Follow FDD workflows in @guidelines/FDD/workflows/.
+```
+
+**2. Common AI workflows**:
+
+```bash
+# Let AI initialize project
+"Follow @guidelines/FDD/workflows/01-init-project.md to initialize FDD structure"
+
+# Let AI create feature
+"Follow @guidelines/FDD/workflows/05-init-feature.md to create feature-login"
+
+# Let AI validate design
+"Follow @guidelines/FDD/workflows/06-validate-feature.md to validate feature-login"
+
+# Let AI implement OpenSpec change
+"Follow @guidelines/FDD/workflows/10-openspec-change-implement.md for feature-login change 001"
+```
+
+**3. AI limitations**:
+
+AI assistants can:
+- ✅ Initialize structures
+- ✅ Generate design templates
+- ✅ Validate against checklists
+- ✅ Implement OpenSpec changes
+- ✅ Write tests
+
+Humans must:
+- ❌ Define business requirements
+- ❌ Make architectural decisions
+- ❌ Review actor flows
+- ❌ Approve designs
+- ❌ Final code review
+
+---
+
+## Team Workflow
+
+**Default**: FDD is designed for a **single expert** (typically an architect) who handles all design and implementation work. The roles below describe abstract responsibilities that can be delegated if desired.
+
+### Roles (can be combined or delegated)
+
+**Technical Lead / Architect** (core role):
+- Creates Overall Design
+- Reviews all Feature Designs
+- Creates project adapter
+- Defines validation rules
+
+**Feature Owner** (optional delegation):
+- Creates Feature Design
+- Breaks feature into OpenSpec changes
+- Reviews implementation
+- Marks feature complete
+
+**Developer** (optional delegation):
+- Implements OpenSpec changes
+- Writes tests
+- Updates specs after changes
+
+**Stakeholder / QA** (optional review):
+- Reviews actor flows (plain English)
+- Reviews algorithms in FDL (reviewable)
+- Validates business logic
+
+### Process
+
+```
+1. Architect creates Overall Design
+   ↓ (validated by team)
+   
+2. Team reviews Overall Design
+   ↓ (approved)
+   
+3. Generate features from Overall Design
+   ↓ (FEATURES.md created)
+   
+4. For each feature:
+   4.1. Feature Owner creates DESIGN.md
+   4.2. Team reviews actor flows
+   4.3. Validate feature design
+   4.4. Initialize OpenSpec
+   4.5. Developers implement changes
+   4.6. Mark feature complete
+```
+
+### Design Reviews
+
+**Overall Design Review**:
+- All team members review
+- Stakeholders review vision and actors
+- Technical team validates architecture
+- Must score ≥90/100 before proceeding
+
+**Feature Design Review**:
+- Feature Owner presents
+- Team reviews actor flows (Section B is PRIMARY)
+- Algorithms in FDL reviewed by stakeholders
+- Technical details reviewed by developers
+- Must score 100/100 before implementation
+
+### Implementation
+
+**OpenSpec Change Implementation**:
+- Developers pick changes from `openspec/changes/`
+- Implement according to `tasks.md`
+- Update `specs/` if needed
+- Mark complete when tests pass
+
+**Feature Completion**:
+- All OpenSpec changes merged
+- All tests pass
+- Code compiles
+- Feature marked ✅ in FEATURES.md
+
+---
+
+## Directory Structure
+
+```
+guidelines/FDD/                                 # Core FDD (standalone, universal)
+├── README.md                                   # This file - overview, getting started
+├── AGENTS.md                                   # AI agent instructions
+├── FDL.md                                     # FDD Description Language syntax
+├── ADAPTER_GUIDE.md                           # How to create project adapter
+└── workflows/                                  # 12 universal workflows
+    ├── README.md                              # Workflow system overview
+    ├── AGENTS.md                              # Workflow selection (for AI)
+    ├── 01-init-project.md                     # Initialize FDD structure
+    ├── 02-validate-architecture.md            # Validate Overall Design
+    ├── 03-init-features.md                    # Generate features
+    ├── 04-validate-features.md                # Validate FEATURES.md
+    ├── 05-init-feature.md                     # Initialize single feature
+    ├── 06-validate-feature.md                 # Validate Feature Design
+    ├── 07-complete-feature.md                 # Mark feature complete
+    ├── 08-fix-design.md                       # Fix design issues
+    ├── 09-openspec-init.md                    # Initialize OpenSpec
+    ├── 10-openspec-change-implement.md        # Implement change
+    ├── 11-openspec-change-complete.md         # Complete change
+    └── 12-openspec-validate.md                # Validate OpenSpec
+
+guidelines/your-project-fdd-adapter/            # Your project adapter (create this)
+├── README.md                                   # Integration overview
+├── AGENTS.md                                   # AI instructions (project-specific)
+├── PATTERNS.md                                 # Implementation patterns
+├── VALIDATION.md                               # Validation requirements
+└── COMMON_PITFALLS.md                         # Common mistakes
+
+architecture/                                    # Your designs (created by workflows)
+├── DESIGN.md                                   # Overall Design
+├── diagrams/                                   # Architecture diagrams
+└── features/                                   # Feature designs
+    ├── FEATURES.md                            # Feature manifest
+    └── feature-{slug}/                        # Individual features
+        ├── DESIGN.md                          # Feature design
+        └── openspec/                          # OpenSpec changes
+```
+
+
+---
+
+## Documentation
+
+### For Developers
+
+- **This File** (`README.md`) - Overview, getting started, team workflow
+- **`FDL.md`** - Plain English algorithm syntax guide
+- **`workflows/README.md`** - All 12 workflows overview
+
+### For AI Assistants
+
+- **`AGENTS.md`** - Core FDD methodology for AI
+- **`workflows/AGENTS.md`** - Workflow selection guide for AI
+- **Project adapter's `AGENTS.md`** - Project-specific AI instructions
+
+### For Creating Adapters
+
+- **`ADAPTER_GUIDE.md`** - Complete guide for creating project adapters
+
+---
+
+## FAQs
+
+### Do I need AI assistants to use FDD?
+
+**Recommended.** FDD is specifically designed to work with AI assistants that support agentic workflows. While workflows are human-readable, manual execution can be challenging and time-consuming.
+
+**Without AI assistants**:
+- You'll need a full team (architect + developers + QA)
+- Workflows must be followed manually
+- More overhead for validation and tracking
+
+**With AI assistants** (recommended):
+- Single expert (architect) can handle entire workflow
+- AI follows workflows automatically
+- Faster design generation and validation
+- AI implements OpenSpec changes
+
+### What tech stack do I need?
+
+**Any.** FDD is technology-agnostic. You choose:
+- Domain model format (GTS, CTI, JSON Schema, TypeScript, Protobuf, etc.)
+- API format (OpenAPI, RAML, GraphQL, gRPC, etc.)
+- Implementation language (JavaScript, Python, Go, etc.)
+
+Your **adapter** documents these choices.
+
+### How long does it take to set up?
+
+- **Add FDD core**: 5 minutes
+- **Create adapter**: 1-2 hours (first time)
+- **Initialize project**: 30 minutes
+- **First feature design**: 1-2 hours
+
+After initial setup, feature design time depends on complexity.
+
+### Can I use FDD with existing projects?
+
+**Yes.** You can:
+1. Add FDD to existing project
+2. Create adapter for existing tech stack
+3. Start documenting new features in FDD
+4. Gradually migrate existing features (optional)
+
+### Do I need to use OpenSpec?
+
+**Yes**, OpenSpec is required for change tracking. It provides:
+- Atomic, traceable changes
+- Clear implementation tasks
+- Audit trail
+- Rollback capability
+
+Install: `npm install -g @fission-ai/openspec@latest`
+
+### What if my team doesn't know FDD?
+
+Follow the onboarding checklist:
+1. **Reading** (30 min): README.md, FDL.md, workflows/README.md
+2. **Setup** (15 min): IDE, tools, adapter review
+3. **Practice** (2 hours): Review example feature, create small feature with guidance
+
+### How do I validate designs?
+
+Follow validation workflows:
+- **Overall Design**: `workflows/02-validate-architecture.md`
+- **Feature Design**: `workflows/06-validate-feature.md`
+
+Validation is done via checklists (manual review). AI assistants can help automate checks.
+
+---
+
+## Examples
+
+### Example: Login Feature
+
+**Overall Design** (`architecture/DESIGN.md`):
+```markdown
+## A. Business Context
+
+### Actors
+- **End User**: Person accessing the system
+
+### System Capabilities
+- User authentication with email/password
+```
+
+**Feature Design** (`architecture/features/feature-login/DESIGN.md`):
+```markdown
+## B. Actor Flows
+
+### Actor: End User
+
+1. User navigates to login page
+2. User enters email and password
+3. User clicks "Login" button
+4. System validates credentials
+5. IF credentials valid
+   5.1. System creates session
+   5.2. System redirects to dashboard
+6. ELSE
+   6.1. System shows error "Invalid credentials"
+   6.2. User remains on login page
+```
+
+**OpenSpec Change** (`architecture/features/feature-login/openspec/changes/001-authentication/`):
+```markdown
+# proposal.md
+Implement user authentication with email/password.
+
+# tasks.md
+- [ ] Create User model
+- [ ] Create authentication endpoint
+- [ ] Add password hashing
+- [ ] Add session management
+- [ ] Add login page
+- [ ] Add tests
+```
+
+---
+
+## References
+
+- **OpenSpec**: https://openspec.dev/
+
+---
+
+## Version History
+
+### v1.0 (Current)
+
+**Features**:
+- Core + Adapters architecture (technology-agnostic core, framework-specific adapters)
+- Universal Workflows (12 IDE-agnostic workflow guides)
+- Two-level design (Overall Design → Feature Design)
+- OpenSpec change management (universal)
+- Algorithm Description Language (ADL)
+- Design Requirements (formal specifications without prescribing technologies)
+- Validation-first approach
+- Framework adapters pattern
+
+**Structure**:
+- Core FDD (universal, framework-agnostic methodology)
+- Project adapters (technology-specific integration)
+- 12 universal workflows (IDE-agnostic guides)
+- Design requirements (formal specifications without technology lock-in)
+
+**Documentation**:
+- Complete methodology guide
+- 12 universal workflows (IDE-agnostic)
+- Framework adapter templates
+
+---
+
+## License
+
+MIT License
+
+Copyright (c) 2026 FDD Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Contributing
+
+When FDD becomes a separate repository:
+1. Follow FDD methodology for FDD changes
+2. Update workflows with real-world examples
+3. Maintain backward compatibility
+4. Document breaking changes
