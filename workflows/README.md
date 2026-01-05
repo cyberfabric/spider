@@ -18,7 +18,7 @@ These workflows are **IDE and agent-agnostic** - they describe the FDD methodolo
 
 ## Workflow Categories
 
-**Status**: ✅ All 15 workflows complete (13 core + 2 legacy integration)
+**Status**: ✅ All 16 workflows complete (14 core + 2 legacy integration)
 
 **Quick Start**: See `AGENTS.md` for workflow selection decision tree and common sequences
 
@@ -45,6 +45,7 @@ These workflows are **IDE and agent-agnostic** - they describe the FDD methodolo
 8. ✅ **`08-fix-design.md`** - Fix design issues during implementation
 9. ✅ **`09-openspec-init.md`** - Initialize OpenSpec for feature
 10. ✅ **`10-openspec-change-implement.md`** - Implement OpenSpec change
+10-1. ✅ **`10-1-openspec-code-validate.md`** - Validate code against spec (auto-runs after 10)
 11. ✅ **`11-openspec-change-complete.md`** - Complete and archive change
 12. ✅ **`12-openspec-change-next.md`** - Create next change from DESIGN.md
 13. ✅ **`13-openspec-validate.md`** - Validate OpenSpec structure

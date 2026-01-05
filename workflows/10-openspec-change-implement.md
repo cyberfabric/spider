@@ -346,18 +346,13 @@ Implementation complete when:
 
 After implementation complete:
 
-1. **Complete Change**: Run `11-openspec-change-complete.md {slug} {change-id}`
-   - Archive specs
-   - Mark change done
-   - Merge to source of truth
+1. **Continue Implementation**: If tasks not complete, continue working
 
-2. **Next Change** (if any):
-   - Check if more changes needed
-   - Initialize next change
-   - Repeat cycle
+2. **Validate Code Against Spec** (AUTOMATIC): System runs `10-1-openspec-code-validate.md` automatically
+   - If validation passes → Proceed to `11-openspec-change-complete.md`
+   - If validation fails → Fix code or update spec, re-run workflow 10
 
-3. **Complete Feature** (if last change):
-   - Run `07-complete-feature.md {slug}`
+3. **Fix Issues**: If problems found during implementation → Fix and update
 
 ---
 

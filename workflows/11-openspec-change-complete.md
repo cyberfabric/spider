@@ -8,6 +8,7 @@
 ## Prerequisites
 
 - Change implemented (run `10-openspec-change-implement.md` first)
+- Code validated against spec (run `10-1-openspec-code-validate.md` - runs automatically)
 - All tasks in tasks.md completed
 - All tests passing
 - Implementation verified against specs

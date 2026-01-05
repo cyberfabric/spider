@@ -113,7 +113,13 @@ Always read the specific workflow file before executing. This guide helps you ch
 - **Use when**: Active change exists in `openspec/changes/{change-name}/`
 - **Implements**: Code according to proposal.md and tasks.md
 - **Validates**: Tasks checklist completion
-- **Next step**: Complete change (workflow 11) or continue implementation
+- **Next step**: Code validation (workflow 10-1 - runs automatically)
+
+**10-1-openspec-code-validate.md** - Validate code against spec (AUTOMATIC)
+- **Use when**: After workflow 10 completes (runs automatically)
+- **Validates**: Code matches spec requirements exactly
+- **Blocks**: Workflow 11 if validation fails
+- **Next step**: Complete change (workflow 11) if validation passes
 
 **11-openspec-change-complete.md** - Complete OpenSpec change
 - **Use when**: Change implementation finished and tested
@@ -191,20 +197,22 @@ Start FDD work
 ```
 adapter-config → 01-init-project → 02-validate-architecture → 03-init-features
 → 06-validate-feature → 09-openspec-init → 10-openspec-change-implement
-→ 11-openspec-change-complete → 13-openspec-validate → 07-complete-feature
+→ 10-1-openspec-code-validate (auto) → 11-openspec-change-complete 
+→ 13-openspec-validate → 07-complete-feature
 ```
 
 **Add single feature to existing project**:
 ```
 05-init-feature → 06-validate-feature → 09-openspec-init
-→ 10-openspec-change-implement → 11-openspec-change-complete
-→ 13-openspec-validate → 07-complete-feature
+→ 10-openspec-change-implement → 10a-openspec-code-validate (auto)
+→ 11-openspec-change-complete → 13-openspec-validate → 07-complete-feature
 ```
 
 **Feature with multiple OpenSpec changes**:
 ```
-09-openspec-init → 10-openspec-change-implement → 11-openspec-change-complete
-→ 12-openspec-change-next → 10-openspec-change-implement
+09-openspec-init → 10-openspec-change-implement → 10a-openspec-code-validate (auto)
+→ 11-openspec-change-complete → 12-openspec-change-next 
+→ 10-openspec-change-implement → 10a-openspec-code-validate (auto)
 → 11-openspec-change-complete → 13-openspec-validate → 07-complete-feature
 ```
 
