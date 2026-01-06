@@ -19,6 +19,22 @@
 
 ---
 
+## ⚠️ CRITICAL CHECKLIST - MUST COMPLETE ALL
+
+This workflow creates **1 change directory with 4+ files**. You MUST create ALL:
+
+- [ ] **Directory**: openspec/changes/{change-name}/
+- [ ] **File 1**: proposal.md (change description)
+- [ ] **File 2**: tasks.md (implementation checklist)
+- [ ] **File 3**: design.md (references Feature DESIGN.md)
+- [ ] **File 4+**: specs/{feature-slug}/spec.md (requirements implemented)
+
+**STOP after creating and verify all files exist before finishing.**
+
+**If you skip ANY file, workflow 10 will FAIL - cannot implement without complete spec.**
+
+---
+
 ## Overview
 
 This workflow is the **universal change creation workflow** for all OpenSpec changes (first or subsequent). It reads Feature DESIGN.md Section G to identify changes, displays status, and guides through creating the selected change.
@@ -364,30 +380,55 @@ The system SHALL provide...
 
 ---
 
-### 6. Create design.md (REQUIRED)
+### 6. Create design.md (Conditional)
 
-**Requirement**: Create design.md as reference file to Feature DESIGN.md
+**Requirement**: Create design.md only if complexity requires, otherwise create minimal reference
 
 **Location**: `openspec/changes/{next-change-name}/design.md`
 
-**Purpose**: Reference file linking to Feature DESIGN.md
+**Decision Criteria** (from OpenSpec specification):
 
-**Required Content**:
+Create **full design.md** IF any of the following apply:
+- Cross-cutting change (multiple services/modules) or new architectural pattern
+- New external dependency or significant data model changes
+- Security, performance, or migration complexity
+- Ambiguity that benefits from technical decisions before coding
+
+**Full design.md skeleton** (when needed):
+```markdown
+## Context
+[Background, constraints, stakeholders]
+
+## Goals / Non-Goals
+- Goals: [...]
+- Non-Goals: [...]
+
+## Decisions
+- Decision: [What and why]
+- Alternatives considered: [Options + rationale]
+
+## Risks / Trade-offs
+- [Risk] → Mitigation
+
+## Migration Plan
+[Steps, rollback]
+
+## Open Questions
+- [...]
+```
+
+**OTHERWISE**: Create **minimal reference file**:
 ```markdown
 # Design Reference
 
 **MUST READ**: [Feature DESIGN.md](../../architecture/features/feature-{slug}/DESIGN.md)
 
 **Agent Instruction**: This change implements requirements from Feature DESIGN.md. Read the full design before implementation.
-
-## Implementation Notes
-
-{Optional: Add any change-specific implementation notes if needed}
 ```
 
-**Note**: This is a reference file, not a place for extensive new design. Feature DESIGN.md is the source of truth.
+**Note**: Feature DESIGN.md is the source of truth. Change design.md is only for change-specific technical decisions not already covered in Feature DESIGN.md.
 
-**Expected Outcome**: design.md created with link to Feature DESIGN.md
+**Expected Outcome**: design.md created (full or minimal reference based on complexity)
 
 ---
 

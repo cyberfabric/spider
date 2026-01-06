@@ -15,6 +15,19 @@
 
 ---
 
+## ⚠️ CRITICAL CHECKLIST - MUST COMPLETE ALL
+
+This workflow creates **2 mandatory files**. You MUST create BOTH:
+
+- [ ] **File 1**: FDD-Adapter/AGENTS.md (core adapter config)
+- [ ] **File 2**: FDD-Adapter/workflows/AGENTS.md (workflow extensions)
+
+**STOP after creating files and verify both exist before finishing.**
+
+**If you skip ANY file, workflow 01 will FAIL.**
+
+---
+
 ## Overview
 
 This workflow creates a minimal, focused FDD adapter based on user needs. The adapter extends FDD core methodology with project-specific conventions **without adding unnecessary complexity**.

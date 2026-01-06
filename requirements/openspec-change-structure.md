@@ -86,15 +86,22 @@
 
 **Requirements**:
 - ≥3 tasks per change
+- **MUST include task**: "Create tests for Testing Scenarios from Feature Design Section F"
 - Tasks specific and actionable
 - Clear completion criteria
 - No vague tasks like "Implement feature"
+
+**Mandatory Test Task**:
+Every change MUST include a task for implementing tests based on Testing Scenarios from Feature Design Section F. Format:
+```markdown
+- [ ] Create tests for Testing Scenarios from Feature Design Section F
+```
 
 **Example**:
 ```markdown
 - [ ] Create domain type definitions
 - [ ] Implement validation logic
-- [ ] Add unit tests
+- [ ] Create tests for Testing Scenarios from Feature Design Section F
 - [ ] Update API documentation
 ```
 
@@ -129,16 +136,26 @@
 
 ## File: design.md
 
-**Purpose**: Reference file linking to Feature DESIGN.md
+**Purpose**: Reference file linking to Feature DESIGN.md and mapping to implementation
+
+**MANDATORY for all changes**
+
+**Required content**:
+1. **Reference to Feature DESIGN.md**: `[Feature DESIGN.md](../../architecture/features/feature-{slug}/DESIGN.md)`
+2. **Requirements list**: List all requirement IDs from Feature Design Section F that this change implements
+3. **Testing Scenarios reference**: Explicitly state that tests must implement Testing Scenarios from Feature Design Section F
+4. **Implementation mapping** (optional): Map Feature Design elements to code modules
 
 **Agent Instruction**:
 - **MUST READ** Feature DESIGN.md before working on this change
-- **MUST include link**: `[Feature DESIGN.md](../../architecture/features/feature-{slug}/DESIGN.md)`
-- This file serves as a reference pointer to ensure agents read the source Feature DESIGN.md
+- **MUST implement** Testing Scenarios from Section F as actual test code
+- This file enforces design-to-code traceability
 
-**Content**: Link to Feature DESIGN.md and any implementation-specific notes if needed
-
-**Required**: This file must be created for every OpenSpec change to enforce design context awareness
+**Validation**:
+- File must exist (not optional)
+- Must contain link to Feature DESIGN.md
+- Must reference Section F requirements
+- Must mention Testing Scenarios
 
 ---
 
@@ -164,6 +181,7 @@
 1. **Required files exist**
    - `proposal.md` exists
    - `tasks.md` exists
+   - `design.md` exists (MANDATORY)
    - `specs/{feature-slug}/spec.md` exists
 
 2. **Directory structure**
@@ -181,10 +199,17 @@
 
 2. **tasks.md**
    - ≥3 tasks present
+   - MUST include task: "Create tests for Testing Scenarios from Feature Design Section F"
    - Tasks specific and actionable
    - Checklist format valid
 
-3. **spec.md**
+3. **design.md**
+   - File exists (not optional)
+   - Contains link to Feature DESIGN.md
+   - References Section F requirements
+   - Mentions Testing Scenarios
+
+4. **spec.md**
    - All required sections present
    - References feature DESIGN.md
    - No contradictions with Overall Design
@@ -229,9 +254,11 @@
 **Generate**:
 - Change directory structure
 - `proposal.md` with all required sections
-- `tasks.md` with initial task checklist
+- `tasks.md` with initial task checklist INCLUDING mandatory test task
+- `design.md` with link to Feature DESIGN.md, requirements list, and Testing Scenarios reference (MANDATORY)
 - `specs/{spec-name}/spec.md` with technical specification
-- `design.md` with link to Feature DESIGN.md (reference file)
+
+**Critical**: design.md and test task in tasks.md are MANDATORY, not optional
 
 ### For Validator (Workflow 12)
 

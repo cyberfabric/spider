@@ -15,6 +15,23 @@
 
 ---
 
+## ⚠️ CRITICAL CHECKLIST - MUST COMPLETE ALL
+
+This workflow has **6 mandatory requirements**. You MUST complete ALL before finishing:
+
+- [ ] **Requirement 1**: Create directory structure (architecture/, features/, diagrams/)
+- [ ] **Requirement 2**: Create domain model files (from adapter specification)
+- [ ] **Requirement 3**: Create API contract files (from adapter specification)
+- [ ] **Requirement 4**: Create openspec structure (specs/, changes/, changes/archive/)
+- [ ] **Requirement 5**: Create openspec/project.md with project conventions
+- [ ] **Requirement 6**: Generate architecture/DESIGN.md with all sections A-D
+
+**STOP after each requirement and verify completion before proceeding to next.**
+
+**If you skip ANY requirement, validation will FAIL in Phase 3 (workflow 02).**
+
+---
+
 ## Overview
 
 This workflow creates FDD project structure and Overall Design document through interactive questions. The workflow gathers project context first, then generates structured documentation with actual content instead of empty placeholders.
@@ -246,32 +263,16 @@ Generate `architecture/DESIGN.md` according to structure defined in `../requirem
 
 **Expected Outcome**: DESIGN.md with meaningful initial content
 
-**Validation Criteria**:
-- File `architecture/DESIGN.md` exists
-- Contains sections A-D with actual content from user answers
-- System vision, capabilities, actors filled from Q2-Q4
-- Business rules filled from Q5
-- Architecture style filled from Q6
-- Technical architecture references adapter settings
-- Additional context included if provided in Q7
-- Document ready for user to add domain model types and API endpoints
-- No empty placeholders like "[TODO]" or "[Description]"
+**Verification** (MANDATORY):
+```bash
+# Verify DESIGN.md created and has content
+test -f architecture/DESIGN.md && echo "✅ DESIGN.md exists" || echo "❌ MISSING DESIGN.md"
+wc -l architecture/DESIGN.md | awk '{print ($1 >= 200) ? "✅ DESIGN.md has "$1" lines" : "❌ DESIGN.md too short: "$1" lines"}'
+grep -q "## Section A: Business Context" architecture/DESIGN.md && echo "✅ Section A present" || echo "❌ Section A missing"
+grep -q "## Section D: Architecture Decision Records" architecture/DESIGN.md && echo "✅ Section D present" || echo "❌ Section D missing"
+```
 
----
-
-### 3. Initialize API Contract Directory
-
-**Requirement**: Create API specification directory structure per adapter settings
-
-**Required Actions**:
-- Create directory: {API_LOCATION from adapter}
-- Note: Specific API contract files will be created as part of Overall Design development
-
-**Expected Outcome**: API specification directory exists and is ready for use
-
-**Validation Criteria**:
-- Directory {API_LOCATION} exists
-- Directory is writable
+**STOP if verification fails** - Do not proceed until DESIGN.md is complete.
 
 ---
 
@@ -446,65 +447,19 @@ Use descriptive kebab-case for spec names:
 
 ---
 
-### 6. Initialize OpenSpec Structure
+### 6. Initialize API Contract Directory
 
-**Requirement**: Create project-level OpenSpec directory at project root
+**Requirement**: Create API specification directory structure per adapter settings
 
-**Commands**:
-```bash
-cd {project-root}/
-mkdir -p openspec/specs
-mkdir -p openspec/changes
-```
+**Required Actions**:
+- Create directory: {API_LOCATION from adapter}
+- Note: Specific API contract files will be created as part of Overall Design development
 
-**Required Content** for `openspec/project.md`:
-```markdown
-# {MODULE_NAME}
-
-**Project**: {module-name}
-
-## OpenSpec Conventions
-
-This project uses OpenSpec for atomic change management.
-
-**Structure**:
-- `specs/{project-name}-{feature-slug}/` - Feature specifications (source of truth)
-- `changes/{change-name}/` - Active implementation changes
-- `changes/archive/` - Completed changes
-
-**Naming Convention**:
-- Changes: kebab-case (e.g., `implement-core-auth`)
-- Specs: `{project-name}-{feature-slug}` format
-
-**Workflow**:
-1. Feature designs validated → Create changes via workflow 12
-2. Implement changes → workflow 10
-3. Complete & archive → workflow 11
-4. Next change → workflow 12
-```
-
-**What This Does**:
-- Creates single project-level OpenSpec at `openspec/`
-- Centralizes all feature specifications
-- Ready for feature implementation via workflow 12
-
-**Expected Outcome**: OpenSpec structure initialized at project level
+**Expected Outcome**: API specification directory exists and is ready for use
 
 **Validation Criteria**:
-- Directory `openspec/` exists at project root
-- Directory `openspec/specs/` exists
-- Directory `openspec/changes/` exists
-- File `openspec/project.md` exists with project name
-
----
-
-### 6. Show Summary and Confirm
-
-**Requirement**: Display what will be created and get user confirmation
-
-**Display Summary**:
-```
-FDD Project Initialization Summary:
+- Directory {API_LOCATION} exists
+- Directory is writable
 ───────────────────────────────────
 Module: {MODULE_NAME}
 Architecture: {ARCHITECTURE_STYLE}
@@ -564,30 +519,68 @@ Commit changes to version control? (y/n)
 
 ---
 
-## Completion Criteria
+## Final Verification Checklist
 
-Project initialization is complete when:
+**Before completing this workflow, verify ALL items:**
 
-- [ ] User answered all relevant questions (Q1-Q7)
-- [ ] User confirmed initialization summary
-- [ ] All required directories created:
-  - [ ] `architecture/`
-  - [ ] `architecture/features/`
-  - [ ] `architecture/diagrams/`
-  - [ ] {DML_LOCATION from adapter}
-  - [ ] {API_LOCATION from adapter}
-  - [ ] `openspec/` structure created at project root:
-    - [ ] `openspec/specs/` directory exists
-    - [ ] `openspec/changes/` directory exists
-    - [ ] `openspec/project.md` created with project conventions
-- [ ] `architecture/DESIGN.md` generated per `../requirements/overall-design-structure.md`:
-  - [ ] All required sections (A-C) with actual content from answers
-  - [ ] Section C has all 5 subsections (C.1-C.5)
-  - [ ] Section D included if ADDITIONAL_CONTEXT provided
-- [ ] `architecture/features/FEATURES.md` placeholder created
-- [ ] No empty placeholders like "[TODO]" in generated content
-- [ ] Summary shown with created files
-- [ ] (Optional) Changes committed to version control if user requested
+```bash
+echo "=== Workflow 01 Final Verification ==="
+echo ""
+
+# Requirement 1: Directory structure
+test -d architecture && echo "✅ architecture/" || echo "❌ CRITICAL: Missing architecture/"
+test -d architecture/features && echo "✅ architecture/features/" || echo "❌ CRITICAL: Missing architecture/features/"
+test -d architecture/diagrams && echo "✅ architecture/diagrams/" || echo "❌ CRITICAL: Missing architecture/diagrams/"
+
+echo ""
+
+# Requirement 2-3: Domain model & API contracts (check adapter for location)
+echo "Note: Check adapter for exact domain model and API contract locations"
+test -d schemas && echo "✅ Domain model directory found (schemas/)" || echo "⚠️  Domain model directory - verify with adapter"
+test -d spec && echo "✅ API contract directory found (spec/)" || echo "⚠️  API contract directory - verify with adapter"
+
+echo ""
+
+# Requirement 4-5: OpenSpec structure (CRITICAL - most commonly missed)
+test -d openspec && echo "✅ openspec/" || echo "❌ CRITICAL: Missing openspec/ - GO BACK TO REQUIREMENT 4"
+test -d openspec/specs && echo "✅ openspec/specs/" || echo "❌ CRITICAL: Missing openspec/specs/"
+test -d openspec/changes && echo "✅ openspec/changes/" || echo "❌ CRITICAL: Missing openspec/changes/"
+test -d openspec/changes/archive && echo "✅ openspec/changes/archive/" || echo "❌ CRITICAL: Missing openspec/changes/archive/"
+test -f openspec/project.md && echo "✅ openspec/project.md" || echo "❌ CRITICAL: Missing openspec/project.md - GO BACK TO REQUIREMENT 5"
+
+echo ""
+
+# Requirement 6: Overall Design
+test -f architecture/DESIGN.md && echo "✅ architecture/DESIGN.md" || echo "❌ CRITICAL: Missing DESIGN.md"
+if [ -f architecture/DESIGN.md ]; then
+  LINES=$(wc -l < architecture/DESIGN.md)
+  [ $LINES -ge 200 ] && echo "✅ DESIGN.md has $LINES lines (≥200)" || echo "❌ DESIGN.md too short: $LINES lines (need ≥200)"
+  grep -q "## Section A: Business Context" architecture/DESIGN.md && echo "✅ Section A present" || echo "❌ Section A missing"
+  grep -q "## Section B: Requirements" architecture/DESIGN.md && echo "✅ Section B present" || echo "❌ Section B missing"
+  grep -q "## Section C: Technical Architecture" architecture/DESIGN.md && echo "✅ Section C present" || echo "❌ Section C missing"
+  grep -q "## Section D: Architecture Decision Records" architecture/DESIGN.md && echo "✅ Section D present" || echo "❌ Section D missing"
+fi
+
+echo ""
+echo "=== End Verification ==="
+echo ""
+echo "✅ All checks must pass before proceeding to workflow 02."
+echo "❌ If ANY ❌ appears, go back and complete that requirement."
+echo ""
+```
+
+**All checks must show ✅ before workflow is complete.**
+
+**If ANY check shows ❌**:
+1. Identify which requirement number failed (1-6)
+2. Scroll up to that requirement section in this workflow
+3. Complete the missing steps
+4. Re-run this verification script
+5. Repeat until all checks pass
+
+**Most common failure**: Missing openspec structure (Requirements 4-5)
+- If you see ❌ for openspec/, go back to Requirement 4 and create the directories
+- If you see ❌ for openspec/project.md, go back to Requirement 5 and create the file
 
 ---
 

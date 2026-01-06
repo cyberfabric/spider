@@ -29,6 +29,24 @@
 
 ---
 
+## ⚠️ CRITICAL CHECKLIST - MUST COMPLETE ALL
+
+This workflow creates **1 file with 7 sections**. You MUST complete ALL:
+
+- [ ] **Section A**: Overview (purpose, actors, references)
+- [ ] **Section B**: Actor Flows (in FDL)
+- [ ] **Section C**: Algorithms (in FDL)
+- [ ] **Section D**: States (in FDL)
+- [ ] **Section E**: Technical Details
+- [ ] **Section F**: Requirements (with IDs)
+- [ ] **Section G**: Implementation Plan (OpenSpec changes)
+
+**STOP after each section and verify FDL syntax before proceeding.**
+
+**If you skip ANY section, workflow 06 validation will FAIL with score 0/100.**
+
+---
+
 ## Prerequisites
 
 - Features manifest exists: `architecture/features/FEATURES.md`

@@ -37,13 +37,35 @@
 - Issues: List of missing/invalid items
 - Recommendations: What to fix
 
-### Step 3: Determine Next Action
+### Step 3: Validate Project Structure
 
-**If validation passes** (score ≥90, completeness 100%):
+**Action**: Verify project structure created by workflow 01
+
+**Required Directories** (from workflow 01 Requirement 1, 4, 5):
+- ✅ `architecture/features/` exists
+- ✅ `architecture/diagrams/` exists  
+- ✅ Domain model directory exists (per adapter)
+- ✅ API contract directory exists (per adapter)
+- ✅ `openspec/` exists
+- ✅ `openspec/specs/` exists
+- ✅ `openspec/changes/` exists
+- ✅ `openspec/changes/archive/` exists
+
+**Required Files** (from workflow 01 Requirement 5):
+- ✅ `openspec/project.md` exists
+
+**If structure incomplete**:
+- ❌ Report missing directories/files
+- Recommend: Re-run workflow 01 or create missing structure manually
+
+### Step 4: Determine Next Action
+
+**If validation passes** (score ≥90, completeness 100%, structure complete):
 - ✅ Suggest next workflow: `03-init-features.md` or `04-validate-features.md`
 
 **If validation fails**:
 - ❌ List specific issues from requirements that failed
+- ❌ List missing project structure elements
 - Provide actionable recommendations to fix
 - User must fix issues and re-run validation
 

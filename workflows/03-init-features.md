@@ -17,6 +17,19 @@
 
 ---
 
+## ⚠️ CRITICAL CHECKLIST - MUST COMPLETE ALL
+
+This workflow creates **1 file + N directories**. You MUST create ALL:
+
+- [ ] **File**: architecture/features/FEATURES.md (manifest with all features)
+- [ ] **Directories**: architecture/features/feature-{slug}/ (one per feature)
+
+**STOP after creating and verify FEATURES.md lists all features before finishing.**
+
+**If you skip any feature directory, workflow 04 validation will FAIL.**
+
+---
+
 ## Overview
 
 This workflow analyzes the Overall Design, proposes a feature breakdown based on capabilities, and generates the features manifest after user review and confirmation.

@@ -148,6 +148,9 @@
 - **References**: Markdown anchors to sections B-E (≥1 reference)
 - **Testing Scenarios**: ≥1 test scenario in FDL format (numbered lists + plain English)
   - ❌ **NO Gherkin/BDD keywords**: **GIVEN**, **WHEN**, **THEN**, **AND** prohibited in Testing Scenarios
+  - ✅ **MUST be implemented**: Testing Scenarios are specifications for actual test code
+  - ✅ **Test generation**: Every Testing Scenario must have corresponding automated test in implementation
+  - ✅ **Traceability**: Test files must reference Testing Scenario ID/name for traceability
   - ✅ Use plain English: "User provides command", "System parses", "Verify output"
 - **Acceptance Criteria**: ≥2 specific, testable criteria
 
