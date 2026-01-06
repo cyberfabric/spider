@@ -118,70 +118,91 @@
 
 ---
 
-### 5: Archive Change with OpenSpec
+### 5: Archive Change with OpenSpec (MANDATORY)
 
-**Requirement**: Archive change using OpenSpec tool
+**Requirement**: MUST use OpenSpec CLI to archive change
 
-**Location**: `openspec/` (project root)
+**⚠️ CRITICAL**: Agent MUST execute this command, not skip it
 
 **Command**:
 ```bash
 # Run from project root
+cd {project-root}
 openspec archive {change-name} -y
 ```
 
-**For Non-Interactive/Automation**:
-```bash
-openspec archive {change-id} --yes
-```
+**Agent Instructions**:
 
-**For Tooling-Only Changes** (no spec updates):
-```bash
-openspec archive {change-id} --skip-specs --yes
-```
+⚠️ **MANDATORY**: Agent MUST call `run_command` tool with these parameters:
+- `CommandLine`: `"openspec archive {change-name} -y"`
+- `Cwd`: `"{project-root}"`
+- `Blocking`: `True`
+- `SafeToAutoRun`: `True`
 
-**What This Does**:
-- Merges delta specs to `openspec/specs/fdd-{project-name}-feature-{feature-slug}/spec.md`
+**What this command does**:
+- Merges delta specs to openspec/specs/
 - Applies ADDED/MODIFIED/REMOVED/RENAMED operations
-- Moves change to `changes/archive/YYYY-MM-DD-{change-id}/`
+- Moves change to changes/archive/
 - Preserves full change history
 
-**Critical**: Always pass change-id explicitly
+**What This Does**:
+- Merges delta specs to `openspec/specs/{feature-slug}/spec.md`
+- Applies ADDED/MODIFIED/REMOVED/RENAMED operations automatically
+- Moves change to `changes/archive/YYYY-MM-DD-{change-name}/`
+- Preserves full change history
 
 **Expected Outcome**: Change archived, specs merged
 
 **Verification**: 
-- Run `openspec list` - change not in active list
-- Run `openspec list --specs` - capabilities updated
-- Run `openspec validate --strict` - structure valid
+```bash
+# Change no longer in active list
+openspec list
+
+# Change in archived list  
+openspec list --archived
+
+# Specs updated
+openspec list --specs
+```
 
 ---
 
-### 6: Verify Archive with OpenSpec
+### 6: Run OpenSpec Validation (MANDATORY)
 
-**Requirement**: Confirm change properly archived
+**Requirement**: MUST validate OpenSpec structure after archive
+
+**⚠️ CRITICAL**: Agent MUST execute this command after archiving
 
 **Command**:
 ```bash
-openspec show {change-id}
+cd {project-root}
+openspec validate --all --no-interactive
 ```
 
-**What to Verify**:
-- Status shows ✅ COMPLETED
-- Completion date recorded
-- All specs listed as archived
-- Change in archive location (if using archives)
+**Agent Instructions**:
 
-**Alternative Command**:
-```bash
-openspec list --archived
-```
+⚠️ **MANDATORY**: Agent MUST call `run_command` tool with these parameters:
+- `CommandLine`: `"openspec validate --all --no-interactive"`
+- `Cwd`: `"{project-root}"`
+- `Blocking`: `True`
+- `SafeToAutoRun`: `True`
 
-**What This Shows**: All archived/completed changes
+**Expected**: Exit code 0 (all specs valid)
 
-**Expected Outcome**: Change confirmed as complete with full audit trail
+**If exit code != 0**:
+1. Read error output
+2. Fix reported issues (missing files, format errors, etc.)
+3. Re-run validation
+4. BLOCK completion until passes
 
-**Note**: OpenSpec automatically creates completion metadata during archive
+**Expected Outcome**: Exit code 0, all checks pass
+
+**Resolution if Failed**: 
+1. Parse OpenSpec error output
+2. Fix reported issues (missing files, format errors, etc.)
+3. Re-run `openspec validate --all --no-interactive`
+4. Repeat until validation passes
+5. **BLOCK** workflow progression until validation succeeds
 
 ---
 

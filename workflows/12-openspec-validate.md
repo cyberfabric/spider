@@ -22,15 +22,32 @@
 
 ## Requirements
 
-### 1: Run OpenSpec Validation
+### 1: Run OpenSpec Validation (MANDATORY)
 
-**Requirement**: Use OpenSpec tool to validate entire structure
+**Requirement**: MUST call OpenSpec CLI to validate structure
+
+**⚠️ CRITICAL**: Agent MUST execute this command, not skip it
 
 **Command**:
 ```bash
-# Run from project root (not from openspec/ directory)
+# REQUIRED: Run from project root (not from openspec/ directory)
+cd {project-root}
 openspec validate --all --no-interactive
 ```
+
+**Agent Instructions**:
+
+⚠️ **MANDATORY**: Agent MUST call `run_command` tool with these parameters:
+- `CommandLine`: `"openspec validate --all --no-interactive"`
+- `Cwd`: `"{project-root}"`
+- `Blocking`: `True`
+- `SafeToAutoRun`: `True`
+
+**If exit code != 0**:
+1. Read error output
+2. Fix issues (see step 2 below)
+3. Re-run validation
+4. Repeat until exit code = 0
 
 **What This Validates**:
 - Directory structure (specs/, changes/ exist)
@@ -41,9 +58,13 @@ openspec validate --all --no-interactive
 - No empty or malformed files
 - Source of truth integrity
 
-**Expected Outcome**: Validation passes with no errors
+**Expected Outcome**: Exit code 0, all checks pass
 
-**Resolution if Failed**: Fix reported issues, then re-run validation
+**Resolution if Failed**: 
+1. Parse OpenSpec error output
+2. Fix issues (see step 2 for common fixes)
+3. Re-run validation
+4. BLOCK workflow progression until validation passes
 
 ---
 
