@@ -1,0 +1,382 @@
+# Workflow Selection Guide
+
+**Version**: 2.0  
+**Purpose**: Select appropriate FDD workflow based on project state  
+**Scope**: All FDD workflow selection decisions
+
+---
+
+## Overview
+
+This guide helps you select the correct FDD workflow based on:
+- Current project state
+- Artifacts that exist or need creation
+- Phase of development
+
+**All workflows located in**: `guidelines/FDD/workflows/`
+
+---
+
+## ⚠️ FIRST STEP: Check for FDD Adapter
+
+**BEFORE selecting any workflow**:
+
+1. Check if `{adapter-directory}/FDD-Adapter/AGENTS.md` exists
+2. Common locations:
+   - `spec/FDD-Adapter/AGENTS.md`
+   - `guidelines/FDD-Adapter/AGENTS.md`  
+   - `docs/FDD-Adapter/AGENTS.md`
+
+**If NO adapter** → Start with `adapter.md` workflow
+
+**If adapter exists** → Continue to workflow selection below
+
+---
+
+## Available Workflows
+
+### Phase 0: Adapter Setup
+
+**adapter.md** - Create or update FDD adapter
+- **Use when**: No adapter exists OR need to update adapter
+- **Creates**: `{adapter-directory}/FDD-Adapter/AGENTS.md` + spec files
+- **Modes**: CREATE or UPDATE
+- **Next**: `business-context` or `adapter-validate`
+
+**adapter-from-sources.md** - Extract adapter from existing codebase
+- **Use when**: Legacy project, want to reverse-engineer adapter
+- **Analyzes**: Existing code to propose formats
+- **Next**: `adapter-validate`
+
+**adapter-agents.md** - Generate AI agent config from adapter
+- **Use when**: Want IDE-specific AI configuration
+- **Creates**: `.windsurf/`, `.cursorrules`, etc.
+- **Next**: Any architecture workflow
+
+**adapter-validate.md** - Validate adapter structure
+- **Use when**: Adapter created or updated
+- **Validates**: File structure, AGENTS.md format, spec files
+- **Next**: `business-context` or `design`
+
+---
+
+### Phase 1: Business & Architecture
+
+**business-context.md** - Create or update BUSINESS.md
+- **Use when**: Need to document business context
+- **Creates**: `architecture/BUSINESS.md`
+- **Sections**: Vision, Actors, Capabilities
+- **Modes**: CREATE or UPDATE
+- **Next**: `business-validate`
+
+**business-validate.md** - Validate business context
+- **Use when**: BUSINESS.md created or updated  
+- **Validates**: Required sections, actor/capability IDs
+- **Score**: ≥90/100
+- **Next**: `design`
+
+**design.md** - Create or update overall design
+- **Use when**: Need architecture/system design
+- **Creates**: `architecture/DESIGN.md`
+- **Sections**: Architecture, Requirements, Technical Details
+- **Modes**: CREATE or UPDATE
+- **Next**: `design-validate`
+
+**design-validate.md** - Validate overall design
+- **Use when**: DESIGN.md created or updated
+- **Validates**: Sections, domain model, API contracts, diagrams
+- **Score**: 100/100 + 100% completeness
+- **Next**: `adr` (optional) or `features`
+
+**adr.md** - Create or update Architecture Decision Records
+- **Use when**: Need to document architectural decisions
+- **Creates**: `architecture/ADR.md`
+- **Format**: MADR with FDD extensions
+- **Modes**: CREATE (new ADR) or UPDATE (edit ADR)
+- **Next**: `adr-validate`
+
+**adr-validate.md** - Validate ADRs
+- **Use when**: ADR.md created or updated
+- **Validates**: MADR format, numbering, related design elements
+- **Score**: ≥90/100
+- **Next**: `features` or continue design work
+
+---
+
+### Phase 2: Feature Planning
+
+**features.md** - Create or update features manifest
+- **Use when**: Need to plan/list features
+- **Creates**: `architecture/FEATURES.md`
+- **Modes**: CREATE (from DESIGN.md) or UPDATE (manual)
+- **Next**: `features-validate`
+
+**features-validate.md** - Validate features manifest
+- **Use when**: FEATURES.md created or updated
+- **Validates**: Manifest structure, feature list completeness
+- **Score**: ≥90/100
+- **Next**: `feature` (for each feature)
+
+**feature.md** - Create or update feature design
+- **Use when**: Need to design single feature
+- **Creates**: `architecture/features/feature-{slug}/DESIGN.md`
+- **Sections**: A-F (Overview, Actors, Algorithms, Data, API, Requirements)
+- **Modes**: CREATE or UPDATE
+- **Next**: `feature-validate`
+
+**feature-validate.md** - Validate feature design
+- **Use when**: Feature DESIGN.md created or updated
+- **Validates**: All sections, actor flows, FDL, no type redefinitions
+- **Score**: 100/100 + 100% completeness
+- **Next**: `feature-changes`
+
+---
+
+### Phase 3: Implementation
+
+**feature-changes.md** - Create or update implementation plan
+- **Use when**: Feature validated, need implementation plan
+- **Creates**: `architecture/features/feature-{slug}/CHANGES.md`
+- **Content**: Atomic changes (1-5 requirements each), task breakdown
+- **Modes**: CREATE or UPDATE
+- **Next**: `feature-changes-validate`
+
+**feature-changes-validate.md** - Validate implementation plan
+- **Use when**: CHANGES.md created or updated
+- **Validates**: Structure, requirements mapping, tasks
+- **Score**: ≥90/100
+- **Next**: `feature-change-implement`
+
+**feature-change-implement.md** - Implement specific change
+- **Use when**: Ready to code a change from CHANGES.md
+- **Implements**: Tasks for one change, updates checkboxes
+- **Updates**: Change status (⏳ → 🔄 → ✅)
+- **Next**: `feature-change-validate`
+
+**feature-change-validate.md** - Validate change implementation
+- **Use when**: Change code complete
+- **Validates**: Code compiles, tests pass, requirements met
+- **Next**: `feature-change-implement` (next change) or `feature-qa`
+
+**feature-qa.md** - Feature quality assurance
+- **Use when**: All changes implemented
+- **Validates**: End-to-end feature functionality, integration
+- **Next**: Archive CHANGES.md or continue features
+
+---
+
+## Decision Tree
+
+```
+START
+│
+├─ No adapter?
+│  └─> adapter.md (or adapter-from-sources.md for legacy)
+│
+├─ Adapter exists, no BUSINESS.md?
+│  └─> business-context.md → business-validate.md
+│
+├─ BUSINESS.md exists, no DESIGN.md?
+│  └─> design.md → design-validate.md
+│
+├─ Need to document decisions?
+│  └─> adr.md → adr-validate.md
+│
+├─ DESIGN.md validated, no FEATURES.md?
+│  └─> features.md → features-validate.md
+│
+├─ FEATURES.md exists, need feature design?
+│  └─> feature.md → feature-validate.md
+│
+├─ Feature validated, no CHANGES.md?
+│  └─> feature-changes.md → feature-changes-validate.md
+│
+├─ CHANGES.md validated, ready to code?
+│  └─> feature-change-implement.md → feature-change-validate.md
+│     (repeat for each change)
+│
+├─ All changes done, need QA?
+│  └─> feature-qa.md
+│
+└─ Need to update existing doc?
+   └─> Use same workflow in UPDATE mode
+
+---
+
+## Common Sequences
+
+### New project from scratch
+```
+adapter → adapter-validate
+  ↓
+business-context → business-validate
+  ↓
+design → design-validate
+  ↓
+[optional: adr → adr-validate]
+  ↓
+features → features-validate
+  ↓
+feature → feature-validate (for each feature)
+  ↓
+feature-changes → feature-changes-validate
+  ↓
+feature-change-implement → feature-change-validate (for each change)
+  ↓
+feature-qa
+```
+
+### Legacy project integration
+```
+adapter-from-sources → adapter-validate
+  ↓
+[reverse-engineer existing docs or create new]
+  ↓
+design → design-validate
+  ↓
+[continue as new project]
+```
+
+### Add feature to existing project
+```
+[adapter + design already exist]
+  ↓
+features → features-validate (update manifest)
+  ↓
+feature → feature-validate
+  ↓
+feature-changes → feature-changes-validate
+  ↓
+feature-change-implement → feature-change-validate (repeat)
+  ↓
+feature-qa
+```
+
+### Update existing design
+```
+design (UPDATE mode) → design-validate
+  ↓
+[if impacts features: update feature designs]
+  ↓
+feature (UPDATE mode) → feature-validate
+```
+
+---
+
+## Critical Rules
+
+**Before executing any workflow**:
+1. Read the workflow `.md` file completely
+2. Check prerequisites in workflow file
+3. Read `requirements/{requirement}.md` files referenced in workflow
+4. Read adapter AGENTS.md if workflow requires it
+
+**During execution**:
+- Follow steps in sequence
+- Validate after creation/update
+- One workflow at a time
+- Run from project root
+
+**Validation**:
+- Always run validation workflow after creation/update
+- Meet score thresholds before proceeding
+- Re-validate after fixes
+
+**Modes**:
+- Most workflows support CREATE or UPDATE modes
+- CREATE: Generate new file from scratch
+- UPDATE: Modify existing file
+
+---
+
+## Workflow Categories
+
+### By Artifact
+
+**Adapter**:
+- adapter.md, adapter-from-sources.md, adapter-agents.md, adapter-validate.md
+
+**Business Context**:
+- business-context.md, business-validate.md
+
+**Architecture Design**:
+- design.md, design-validate.md, adr.md, adr-validate.md
+
+**Features**:
+- features.md, features-validate.md, feature.md, feature-validate.md
+
+**Implementation**:
+- feature-changes.md, feature-changes-validate.md
+- feature-change-implement.md, feature-change-validate.md
+- feature-qa.md
+
+### By Type
+
+**Creation/Update** (Operation workflows):
+- adapter.md, business-context.md, design.md, adr.md
+- features.md, feature.md, feature-changes.md
+- feature-change-implement.md
+
+**Validation** (Check workflows):
+- adapter-validate.md, business-validate.md, design-validate.md
+- adr-validate.md, features-validate.md, feature-validate.md
+- feature-changes-validate.md, feature-change-validate.md
+
+**Special Purpose**:
+- adapter-from-sources.md (legacy integration)
+- adapter-agents.md (IDE configuration)
+- feature-qa.md (quality assurance)
+
+---
+
+## Quick Reference
+
+### "I want to..."
+
+**Set up FDD for my project**
+→ `adapter.md` (or `adapter-from-sources.md` for legacy code)
+
+**Document business context**
+→ `business-context.md` → `business-validate.md`
+
+**Design system architecture**
+→ `design.md` → `design-validate.md`
+
+**Record architectural decisions**
+→ `adr.md` → `adr-validate.md`
+
+**Plan features**
+→ `features.md` → `features-validate.md`
+
+**Design a feature**
+→ `feature.md` → `feature-validate.md`
+
+**Plan feature implementation**
+→ `feature-changes.md` → `feature-changes-validate.md`
+
+**Implement a change**
+→ `feature-change-implement.md` → `feature-change-validate.md`
+
+**Test feature end-to-end**
+→ `feature-qa.md`
+
+**Update existing document**
+→ Use same workflow in UPDATE mode
+
+**Generate IDE config**
+→ `adapter-agents.md`
+
+---
+
+## References
+
+**This file is used by**:
+- `workflows/AGENTS.md` - Directs to this guide for workflow selection
+- AI agents - To select appropriate workflow
+
+**This file references**:
+- `workflow-execution.md` - How to execute selected workflow
+- `core-workflows.md` - Workflow file format specification
+- All requirement files in `requirements/` - Referenced by workflows
+
+**All workflows located in**: `guidelines/FDD/workflows/`

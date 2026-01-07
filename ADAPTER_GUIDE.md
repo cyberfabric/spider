@@ -53,7 +53,7 @@ architecture/
 - Section D: States (optional)
 - Section E: Technical Details
 - Section F: Requirements (formalized scope + Testing Scenarios in FDL)
-- Section G: Implementation Plan (OpenSpec changes with status)
+- Section G: Implementation Plan (implementation changes with status)
 
 ### 5. Validation Scores
 - Overall Design: ≥90/100
@@ -67,6 +67,8 @@ Must follow OpenSpec specification exactly (see `openspec/AGENTS.md`).
 ## What Adapters Define
 
 Everything else is adapter-specific. Define as needed:
+
+**Note**: All FDD operation workflows now support **CREATE and UPDATE modes**. Adapters can be created once and updated anytime as project evolves. Use `adapter.md` workflow to create or update your adapter.
 
 ### Domain Model Format
 - Technology (TypeScript, JSON Schema, Protobuf, GTS, etc.)

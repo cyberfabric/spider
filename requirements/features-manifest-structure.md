@@ -272,6 +272,52 @@
 
 ---
 
+## Examples
+
+**Valid FEATURES.md**:
+```markdown
+# Features Manifest
+
+**Status**: PLANNING
+**Last Updated**: 2026-01-06
+
+---
+
+## Features List
+
+### 1. [feature-user-auth](feature-user-auth/) ✅ CRITICAL
+**Purpose**: User authentication
+**Status**: IMPLEMENTED
+**Depends On**: None
+**Blocks**: feature-user-profile
+**Scope**:
+- Login/logout flows
+- JWT tokens
+- Password reset
+
+### 2. [feature-user-profile](feature-user-profile/) 🔄 HIGH
+**Purpose**: User profile management
+**Status**: IN_PROGRESS
+**Depends On**: feature-user-auth
+**Blocks**: None
+**Scope**:
+- Profile CRUD
+- Avatar upload
+```
+
+**Invalid FEATURES.md**:
+```markdown
+# Features
+
+- Authentication
+- User profiles
+- Some other stuff
+```
+
+**Issues**: No status, no dependencies, no scope definition, no structured entries
+
+---
+
 ## References
 
 **Workflows using this**:

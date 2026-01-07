@@ -14,7 +14,7 @@ FDD (Feature-Driven Development) is a design-first methodology that ensures your
 
 ## Quick Start
 
-### 1. Create FDD Adapter (Required First Step)
+### 1. Create or Update FDD Adapter (Required First Step)
 
 **FDD requires a project-specific adapter before ANY work can begin.**
 
@@ -23,71 +23,106 @@ FDD (Feature-Driven Development) is a design-first methodology that ensures your
 spec/FDD-Adapter/AGENTS.md
 ```
 
-**No adapter found?** → Follow workflow: **adapter-config** (workflows/adapter-config.md)
+**Follow workflow**: **adapter.md** (workflows/adapter.md)
+- **No adapter found** → CREATE mode (5-10 minutes)
+- **Adapter exists** → UPDATE mode (2-5 minutes for targeted changes)
 
-This workflow (5-10 minutes) guides you through:
-- ✅ Ask guided questions about your project
-- ✅ Define domain model format (GTS, JSON Schema, TypeScript, etc.)
-- ✅ Define API contract format (OpenAPI, GraphQL, CLISPEC, etc.)
-- ✅ Capture security model and non-functional requirements
-- ✅ Generate `spec/FDD-Adapter/AGENTS.md` and `spec/FDD-Adapter/workflows/AGENTS.md`
+This workflow guides you through:
+- ✅ Detects mode automatically (CREATE/UPDATE)
+- ✅ CREATE: Ask guided questions about your project
+- ✅ UPDATE: Show current config, ask what to change
+- ✅ Define/update domain model format (GTS, JSON Schema, TypeScript, etc.)
+- ✅ Define/update API contract format (OpenAPI, GraphQL, CLISPEC, etc.)
+- ✅ Capture/update security model and non-functional requirements
+- ✅ Generate or update `spec/FDD-Adapter/AGENTS.md` and spec files
 
-**Result**: Adapter created at `spec/FDD-Adapter/` with status COMPLETE or INCOMPLETE
+**Result**: Adapter created/updated at `spec/FDD-Adapter/` with status COMPLETE or INCOMPLETE
 
-### 1a. Configure AI Agent (Optional)
+**Alternative**: Use **adapter-from-sources.md** to analyze existing codebase and generate/update adapter automatically.
+
+### 1a. Configure or Update AI Agent (Optional)
 
 **After creating adapter, optionally set up your AI agent:**
 
-Follow workflow: **config-agent-tools** (workflows/config-agent-tools.md)
+Follow workflow: **adapter-agents.md** (workflows/adapter-agents.md)
+- **No agent config found** → CREATE mode (2 minutes)
+- **Agent config exists** → UPDATE mode (change style, add workflows, etc.)
 
-This workflow (2 minutes) creates agent-specific configuration:
-- **Windsurf**: `.windsurf/rules.md` + workflow wrappers in `.windsurf/workflows/`
+This workflow creates/updates agent-specific configuration:
+- **Windsurf**: `.windsurf/rules/` + workflow wrappers in `.windsurf/workflows/`
 - **Cursor**: `.cursorrules` (single file with inline workflow references)
 - **Cline**: `.clinerules` (minimal single file)
 - **Aider**: `.aider.conf.yml` (YAML config)
 
 **All configs**:
+- ✅ Detects existing config and enters UPDATE mode
 - ✅ Tell agent to read `spec/FDD-Adapter/AGENTS.md` first
 - ✅ Provide FDD workflow references
+- ✅ UPDATE mode: Change content style (minimal ↔ full), add/remove workflow files
 
-### 2. Initialize Project
+### 2. Create or Update Business Context
 
-Follow these manual steps to initialize your project:
+Follow workflow: **business-context.md** (workflows/business-context.md)
+- **No BUSINESS.md found** → CREATE mode (30 minutes)
+- **BUSINESS.md exists** → UPDATE mode (add actors, capabilities, update vision)
 
-1. Create a new directory `architecture/` and add a new file `DESIGN.md` (template)
-2. Create a new directory `architecture/features/` (directory)
-3. Create a new directory `gts/` or `spec/API/` (if needed)
+This workflow creates/updates `architecture/BUSINESS.md` with:
+- **Section A**: System vision and purpose
+- **Section B**: Key actors (users, systems, external services)
+- **Section C**: Core capabilities (what system can do)
+- **Section D**: Additional context (constraints, compliance)
 
-### 3. Write Overall Design
+### 3. Create or Update Overall Design
 
-Edit `architecture/DESIGN.md` with:
-- **Section A**: System vision, actors, capabilities
-- **Section B**: Business rules, principles, constraints
-- **Section C**: Architecture, domain model, API contracts
-- **Section D**: Optional context (integrations, future plans)
+Follow workflow: **design.md** (workflows/design.md)
+- **No DESIGN.md found** → CREATE mode (2-3 hours)
+- **DESIGN.md exists** → UPDATE mode (update architecture, add components, edit NFRs)
+
+This workflow creates/updates `architecture/DESIGN.md` with:
+- **Section A**: Architecture overview (style, layers)
+- **Section B**: Requirements & principles
+- **Section C**: Technical architecture (components, domain model, API contracts, security)
+- **Section D**: Additional context (optional)
 
 **Recommended**: Use an AI agent to edit the design. The agent will automatically:
+- ✅ Detect mode (CREATE/UPDATE) and act accordingly
 - ✅ Follow FDD requirements and validation rules
 - ✅ Apply adapter-specific conventions (DML syntax, API linking)
 - ✅ Use FDL (plain English) for flows, never code
 - ✅ Reference domain model and API contracts correctly
 - ✅ Ensure proper structure and completeness
+- ✅ CREATE mode: Auto-creates ADR-0001 (Initial Architecture)
 
 **Key**: Use **FDL** (plain English) for flows, never write code in DESIGN.md
 
 ### 4. Validate Overall Design
 
-Follow workflow: **02-validate-architecture** (workflows/02-validate-architecture.md)
+Follow workflow: **design-validate.md** (workflows/design-validate.md)
+- Must score ≥90/100
+- Auto-triggers **adr-validate.md** after DESIGN.md passes
 
-Must score ≥90/100
+### 5. Create or Update Architecture Decision Records (Optional)
 
-### 5. Initialize Features
+Follow workflow: **adr.md** (workflows/adr.md)
+- **No ADR.md found** → CREATE mode (creates ADR.md with first ADR)
+- **ADR.md exists** → UPDATE mode (add new ADR or edit existing)
 
-Follow workflow: **03-init-features** (workflows/03-init-features.md)
+Three modes:
+- **CREATE**: Generate ADR.md with ADR-0001
+- **ADD**: Add new ADR to existing ADR.md
+- **EDIT**: Edit existing ADR (update status, add considerations)
 
-Extracts features from Overall Design and creates `architecture/features/FEATURES.md` manifest
+### 6. Create or Update Features Manifest
 
-### 6. Design Each Feature
+Follow workflow: **features.md** (workflows/features.md)
+- **No FEATURES.md found** → CREATE mode (extracts from DESIGN.md, 5 minutes)
+- **FEATURES.md exists** → UPDATE mode (add/edit/remove features, update status)
+
+### 7. Create or Update Feature Designs
+
+Follow workflow: **feature.md** (workflows/feature.md)
+- **No feature DESIGN.md found** → CREATE mode (1-2 hours per feature)
+- **Feature DESIGN.md exists** → UPDATE mode (edit flows, add algorithms, update requirements)
 
 For each feature in `architecture/features/feature-{slug}/DESIGN.md`:
 - **Section A**: Feature overview and scope
@@ -95,10 +130,12 @@ For each feature in `architecture/features/feature-{slug}/DESIGN.md`:
 - **Section C**: Algorithms in FDL
 - **Section D**: States in FDL (optional)
 - **Section E**: Technical details (DB, operations, errors)
-- **Section F**: Testing and OpenSpec changes plan
+- **Section F**: Requirements (formalized scope + testing)
+- **Section G**: Implementation plan (OpenSpec changes)
 
 **Recommended**: Use an AI agent to design features. The agent will automatically:
-- ✅ Follow FDD feature requirements (Section A-F structure)
+- ✅ Detect mode (CREATE/UPDATE) and show current content in UPDATE mode
+- ✅ Follow FDD feature requirements (Section A-G structure)
 - ✅ Apply adapter conventions (DML references, API linking)
 - ✅ Use FDL only, never write code in DESIGN.md
 - ✅ Reference Overall Design types (never redefine)
@@ -107,25 +144,31 @@ For each feature in `architecture/features/feature-{slug}/DESIGN.md`:
 
 **Key**: Design Section B (Actor Flows) FIRST - everything flows from there
 
-### 7. Validate Feature
+### 8. Validate Feature
 
-Follow workflow: **06-validate-feature** (workflows/06-validate-feature.md)
+Follow workflow: **feature-validate.md** (workflows/feature-validate.md)
 
 Must score 100/100 + 100% completeness
 
-### 8. Implement via OpenSpec
+### 9. Create or Update Implementation Plan
+
+Follow workflow: **feature-changes.md** (workflows/feature-changes.md)
+- **No CHANGES.md found** → CREATE mode (decompose feature into changes, 15-30 min)
+- **CHANGES.md exists** → UPDATE mode (add new changes, edit tasks, update status)
+
+Breaks feature into atomic implementation changes with tasks.
+
+### 10. Implement Changes
+
+Follow workflow: **feature-change-implement.md** (workflows/feature-change-implement.md)
+
+Implements each change according to tasks in CHANGES.md.
+
+### 11. Validate and Complete
 
 Follow workflows:
-1. **09-openspec-change-next** - Create first (or next) change from DESIGN.md
-2. **10-openspec-change-implement** - Implement each change
-3. **11-openspec-change-complete** - Complete and archive change
-4. **09-openspec-change-next** - Create next change (repeat from step 2)
-
-### 9. Complete Feature
-
-Follow workflow: **07-complete-feature** (workflows/07-complete-feature.md)
-
-Validates all tests pass, marks feature complete
+1. **feature-changes-validate.md** - Validate CHANGES.md structure
+2. **feature-qa.md** - Complete feature QA (runs all validations + tests)
 
 ---
 
@@ -348,32 +391,36 @@ Operations:
 
 ## Workflow Cheatsheet
 
+**All operation workflows support CREATE & UPDATE modes**
+
 ```bash
-# Phase 0: Setup (REQUIRED FIRST)
-adapter-config                         # Follow workflow to create adapter
-                                       # Location: spec/FDD-Adapter/
-                                       # Result: AGENTS.md + workflows/AGENTS.md
+# Adapter Setup (REQUIRED FIRST)
+adapter.md                             # Create OR update adapter
+adapter-from-sources.md                # Create OR update from codebase
+adapter-agents.md                      # Create OR update AI agent config
 
-# Phase 1: Architecture
-01-init-project                        # Initialize structure
-02-validate-architecture               # Validate Overall Design (≥90/100)
+# Architecture & Requirements
+business-context.md                    # Create OR update BUSINESS.md
+adr.md                                 # Create/add/edit ADRs
+design.md                              # Create OR update DESIGN.md
 
-# Phase 2: Feature Planning
-03-init-features                       # Generate features from design
-04-validate-features                   # Validate FEATURES.md
-05-init-feature {slug}                 # Create single feature manually
-06-validate-feature {slug}             # Validate Feature Design (100/100)
+# Validation
+business-validate.md                   # Validate BUSINESS.md
+adr-validate.md                        # Validate ADR.md
+design-validate.md                     # Validate DESIGN.md (≥90/100)
 
-# Phase 3: Implementation
-09-openspec-change-next {slug}         # Create change (first or next)
-10-openspec-change-implement {slug} {id}  # Implement change
-11-openspec-change-complete {slug} {id}   # Complete change
-# Repeat 09→10→11 for each change
-12-openspec-validate {slug}            # Validate OpenSpec structure
-07-complete-feature {slug}             # Mark feature complete
+# Feature Management
+features.md                            # Create OR update FEATURES.md
+feature.md                             # Create OR update feature DESIGN.md
+feature-changes.md                     # Create OR update CHANGES.md
+feature-change-implement.md            # Implement changes
 
-# Utils
-08-fix-design {slug}                   # Fix design issues
+# Feature Validation
+features-validate.md                   # Validate FEATURES.md
+feature-validate.md                    # Validate feature DESIGN.md (100/100)
+feature-changes-validate.md            # Validate CHANGES.md
+feature-change-validate.md             # Validate specific change
+feature-qa.md                          # Complete feature QA
 ```
 
 ---

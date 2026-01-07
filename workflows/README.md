@@ -18,36 +18,45 @@ These workflows are **IDE and agent-agnostic** - they describe the FDD methodolo
 
 ## Workflow Categories
 
-**Status**: ✅ All 16 workflows complete (14 core + 2 legacy integration)
+**Status**: ✅ All 21 workflows complete
 
 **Quick Start**: See `AGENTS.md` for workflow selection decision tree and common sequences
 
-### Phase 0: Legacy Integration
+### Phase 0: Adapter Setup
 
-0a. ✅ **`adapter-config-from-code.md`** - Context extension for `adapter-config.md` (propose formats from code)
-0b. ✅ **`01-init-project-from-code.md`** - Context extension for `01-init-project.md` (propose answers from code)
+**adapter.md** - Create or update FDD adapter
+**adapter-from-sources.md** - Extract adapter from existing codebase (legacy integration)
+**adapter-agents.md** - Generate AI agent config from adapter
+**adapter-validate.md** - Validate adapter structure
 
-### Phase 1: Architecture Design
+### Phase 1: Business & Architecture Design
 
-1. ✅ **`01-init-project.md`** - Initialize FDD project structure (greenfield)
-2. ✅ **`02-validate-architecture.md`** - Validate Overall Design
+**business-context.md** - Create or update business context document
+**business-validate.md** - Validate business context
+
+**design.md** - Create or update overall design
+**design-validate.md** - Validate overall design
+
+**adr.md** - Create or update Architecture Decision Records
+**adr-validate.md** - Validate ADRs
 
 ### Phase 2: Feature Planning
 
-3. ✅ **`03-init-features.md`** - Generate features from Overall Design
-4. ✅ **`04-validate-features.md`** - Validate FEATURES.md manifest
-5. ✅ **`05-init-feature.md`** - Initialize single feature
-6. ✅ **`06-validate-feature.md`** - Validate Feature Design
+**features.md** - Create or update features manifest
+**features-validate.md** - Validate features manifest
+
+**feature.md** - Create or update feature design
+**feature-validate.md** - Validate feature design
 
 ### Phase 3: Feature Implementation
 
-7. ✅ **`07-complete-feature.md`** - Mark feature as complete
-8. ✅ **`08-fix-design.md`** - Fix design issues during implementation
-9. ✅ **`09-openspec-change-next.md`** - Create change (first or subsequent, universal workflow)
-10. ✅ **`10-openspec-change-implement.md`** - Implement OpenSpec change (1-5 requirements)
-10-1. ✅ **`10-1-openspec-code-validate.md`** - Validate code against spec (auto-runs after 10)
-11. ✅ **`11-openspec-change-complete.md`** - Complete and archive change to specs/{feature-slug}/
-12. ✅ **`12-openspec-validate.md`** - Validate OpenSpec structure
+**feature-changes.md** - Create or update implementation plan (CHANGES.md)
+**feature-changes-validate.md** - Validate implementation plan
+
+**feature-change-implement.md** - Implement specific change
+**feature-change-validate.md** - Validate change implementation
+
+**feature-qa.md** - Feature quality assurance
 
 ---
 

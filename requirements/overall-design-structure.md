@@ -1,38 +1,55 @@
-# Overall Design Structure Requirements
+# Technical Design (DESIGN.md) Structure Requirements
 
-**Purpose**: Define required structure for `architecture/DESIGN.md`
+**Version**: 2.0  
+**Purpose**: Defines structure and validation criteria for Technical Design documentation
 
-**Used by**:
-- Workflow 01 (init-project): Generate DESIGN.md template
-- Workflow 02 (validate-architecture): Validate DESIGN.md completeness
+**Scope**: This document specifies required structure for `architecture/DESIGN.md`
 
----
-
-## File Location
-
-**Path**: `architecture/DESIGN.md`
+**Related specifications**:
+- `business-context-structure.md` - For BUSINESS.md structure
+- `adr-structure.md` - For ADR.md structure
 
 **Size limits**:
-- Recommended: ≤1000 lines
-- Hard limit: No strict limit, but keep concise
+- Recommended: ≤1500 lines
+- Hard limit: ≤2000 lines
 
 ---
 
-## Required Sections
+## File Overview
 
-### Section A: Business Context
+**Purpose**: Technical requirements, principles, and architecture
 
-**Purpose**: Project vision, stakeholders, business goals
+**Location**: `architecture/DESIGN.md`
 
-**Required subsections**:
-1. **Project Vision** - High-level purpose and goals (2-3 paragraphs)
-2. **Stakeholders** - Primary actors and their needs
-3. **Success Criteria** - Measurable outcomes
+**Contains**: 
+- Section A: Architecture Overview (architectural vision + architecture layers)
+- Section B: Requirements & Principles
+- Section C: Technical Architecture
+- Section D: Additional Context (optional)
 
-**Content requirements**:
-- Plain English, no technical jargon
-- Focus on "why" not "how"
-- Clear business value proposition
+**References**:
+- From BUSINESS.md: `@/architecture/DESIGN.md` or `@DESIGN.md`
+- To BUSINESS.md: `@/architecture/BUSINESS.md` or `@BUSINESS.md`
+- To ADR.md: `@/architecture/ADR.md` or `@ADR.md`
+
+---
+
+## DESIGN.md Structure
+
+### Section A: Architecture Overview
+
+**Purpose**: Architectural vision, high-level overview, and layered architecture
+
+**Content**:
+- **Architectural Vision**: 2-3 paragraphs describing the technical approach, key architectural decisions, and design philosophy
+- **Architecture layers**: Visual diagram + description of system layers (Presentation, Application, Domain, Infrastructure, etc.)
+  - Layer diagram (draw.io, Mermaid, or embedded image)
+  - Description of each layer, its responsibilities, and interactions
+
+**Required**:
+- Architecture diagram (draw.io, Mermaid, or embedded image)
+- Clear layer definitions and boundaries
+- Technology stack per layer
 
 ---
 
@@ -46,8 +63,40 @@
 3. **Design Principles** - Architectural guidelines
 4. **Constraints** - Technical/business limitations
 
+**Functional Requirement ID Format**: `fdd-{project-name}-req-{short-name}`
+- **Components**:
+  - `fdd-` - Prefix indicating FDD methodology
+  - `{project-name}` - Project name in kebab-case
+  - `-req-` - Requirement indicator
+  - `{short-name}` - Short descriptive name in kebab-case (2-4 words)
+- **Example**: `fdd-payment-system-req-multi-tenant`, `fdd-analytics-req-real-time-data`
+- **Usage**: Each requirement must have `**ID**: {id}` before requirement statement
+- **Format in document**: `**ID**: fdd-project-req-name`
+- **Note**: Can coexist with legacy REQ-N numbering, but FDD format is preferred
+
+**Use Case ID Format**: `fdd-{project-name}-usecase-{usecase-name}`
+- **Components**:
+  - `fdd-` - Prefix indicating FDD methodology
+  - `{project-name}` - Project name in kebab-case
+  - `-usecase-` - Use case indicator
+  - `{usecase-name}` - Use case name in kebab-case (2-4 words)
+- **Example**: `fdd-payment-system-usecase-process-payment`, `fdd-analytics-usecase-generate-report`
+- **Usage**: Each use case must have `**ID**: {id}` before use case description
+- **Format in document**: `**ID**: fdd-project-usecase-name`
+
+**Principle ID Format**: `fdd-{project-name}-principle-{principle-name}`
+- **Components**:
+  - `fdd-` - Prefix indicating FDD methodology
+  - `{project-name}` - Project name in kebab-case
+  - `-principle-` - Principle indicator
+  - `{principle-name}` - Principle name in kebab-case (2-4 words)
+- **Example**: `fdd-payment-system-principle-security-first`, `fdd-analytics-principle-plugin-based`
+- **Usage**: Each principle must have `**ID**: {id}` as first line after principle heading
+- **Format in document**: `**ID**: \`fdd-project-principle-name\`` (after #### Principle Name)
+
 **Content requirements**:
-- Requirements numbered (REQ-1, REQ-2, etc.)
+- Each functional requirement must have unique FDD ID
+- Each use case must have unique FDD ID
 - Each requirement: clear, testable, necessary
 - Principles: actionable, not generic platitudes
 
@@ -55,14 +104,16 @@
 
 ### Section C: Technical Architecture
 
-**Purpose**: System architecture, components, technologies
+**Purpose**: Detailed technical specifications, components, APIs, data models
 
 **Required subsections**:
 
-#### C.1: System Architecture
+#### C.1: Domain Model
 - **Component diagram** (draw.io, Mermaid, or ASCII)
 - **Component descriptions** - Purpose of each component
 - **Component interactions** - How components communicate
+
+**Note**: Capabilities are defined in Section A.3, not here
 
 #### C.2: Domain Model
 - **Technology** - Specify format (GTS, JSON Schema, OpenAPI, etc.)
@@ -113,19 +164,30 @@
 
 ---
 
-### Section D: Architecture Decision Records (ADR)
+### Section D: Additional Context (OPTIONAL)
 
-**Purpose**: Track all significant architectural decisions and changes to Overall Design
+**Purpose**: Architect notes, technical rationale, implementation considerations, or other technical details not covered by core FDD structure
 
-**Format**: Use industry-standard MADR (Markdown Any Decision Records) format
+**Content** (examples):
+- Technology selection rationale
+- Performance optimization notes
+- Scalability considerations
+- Security implementation details
+- Integration patterns and trade-offs
+- Migration strategy technical details
+- Deployment architecture notes
+- Infrastructure requirements
+- Technical debt notes
+- Future technical improvements
+- Any other technical context
 
-**Content**: See "Architecture Decision Records (ADR)" section below for full format specification
+**Note**: This section is optional and not validated by FDD. Use it to capture important technical information that doesn't fit into the standard FDD structure.
 
-**Required**: At least ADR-0001 documenting initial architecture decisions
+**Format**: Free-form, no specific structure required
 
 ---
 
-### Section E: Project-Specific Details (OPTIONAL)
+### Section D: Project-Specific Details (OPTIONAL)
 
 **Purpose**: Additional project context not covered by core FDD structure
 
@@ -156,18 +218,16 @@
    - Section A with all subsections
    - Section B with all subsections
    - Section C with all subsections (C.1-C.5)
-   - Section D (Architecture Decision Records) - REQUIRED (at least ADR-0001)
-   - Section E optional (not validated)
+   - Section D optional (project-specific details, not validated)
 
 2. **Section order correct**
-   - A → B → C → D → E (in this exact order)
-   - Section E may be omitted
+   - A → B → C → D (in this exact order)
+   - Section D may be omitted
 
 3. **No prohibited sections**
-   - No top-level sections F or beyond (F, G, H, etc.)
-   - Only A-E allowed at top level (E is optional)
+   - No top-level sections E or beyond (E, F, G, H, etc.)
+   - Only A-D allowed at top level (D is optional)
    - Section C has exactly 5 subsections (C.1-C.5)
-   - Section D contains ADR entries
 
 4. **Markdown formatting valid**
    - Headers use proper levels (## for A-D, ### for C.1-C.5)
@@ -204,10 +264,18 @@
    - No short-form identifiers without namespace
    - Notation consistent throughout document
 
-6. **Capability dependencies are acyclic**
-   - If capabilities reference each other, no circular dependencies
-   - Dependency graph must be acyclic (DAG)
-   - Clear implementation order exists
+6. **Requirement IDs follow FDD format**
+   - All functional requirements have unique IDs with `**ID**: \`fdd-{project-name}-req-{short-name}\`` format
+   - All principle IDs follow `**ID**: \`fdd-{project-name}-principle-{name}\`` format
+   - All IDs use kebab-case (lowercase with hyphens)
+   - IDs are unique within their category
+   - Each ID value must be wrapped in backticks (\`...\`)
+
+7. **Cross-references are valid**
+   - References to BUSINESS.md elements (actors, capabilities) use valid IDs
+   - References to domain model files are valid paths
+   - References to API contract files are valid paths
+   - All `@/path/to/file` references point to existing files
 
 ---
 
@@ -280,106 +348,6 @@ Users can own projects and projects contain features.
 
 ---
 
-## Architecture Decision Records (ADR)
-
-**Purpose**: Track all significant architectural decisions and changes to Overall Design
-
-**Location**: Section D in `architecture/DESIGN.md`
-
-**Format**: Use industry-standard MADR (Markdown Any Decision Records) format
-
-### ADR Entry Format
-
-```markdown
-## ADR-NNNN: [Decision Title]
-
-**Date**: YYYY-MM-DD
-**Status**: Proposed | Accepted | Deprecated | Superseded
-**Deciders**: [Names/Roles]
-**Technical Story**: [Issue/Feature reference if applicable]
-
-### Context and Problem Statement
-
-[Describe the context and problem that led to this decision]
-
-### Decision Drivers
-
-- [Driver 1]
-- [Driver 2]
-- [Driver 3]
-
-### Considered Options
-
-1. **Option 1**: [Brief description]
-2. **Option 2**: [Brief description]
-3. **Option 3**: [Brief description]
-
-### Decision Outcome
-
-**Chosen option**: "[Option X]", because [justification]
-
-**Positive Consequences**:
-- [Consequence 1]
-- [Consequence 2]
-
-**Negative Consequences**:
-- [Consequence 1]
-- [Consequence 2]
-
-### Implementation Notes
-
-[How this decision affects the architecture sections A-D]
-
-**Sections affected**:
-- Section A: [Changes if any]
-- Section B: [Changes if any]
-- Section C: [Changes if any]
-```
-
-### ADR Numbering
-
-- **Format**: `ADR-NNNN` where NNNN is a zero-padded 4-digit number
-- **Sequence**: Start at ADR-0001, increment for each new decision
-- **Examples**: ADR-0001, ADR-0002, ADR-0023, ADR-0142
-
-### ADR Statuses
-
-- **Proposed**: Decision is under discussion, not yet accepted
-- **Accepted**: Decision has been approved and is active
-- **Deprecated**: Decision is no longer recommended but not yet replaced
-- **Superseded**: Decision has been replaced by another ADR (reference new ADR number)
-
-### When to Create ADR
-
-**MUST create ADR for**:
-- Technology stack changes (domain model format, API contract format)
-- Architectural pattern changes (layering, communication patterns)
-- Major component additions or removals
-- Security approach changes
-- Data storage or persistence strategy changes
-- API design principles changes
-
-**SHOULD create ADR for**:
-- Non-functional requirement changes
-- Capability structure changes
-- Actor definition changes
-
-**Optional ADR for**:
-- Minor clarifications or wording improvements
-- Documentation structure changes
-- Non-architectural updates
-
-### ADR Validation
-
-**Required**:
-- All ADRs have valid format (all sections present)
-- ADR numbers are sequential (no gaps, no duplicates)
-- Dates are in YYYY-MM-DD format
-- Status is one of: Proposed, Accepted, Deprecated, Superseded
-- Superseded ADRs reference the new ADR number
-
----
-
 ## References
 
 **Workflows using this**:
@@ -387,5 +355,6 @@ Users can own projects and projects contain features.
 - `workflows/02-validate-architecture.md` - Validate DESIGN.md
 
 **Related requirements**:
+- `business-context-structure.md` - BUSINESS.md structure
+- `adr-structure.md` - ADR.md structure
 - `feature-design-structure.md` - Feature DESIGN.md structure
-- `adapter-structure.md` - Adapter AGENTS.md structure

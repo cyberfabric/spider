@@ -1,28 +1,18 @@
 # FDL - FDD Description Language
 
 **Version**: 1.0  
-**Purpose**: AI agent instructions for writing Actor Flows, Algorithms, and State Machines
+**Purpose**: Define syntax and grammar for behavior description language  
+**Scope**: Actor Flows, Algorithms, State Machines
 
 ---
 
-## QUICK REFERENCE FOR AI AGENTS
+## Overview
 
-**What is FDL**: Markdown lists + bold keywords + plain English
+**FDL** - Plain English behavior description using markdown lists and bold keywords
 
-**Use FDL for**:
-- ✅ Section B: Actor Flows (what actors do)
-- ✅ Section C: Algorithms (how system processes)
-- ✅ Section D: State Machines (entity lifecycles)
+**Format**: Numbered markdown lists (1, 2, 3...) + Bold keywords + Plain English
 
-**NEVER use**:
-- ❌ Code examples (TypeScript, Rust, Python, etc.)
-- ❌ Function syntax (`fn`, `function`, `async`)
-- ❌ Type annotations (`: string`, `<T>`)
-- ❌ Language operators (`&&`, `||`, `=>`)
-
-**Required format**: Numbered markdown lists (1, 2, 3...)
-
-**Keywords**: **IF**, **FOR EACH**, **WHILE**, **TRY/CATCH**, **RETURN**, **FROM/TO/WHEN**
+**No code syntax**: FDL is language-agnostic, implementation-independent
 
 ---
 
@@ -231,42 +221,53 @@ Goal: Create new dashboard
 
 ---
 
-## Summary for AI Agents
+## Validation Criteria
 
-**FDL = Markdown lists + bold keywords + plain English**
+### Structure (25 points)
 
-### When to Use
+**Check**:
+- [ ] Uses numbered markdown lists (1, 2, 3...)
+- [ ] Proper nesting with indentation
+- [ ] No code blocks or function syntax
+- [ ] No type annotations
 
-- ✅ Section B: Actor Flows
-- ✅ Section C: Algorithms
-- ✅ Section D: State Machines
+### Keyword Usage (30 points)
 
-### Format Rules
+**Check**:
+- [ ] Keywords are bold (**IF**, **FOR EACH**, **WHILE**, etc.)
+- [ ] Keywords used correctly (IF for conditions, FOR EACH for iterations)
+- [ ] FROM/TO/WHEN used for state transitions
+- [ ] TRY/CATCH used for error handling
+- [ ] RETURN used for algorithm outputs
 
-1. Numbered lists (1, 2, 3...)
-2. Bold keywords for control flow
-3. Plain English only
-4. Indent nested steps
-5. No code syntax
+### Clarity (25 points)
 
-### Keywords to Use
+**Check**:
+- [ ] Plain English descriptions
+- [ ] No programming language syntax (no =>, &&, ||, etc.)
+- [ ] No function definitions (fn, function, async)
+- [ ] Language-agnostic (implementation-independent)
+- [ ] Clear and unambiguous steps
 
-**Control**: **IF**, **ELSE IF**, **ELSE**  
-**Loops**: **FOR EACH**, **WHILE**  
-**Errors**: **TRY**, **CATCH**  
-**Flow**: **RETURN**, **GO TO**, **SKIP TO**  
-**Parallel**: **PARALLEL**  
-**Match**: **MATCH**, **CASE**, **DEFAULT**  
-**States**: **FROM**, **TO**, **WHEN**
+### Completeness (20 points)
 
-### Remember
+**Check**:
+- [ ] All flows have numbered steps
+- [ ] All algorithms have Input/Output defined
+- [ ] All state machines have States and Transitions defined
+- [ ] No placeholders or TODOs
+- [ ] All conditions and actions specified
 
-- ✅ Plain English descriptions
-- ✅ Variable names without types
-- ✅ Simple notation: `entity.field`
-- ❌ No code examples
-- ❌ No function syntax
-- ❌ No type annotations
-- ❌ No language operators
+**Total**: 100/100
 
-**AI agents**: Generate implementation code from FDL, not the reverse!
+**Pass threshold**: ≥90/100
+
+---
+
+## References
+
+**This file is referenced by**:
+- `overall-design-structure.md` - Requires FDL for behavioral sections
+- `feature-design-structure.md` - Requires FDL for behavioral sections
+
+**Note**: Project adapters CAN override FDL by specifying custom behavior description language in adapter AGENTS.md
