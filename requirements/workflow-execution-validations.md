@@ -292,36 +292,32 @@
    - [ ] YES - Read and followed all 4 phases
    - [ ] NO - Validation is INVALID, must restart
 
-2. ⚠️ **Did I verify model suitability with evidence (execution-protocol Phase 2, Step 11)?**
-    - [ ] YES - Model identity source proven; class mapped; suitability checked
-    - [ ] NO - Validation is INVALID, must restart
-
-3. ⚠️ **Did I read the ENTIRE artifact line by line?**
+2. ⚠️ **Did I read the ENTIRE artifact line by line?**
    - [ ] YES - Read from line 1 to end
    - [ ] NO - Validation is INVALID, must restart
 
-4. ⚠️ **Did I check EVERY validation criterion from requirements?**
+3. ⚠️ **Did I check EVERY validation criterion from requirements?**
    - [ ] YES - Verified each criterion individually
    - [ ] NO - Validation is INVALID, must restart
 
-5. ⚠️ **Did I verify EACH ID format individually?**
+4. ⚠️ **Did I verify EACH ID format individually?**
    - [ ] YES - Checked each ID against format requirements
    - [ ] NO - Validation is INVALID, must restart
 
 #### Systematic Verification Check
-6. ⚠️ **Did I run grep searches for common issues?**
+5. ⚠️ **Did I run grep searches for common issues?**
    - [ ] YES - Ran: TODO, TBD, `**ID**:`, placeholders
    - [ ] NO - Validation is INVALID, must restart
 
-7. ⚠️ **Did I check ADR headers for ID fields? (if validating ADR.md)**
+6. ⚠️ **Did I check ADR headers for ID fields? (if validating ADR.md)**
    - [ ] YES - Verified `**ID**:` after EACH `## ADR-` heading
    - [ ] NO - Validation is INVALID, must restart
 
-8. ⚠️ **Did I check requirement traceability? (if validating DESIGN.md)**
+7. ⚠️ **Did I check requirement traceability? (if validating DESIGN.md)**
    - [ ] YES - Verified `**Capabilities**:`, `**Actors**:` fields
    - [ ] NO - Validation is INVALID, must restart
 
-9. ⚠️ **Did I cross-reference EVERY actor/capability/requirement?**
+8. ⚠️ **Did I cross-reference EVERY actor/capability/requirement?**
    - [ ] YES - Built index, verified each reference
    - [ ] NO - Validation is INVALID, must restart
 
