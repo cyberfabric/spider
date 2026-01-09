@@ -134,7 +134,27 @@ Extract:
 - ✅ No TODO/FIXME in implementation code
 - ✅ No unimplemented!() in business logic
 
-### 4. Validate Test Scenarios Implementation
+### 4. Validate Design Conformance (Flows / Algorithms / States / Technical Details)
+
+**Collect design IDs**:
+- Flows: Section B IDs (`fdd-{project}-feature-{feature-slug}-flow-*`)
+- Algorithms: Section C IDs (`...-algo-*`)
+- States (if present): Section D IDs (`...-state-*`)
+- Requirements & tests: Section F IDs (`...-req-*`, `...-test-*`)
+
+**Check implementation and non-deviation**:
+- For each Flow ID: locate code tagged with `@fdd-flow:{id}` (or equivalent trace) and verify the control flow matches the described steps (no skipped/extra steps that change behavior).
+- For each Algorithm ID: locate code tagged with `@fdd-algo:{id}` and verify logic matches described algorithm; no TODO/unimplemented!/panic/unwrap stubs; performance/complexity expectations respected.
+- For each State ID (if any): locate code tagged with `@fdd-state:{id}` and verify state transitions match the design; forbidden states/transitions absent.
+- Technical details (Section E): verify endpoints, security, error handling, OData parameters, and delegation points align with design and adapter specs (`modkit-rest-integration.md`, `patterns.md`, `conventions.md`); ensure OperationBuilder usage and api_gateway integration are intact (no direct axum routes, no custom middleware).
+
+**Validation**:
+- ✅ All design IDs (flows/algorithms/states/requirements/tests) found in code and mapped to implementations
+- ✅ Implementations follow design steps/logic; no divergent behavior
+- ✅ No missing or extra endpoints/paths versus design Section E
+- ✅ No placeholder/stub code in mapped implementations
+
+### 5. Validate Test Scenarios Implementation
 
 **CRITICAL**: All testing scenarios from DESIGN.md Section F MUST be implemented
 
@@ -158,7 +178,7 @@ Extract:
 - ✅ Test is not ignored or placeholder
 - ✅ Test can be executed
 
-### 5. Execute Build Validation
+### 6. Execute Build Validation
 
 **Run build**:
 - Execute the build command from `{adapter-directory}/FDD-Adapter/specs/build-deploy.md`.
@@ -170,7 +190,7 @@ Extract:
 
 **Score**: 15 points
 
-### 6. Execute Linter Validation
+### 7. Execute Linter Validation
 
 **Run linters**:
 - Execute the lint command(s) from `{adapter-directory}/FDD-Adapter/specs/conventions.md` or `{adapter-directory}/FDD-Adapter/specs/build-deploy.md`.
@@ -182,7 +202,7 @@ Extract:
 
 **Score**: 10 points
 
-### 7. Execute Test Validation
+### 8. Execute Test Validation
 
 **Run all tests**:
 - Execute the test command(s) from `{adapter-directory}/FDD-Adapter/specs/testing.md`.
@@ -196,7 +216,7 @@ Extract:
 
 **Score**: 30 points
 
-### 8. Code Quality Validation
+### 9. Code Quality Validation
 
 **Check for incomplete work**:
 - Search the feature code set (identified via `@fdd-change` tags) for incomplete work markers: `TODO`, `FIXME`, `XXX`, `HACK`.
@@ -213,10 +233,11 @@ Extract:
 
 **Score**: 15 points
 
-### 9. Calculate Score
+### 10. Calculate Score
 
 **Scoring breakdown**:
 - Requirements Implementation (30 pts): All requirements marked IMPLEMENTED actually implemented
+- Design Conformance (20 pts): Flows/algorithms/states/technical details from DESIGN implemented without deviation
 - Test Scenarios Implementation (20 pts): All test scenarios from DESIGN.md implemented
 - Build Success (15 pts): Build succeeds without errors
 - Linter Pass (10 pts): Linter succeeds without errors
