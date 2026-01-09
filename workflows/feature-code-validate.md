@@ -71,9 +71,14 @@ Extract:
 
 **MUST validate**:
 - [ ] Feature DESIGN.md exists and validated (100/100 + 100%)
-- [ ] CHANGES.md exists and validated
+- [ ] CHANGES source exists and validated (active or archived)
 - [ ] At least one change with status IN_PROGRESS or COMPLETED
 - [ ] Adapter exists - validate: Required for validation
+
+ **CHANGES source selection**:
+ - **Preferred**: Use active `CHANGES.md` in the feature directory.
+ - **Fallback**: If active `CHANGES.md` does not exist, use the most recent archived changes file in `archive/`.
+   - Choose the newest `YYYY-MM-DD-CHANGES.md` (lexicographically latest date).
 
 ---
 
@@ -83,13 +88,13 @@ Extract:
 
 **Read feature artifacts**:
 1. Open feature DESIGN.md
-2. Open feature CHANGES.md
+2. Open feature CHANGES source (active `CHANGES.md` or latest archived `archive/YYYY-MM-DD-CHANGES.md`)
 3. Extract feature slug from paths
 
 **Extract validation scope**:
 - All requirements from DESIGN.md Section F
 - All testing scenarios from DESIGN.md Section F
-- All changes from CHANGES.md (to identify code locations)
+- All changes from CHANGES source (to identify code locations)
 
 ### 2. Build Codebase Map
 

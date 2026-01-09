@@ -28,6 +28,13 @@
 
 **Location**: `architecture/features/feature-{slug}/CHANGES.md`
 
+**Archived location**: `architecture/features/feature-{slug}/archive/YYYY-MM-DD-CHANGES.md`
+
+**Validation workflows compatibility**:
+- For validation workflows that require a CHANGES input (e.g., `feature-code-validate`), the CHANGES source MAY be either:
+  - Active `CHANGES.md` (preferred)
+  - The most recent archived `archive/YYYY-MM-DD-CHANGES.md` (fallback when active CHANGES.md is absent)
+
 **Prerequisites**: Feature DESIGN.md validated (100/100 + 100%)
 
 ---
@@ -289,8 +296,9 @@ mod schema_v1_tests {
 
 ### File Structure Validation
 
-1. **CHANGES.md exists**
-   - File at `architecture/features/feature-{slug}/CHANGES.md`
+1. **CHANGES source exists**
+   - Active file at `architecture/features/feature-{slug}/CHANGES.md` OR
+   - Archived file at `architecture/features/feature-{slug}/archive/YYYY-MM-DD-CHANGES.md`
    - File is not empty
    - Contains required sections
 
