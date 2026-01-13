@@ -6,6 +6,8 @@
 
 ---
 
+**ALWAYS open and follow**: `core.md` WHEN editing this file
+
 ## ⚠️ CRITICAL: Maximum Attention to Detail Required ⚠️
 
 **MUST** perform validation with **MAXIMUM ATTENTION TO DETAIL**:

@@ -10,6 +10,10 @@ description: Implement specific change from implementation plan
 
 ---
 
+**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+
+ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
+
 ## Requirements
 
 **ALWAYS open and follow**: 
@@ -65,17 +69,19 @@ Follow MUST WHEN instructions for:
 
 **MUST tag all code with IDs from both CHANGES and DESIGN**:
 
-- Change ID: `@fdd-change:fdd-{project}-{feature}-change-{slug}` (from CHANGES source)
-- Flow ID: `@fdd-flow:{flow-id}` (Section B of DESIGN)  
-  _Example_: `@fdd-flow:fdd-analytics-feature-gts-core-flow-route-crud-operations`
-- Algorithm ID: `@fdd-algo:{algo-id}` (Section C of DESIGN)  
-  _Example_: `@fdd-algo:fdd-analytics-feature-gts-core-algo-routing-logic`
-- State ID: `@fdd-state:{state-id}` (Section D of DESIGN, if present)  
-  _Example_: `@fdd-state:fdd-analytics-feature-gts-core-state-entity-lifecycle`
-- Requirement ID: `@fdd-req:{req-id}` (Section F of DESIGN)  
-  _Example_: `@fdd-req:fdd-analytics-feature-gts-core-req-routing`
-- Test scenario ID: `@fdd-test:{test-id}` (Section F of DESIGN)  
-  _Example_: `@fdd-test:fdd-analytics-feature-gts-core-test-routing-table-lookup`
+**Rule**: Phase MUST be encoded as a postfix on feature-scoped tags. Standalone phase tags MUST NOT be used.
+
+- Change ID: `@fdd-change:fdd-{project}-{feature}-change-{slug}:ph-{N}` (from CHANGES source; phase postfix is mandatory)
+- Flow ID: `@fdd-flow:{flow-id}:ph-{N}` (Section B of DESIGN; phase postfix is mandatory)  
+  _Example_: `@fdd-flow:fdd-analytics-feature-gts-core-flow-route-crud-operations:ph-1`
+- Algorithm ID: `@fdd-algo:{algo-id}:ph-{N}` (Section C of DESIGN; phase postfix is mandatory)  
+  _Example_: `@fdd-algo:fdd-analytics-feature-gts-core-algo-routing-logic:ph-1`
+- State ID: `@fdd-state:{state-id}:ph-{N}` (Section D of DESIGN, if present; phase postfix is mandatory)  
+  _Example_: `@fdd-state:fdd-analytics-feature-gts-core-state-entity-lifecycle:ph-1`
+- Requirement ID: `@fdd-req:{req-id}:ph-{N}` (Section F of DESIGN; phase postfix is mandatory)  
+  _Example_: `@fdd-req:fdd-analytics-feature-gts-core-req-routing:ph-1`
+- Test scenario ID: `@fdd-test:{test-id}:ph-{N}` (Section F of DESIGN; phase postfix is mandatory)  
+  _Example_: `@fdd-test:fdd-analytics-feature-gts-core-test-routing-table-lookup:ph-1`
 
 **Tag placement**:
 - At the beginning of new/modified functions, methods, structs, or complex blocks implementing the logic
@@ -84,9 +90,9 @@ Follow MUST WHEN instructions for:
 
 **Examples (multiple IDs allowed)**:
 ```rust
-// @fdd-change:fdd-analytics-feature-schema-query-returns-change-gts-schema-types
-// @fdd-req:fdd-analytics-feature-schema-query-returns-req-routing
-// @fdd-algo:fdd-analytics-feature-schema-query-returns-algo-routing-logic
+// @fdd-change:fdd-analytics-feature-schema-query-returns-change-gts-schema-types:ph-1
+// @fdd-req:fdd-analytics-feature-schema-query-returns-req-routing:ph-1
+// @fdd-algo:fdd-analytics-feature-schema-query-returns-algo-routing-logic:ph-1
 pub struct SchemaV1 {
     pub schema_id: String,
     pub version: String,
@@ -94,7 +100,7 @@ pub struct SchemaV1 {
 ```
 
 ```typescript
-// @fdd-change:fdd-analytics-feature-schema-query-returns-change-api-rest-endpoints
+// @fdd-change:fdd-analytics-feature-schema-query-returns-change-api-rest-endpoints:ph-1
 export async function handleSchemaQuery(
     req: Request
 ): Promise<SchemaResponse> {
@@ -104,12 +110,12 @@ export async function handleSchemaQuery(
 
 **Multiple changes/IDs in same file**:
 ```python
-# @fdd-change:fdd-analytics-feature-schema-query-returns-change-schema-validation
-# @fdd-req:fdd-analytics-feature-schema-query-returns-req-validation
+# @fdd-change:fdd-analytics-feature-schema-query-returns-change-schema-validation:ph-1
+# @fdd-req:fdd-analytics-feature-schema-query-returns-req-validation:ph-1
 def validate_schema_structure(schema: dict):
     pass
 
-# @fdd-change:fdd-analytics-feature-schema-query-returns-change-type-conversion
+# @fdd-change:fdd-analytics-feature-schema-query-returns-change-type-conversion:ph-1
 def convert_gts_to_json_schema(gts_schema):
     pass
 ```
@@ -117,7 +123,7 @@ def convert_gts_to_json_schema(gts_schema):
 ### 3.2 Tag Verification (agent checklist)
 
 **ALWAYS verify** (before finishing implementation):
-- Grep/search code for ALL IDs from CHANGES (change IDs) and DESIGN (flow/algo/state/req/test)
+- Search the codebase for ALL IDs from CHANGES (change IDs) and DESIGN (flow/algo/state/req/test)
 - Confirm tags exist in the files that implement corresponding logic/tests
 - If any DESIGN ID has no code tag → report as gap and/or add tag
 

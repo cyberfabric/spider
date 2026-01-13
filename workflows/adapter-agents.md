@@ -10,6 +10,10 @@ description: Configure or update AI agent integration for FDD
 
 ---
 
+**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+
+ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
+
 ## Requirements
 
 **ALWAYS open and follow**: `../requirements/adapter-structure.md` (if adapter exists)

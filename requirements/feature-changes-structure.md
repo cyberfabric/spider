@@ -1,6 +1,8 @@
 # Feature Changes (Implementation Plan) Structure Requirements
 
 **ALWAYS open and follow**: `../workflows/feature-changes.md`
+**ALWAYS open and follow**: `requirements.md`
+**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -51,7 +53,7 @@
 **Last Updated**: YYYY-MM-DD  
 **Status**: {Overall status}
 
-**Feature DESIGN**: `@/architecture/features/feature-{slug}/DESIGN.md`
+**Feature DESIGN**: [DESIGN.md](DESIGN.md)
 
 ---
 
@@ -79,6 +81,7 @@
 **Priority**: HIGH | MEDIUM | LOW  
 **Effort**: {story points or hours}  
 **Implements**: `fdd-{project}-{feature}-req-{id}`, `fdd-{project}-{feature}-req-{id}`
+**Phases**: `ph-1` or `ph-{N}, ph-{N}`
 
 ---
 
@@ -93,10 +96,10 @@
 - **`fdd-{project}-{feature}-req-{id}`**: {Requirement description}
 
 **References**:
-- Actor Flow: {Section B reference from feature DESIGN.md}
-- Algorithm: {Section C reference from feature DESIGN.md}
-- State: {Section D reference from feature DESIGN.md}
-- Technical Detail: {Section E reference from feature DESIGN.md}
+- Actor Flow: `fdd-{project}-feature-{feature}-flow-{slug}` (Section B of feature DESIGN.md)
+- Algorithm: `fdd-{project}-feature-{feature}-algo-{slug}` (Section C of feature DESIGN.md)
+- State: `fdd-{project}-feature-{feature}-state-{slug}` (Section D of feature DESIGN.md)
+- Technical Detail: `fdd-{project}-feature-{feature}-td-{slug}` (Section E of feature DESIGN.md)
 
 ### Tasks
 
@@ -104,10 +107,27 @@
 
 ## 1. Implementation
 
+### Code Tagging Tasks (Mandatory Pattern)
+
+**Rule**: Code tagging MUST be represented as an explicit task that appears **immediately after** the specific task that changes code.
+
+**Meaning**:
+- If task `1.1.1` changes code, then task `1.1.2` MUST be: add the required FDD comment tags at the exact code location introduced/modified by `1.1.1`.
+- Tagging MUST NOT be a separate "Task 0" done somewhere else; it MUST be attached to the relevant task.
+
+**Required tag formats** (phase is ALWAYS a postfix):
+- `@fdd-change:fdd-{project}-{feature}-change-{slug}:ph-{N}`
+- `@fdd-req:fdd-{project}-{feature}-req-{id}:ph-{N}`
+- `@fdd-flow:fdd-{project}-feature-{feature}-flow-{slug}:ph-{N}`
+- `@fdd-algo:fdd-{project}-feature-{feature}-algo-{slug}:ph-{N}`
+- `@fdd-state:fdd-{project}-feature-{feature}-state-{slug}:ph-{N}`
+- `@fdd-test:fdd-{project}-{feature}-test-{id}:ph-{N}`
+
 ### 1.1 {Task Group Name}
 - [ ] 1.1.1 {Task description with file path and action}
-- [ ] 1.1.2 {Task description with file path and action}
-- [ ] 1.1.3 {Task description with file path and action}
+- [ ] 1.1.2 Add required FDD comment tags (with `:ph-{N}` postfix) at the exact code location changed in 1.1.1
+- [ ] 1.1.3 {Next task description with file path and action}
+- [ ] 1.1.4 Add required FDD comment tags (with `:ph-{N}` postfix) at the exact code location changed in 1.1.3
 
 ### 1.2 {Task Group Name}
 - [ ] 1.2.1 {Task description with file path and action}
@@ -178,7 +198,7 @@
 **Testing Scenario Implementation** (MANDATORY):
 - All testing scenarios from feature DESIGN.md Section F MUST be implemented
 - Each test MUST reference its testing scenario ID for traceability
-- Format: `// @fdd-test:fdd-{project}-feature-{feature-slug}-test-{scenario-name}`
+- Format: `// @fdd-test:fdd-{project}-feature-{feature-slug}-test-{scenario-name}:ph-{N}`
 - Tests MUST NOT be ignored without documented justification
 - Tests MUST validate actual behavior (not placeholders)
 
@@ -191,7 +211,9 @@
 - No linter errors
 - Documentation updated
 - Implements all referenced requirements
-- **Code tagged**: All modified/new code has `@fdd-change:fdd-{project}-{feature}-change-{slug}` tags (full format only)
+- **Code tagged**: All modified/new code has `@fdd-change:fdd-{project}-{feature}-change-{slug}:ph-{N}` tags (full format only)
+- **Phase postfix**: All feature-scoped tags use `:ph-{N}` postfix; standalone phase tags MUST NOT exist
+- **Phase consistency**: Every `:ph-{N}` used in code tags MUST be listed in the change `**Phases**` field
 - **Testing scenarios implemented**: All testing scenarios from feature DESIGN.md Section F have corresponding tests
 
 ---
@@ -203,7 +225,9 @@
 
 **Purpose**: Enable traceability from code to change identifiers for auditing, debugging, and impact analysis
 
-**Tag Format**: `@fdd-change:fdd-{project}-{feature}-change-{slug}` (ONLY full format allowed)
+**Tag Format**: `@fdd-change:fdd-{project}-{feature}-change-{slug}:ph-{N}` (ONLY full format allowed)
+
+**Phase Postfix Format**: `:ph-{N}` (phase is always a postfix of other FDD tags)
 
 **Mandatory Placement**:
 - At the beginning of all new functions, methods, classes, structs, types
@@ -211,25 +235,33 @@
 - In complex code blocks directly implementing change requirements
 - In test files validating change functionality
 
+**Phase Tagging Rules**:
+- Standalone phase tags MUST NOT be used.
+- Because every change MUST declare `**Phases**`, all code implementing that change MUST include phase postfixes on feature-scoped tags.
+- Minimum required tag for change implementation: `@fdd-change:{change-id}:ph-{N}`.
+
+**Algorithm tag format (mandatory)**:
+- When `@fdd-algo` is used, it MUST include a phase postfix: `@fdd-algo:{algo-id}:ph-{N}`.
+
 **Language-Specific Format**:
-- **Rust**: `// @fdd-change:{change-id}`
-- **TypeScript/JavaScript**: `// @fdd-change:{change-id}`
-- **Python**: `# @fdd-change:{change-id}`
-- **Go**: `// @fdd-change:{change-id}`
-- **Java/C#**: `// @fdd-change:{change-id}`
-- **SQL**: `-- @fdd-change:{change-id}`
+- **Rust**: `// @fdd-change:{change-id}:ph-{N}`
+- **TypeScript/JavaScript**: `// @fdd-change:{change-id}:ph-{N}`
+- **Python**: `# @fdd-change:{change-id}:ph-{N}`
+- **Go**: `// @fdd-change:{change-id}:ph-{N}`
+- **Java/C#**: `// @fdd-change:{change-id}:ph-{N}`
+- **SQL**: `-- @fdd-change:{change-id}:ph-{N}`
 
 **Examples**:
 
 ```rust
-// @fdd-change:fdd-analytics-feature-schema-query-returns-change-gts-schema-types
+// @fdd-change:fdd-analytics-feature-schema-query-returns-change-gts-schema-types:ph-1
 pub struct SchemaV1 {
     pub schema_id: String,
     pub version: String,
     pub fields: Vec<SchemaField>,
 }
 
-// @fdd-change:fdd-analytics-feature-schema-query-returns-change-gts-schema-types
+// @fdd-change:fdd-analytics-feature-schema-query-returns-change-gts-schema-types:ph-1
 impl SchemaV1 {
     pub fn new(schema_id: String) -> Self {
         Self {
@@ -242,7 +274,7 @@ impl SchemaV1 {
 ```
 
 ```typescript
-// @fdd-change:fdd-analytics-feature-schema-query-returns-change-api-rest-endpoints
+// @fdd-change:fdd-analytics-feature-schema-query-returns-change-api-rest-endpoints:ph-1
 export async function handleSchemaQuery(
     req: Request,
     context: QueryContext
@@ -250,7 +282,7 @@ export async function handleSchemaQuery(
     // Implementation
 }
 
-// @fdd-change:fdd-analytics-feature-schema-query-returns-change-api-rest-endpoints
+// @fdd-change:fdd-analytics-feature-schema-query-returns-change-api-rest-endpoints:ph-1
 export class SchemaQueryHandler {
     async execute(query: SchemaQuery): Promise<SchemaResult> {
         // Implementation
@@ -260,18 +292,18 @@ export class SchemaQueryHandler {
 
 **Multiple Changes in Same File**:
 ```python
-# @fdd-change:fdd-analytics-feature-schema-query-returns-change-schema-validation
+# @fdd-change:fdd-analytics-feature-schema-query-returns-change-schema-validation:ph-1
 def validate_schema_structure(schema: dict) -> ValidationResult:
     pass
 
-# @fdd-change:fdd-analytics-feature-schema-query-returns-change-type-conversion
+# @fdd-change:fdd-analytics-feature-schema-query-returns-change-type-conversion:ph-1
 def convert_gts_to_json_schema(gts_schema: GTSSchema) -> dict:
     pass
 ```
 
 **Test Files**:
 ```rust
-// @fdd-change:fdd-analytics-feature-schema-query-returns-change-gts-schema-types
+// @fdd-change:fdd-analytics-feature-schema-query-returns-change-gts-schema-types:ph-1
 #[cfg(test)]
 mod schema_v1_tests {
     use super::*;
@@ -285,7 +317,7 @@ mod schema_v1_tests {
 ```
 
 **Validation**:
-- Use `grep -r "@fdd-change:{change-id}"` to find all tagged code
+- Search the codebase for `@fdd-change:{change-id}:ph-` to find all tagged code
 - Verify all files listed in CHANGES.md tasks have corresponding tags
 - Verify all major functions/classes implementing change have tags
 - Tag count should correlate with implementation scope
@@ -299,7 +331,6 @@ mod schema_v1_tests {
 1. **CHANGES source exists**
    - Active file at `architecture/features/feature-{slug}/CHANGES.md` OR
    - Archived file at `architecture/features/feature-{slug}/archive/YYYY-MM-DD-CHANGES.md`
-   - File is not empty
    - Contains required sections
 
 2. **Document header present**
@@ -314,6 +345,7 @@ mod schema_v1_tests {
    - All changes have status
    - All changes have priority
    - All changes reference feature requirements
+   - All changes declare `**Phases**` with `ph-{N}` values (at least `ph-1`)
 
 ### Content Validation
 
@@ -321,7 +353,9 @@ mod schema_v1_tests {
    - Objective clear and specific
    - Requirements coverage lists all implemented requirements
    - All requirement IDs exist in feature DESIGN.md Section F
+   - References contain explicit FDD IDs (flow/algo/state/technical detail)
    - Tasks are granular and actionable
+   - Tasks include mandatory code tagging instructions (comments with FDD IDs)
    - Specification is complete
    - Testing plan covers all scenarios
 
@@ -331,6 +365,7 @@ mod schema_v1_tests {
    - Each task has validation criteria
    - Tasks in logical order
    - No placeholders
+   - Each change includes a dedicated code tagging task group ensuring tags are added to code comments
 
 3. **Specification completeness**
    - Domain model changes specified
@@ -350,7 +385,7 @@ mod schema_v1_tests {
    - E2E tests for user scenarios
    - All tests reference feature DESIGN.md Section F scenarios
    - **MANDATORY**: All testing scenarios from feature DESIGN.md Section F have implemented tests
-   - Each test includes scenario ID comment for traceability: `// @fdd-test:{scenario-id}`
+   - Each test includes scenario ID comment for traceability: `// @fdd-test:{scenario-id}:ph-{N}`
 
 ### Consistency Validation
 
@@ -358,15 +393,20 @@ mod schema_v1_tests {
    - All changes implement feature requirements
    - No changes implement non-existent requirements
    - All feature requirements covered by at least one change
-   - References to actor flows, algorithms, states are valid
+   - References to actor flows, algorithms, states, technical details are valid (IDs exist in feature DESIGN.md)
 
-2. **Adapter consistency**
+2. **Code tagging consistency**
+   - No standalone phase tags exist in code
+   - All feature-scoped tags include `:ph-{N}` postfix
+   - `:ph-{N}` values used in code match `**Phases**` declared by their change(s)
+
+3. **Adapter consistency**
    - Domain model uses adapter format
    - API contracts use adapter format
    - Database schema uses adapter conventions
    - Code structure follows adapter conventions
 
-3. **Parent artifact consistency**
+4. **Parent artifact consistency**
    - No contradictions with DESIGN.md
    - No contradictions with BUSINESS.md
    - Types reference Overall Design domain model
@@ -380,8 +420,6 @@ mod schema_v1_tests {
    - No requirements orphaned
 
 2. **No placeholders**
-   - No `[TODO]` markers
-   - No `[TBD]` markers
    - No empty specifications
    - All tasks have clear actions
 
@@ -392,8 +430,6 @@ mod schema_v1_tests {
    - No change too small (<1 requirement)
 
 ### Validation Scoring
-
-**Total**: 100 points
 
 **Breakdown**:
 - File structure (10 points): CHANGES.md + change directories
@@ -421,7 +457,7 @@ mod schema_v1_tests {
 **Last Updated**: 2025-01-07  
 **Status**: 🔄 IN_PROGRESS
 
-**Feature DESIGN**: `@/architecture/features/feature-analytics-event-tracking/DESIGN.md`
+**Feature DESIGN**: [DESIGN.md](DESIGN.md)
 
 ---
 

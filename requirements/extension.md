@@ -6,6 +6,8 @@
 
 ---
 
+**ALWAYS open and follow**: `core.md` WHEN editing this file
+
 ## Overview
 
 **Extension mechanism** - Allows files to inherit content from base files and add modifications

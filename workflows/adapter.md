@@ -10,6 +10,10 @@ description: FDD Adapter Router - Choose adapter workflow mode
 
 ---
 
+**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+
+ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
+
 ## Purpose
 
 **Router workflow** - Determines which adapter workflow to execute based on:

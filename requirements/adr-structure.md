@@ -1,6 +1,8 @@
 # Architecture Decision Records (ADR) Structure Requirements
 
 **ALWAYS open and follow**: `../workflows/adr.md`
+**ALWAYS open and follow**: `requirements.md`
+**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -26,9 +28,9 @@
 
 **Format**: Industry-standard MADR (Markdown Any Decision Records)
 
-**Reference from DESIGN.md**: `@/architecture/ADR.md`
+**Reference from DESIGN.md**: [ADR.md](ADR.md)
 
-**Reference from BUSINESS.md**: `@/architecture/ADR.md`
+**Reference from BUSINESS.md**: [ADR.md](ADR.md)
 
 ---
 
@@ -282,7 +284,6 @@ ADRs are listed in **chronological order** (oldest first):
 1. **File exists**
    - File `architecture/ADR.md` exists
    - File contains ≥1 ADR
-   - File is not empty
 
 2. **Document header**
    - Contains module name

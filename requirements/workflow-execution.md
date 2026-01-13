@@ -6,6 +6,8 @@
 
 ---
 
+**ALWAYS open and follow**: `core.md` WHEN editing this file
+
 ## Overview
 
 **⚠️ ALWAYS open and follow FIRST**: `execution-protocol.md` - Mandatory protocol for ALL workflows

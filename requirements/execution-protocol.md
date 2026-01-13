@@ -6,6 +6,8 @@
 
 ---
 
+**ALWAYS open and follow**: `core.md` WHEN editing this file
+
 ## ⚠️ MANDATORY PRE-EXECUTION PROTOCOL ⚠️
 
 **Before executing ANY workflow, agent ALWAYS follows this protocol**

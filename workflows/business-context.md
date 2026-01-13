@@ -2,6 +2,10 @@
 description: Create or update business context document
 ---
 
+**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+
+ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
+
 # Create or Update Business Context
 
 **Type**: Operation  

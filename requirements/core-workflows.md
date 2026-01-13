@@ -6,6 +6,8 @@
 
 ---
 
+**ALWAYS open and follow**: `core.md` WHEN editing this file
+
 ## Overview
 
 **Workflow files** - Executable procedures for FDD operations and validations

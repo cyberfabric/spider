@@ -6,6 +6,10 @@
 
 ---
 
+**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+
+ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
+
 ## Purpose
 
 Create minimal adapter for new projects - just `AGENTS.md` with `Extends` declaration.

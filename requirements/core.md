@@ -144,9 +144,41 @@ ALWAYS open and follow `core-agents.md` WHEN creating or modifying AGENTS.md fil
 
 ### Formatting
 
-**MUST**: Markdown | Tagged code blocks | Inline code for paths
+**MUST**: Markdown | Tagged code blocks | Inline code for agent instructions | Standard Markdown links for artifact references
 
 **MUST NOT**: HTML | Unicode bullets | Excessive formatting
+
+### Links
+
+**MUST**:
+- For FDD artifacts and adapter spec docs, follow `requirements.md`
+- For agent instruction files (AGENTS.md, workflow files), use inline code paths for navigation (e.g., `requirements/core.md`) to optimize agent parsing and token usage
+
+**MUST NOT**:
+- In FDD artifacts and adapter spec docs, violate link requirements from `requirements.md`
+- In FDD artifacts, use inline code as a substitute for a link when the intent is navigation
+
+### Markdown Rendering: Line Breaks
+
+**MUST** ensure that metadata-like lines render as separate lines in markdown output.
+
+**MUST** use one of these patterns:
+- Use a markdown list for metadata fields (preferred)
+- Or end each metadata line with two spaces (`  `) to force a hard line break
+
+**MUST NOT** rely on markdown soft-wrap for rendering separate lines.
+
+**Examples**:
+```markdown
+✅ - **Status**: NOT_STARTED
+✅ - **Depends On**: None
+
+✅ **Status**: NOT_STARTED  
+✅ **Depends On**: None  
+
+❌ **Status**: NOT_STARTED
+❌ **Depends On**: None
+```
 
 ### Examples
 
@@ -205,7 +237,8 @@ ALWAYS open and follow `core-agents.md` WHEN creating or modifying AGENTS.md fil
 2. **OS agnostic**: No OS commands | Forward slashes | Cross-platform
 3. **Agent-centric**: Executable steps | Explicit prerequisites | Clear criteria
 4. **Complete**: No TODO/TBD | No empty sections | All examples present
-5. **References**: All references use action-gated WHEN format | No content duplication from referenced files
+5. **Markdown rendering**: Metadata lines do not collapse | No reliance on soft-wrap | Prefer list format
+6. **References**: All references use action-gated WHEN format | No content duplication from referenced files
 
 ### Validation Scoring
 

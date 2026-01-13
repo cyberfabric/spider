@@ -6,6 +6,8 @@
 
 ---
 
+**ALWAYS open and follow**: `core.md` WHEN editing this file
+
 ## Overview
 
 **Validation workflows** - Automated procedures to validate structure, completeness, consistency

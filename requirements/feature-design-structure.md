@@ -1,6 +1,8 @@
 # Feature Design Structure Requirements
 
 **ALWAYS open and follow**: `../workflows/feature.md`
+**ALWAYS open and follow**: `requirements.md`
+**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -67,8 +69,16 @@
 - **Usage**: Each flow must have `**ID**: {id}` before flow title/description
 - **Format in document**: `**ID**: fdd-project-feature-slug-flow-name`
 
+**ID status tracking (mandatory)**:
+- The Flow `**ID**:` line MUST include a checkbox:
+  - `- [ ] **ID**: {flow-id}` for NOT implemented
+  - `- [x] **ID**: {flow-id}` for implemented
+
+**Phase (mandatory in FDL)**:
+- Phase MUST be specified on every FDL step line using the `ph-{N}` token.
+
 **Content requirements**:
-- Written in FDL (see `../FDL.md` for syntax)
+- Written in FDL (see `FDL.md` for syntax)
 - Each flow must have unique ID
 - Each flow includes: Actor, Steps, Success Scenarios, Error Scenarios
 - Flows are comprehensive and cover main use cases
@@ -102,8 +112,21 @@
 - **Usage**: Each algorithm must have `**ID**: {id}` before algorithm title
 - **Format in document**: `**ID**: fdd-project-feature-slug-algo-name`
 
+**ID status tracking (mandatory)**:
+- The Algorithm `**ID**:` line MUST include a checkbox:
+  - `- [ ] **ID**: {algo-id}`
+  - `- [x] **ID**: {algo-id}`
+
+**Phase (mandatory in FDL)**:
+- Phase MUST be specified on every FDL step line using the `ph-{N}` token.
+
+**Code tagging for algorithms (mandatory)**:
+- When tagging code that implements an algorithm, the algorithm tag MUST include the phase postfix:
+  - `@fdd-algo:{algo-id}:ph-{N}`
+- The phase postfix MUST match a phase used in the algorithm's FDL step lines.
+
 **Content requirements**:
-- Algorithms written in FDL (see `../FDL.md`)
+- Algorithms written in FDL (see `FDL.md`)
 - Each algorithm must have unique ID
 - Each algorithm: Input, Output, Steps in FDL
 - **NO programming language code** (`rust`, `typescript`, `javascript`, `python`, etc.)
@@ -131,8 +154,13 @@
 - **Usage**: Each state machine must have `**ID**: {id}` before state machine definition
 - **Format in document**: `**ID**: fdd-project-feature-slug-state-entity`
 
+**ID status tracking (mandatory)**:
+- The State machine `**ID**:` line MUST include a checkbox:
+  - `- [ ] **ID**: {state-id}`
+  - `- [x] **ID**: {state-id}`
+
 **Content requirements**:
-- States written in FDL (see `../FDL.md`)
+- States written in FDL (see `FDL.md`)
 - Each state machine must have unique ID
 - State definitions with **WHEN** keyword (only valid in state machines)
 - State transitions clearly documented
@@ -158,11 +186,11 @@
 
 **Reference Requirements**:
 - **Domain Model references**: Must be clickable links to domain model files
-  - Format: `@/path/to/domain-model-file` or markdown links to GTS/schema files
-  - Example: `User` type → link to `@/gts/user.gts` or domain model section
+  - Format: standard Markdown link to a schema/type file (relative to the feature doc)
+  - Example: `User` type → link to `[user.gts](../../../gts/user.gts)` or a domain model section anchor
 - **API Spec references**: Must be clickable links to API specification files
-  - Format: `@/path/to/api-spec-file` or markdown links to OpenAPI/spec files
-  - Example: `POST /users` → link to `@/openapi/users.yaml` or API spec section
+  - Format: standard Markdown link to an OpenAPI/spec file (relative to the feature doc)
+  - Example: `POST /users` → link to `[users.yaml](../../../openapi/users.yaml)` or an API spec section anchor
 - All external references must be verifiable and navigable
 
 **Content requirements**:
@@ -201,26 +229,56 @@
 - **Usage**: Each testing scenario must have `**ID**: {id}` before scenario description
 - **Format in document**: `**ID**: fdd-project-feature-slug-test-scenario`
 
+**ID status tracking (mandatory)**:
+- Each requirement ID MUST be written with a checkbox:
+  - `- [ ] **ID**: {req-id}`
+  - `- [x] **ID**: {req-id}`
+
+**Phase + implementation in tests**:
+- Each testing scenario ID MUST be written with a checkbox:
+  - `- [ ] **ID**: {test-id}`
+  - `- [x] **ID**: {test-id}`
+- Testing scenario steps MUST be written in FDL syntax ONLY (see `FDL.md`).
+- Every FDL step line in a testing scenario MUST follow the required FDL step-line format (including the `-` separators):
+  ```markdown
+  1. [ ] - `ph-1` - {instruction}
+  ```
+  - This applies to every step line, including control-flow keyword lines (e.g., **IF**, **FOR EACH**, **TRY**, **CATCH**, **RETURN**).
+
 **Required content per requirement**:
 - **ID**: Requirement ID in format above (for traceability)
 - **Title**: `### {Title}` (simple title, no numbering)
 - **Status**: ⏳ NOT_STARTED, 🔄 IN_PROGRESS, or ✅ IMPLEMENTED
 - **Description**: Clear description with SHALL/MUST statements
 - **References**: Markdown anchors to sections B-E (≥1 reference)
-- **Testing Scenarios**: ≥1 test scenario in FDL format (numbered lists + plain English)
+- **Implements**: Links to flows/algorithms/states when the requirement implements them
+- **Phases**: Requirement phase decomposition (mandatory)
+  - Each requirement MUST define `**Phases**:` followed by a markdown list
+  - Each phase line MUST include a checkbox and phase ID:
+    - - [ ] `ph-{N}`: {what is implemented in this phase}
+    - - [x] `ph-{N}`: {what is implemented in this phase}
+  - Each requirement MUST define at least `ph-1`
+  - Phase IDs used in a requirement MUST be a subset of the feature phases
+  - Each phase description MUST be specific enough to validate (what changes, what becomes true)
+  - Each phase SHOULD reference the implementing design artifacts (flow/algo/state) and the validating tests
+- **Testing Scenarios**: ≥1 test scenario written in FDL syntax ONLY (see `FDL.md`)
   - Each testing scenario must have unique ID in format above
   - ❌ **NO Gherkin/BDD keywords**: **GIVEN**, **WHEN**, **THEN**, **AND** prohibited in Testing Scenarios
   - ✅ **MUST be implemented**: Testing Scenarios are specifications for actual test code
   - ✅ **Test generation**: Every Testing Scenario must have corresponding automated test in implementation
   - ✅ **Traceability**: Test files must reference Testing Scenario ID for traceability
   - ✅ Use plain English: "User provides command", "System parses", "Verify output"
+  - ✅ Every step line MUST include `[ ]` or `[x]` and an inline-code phase token `ph-{N}` (e.g., `ph-1`) using the FDL step-line format
 - **Acceptance Criteria**: ≥2 specific, testable criteria
 
 **Validation**:
 - ≥1 requirement present
 - All requirements have all required fields
+- Each requirement defines `**Phases**` with checkboxes and at least `ph-1`
+- Phase IDs used in requirements are valid feature phase IDs
 - References are valid (target sections exist)
-- Testing scenarios use FDL format (not Gherkin)
+- Testing scenarios are written in FDL syntax ONLY (not Gherkin)
+- Every testing scenario step line follows the FDL step-line format (checkbox + `ph-{N}` + separators)
 
 ---
 
@@ -271,7 +329,6 @@
    - No prohibited keywords (**WHEN** in flows, **THEN**, **SET**, etc.)
    - **Flow ID Format Validation**:
      - All flows have unique IDs with `**ID**: fdd-{project-name}-feature-{feature-slug}-flow-{flow-name}` format
-     - All IDs use kebab-case (lowercase with hyphens)
      - Each flow has `**ID**: {id}` label before flow title
 
 3. **Section C (Algorithms)**
@@ -281,7 +338,6 @@
    - Only valid FDL keywords used
    - **Algorithm ID Format Validation**:
      - All algorithms have unique IDs with `**ID**: fdd-{project-name}-feature-{feature-slug}-algo-{algo-name}` format
-     - All IDs use kebab-case (lowercase with hyphens)
      - Each algorithm has `**ID**: {id}` label before algorithm title
 
 4. **Section D (States)**
@@ -289,7 +345,6 @@
    - **WHEN** keyword only in states (not flows/algorithms)
    - **State Machine ID Format Validation**:
      - All state machines have unique IDs with `**ID**: fdd-{project-name}-feature-{feature-slug}-state-{entity-name}` format
-     - All IDs use kebab-case (lowercase with hyphens)
      - Each state machine has `**ID**: {id}` label before state machine definition
 
 5. **Section E (Technical Details)**
@@ -300,16 +355,15 @@
 6. **Section F (Requirements)**
    - ≥1 requirement present
    - Each requirement has all required fields
-   - Testing Scenarios use FDL (not Gherkin)
+   - Testing Scenarios use FDL syntax ONLY (not Gherkin)
+   - Testing Scenarios: every step line follows the FDL step-line format (checkbox + `ph-{N}` + `-` separators)
    - References are valid markdown anchors
    - **Requirement ID Format Validation**:
      - All requirement IDs match format with `**ID**: fdd-{project-name}-feature-{feature-slug}-req-{short-name}`
      - All IDs are unique within Section F
-     - IDs use kebab-case (lowercase with hyphens)
      - Each requirement has `**ID**: {id}` label before title
    - **Testing Scenario ID Format Validation**:
      - All testing scenarios have unique IDs with `**ID**: fdd-{project-name}-feature-{feature-slug}-test-{scenario-name}` format
-     - All IDs use kebab-case (lowercase with hyphens)
      - Each testing scenario has `**ID**: {id}` label before scenario description
      - Test code must reference these IDs for traceability
 
@@ -343,9 +397,6 @@
 ### Completeness Validation
 
 1. **No placeholders**
-   - No TODO, TBD, FIXME, XXX markers
-   - No `{placeholder}` content
-   - All sections fully written
 
 2. **No type redefinitions**
    - No phrases like "type definition"
@@ -373,12 +424,6 @@
 4. Cross-validation (alignment with Overall Design)
 5. Completeness (no placeholders, no type redefinitions)
 
-**Report format**:
-- Score: X/100 (must be 100)
-- Completeness: X% (must be 100%)
-- Issues: List of missing/invalid items
-- Recommendations: What to fix
-
 **Scoring**:
 - Structure (20 points): All required sections present (A-F)
 - FDL Compliance (30 points): Sections B, C, D use valid FDL
@@ -393,77 +438,120 @@
 ```markdown
 # Feature: Analytics Dashboard
 
-## A. Overview
+## A. Feature Context
 
-**Feature ID**: `feature-analytics-dashboard`
-**References**: FEATURES.md entry `FEAT-001`
+- **Feature ID**: `fdd-hyperspot-feature-analytics-dashboard`
+- **Feature Directory**: `architecture/features/feature-analytics-dashboard/`
+- **References**:
+  - `architecture/features/FEATURES.md` entry: `fdd-hyperspot-feature-analytics-dashboard`
 
-Create dashboard for visualizing user analytics...
+### 1. Overview
+
+Dashboard UI for visualizing aggregated product and tenant analytics.
+
+### 2. Purpose
+
+Provide a single place to inspect key business metrics and drill down via filters.
+
+### 3. Actors
+
+- `Admin`
+- `Analyst`
+
+### 4. References
+
+- Overall Design: `architecture/DESIGN.md`
 
 ## B. Actor Flows (FDL)
 
-### Admin Views Dashboard
+### Admin views dashboard
 
-1. User opens dashboard page
-2. System loads analytics data
-3. **FOR EACH** metric:
-   1. Calculate value
-   2. Display chart
-4. User interacts with filters
+- [ ] **ID**: fdd-hyperspot-feature-analytics-dashboard-flow-admin-views-dashboard
+
+1. [ ] - `ph-1` - Admin opens dashboard page
+2. [ ] - `ph-1` - System loads available metrics
+3. [ ] - `ph-1` - **FOR EACH** metric:
+   1. [ ] - `ph-1` - System calculates metric value
+   2. [ ] - `ph-1` - System renders a chart
+4. [ ] - `ph-2` - Admin applies filters
+5. [ ] - `ph-2` - System reloads data and rerenders charts
 
 ## C. Algorithms (FDL)
 
-**Algorithm: Calculate Metric**
-Input: metric_id, date_range
-Output: metric_value
+### Calculate metric value
 
-1. Load raw data for date range
-2. **FOR EACH** data point:
-   1. Apply calculation
-3. **RETURN** aggregated value
+- [ ] **ID**: fdd-hyperspot-feature-analytics-dashboard-algo-calculate-metric-value
+
+**Input**: metric_id, date_range
+**Output**: metric_value
+
+1. [ ] - `ph-1` - Load raw events for date_range
+2. [ ] - `ph-1` - **FOR EACH** event:
+   1. [ ] - `ph-1` - Add event contribution to accumulator
+3. [ ] - `ph-1` - **RETURN** accumulator
 
 ## D. States (FDL)
 
-**State Machine: Dashboard**
+### Widget state
+
+- [ ] **ID**: fdd-hyperspot-feature-analytics-dashboard-state-widget
+
 **States**: LOADING, READY, ERROR
-**Transitions**:
-1. **FROM** LOADING **TO** READY **WHEN** data loaded
-2. **FROM** LOADING **TO** ERROR **WHEN** load failed
+
+1. [ ] - `ph-1` - **FROM** LOADING **TO** READY **WHEN** data loaded
+2. [ ] - `ph-1` - **FROM** LOADING **TO** ERROR **WHEN** load failed
+3. [ ] - `ph-2` - **FROM** READY **TO** LOADING **WHEN** filters changed
 
 ## E. Technical Details
 
-### Database Schema
-...
-
 ### API Endpoints
-...
+
+- `GET /analytics-dashboard/v1/metrics` — reference: [analytics-dashboard.yaml](../../../openapi/analytics-dashboard.yaml)
+- `GET /analytics-dashboard/v1/widgets` — reference: [analytics-dashboard.yaml](../../../openapi/analytics-dashboard.yaml)
+
+### Security
+
+- Access controlled per tenant and role.
 
 ## F. Requirements
 
-**REQ-001**: Dashboard MUST load within 2 seconds
-...
+### Load dashboard
+
+- [ ] **ID**: fdd-hyperspot-feature-analytics-dashboard-req-load-dashboard
+**Status**: 🔄 IN_PROGRESS
+**Description**: The dashboard MUST return a metrics list and widget data for a selected date range.
+**References**:
+- [Admin views dashboard](#admin-views-dashboard)
+- [Calculate metric value](#calculate-metric-value)
+**Implements**:
+- `fdd-hyperspot-feature-analytics-dashboard-flow-admin-views-dashboard`
+- `fdd-hyperspot-feature-analytics-dashboard-algo-calculate-metric-value`
+**Phases**:
+- [ ] `ph-1`: Initial dashboard render with metrics list
+- [ ] `ph-2`: Filters apply and rerender
+**Testing Scenarios (FDL)**:
+- [ ] **ID**: fdd-hyperspot-feature-analytics-dashboard-test-dashboard-loads-with-metrics
+  1. [ ] - `ph-1` - Seed raw events for the tenant
+  2. [ ] - `ph-1` - Call dashboard endpoint for date_range
+  3. [ ] - `ph-1` - Verify metrics list is present
+  4. [ ] - `ph-2` - Apply a filter and call endpoint again
+  5. [ ] - `ph-2` - Verify filtered results differ
+**Acceptance Criteria**:
+- Response contains ≥1 metric
+- Filtered response differs from unfiltered response
 
 ## G. Additional Context (Optional)
 
 ### Dependencies
-- **Depends On**: feature-user-auth
-- **Blocks**: feature-reporting
 
-### References
-- Overall Design: `architecture/DESIGN.md`
-- External Spec: https://example.com/spec
-```
+- Depends on feature: `fdd-hyperspot-feature-user-auth`
 
-**Invalid feature DESIGN.md**:
-```markdown
-# Dashboard Feature
-
-We need a dashboard with some charts.
-
-It should show analytics data.
-```
-
-**Issues**: No sections, no FDL, no requirements, no technical details
+**Issues**:
+- Wrong feature ID format (`feature-*` instead of `fdd-{project}-feature-*`)
+- Missing checkboxes on all `**ID**:` lines
+- FDL steps missing required per-line `ph-{N}` markers and checkboxes
+- Uses deprecated `Phase:` field instead of requirement `**Phases**` list
+- Testing scenario uses prohibited Gherkin keywords (**GIVEN**, **WHEN**, **THEN**)
 
 ---
 

@@ -33,3 +33,5 @@ npm-debug.log*
 coverage/
 .nyc_output/
 /test-projects/
+~$deck.pptx
+deck.pptx

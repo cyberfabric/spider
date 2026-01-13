@@ -6,6 +6,10 @@
 
 ---
 
+**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+
+ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
+
 ## Purpose
 
 Automatically scan existing project and generate adapter specs from discovered patterns.

@@ -8,6 +8,8 @@
 
 ---
 
+**ALWAYS open and follow**: `core.md` WHEN editing this file
+
 ## Mandatory Adapter Initialization
 
 **BEFORE any FDD workflow execution**:

@@ -1,5 +1,7 @@
 # FDD Workflow Navigation
 
+**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+
 **Version**: 1.0
 
 ALWAYS open and follow `../requirements/workflow-selection.md` WHEN selecting which workflow to execute

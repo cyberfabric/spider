@@ -6,6 +6,8 @@
 
 ---
 
+**ALWAYS open and follow**: `core.md` WHEN editing this file
+
 ## Overview
 
 **Requirements files** - Structure definitions and validation criteria for FDD artifacts
@@ -141,6 +143,33 @@
 ```
 
 ---
+
+## Change Consistency (When Editing Requirements Files)
+
+**MUST** keep the file internally consistent.
+
+When you change a requirement in any section (Structure, Content, IDs, formatting, constraints):
+- **MUST** update `## Validation Criteria` so validators can systematically detect the new rule.
+- **MUST** update `## Examples` so:
+  - The **Valid** example demonstrates the new/changed rule
+  - The **Invalid** example violates the new/changed rule
+  - The **Issues** list explicitly mentions the violation
+
+**MUST NOT** change requirements without updating validation and examples accordingly.
+
+**Checklist (before finishing an edit)**:
+- [ ] Requirement changes are reflected in `## Validation Criteria`
+- [ ] Valid example reflects the updated requirements
+- [ ] Invalid example demonstrates the updated violations
+- [ ] No example contains markdown-invalid constructs (e.g., nested backticks)
+
+## Duplication Rules (Shared Requirements)
+
+**MUST NOT** duplicate common requirements across multiple `FDD/requirements/*.md` files.
+
+**MUST** extract shared requirements and shared validation checks into `requirements.md`.
+
+**MUST** reference `requirements.md` from any requirements file that relies on shared rules.
 
 ## Style Requirements
 

@@ -10,6 +10,10 @@ description: Create or update overall design document
 
 ---
 
+**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+
+ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
+
 ## Requirements
 
 **ALWAYS open and follow**: `../requirements/overall-design-structure.md`

@@ -1,6 +1,9 @@
 # FDD Adapter Structure Requirements
 
 **ALWAYS open and follow**: `../workflows/adapter.md`
+**ALWAYS open and follow**: `requirements.md`
+**ALWAYS open and follow**: `core.md` WHEN editing this file
+**ALWAYS open and follow**: `core.md` WHEN editing adapter artifacts
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -72,6 +75,12 @@ FDD-Adapter/
 **Location**: `{adapter-directory}/FDD-Adapter/AGENTS.md`
 
 **Purpose**: Adapter-specific navigation for AI agents (MUST WHEN format)
+
+ALWAYS add to the header of AGENTS.md:
+
+  ```markdown
+  **ALWAYS open and follow**: `{FDD directory / submodule}/requirements/core.md` WHEN editing this file
+  ```
 
 **Adapter AGENTS.md WHEN rule (mandatory)**:
 - Each navigation rule MUST use a WHEN clause that is ONLY a list of FDD workflows.
@@ -155,7 +164,7 @@ Adapter validation depends on project phase:
 
 **Applies to**: New projects without specs yet
 
-#### Structure (100 points)
+#### Structure
 
 **Check**:
 - [ ] AGENTS.md file exists at `{adapter-directory}/FDD-Adapter/AGENTS.md`
@@ -205,8 +214,6 @@ Adapter validation depends on project phase:
 - [ ] Each spec references source (ADR ID, DESIGN.md section, file path) (10)
 - [ ] All source references are valid and accessible (10)
 - [ ] Specs consistent with DESIGN.md (if exists) (5)
-
-**Total**: 100/100
 
 **Pass threshold**: ≥80/100
 

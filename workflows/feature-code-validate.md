@@ -10,6 +10,10 @@ description: Validate feature code implementation against feature design
 
 ---
 
+**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+
+ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
+
 ## ⚠️ PRE-FLIGHT CHECKLIST (ALWAYS Complete Before Proceeding)
 
 **Agent ALWAYS verifies before starting this workflow**:
@@ -141,14 +145,17 @@ Extract:
 - Algorithms: Section C IDs (`...-algo-*`)
 - States (if present): Section D IDs (`...-state-*`)
 - Requirements & tests: Section F IDs (`...-req-*`, `...-test-*`)
+- Phases: `ph-{N}` from requirement `**Phases**` lists in feature DESIGN.md and from FDL step lines
 
 **Check implementation and non-deviation**:
-- For each Flow ID: locate code tagged with `@fdd-flow:{id}` (or equivalent trace) and verify the control flow matches the described steps (no skipped/extra steps that change behavior).
-- For each Algorithm ID: locate code tagged with `@fdd-algo:{id}` and verify logic matches described algorithm; no TODO/unimplemented!/panic/unwrap stubs; performance/complexity expectations respected.
-- For each State ID (if any): locate code tagged with `@fdd-state:{id}` and verify state transitions match the design; forbidden states/transitions absent.
+- Search the codebase for all `@fdd-` tags and verify EVERY occurrence includes a phase postfix `:ph-{N}` (N is an integer).
+- For each Flow ID: locate code tagged with `@fdd-flow:{id}:ph-{N}` and verify the control flow matches the described steps (no skipped/extra steps that change behavior).
+- For each Algorithm ID: locate code tagged with `@fdd-algo:{id}:ph-{N}` and verify logic matches described algorithm; no TODO/unimplemented!/panic/unwrap stubs; performance/complexity expectations respected.
+- For each State ID (if any): locate code tagged with `@fdd-state:{id}:ph-{N}` and verify state transitions match the design; forbidden states/transitions absent.
 - Technical details (Section E): verify endpoints, security, error handling, OData parameters, and delegation points align with design and adapter specs (`modkit-rest-integration.md`, `patterns.md`, `conventions.md`); ensure OperationBuilder usage and api_gateway integration are intact (no direct axum routes, no custom middleware).
 
 **Validation**:
+- ✅ All `@fdd-*` code tags include mandatory phase postfix `:ph-{N}`
 - ✅ All design IDs (flows/algorithms/states/requirements/tests) found in code and mapped to implementations
 - ✅ Implementations follow design steps/logic; no divergent behavior
 - ✅ No missing or extra endpoints/paths versus design Section E
@@ -208,11 +215,11 @@ Extract:
 - Execute the test command(s) from `{adapter-directory}/FDD-Adapter/specs/testing.md`.
 
 **Check**:
-- ✅ All unit tests pass
-- ✅ All integration tests pass
-- ✅ All e2e tests pass (if applicable)
-- ✅ No ignored tests without justification
-- ✅ Coverage meets adapter threshold
+- All unit tests pass
+- All integration tests pass
+- All e2e tests pass (if applicable)
+- No ignored tests without justification
+- Coverage meets adapter threshold
 
 **Score**: 30 points
 
@@ -221,15 +228,15 @@ Extract:
 **Check for incomplete work**:
 - Search the feature code set (identified via `@fdd-change` tags) for incomplete work markers: `TODO`, `FIXME`, `XXX`, `HACK`.
 - Search feature business logic code (domain/service layers per adapter) for incomplete implementation markers: `unimplemented!`, `todo!`.
-- Search test code for ignored tests (e.g., `#[ignore]`) and validate justification per adapter rules.
+- Search test code for ignored tests (e.g. `#[ignore]`) and validate justification per adapter rules.
 
 **Check per adapter feature-status-validation.md**:
-- ✅ No TODO/FIXME in domain/service layers
-- ✅ No unimplemented!() in business logic
-- ✅ No bare unwrap() or panic in production code
-- ✅ Error handling complete
-- ✅ No ignored tests without documented reason
-- ✅ No placeholder tests (assert!(true))
+- No TODO/FIXME in domain/service layers
+- No unimplemented!() in business logic
+- No bare unwrap() or panic in production code
+- Error handling complete
+- No ignored tests without documented reason
+- No placeholder tests (assert!(true))
 
 **Score**: 15 points
 
@@ -291,9 +298,9 @@ Extract:
 ✅ | ❌ Error handling complete
 
 **Code Tagging** ({X}/10):
-✅ | ❌ All feature code tagged with:
-   - @fdd-change:{change-id} (from CHANGES source)
-   - @fdd-flow:{flow-id}, @fdd-algo:{algo-id}, @fdd-state:{state-id}, @fdd-req:{req-id}, @fdd-test:{test-id} (from feature DESIGN.md)
+✅ | ❌ All feature code tagged with (phase is always a postfix, no standalone phase tags):
+   - @fdd-change:{change-id}:ph-{N} (from CHANGES source)
+   - @fdd-flow:{flow-id}:ph-{N}, @fdd-algo:{algo-id}:ph-{N}, @fdd-state:{state-id}:ph-{N}, @fdd-req:{req-id}:ph-{N}, @fdd-test:{test-id}:ph-{N} (from feature DESIGN.md)
 ✅ | ❌ Validator searched code for ALL IDs from DESIGN.md (Sections B/C/D/F) and CHANGES source
 
 ---
@@ -380,13 +387,11 @@ Self-validating workflow
 
 ## References
 
-**Related workflows**:
-- `feature-validate.md` - Validates feature DESIGN.md
-- `feature-changes-validate.md` - Validates CHANGES.md structure
-- `feature-change-implement.md` - Implement specific change
+- ALWAYS execute `feature-validate.md` WHEN validating a feature DESIGN.md before code work
+- ALWAYS execute `feature-changes-validate.md` WHEN validating a feature CHANGES.md before implementation
+- ALWAYS execute `feature-change-implement.md` WHEN implementing a specific change from CHANGES.md
 
-**Related requirements**:
-- `feature-design-structure.md` - Feature design structure
-- `feature-changes-structure.md` - Changes structure
-- Adapter specs/testing.md - Test requirements
-- Adapter specs/feature-status-validation.md - Status validation rules
+- ALWAYS open and follow `feature-design-structure.md` WHEN interpreting feature DESIGN.md IDs and sections
+- ALWAYS open and follow `feature-changes-structure.md` WHEN interpreting change entry structure and tagging rules
+- ALWAYS open and follow `{adapter-directory}/FDD-Adapter/specs/testing.md` WHEN executing tests
+- ALWAYS open and follow `{adapter-directory}/FDD-Adapter/specs/feature-status-validation.md` WHEN validating code quality/status consistency

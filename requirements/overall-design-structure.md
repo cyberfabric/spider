@@ -1,6 +1,8 @@
 # Technical Design (DESIGN.md) Structure Requirements
 
 **ALWAYS open and follow**: `../workflows/design.md`
+**ALWAYS open and follow**: `requirements.md`
+**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -37,9 +39,9 @@
 - Section D: Additional Context (optional)
 
 **References**:
-- From BUSINESS.md: `@/architecture/DESIGN.md` or `@DESIGN.md`
-- To BUSINESS.md: `@/architecture/BUSINESS.md` or `@BUSINESS.md`
-- To ADR.md: `@/architecture/ADR.md` or `@ADR.md`
+- From BUSINESS.md: [DESIGN.md](DESIGN.md)
+- To BUSINESS.md: [BUSINESS.md](BUSINESS.md)
+- To ADR.md: [ADR.md](ADR.md)
 
 ---
 
@@ -192,42 +194,38 @@ Each functional requirement (FR) MUST include the following fields:
 - **Core entities** - List main domain objects
 - **Relationships** - Entity relationships overview
 
-**⚠️ CRITICAL**: Domain model MUST be in machine-readable format
-- ✅ Valid: GTS schemas, JSON Schema, OpenAPI, TypeScript types
-- ❌ Invalid: Plain English descriptions, diagrams only
+**CRITICAL**: Domain model MUST be in machine-readable format
+- Valid: GTS schemas, JSON Schema, OpenAPI, TypeScript types
+- Invalid: Plain English descriptions, diagrams only
 
 **Reference Requirements**:
-- **Domain Model files**: Must be clickable markdown links to actual schema/type files
-  - ✅ **Valid formats**:
+- **Domain Model files**: Must be clickable Markdown links to actual schema/type files
+  - Valid formats:
     - Relative path: `[user.gts](../gts/user.gts)`
     - Absolute path: `[project.json](/schemas/project.json)`
-  - ❌ **Invalid formats**:
+  - Invalid formats:
     - Inline code: `\`../gts/user.gts\`` (not clickable)
     - Plain text: `../gts/user.gts` (not clickable)
-    - Custom notation: `@/schemas/project.json` (IDE-specific, not standard markdown)
-- All domain model references must be clickable in standard markdown viewers
-- Links must point to existing files (verified during validation)
+    - Custom notation: `@/schemas/project.json` (IDE-specific, not standard Markdown)
 
 #### C.3: API Contracts
 - **Technology** - Specify format (REST/OpenAPI, GraphQL, gRPC, CLISPEC)
 - **Location** - Path to API contract files
 - **Endpoints overview** - List main API surfaces
 
-**⚠️ CRITICAL**: API contracts MUST be in machine-readable format
-- ✅ Valid: OpenAPI spec, GraphQL schema, CLISPEC, proto files
-- ❌ Invalid: Plain English descriptions, curl examples only
+**CRITICAL**: API contracts MUST be in machine-readable format
+- Valid: OpenAPI spec, GraphQL schema, CLISPEC, proto files
+- Invalid: Plain English descriptions, curl examples only
 
 **Reference Requirements**:
-- **API Spec files**: Must be clickable markdown links to actual specification files
-  - ✅ **Valid formats**:
+- **API Spec files**: Must be clickable Markdown links to actual specification files
+  - Valid formats:
     - Relative path: `[users.yaml](../openapi/users.yaml)`
     - Absolute path: `[commands.clispec](/spec/CLI/commands.clispec)`
-  - ❌ **Invalid formats**:
+  - Invalid formats:
     - Inline code: `\`../openapi/users.yaml\`` (not clickable)
     - Plain text: `../openapi/users.yaml` (not clickable)
-    - Custom notation: `@/spec/CLI/commands.clispec` (IDE-specific, not standard markdown)
-- All API contract references must be clickable in standard markdown viewers
-- Links must point to existing files (verified during validation)
+    - Custom notation: `@/spec/CLI/commands.clispec` (IDE-specific, not standard Markdown)
 
 #### C.4: Security Model
 - Authentication approach
@@ -293,7 +291,6 @@ Each functional requirement (FR) MUST include the following fields:
 1. **File exists and has adequate content**
    - File `architecture/DESIGN.md` exists
    - File contains ≥200 lines (recommended: 500-2000 lines)
-   - File is not empty or placeholder-only
 
 ### Structure Validation
 
@@ -304,7 +301,7 @@ Each functional requirement (FR) MUST include the following fields:
    - Section D optional (project-specific details, not validated)
 
 2. **Section order correct**
-   - A → B → C → D (in this exact order)
+   - A → B → C → D
    - Section D may be omitted
 
 3. **No prohibited sections**
@@ -314,28 +311,22 @@ Each functional requirement (FR) MUST include the following fields:
 
 4. **Markdown formatting valid**
    - Headers use proper levels (## for A-D, ### for C.1-C.5)
-   - No malformed markdown
 
 ### Content Validation
 
 1. **Domain Model accessible**
    - Files at specified location exist
    - Files are in specified format (parseable)
-   - No broken references
 
 2. **API Contracts accessible**
    - Files at specified location exist
    - Files are in specified format (parseable)
-   - No broken references
 
 3. **Component diagram present**
    - At least one diagram in Section C.1
    - Can be embedded image, Mermaid code, or ASCII art
 
 4. **No placeholders remain**
-   - No TODO markers
-   - No TBD (To Be Determined) placeholders
-   - No FIXME comments
    - No empty or stub sections
    - All sections have substantive content
 
@@ -352,15 +343,11 @@ Each functional requirement (FR) MUST include the following fields:
    - All principle IDs follow `**ID**: \`fdd-{project-name}-principle-{name}\`` format
    - All non-functional requirement categories have unique IDs with `**ID**: \`fdd-{project-name}-nfr-{name}\`` format
    - All constraints have unique IDs with `**ID**: \`fdd-{project-name}-constraint-{name}\`` format
-   - All IDs use kebab-case (lowercase with hyphens)
-   - IDs are unique within their category
-   - Each ID value must be wrapped in backticks (\`...\`)
 
 7. **Cross-references are valid**
    - References to BUSINESS.md elements (actors, capabilities) use valid IDs
    - References to domain model files are valid paths
    - References to API contract files are valid paths
-   - All `@/path/to/file` references point to existing files
 
 ### ID Traceability Validation
 
@@ -500,12 +487,6 @@ DESIGN.md Section B.1 (Functional Requirements):
 2. Domain model accessibility (files exist, parseable)
 3. API contracts accessibility (files exist, parseable)
 4. Content substantiveness (no empty sections)
-
-**Report format**:
-- Score: X/100 (must be ≥90)
-- Completeness: X% (must be 100%)
-- Issues: List of missing/invalid items
-- Recommendations: What to fix
 
 **Scoring**:
 - Structure (30 points): All sections present

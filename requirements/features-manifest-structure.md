@@ -1,6 +1,8 @@
 # Features Manifest (FEATURES.md) Structure Requirements
 
 **ALWAYS open and follow**: `../workflows/features.md`
+**ALWAYS open and follow**: `requirements.md`
+**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -35,6 +37,11 @@
 # Features: {PROJECT_NAME}
 
 **Status Overview**: X features total (Y completed, Z in progress, W not started)
+
+**Meaning**:
+- ⏳ NOT_STARTED
+- 🔄 IN_PROGRESS
+- ✅ IMPLEMENTED
 ```
 
 **Status summary** showing feature breakdown by status
@@ -46,7 +53,7 @@
 **Format**: Numbered sections with subsections
 
 **Required per feature**:
-1. **Section heading**: `### N. [feature-slug](feature-slug/) EMOJI PRIORITY`
+1. **Section heading**: `### N. [fdd-{project}-feature-{feature-slug}](feature-{feature-slug}/) EMOJI PRIORITY`
    - N: Sequential number (1, 2, 3, ...)
    - Slug: Lowercase kebab-case
    - Emoji: ⏳ (NOT_STARTED), 🔄 (IN_PROGRESS), ✅ (IMPLEMENTED)
@@ -56,56 +63,109 @@
 
 3. **Status**: `**Status**: NOT_STARTED | IN_PROGRESS | IMPLEMENTED`
 
-4. **Depends On**: `**Depends On**: comma-separated clickable links to feature directories or "None"`
-   - Format: `[feature-slug](feature-slug/)` for each dependency
-   - Multiple dependencies: `[feature-a](feature-a/), [feature-b](feature-b/)`
-   - Links must be clickable and navigable
+4. **Depends On**: MUST be one of:
+   - `**Depends On**: None`
+   - `**Depends On**: [feature-a](feature-a/), [feature-b](feature-b/)`
+   - `**Depends On**:` followed by a markdown list (preferred for long lists):
+     - `- [feature-a](feature-a/)`
+     - `- [feature-b](feature-b/)`
+   - Phase-aware dependency (recommended when only a phase is required):
+     - `- [feature-a](feature-a/)` `ph-1`
+     - `- [feature-b](feature-b/)` `ph-2`
 
-5. **Blocks**: `**Blocks**: comma-separated clickable links to feature directories or "None"`
-   - Format: `[feature-slug](feature-slug/)` for each blocked feature
-   - Multiple blocks: `[feature-a](feature-a/), [feature-b](feature-b/)`
-   - Links must be clickable and navigable
+   **Rules**:
+   - Feature-level dependency (no phase specified) means the dependency feature MUST be `**Status**: IMPLEMENTED`.
+   - Phase-aware dependency means the referenced feature phase MUST be ✅ IMPLEMENTED.
+
+5. **Blocks**: MUST be one of:
+   - `**Blocks**: None`
+   - `**Blocks**: [feature-a](feature-a/), [feature-b](feature-b/)`
+   - `**Blocks**:` followed by a markdown list (preferred for long lists):
+     - `- [feature-a](feature-a/)`
+     - `- [feature-b](feature-b/)`
 
 6. **Scope**: `**Scope**:` followed by bulleted list
 
-7. **Requirements Covered**: `**Requirements Covered**:` followed by comma-separated full requirement IDs from DESIGN.md Section B
-   - Format: Full ID from DESIGN.md (e.g., `fdd-acronis-mcp-req-workflow-context`, `fdd-acronis-mcp-nfr-performance`)
-   - Multiple requirements: `fdd-acronis-mcp-req-workflow-context, fdd-acronis-mcp-req-requirements-access`
-   - Must reference actual requirement IDs from `architecture/DESIGN.md` Section B.1 (FR-XXX) and B.2 (NFR-XXX)
+7. **Requirements Covered**: MUST be one of:
+   - `**Requirements Covered**: fdd-..., fdd-..., fdd-...` (comma-separated on one line)
+   - `**Requirements Covered**:` followed by a markdown list (preferred for long lists):
+     - `- fdd-...`
+     - `- fdd-...`
+   IDs MUST reference actual requirement IDs from `architecture/DESIGN.md` Section B.1 and B.2.
 
-8. **Principles Covered** (optional): `**Principles Covered**:` followed by comma-separated principle IDs from DESIGN.md Section B.3
-   - Format: Full ID from DESIGN.md (e.g., `fdd-acronis-mcp-principle-context-provider`)
-   - Multiple principles: `fdd-acronis-mcp-principle-context-provider, fdd-acronis-mcp-principle-stateless`
-   - Must reference actual principle IDs from `architecture/DESIGN.md` Section B.3
+8. **Principles Covered** (optional): MUST be one of:
+   - `**Principles Covered**: fdd-..., fdd-...`
+   - `**Principles Covered**:` followed by a markdown list
+   IDs MUST reference principle IDs from `architecture/DESIGN.md` Section B.3.
 
-9. **Constraints Affected** (optional): `**Constraints Affected**:` followed by comma-separated constraint IDs from DESIGN.md Section B.4
-   - Format: Full ID from DESIGN.md (e.g., `fdd-acronis-mcp-constraint-atlassian-api`)
-   - Multiple constraints: `fdd-acronis-mcp-constraint-atlassian-api, fdd-acronis-mcp-constraint-python-version`
-   - Must reference actual constraint IDs from `architecture/DESIGN.md` Section B.4
+9. **Constraints Affected** (optional): MUST be one of:
+   - `**Constraints Affected**: fdd-..., fdd-...`
+   - `**Constraints Affected**:` followed by a markdown list
+   IDs MUST reference constraint IDs from `architecture/DESIGN.md` Section B.4.
 
-**Example**:
-```markdown
-### 1. [feature-user-auth](feature-user-auth/) ⏳ CRITICAL
-**Purpose**: User authentication and authorization  
-**Status**: NOT_STARTED  
-**Depends On**: None  
-**Blocks**: [feature-user-profile](feature-user-profile/), [feature-notifications](feature-notifications/)  
-**Scope**:
-- Login/logout flows
-- JWT token management
-- Password reset
+10. **Phases**: Use to track implementation progress at finer granularity than feature status.
+
+**Phase ID Format**: `ph-{N}`
+- N MUST be an integer (1, 2, 3, ...)
+- Default: Every feature MUST define `ph-1`
+
+**Format** (preferred):
+- `**Phases**:` followed by a markdown list
+  - - `ph-1`: ✅ IMPLEMENTED — {short meaning}
+  - - `ph-2`: 🔄 IN_PROGRESS — {short meaning}
+  - - `ph-3`: ⏳ NOT_STARTED — {short meaning}
+
+**Phase dependencies** (optional, phase-scoped):
+- A phase MAY declare dependencies on other feature phases.
+- Format: nested list under the phase item:
+  - - `ph-2`: 🔄 IN_PROGRESS — {meaning}
+    - **Depends On**:
+      - `[feature-a](feature-a/)` `ph-1`
+
+**Rules**:
+- A feature with `**Status**: IMPLEMENTED` MUST have ALL phases marked ✅ IMPLEMENTED.
+- A phase marked ✅ IMPLEMENTED MUST have corresponding code tagged with phase postfixes on feature-scoped tags (e.g. `@fdd-change:{id}:ph-{N}`, `@fdd-flow:{id}:ph-{N}`, `@fdd-algo:{id}:ph-{N}`, `@fdd-req:{id}:ph-{N}`).
+- A phase marked ✅ IMPLEMENTED MUST NOT depend on any phase that is 🔄 IN_PROGRESS or ⏳ NOT_STARTED.
 
 ---
 
-### 2. [feature-user-profile](feature-user-profile/) ⏳ HIGH
-**Purpose**: User profile management  
-**Status**: NOT_STARTED  
-**Depends On**: [feature-user-auth](feature-user-auth/)  
-**Blocks**: None  
-**Scope**:
-- Profile CRUD operations
-- Avatar upload
-- Settings management
+## Rendering Requirements (Markdown)
+
+**MUST** ensure feature metadata fields render as separate lines.
+
+Allowed formats:
+- End each metadata line with two spaces (`  `) to force a line break.
+- Or use a markdown list for metadata fields (preferred; avoids relying on invisible trailing spaces).
+
+**MUST NOT** rely on markdown soft-wrap for very long tokens (e.g., long inline code spans or tables).
+
+**Example**:
+```markdown
+### 1. [fdd-example-feature-user-auth](feature-user-auth/) ⏳ CRITICAL
+- **Purpose**: User authentication and authorization
+- **Status**: NOT_STARTED
+- **Depends On**: None
+- **Blocks**: [feature-user-profile](feature-user-profile/), [feature-notifications](feature-notifications/)
+- **Phases**:
+  - `ph-1`: ⏳ NOT_STARTED — Default phase
+- **Scope**:
+  - Login/logout flows
+  - JWT token management
+  - Password reset
+
+---
+
+### 2. [fdd-example-feature-user-profile](feature-user-profile/) ⏳ HIGH
+- **Purpose**: User profile management
+- **Status**: NOT_STARTED
+- **Depends On**: [feature-user-auth](feature-user-auth/)
+- **Blocks**: None
+- **Phases**:
+  - `ph-1`: ⏳ NOT_STARTED — Default phase
+- **Scope**:
+  - Profile CRUD operations
+  - Avatar upload
+  - Settings management
 ```
 
 ---
@@ -133,6 +193,10 @@
    - Slug is kebab-case
    - Design path exists
    - Dependencies reference valid features
+   - `**Phases**` field present for every feature
+   - Phase IDs follow `ph-{N}` format and are written as inline code in markdown
+   - Every feature defines at least `ph-1`
+   - Phase dependencies (if present) use the same link + inline phase token format
 
 ### Content Validation
 
@@ -144,11 +208,15 @@
    - All dependency slugs reference existing features
    - No circular dependencies (DAG structure)
    - Dependency order is implementable
+   - Phase dependencies (if present) are satisfiable (every referenced `{feature} {phase}` exists)
+   - Phase dependency graph is acyclic
 
 3. **Status consistency**
    - Feature status matches DESIGN.md existence
    - IN_PROGRESS features have DESIGN.md
    - IMPLEMENTED features have complete DESIGN.md
+   - IMPLEMENTED features MUST have ALL phases marked ✅ IMPLEMENTED
+   - Phase dependencies MUST be satisfiable (no dependency on a NOT_STARTED phase for an IMPLEMENTED phase)
 
 ### Cross-Validation with Overall Design
 
@@ -265,10 +333,6 @@ BUSINESS.md:
 3. Content (directories exist, dependencies valid)
 4. Cross-validation (alignment with Overall Design)
 
-**Report format**:
-- Issues: List of missing/invalid items
-- Recommendations: What to fix
-
 ---
 
 ## Dependency Rules
@@ -283,125 +347,73 @@ BUSINESS.md:
 ## Example FEATURES.md
 
 ```markdown
-# Features Manifest: my-project
+# Features: hyperspot
 
-**Status**: PLANNING
+**Status Overview**: 3 features total (1 completed, 1 in progress, 1 not started)
 
-**Last Updated**: 2026-01-06
-
----
-
-## Features List
-
-### 1. [feature-user-auth](feature-user-auth/) ✅ CRITICAL
-**Purpose**: User authentication and authorization  
-**Status**: IMPLEMENTED  
-**Depends On**: None  
-**Blocks**: feature-user-profile, feature-notifications  
-**Scope**:
-- Login/logout flows
-- JWT token management
-- Password reset
-- Session management
-
----
-
-### 2. [feature-data-storage](feature-data-storage/) ✅ CRITICAL
-**Purpose**: Data persistence layer  
-**Status**: IMPLEMENTED  
-**Depends On**: None  
-**Blocks**: feature-user-profile, feature-reporting  
-**Scope**:
-- Database schema setup
-- Repository pattern implementation
-- Connection pooling
-- Migration system
-
----
-
-### 3. [feature-user-profile](feature-user-profile/) 🔄 HIGH
-**Purpose**: User profile management  
-**Status**: IN_PROGRESS  
-**Depends On**: feature-user-auth, feature-data-storage  
-**Blocks**: feature-reporting  
-**Scope**:
-- Profile CRUD operations
-- Avatar upload
-- Settings management
-- Profile validation
-
----
-
-### 4. [feature-notifications](feature-notifications/) ⏳ MEDIUM
-**Purpose**: Notification system  
-**Status**: NOT_STARTED  
-**Depends On**: feature-user-auth  
-**Blocks**: None  
-**Scope**:
-- Email notifications
-- In-app notifications
-- Notification preferences
-- Delivery queue
-
----
-
-### 5. [feature-reporting](feature-reporting/) ⏳ LOW
-**Purpose**: Analytics and reporting  
-**Status**: NOT_STARTED  
-**Depends On**: feature-data-storage, feature-user-profile  
-**Blocks**: None  
-**Scope**:
-- Report generation
-- Data aggregation
-- Export functionality
-- Scheduled reports
-```
-
----
-
-## Examples
-
-**Valid FEATURES.md**:
-```markdown
-# Features Manifest
-
-**Status**: PLANNING
-**Last Updated**: 2026-01-06
+**Meaning**:
+- ⏳ NOT_STARTED
+- 🔄 IN_PROGRESS
+- ✅ IMPLEMENTED
 
 ---
 
 ## Features List
 
-### 1. [feature-user-auth](feature-user-auth/) ✅ CRITICAL
-**Purpose**: User authentication
-**Status**: IMPLEMENTED
-**Depends On**: None
-**Blocks**: feature-user-profile
-**Scope**:
-- Login/logout flows
-- JWT tokens
-- Password reset
+### 1. [fdd-hyperspot-feature-user-auth](feature-user-auth/) ✅ CRITICAL
+- **Purpose**: User authentication and authorization
+- **Status**: IMPLEMENTED
+- **Depends On**: None
+- **Blocks**: None
+- **Requirements Covered**:
+  - fdd-hyperspot-req-authentication
+  - fdd-hyperspot-req-authorization
+- **Phases**:
+  - `ph-1`: ✅ IMPLEMENTED — Login/logout flows
+  - `ph-2`: ✅ IMPLEMENTED — Token validation and refresh
+- **Scope**:
+  - Login/logout flows
+  - Token issuance/validation
+  - Session revocation
 
-### 2. [feature-user-profile](feature-user-profile/) 🔄 HIGH
-**Purpose**: User profile management
-**Status**: IN_PROGRESS
-**Depends On**: feature-user-auth
-**Blocks**: None
-**Scope**:
-- Profile CRUD
-- Avatar upload
+---
+
+### 2. [fdd-hyperspot-feature-analytics-dashboard](feature-analytics-dashboard/) 🔄 HIGH
+- **Purpose**: Analytics dashboard for key metrics
+- **Status**: IN_PROGRESS
+- **Depends On**:
+  - [fdd-hyperspot-feature-user-auth](feature-user-auth/) `ph-2`
+- **Blocks**: None
+- **Requirements Covered**:
+  - fdd-hyperspot-req-usage-analytics
+- **Phases**:
+  - `ph-1`: 🔄 IN_PROGRESS — Initial dashboard render with metrics list
+  - `ph-2`: ⏳ NOT_STARTED — Filters and rerender
+    - **Depends On**:
+      - [fdd-hyperspot-feature-user-auth](feature-user-auth/) `ph-2`
+- **Scope**:
+  - Read-only metrics UI
+  - Filtered views
+  - Role-based access
+
+---
+
+### 3. [fdd-hyperspot-feature-notifications](feature-notifications/) ⏳ MEDIUM
+- **Purpose**: Notification delivery (email + in-app)
+- **Status**: NOT_STARTED
+- **Depends On**:
+  - [fdd-hyperspot-feature-user-auth](feature-user-auth/)
+- **Blocks**: None
+- **Requirements Covered**:
+  - fdd-hyperspot-req-notifications
+- **Phases**:
+  - `ph-1`: ⏳ NOT_STARTED — Email notifications
+  - `ph-2`: ⏳ NOT_STARTED — In-app notifications
+- **Scope**:
+  - Email notifications
+  - In-app notifications
+  - User preferences
 ```
-
-**Invalid FEATURES.md**:
-```markdown
-# Features
-
-- Authentication
-- User profiles
-- Some other stuff
-```
-
-**Issues**: No status, no dependencies, no scope definition, no structured entries
 
 ---
 

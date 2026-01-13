@@ -10,6 +10,10 @@ description: Create or update feature implementation plan
 
 ---
 
+**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+
+ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
+
 ## Requirements
 
 **ALWAYS open and follow**: `../requirements/feature-changes-structure.md`

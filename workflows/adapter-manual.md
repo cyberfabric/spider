@@ -6,6 +6,10 @@
 
 ---
 
+**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+
+ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
+
 ## Purpose
 
 Manually add or update adapter specifications based on user decisions.

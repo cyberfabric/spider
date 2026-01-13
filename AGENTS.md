@@ -59,6 +59,8 @@ ALWAYS open and follow `requirements/core-workflows.md` WHEN creating or modifyi
 
 ALWAYS open and follow `requirements/core-requirements.md` WHEN creating or modifying requirements files
 
+ALWAYS open and follow `requirements/requirements.md` WHEN extracting shared requirements or removing duplication across requirements files
+
 ALWAYS open and follow `requirements/core-agents.md` WHEN creating or modifying AGENTS.md files
 
 ALWAYS open and follow `requirements/business-context-structure.md` WHEN working with BUSINESS.md

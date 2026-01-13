@@ -1,6 +1,8 @@
 # Business Context Structure Requirements
 
 **ALWAYS open and follow**: `../workflows/business-context.md`
+**ALWAYS open and follow**: `requirements.md`
+**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -32,7 +34,7 @@
 - Section C: Capabilities
 - Section D: Additional Context (optional)
 
-**Reference from DESIGN.md**: `@/architecture/BUSINESS.md` or `@BUSINESS.md`
+**Reference from DESIGN.md**: [BUSINESS.md](BUSINESS.md)
 
 ---
 
@@ -179,19 +181,17 @@
 
 **Required content per capability**:
 - **Capability Name**: Clear name describing the capability (#### heading)
-- **ID**: Unique identifier (must be first line after capability heading, wrapped in backticks)
+- **ID**: Unique identifier (must be first line after capability heading)
 - **Description**: What the capability does (bullet list of features)
 - **Actors**: List of actor IDs that use this capability (required)
   - Format: `**Actors**: \`fdd-project-actor-name1\`, \`fdd-project-actor-name2\``
   - Must reference valid actor IDs from Section B
-  - All IDs wrapped in backticks
 
 **Content requirements**:
 - Each capability must have unique ID
 - Each capability must list ≥1 actor ID
 - Actor IDs must match actors defined in Section B
 - Capabilities are high-level system functions that map to features
-- All actor ID references wrapped in backticks
 
 **Example**:
 ```markdown
@@ -302,7 +302,6 @@
 1. **File exists**
    - File `architecture/BUSINESS.md` exists
    - File contains ≥50 lines (recommended: 200-500 lines)
-   - File is not empty or placeholder-only
 
 ### Structure Validation
 
@@ -314,7 +313,7 @@
    - Section E: Additional Context (optional, not validated)
 
 2. **Section order correct**
-   - A → B → C → D → E (in this exact order)
+   - A → B → C → D → E
    - If Section D (Use Cases) not present, Section E (Additional Context) can follow Section C
    - Section D may be omitted
 
@@ -324,7 +323,6 @@
 
 4. **Markdown formatting valid**
    - Headers use proper levels (## for A-D, #### for actors/capabilities)
-   - No malformed markdown
 
 ### Content Validation
 
@@ -337,87 +335,60 @@
    - ≥1 actor defined
    - Each actor has:
      - #### heading with actor name
-     - **ID**: line immediately after heading
      - **Role**: line with description
    - Actor IDs follow format: `fdd-{project}-actor-{name}`
-   - All actor IDs are unique
    - Grouped by Human Actors and System Actors
 
 3. **Section C: Capabilities**
    - ≥1 capability defined
    - Each capability has:
      - #### heading with capability name
-     - **ID**: line immediately after heading
      - Bulleted list of features
      - **Actors**: line listing actor IDs
    - Capability IDs follow format: `fdd-{project}-capability-{name}`
-   - All capability IDs are unique
    - All referenced actor IDs exist in Section B
-   - All IDs wrapped in backticks
 
 4. **Section D: Use Cases** (optional)
    - If present, ≥1 use case defined
    - Each use case has:
      - #### heading with "UC-XXX: Use Case Name" format
-     - **ID**: line immediately after heading
      - **Actor**: line listing actor IDs (must use IDs, not names)
      - **Preconditions**: description of required state
      - **Flow**: numbered list of steps
      - **Postconditions**: description of state after completion
    - Use case IDs follow format: `fdd-{project}-usecase-{name}`
-   - All use case IDs are unique
    - All referenced actor IDs exist in Section B
-   - All actor IDs wrapped in backticks
    - Flow steps MAY reference capability IDs from Section C
    - Flow steps MAY reference other use case IDs
    - Preconditions/Postconditions MAY reference use case IDs
-   - All ID references wrapped in backticks
 
 ### FDD ID Format Validation
 
 1. **Actor IDs**
    - Format: `fdd-{project}-actor-{name}`
-   - Kebab-case only
-   - Unique across document
-   - Wrapped in backticks: `\`fdd-...\``
 
 2. **Capability IDs**
    - Format: `fdd-{project}-capability-{name}`
-   - Kebab-case only
-   - Unique across document
-   - Wrapped in backticks: `\`fdd-...\``
 
 3. **Use Case IDs** (if Section D present)
    - Format: `fdd-{project}-usecase-{name}`
-   - Kebab-case only
-   - Unique across document
-   - Wrapped in backticks: `\`fdd-...\``
-
-4. **ID Placement**
-   - Must appear immediately after heading (first line)
-   - Format: `**ID**: \`fdd-...\``
-   - No blank lines between heading and ID
 
 ### Cross-Reference Validation
 
 1. **Capability → Actor references**
    - All actor IDs in **Actors**: lines must exist in Section B
-   - Actor IDs must be wrapped in backticks
    - At least one actor per capability
 
 2. **Use Case → Actor references** (if Section D present)
    - All actor IDs in **Actor**: lines must exist in Section B
-   - Actor IDs must be wrapped in backticks (not plain text names)
    - At least one actor per use case
 
 3. **Use Case → Capability references** (if Section D present)
    - Capability IDs referenced in Flow steps must exist in Section C
-   - Capability IDs must be wrapped in backticks
    - References are optional
 
 4. **Use Case → Use Case references** (if Section D present)
    - Use case IDs referenced in Preconditions/Flow/Postconditions must exist in Section D
-   - Use case IDs must be wrapped in backticks
    - References are optional
 
 ---
@@ -464,21 +435,36 @@ Provide analytics platform for tracking user behavior...
 
 ## B. Actors
 
-### Admin User
-**ID**: `fdd-actor-admin`
-Administrator managing the system...
+**Human Actors**:
 
-### Data Analyst
-**ID**: `fdd-actor-analyst`
-Analyzes user behavior data...
+#### Admin User
+- **ID**: `fdd-hyperspot-actor-admin-user`
+- **Role**: Administrator managing the system configuration and access
+
+#### Data Analyst
+- **ID**: `fdd-hyperspot-actor-data-analyst`
+- **Role**: Analyzes user behavior and usage metrics
+
+**System Actors**:
+
+#### UI Application
+- **ID**: `fdd-hyperspot-actor-ui-app`
+- **Role**: Frontend application used by human actors
 
 ## C. Capabilities
 
-### Analytics Dashboard
-**ID**: `fdd-capability-dashboard`
-**Actors**: `fdd-actor-admin`, `fdd-actor-analyst`
+#### Analytics Dashboard
+- **ID**: `fdd-hyperspot-capability-analytics-dashboard`
+- View and analyze key user behavior metrics
+- Filter metrics by tenant, time range, and segments
 
-View and analyze user behavior metrics...
+**Actors**: `fdd-hyperspot-actor-admin-user`, `fdd-hyperspot-actor-data-analyst`
+
+#### Usage Analytics
+- **ID**: `fdd-hyperspot-capability-usage-analytics`
+- Track usage events and aggregate metrics
+
+**Actors**: `fdd-hyperspot-actor-data-analyst`, `fdd-hyperspot-actor-ui-app`
 ```
 
 **Invalid BUSINESS.md**:
@@ -488,9 +474,19 @@ View and analyze user behavior metrics...
 Some information about the business.
 
 We have users and admins.
+
+## Actors
+
+Admin
+ID: fdd-actor-admin
 ```
 
-**Issues**: No structured sections, no IDs, no clear actors/capabilities definition
+**Issues**:
+- Missing required section structure (A/B/C headings and required content)
+- Actor headings must be `####` and grouped by Human/System actors
+- Actor IDs use wrong format (must be `fdd-{project-name}-actor-{actor-name}`) and must be wrapped in backticks
+- Actor metadata should be formatted as separate render-safe lines (prefer markdown lists)
+- Capabilities section is missing (no capability IDs, no actor references)
 
 ---
 

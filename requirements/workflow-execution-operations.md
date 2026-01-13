@@ -6,6 +6,8 @@
 
 ---
 
+**ALWAYS open and follow**: `core.md` WHEN editing this file
+
 ## Overview
 
 **Operation workflows** - Interactive procedures to create or modify artifacts
@@ -270,6 +272,31 @@ What should the vision be?
 
 ---
 
+### Markdown Output Quality (Rendering & Line Breaks)
+
+**MUST** ensure generated markdown renders correctly across common renderers.
+
+**MUST**:
+- Use a markdown list for metadata fields (preferred)
+- Or end each metadata line with two spaces (`  `) to force a hard line break
+- Use empty lines between:
+  - Headings and paragraphs
+  - Paragraphs and lists
+  - Lists and fenced code blocks
+- Use fenced code blocks for multi-line examples:
+  - Start/finish fences at the beginning of the line (no indentation)
+  - Always include a language tag (e.g., `markdown`, `rust`, `yaml`, `json`) when possible
+- Keep links and paths readable:
+  - Wrap file paths in inline code (e.g., `architecture/DESIGN.md`)
+  - Prefer lists for long link collections
+
+**MUST NOT**:
+- Rely on markdown soft-wrap for rendering separate metadata lines
+- Create invalid nested backticks in markdown examples
+- Mix list indentation levels inconsistently (avoid “drifting” indentation)
+
+---
+
 ## Validation Criteria
 
 ### Prerequisites Check (25 points)
@@ -297,6 +324,8 @@ What should the vision be?
 - [ ] IDs follow format from requirements
 - [ ] Parent artifacts referenced correctly
 - [ ] FDL used correctly (if applicable)
+- [ ] Markdown renders correctly (lists/line breaks/code fences)
+- [ ] Metadata lines do not collapse into a single line (use list or hard line breaks)
 
 ### File Creation (20 points)
 
