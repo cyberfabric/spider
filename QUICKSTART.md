@@ -752,56 +752,6 @@ fdd auto-scan adapter
 
 ---
 
-### Scenario 4: Already Have Documentation
-
-**Situation**: You have architecture docs, want to generate FDD artifacts
-
-**Prompt**:
-```
-fdd generate artifacts from existing docs:
-- architecture: docs/architecture.md
-- api specs: docs/api-spec.yaml
-```
-
-**What happens**:
-- Agent reads your existing docs
-- Maps to FDD structure
-- Creates BUSINESS.md and DESIGN.md
-
-**Then validate**:
-```
-1. fdd validate business context
-
-2. fdd validate overall design
-```
-
-**Result**: FDD artifacts generated from existing documentation
-
----
-
-### Scenario 5: Part of the Artifacts Already Exist
-
-**Situation**: You have BUSINESS.md and DESIGN.md, want to start implementing
-
-**Prompts**:
-```
-1. fdd validate business context
-
-2. fdd validate overall design
-
-3. fdd extract features from design
-
-4. fdd design feature [feature-name]
-
-5. fdd validate feature [feature-name]
-
-6. Continue with implementation steps...
-```
-
-**Result**: Jump into the workflow at the right point
-
----
-
 ## Quick Reference: What to Type
 
 ### Starting New Project
@@ -838,24 +788,6 @@ fdd design feature [slug]
 3. fdd validate feature
 4. fdd regenerate code
 ```
-
----
-
-## Tips
-
-**✅ Do**:
-- Start with Business Context → shows what you're building
-- Write Actor Flows first → drives everything else
-- Use FDL only in designs → plain English, reviewable by anyone
-- Validate early → catch issues before coding
-- Update designs when requirements change → then regenerate code
-
-**❌ Don't**:
-- Skip adapter creation → blocks all workflows
-- Write code in DESIGN.md → use FDL instead
-- Redefine types in features → reference Overall Design
-- Fix code when design is wrong → fix design first
-- Make features too big → keep under 3000 lines
 
 ---
 
