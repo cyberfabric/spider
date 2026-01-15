@@ -10,6 +10,18 @@ Feature-Driven Design is a **universal methodology** for building software syste
 
 ---
 
+## 🚀 Quick Start
+
+**New to FDD?** Start here: **[QUICKSTART.md](QUICKSTART.md)**
+
+Learn FDD in 10 minutes with:
+- **Exact prompts to copy-paste** into your AI chat
+- **Complete example**: Task management API from start to finish
+- **Common scenarios**: What to do when requirements change
+- **Working with existing docs**: Use what you already have
+
+---
+
 ## What is FDD?
 
 FDD helps teams build software by:

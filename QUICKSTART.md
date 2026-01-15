@@ -1,489 +1,906 @@
-# FDD Quick Start Guide
+# FDD Quick Start
 
-**Get started with Feature-Driven Development in 5 minutes**
-
----
-
-## What is FDD?
-
-FDD (Feature-Driven Development) is a design-first methodology that ensures your code matches your design through strict validation. It enforces a clear hierarchy: **Overall Design → Feature Design → Changes → Code**.
-
-**Core principle**: Design is source of truth. If code contradicts design, fix design first, then re-validate.
+**Learn FDD in 10 minutes with real prompts and examples**
 
 ---
 
-## Quick Start
+## What You'll Learn
 
-### 1. Create or Update FDD Adapter (Required First Step)
+1. **Exact prompts to type** - Copy-paste into your AI chat
+2. **Complete example** - Task management API from start to finish
+3. **Common scenarios** - What to do when requirements change
+4. **Working with existing docs** - Use what you already have
 
-**FDD requires a project-specific adapter before ANY work can begin.**
+---
 
+## The Basics
+
+FDD = **Design First, Code Second**
+
+```
+1. Business Context
+   ↓ (validated)
+2. Overall Design
+   ↓ (validated)
+3. Features Manifest
+   ↓ (validated)
+4. Feature Design
+   ↓ (validated)
+5. Changes/Tasks
+   ↓ (validated)
+6. Implementation
+   ↓ (validated)
+7. Code
+```
+
+**Key principle**: If code contradicts design, fix design first, then regenerate code.
+
+---
+
+## Prerequisites
+
+Before starting with FDD, you need:
+
+### 1. Git (Required)
+
+FDD uses Git submodules to include the framework in your project.
+
+**Check if installed:**
 ```bash
-# Check for adapter at:
-spec/FDD-Adapter/AGENTS.md
+git --version
 ```
 
-**Follow workflow**: **adapter.md** (workflows/adapter.md)
-- **No adapter found** → CREATE mode (5-10 minutes)
-- **Adapter exists** → UPDATE mode (2-5 minutes for targeted changes)
+**If not installed:**
+- **macOS**: `brew install git` or download from [git-scm.com](https://git-scm.com)
+- **Linux**: `sudo apt install git` or `sudo yum install git`
+- **Windows**: Download from [git-scm.com](https://git-scm.com)
 
-This workflow guides you through:
-- ✅ Detects mode automatically (CREATE/UPDATE)
-- ✅ CREATE: Ask guided questions about your project
-- ✅ UPDATE: Show current config, ask what to change
-- ✅ Define/update domain model format (GTS, JSON Schema, TypeScript, etc.)
-- ✅ Define/update API contract format (OpenAPI, GraphQL, CLISPEC, etc.)
-- ✅ Capture/update security model and non-functional requirements
-- ✅ Generate or update `spec/FDD-Adapter/AGENTS.md` and spec files
+### 2. IDE with AI Agent (Required)
 
-**Result**: Adapter created/updated at `spec/FDD-Adapter/` with status COMPLETE or INCOMPLETE
+FDD requires an IDE with integrated AI coding assistant to execute workflows interactively.
 
-**Alternative**: Use **adapter-from-sources.md** to analyze existing codebase and generate/update adapter automatically.
+**Recommended IDEs with AI agents:**
 
-### 1a. Configure or Update AI Agent (Optional)
+**Option 1: Windsurf (Recommended)**
+- Full FDD support with Claude/GPT models
+- Built-in agent for interactive workflows
+- Download: [codeium.com/windsurf](https://codeium.com/windsurf)
 
-**After creating adapter, optionally set up your AI agent:**
+**Option 2: VSCode + Continue/Cody**
+- VSCode with Continue extension (GPT-4, Claude)
+- VSCode with Cody extension (Claude)
+- Multiple model support
 
-Follow workflow: **adapter-agents.md** (workflows/adapter-agents.md)
-- **No agent config found** → CREATE mode (2 minutes)
-- **Agent config exists** → UPDATE mode (change style, add workflows, etc.)
+**Option 3: Cursor**
+- Claude Sonnet 3.5, GPT-4o support
+- Native AI integration
+- Download: [cursor.sh](https://cursor.sh)
 
-This workflow creates/updates agent-specific configuration:
-- **Windsurf**: `.windsurf/rules/` + workflow wrappers in `.windsurf/workflows/`
-- **Cursor**: `.cursorrules` (single file with inline workflow references)
-- **Cline**: `.clinerules` (minimal single file)
-- **Aider**: `.aider.conf.yml` (YAML config)
+**Option 4: JetBrains + AI Assistant**
+- IntelliJ IDEA, PyCharm, WebStorm with AI Assistant
+- Multiple model support
 
-**All configs**:
-- Detects existing config and enters UPDATE mode
-- Tell agent to ALWAYS open and follow `specs/api-contracts.md` WHEN working with API endpoints
-- Provide FDD workflow references
-- UPDATE mode: Change content style (minimal ↔ full), add/remove workflow files
+---
 
-### 2. Create or Update Business Context
+## Complete Example: Task Management API
 
-Follow workflow: **business-context.md** (workflows/business-context.md)
-- **No BUSINESS.md found** → CREATE mode (30 minutes)
-- **BUSINESS.md exists** → UPDATE mode (add actors, capabilities, update vision)
+Let's build a simple task management API step-by-step with actual prompts.
 
-This workflow creates/updates `architecture/BUSINESS.md` with:
-- **Section A**: System vision and purpose
-- **Section B**: Key actors (users, systems, external services)
-- **Section C**: Core capabilities (what system can do)
-- **Section D**: Additional context (constraints, compliance)
+**Three scenarios covered in each step:**
+1. 🆕 **New Project** - Starting from scratch
+2. 📚 **Existing Project + Docs** - Have architecture docs, API specs, etc.
+3. 💻 **Existing Project (Code Only)** - Have working code, no design docs
 
-### 3. Create or Update Overall Design
+Choose the path that matches your situation.
 
-Follow workflow: **design.md** (workflows/design.md)
-- **No DESIGN.md found** → CREATE mode (2-3 hours)
-- **DESIGN.md exists** → UPDATE mode (update architecture, add components, edit NFRs)
+### Step 1: Add FDD to Your Project (2 minutes)
 
-This workflow creates/updates `architecture/DESIGN.md` with:
-- **Section A**: Architecture overview (style, layers)
-- **Section B**: Requirements & principles
-- **Section C**: Technical architecture (components, domain model, API contracts, security)
-- **Section D**: Additional context (optional)
+**What it does**: Setup FDD Framework
 
-**Recommended**: Use an AI agent to edit the design. The agent will automatically:
-- Detect mode (CREATE/UPDATE) and act accordingly
-- Follow FDD requirements and validation rules
-- Apply adapter-specific conventions (DML syntax, API linking)
-- Use FDL (plain English) for flows, never code
-- Reference domain types from Overall Design ALWAYS open and follow `specs/domain-model.md` WHEN working with domain types
-- Ensure proper structure and completeness
-- CREATE mode: Auto-creates ADR-0001 (Initial Architecture)
+**Option A: Git Project (recommended)**
+```bash
+# In your project root
+git submodule add https://github.com/ainetx/fdd FDD
+git submodule update --init --recursive
+```
 
-**Key**: Use **FDL** (plain English) for flows, never write code in DESIGN.md
+**Option B: Non-Git Project**
+```bash
+# Clone FDD into your project
+cd your-project
+git clone https://github.com/ainetx/fdd FDD
+```
 
-### 4. Validate Overall Design
+**Result**: `/FDD/` folder in your project root
 
-Follow workflow: **design-validate.md** (workflows/design-validate.md)
+---
+
+### Step 2: Create Project AGENTS.md (1 minute, optional but recommended)
+
+**What it does**: Links your project to FDD
+
+**Create file** `AGENTS.md` in project root:
+```markdown
+# Project AI Agent Instructions
+
+ALWAYS open and follow `/FDD/AGENTS.md`
+```
+
+**Result**: Root `AGENTS.md` created with FDD reference
+
+---
+
+### Step 3: Start with Business Context (15 minutes)
+
+**What it does**: Describe what you're building (no tech details yet)
+
+**Recommended model**: Thinking model (e.g., Claude Opus Thinking, Claude Sonnet Thinking)
+
+---
+
+#### 🆕 New Project
+
+**Prompt**:
+```
+fdd create business requirements for task management service
+```
+
+**What happens**:
+- Agent runs `workflows/business-context.md`
+- Reads `requirements/business-context-structure.md`
+- Agent asks interactive questions with proposed answers:
+  - **Q1**: System vision - proposes from README.md if exists
+  - **Q2**: Key actors (3-5) - proposes based on vision
+  - **Q3**: Core capabilities (3-7) - proposes based on vision/actors
+  - **Q4**: Additional context (optional)
+- **Creates artifact**: `architecture/BUSINESS.md`
+
+---
+
+#### 📚 Existing Project + Docs
+
+**Prompt**:
+```
+fdd generate business context from existing docs:
+- architecture: docs/architecture.md
+- product requirements: docs/product-spec.md
+```
+
+**What happens**:
+- Agent runs `workflows/business-context.md`
+- Reads `requirements/business-context-structure.md`
+- Agent reads your existing documentation
+- Extracts vision, actors, capabilities
+- Maps to FDD structure
+- **Creates artifact**: `architecture/BUSINESS.md`
+
+---
+
+#### 💻 Existing Project (Code Only)
+
+**Prompt**:
+```
+fdd analyze codebase and create business requirements
+```
+
+**What happens**:
+- Agent runs `workflows/business-context.md`
+- Reads `requirements/business-context-structure.md`
+- Agent analyzes code structure, endpoints, data models
+- Infers actors from user types/roles in code
+- Infers capabilities from main features
+- Asks you to confirm and refine
+- **Creates artifact**: `architecture/BUSINESS.md`
+
+**Result**: `architecture/BUSINESS.md` created
+
+---
+
+### Step 4: Validate Business Context (5 minutes)
+
+**What it does**: Ensures business requirements are complete and clear
+
+**Recommended model**: Reasoning model (e.g., GPT o1, GPT 4.5 Medium Reasoning Fast) - strictly follows validation instructions
+
+**All scenarios use same prompt**:
+```
+fdd validate business context
+```
+
+**What happens**:
+- Agent runs `workflows/business-validate.md`
+- Reads `requirements/business-context-structure.md`
+- Agent performs systematic deterministic validation using skills
+- Validates BUSINESS.md structure and completeness
 - Must score ≥90/100
-- Auto-triggers **adr-validate.md** after DESIGN.md passes
+- Checks all actors and capabilities are properly defined
+- Works same for all scenarios
 
-### 5. Create or Update Architecture Decision Records (Optional)
-
-Follow workflow: **adr.md** (workflows/adr.md)
-- **No ADR.md found** → CREATE mode (creates ADR.md with first ADR)
-- **ADR.md exists** → UPDATE mode (add new ADR or edit existing)
-
-Three modes:
-- **CREATE**: Generate ADR.md with ADR-0001
-- **ADD**: Add new ADR to existing ADR.md
-- **EDIT**: Edit existing ADR (update status, add considerations)
-
-### 6. Create or Update Features Manifest
-
-Follow workflow: **features.md** (workflows/features.md)
-- **No FEATURES.md found** → CREATE mode (extracts from DESIGN.md, 5 minutes)
-- **FEATURES.md exists** → UPDATE mode (add/edit/remove features, update status)
-
-### 7. Create or Update Feature Designs
-
-Follow workflow: **feature.md** (workflows/feature.md)
-- **No feature DESIGN.md found** → CREATE mode (1-2 hours per feature)
-- **Feature DESIGN.md exists** → UPDATE mode (edit flows, add algorithms, update requirements)
-
-For each feature in `architecture/features/feature-{slug}/DESIGN.md`:
-- **Section A**: Feature overview and scope
-- **Section B**: Actor flows in FDL (PRIMARY!)
-- **Section C**: Algorithms in FDL
-- **Section D**: States in FDL (optional)
-- **Section E**: Technical details (DB, operations, errors)
-- **Section F**: Requirements (formalized scope + testing)
-- **Section G**: Implementation plan (OpenSpec changes)
-
-**Recommended**: Use an AI agent to design features. The agent will automatically:
-- Detect mode (CREATE/UPDATE) and show current content in UPDATE mode
-- Follow FDD feature requirements (Section A-G structure)
-- Apply adapter conventions (DML references, API linking)
-- Use FDL only, never write code in DESIGN.md
-- Reference Overall Design types (never redefine)
-- Start with Actor Flows (Section B) - the primary driver
-- Ensure 100/100 validation readiness
-
-**Key**: Design Section B (Actor Flows) FIRST - everything flows from there
-
-### 8. Validate Feature
-
-Follow workflow: **feature-validate.md** (workflows/feature-validate.md)
-
-Must score 100/100 + 100% completeness
-
-### 9. Create or Update Implementation Plan
-
-Follow workflow: **feature-changes.md** (workflows/feature-changes.md)
-- **No CHANGES.md found** → CREATE mode (decompose feature into changes, 15-30 min)
-- **CHANGES.md exists** → UPDATE mode (add new changes, edit tasks, update status)
-
-Breaks feature into atomic implementation changes with tasks.
-
-### 10. Implement Changes
-
-Follow workflow: **feature-change-implement.md** (workflows/feature-change-implement.md)
-
-Implements each change according to tasks in CHANGES.md.
-
-### 11. Validate and Complete
-
-Follow workflows:
-1. **feature-changes-validate.md** - Validate CHANGES.md structure
-2. **feature-code-validate.md** - Validate entire feature code vs design (final gate)
+**Result**: Business context approved or issues found to fix
 
 ---
 
-## Core Concepts
+### Step 5: Create Overall Design (1 hour)
 
-### Design Hierarchy (Never Violate)
+**What it does**: Defines architecture, domain model, and API contracts
 
+**Recommended model**: Thinking model (e.g., Claude Opus Thinking, Claude Sonnet Thinking)
+
+---
+
+#### 🆕 New Project
+
+**Prompt**:
 ```
-ADAPTER (tech stack, conventions)
-    ↓ defines formats and tools
-BUSINESS CONTEXT
-    ↓ defines actors and capabilities
-OVERALL DESIGN
-    ↓ reference, never contradict
-FEATURE DESIGN
-    ↓ reference, never contradict
-CHANGES (implementation plan)
-    ↓ implement exactly
-CODE
+fdd create overall design for task management service
 ```
 
-### FDL - Flow Description Language
+**What happens**:
+- Agent runs `workflows/design.md`
+- Reads `requirements/overall-design-structure.md`
+- Agent asks interactive questions with proposed answers:
+  - **Q1**: Architecture style (Monolithic, Microservices, Layered, Hexagonal, Event-Driven)
+  - **Q2**: Key components (3-7 main system components)
+  - **Q3**: Technical stack (technologies, frameworks, libraries)
+  - **Q4**: Design principles (3-5 architectural principles)
+  - **Q5**: NFRs (performance, security, scalability)
+- **Creates artifacts**: 
+  - `architecture/DESIGN.md` (domain model, API contracts)
+  - `architecture/ADR.md` (ADR-0001: Initial Architecture)
 
-Plain English pseudo-code for flows and algorithms. **Never write actual code in DESIGN.md**.
+---
 
+#### 📚 Existing Project + Docs
+
+**Prompt**:
+```
+fdd generate design from existing docs:
+- architecture: docs/architecture.md
+- api specs: docs/openapi.yaml
+- data model: docs/database-schema.md
+```
+
+**What happens**:
+- Agent runs `workflows/design.md`
+- Reads `requirements/overall-design-structure.md`
+- Agent reads existing technical docs
+- Maps to FDD DESIGN.md structure
+- **Creates artifacts**:
+  - `architecture/DESIGN.md`
+  - `architecture/ADR.md` (ADR-0001: Initial Architecture)
+
+---
+
+#### 💻 Existing Project (Code Only)
+
+**Prompt**:
+```
+fdd reverse engineer design from codebase
+```
+
+**What happens**:
+- Agent runs `workflows/design.md`
+- Reads `requirements/overall-design-structure.md`
+- Agent analyzes code: models, controllers, services, APIs
+- Extracts domain model from classes/types
+- Extracts API contracts from routes/controllers
+- Infers architecture from code structure
+- **Creates artifacts**:
+  - `architecture/DESIGN.md`
+  - `architecture/ADR.md` (ADR-0001: Initial Architecture)
+
+**What you get** (example snippet):
 ```markdown
-✅ Good (FDL):
-1. User submits login form with email and password
-2. System validates email format
-3. System checks credentials against database
-4. IF credentials valid:
-   - Generate JWT token
-   - Return token to user
-5. ELSE:
-   - Return "Invalid credentials" error
-
-❌ Bad (actual code):
-const token = jwt.sign({ userId: user.id }, SECRET);
-return res.json({ token });
-```
-
-### Actor Flows (Section B)
-
-**Always design Actor Flows first**. They drive everything:
-- What each actor (user, system, external service) does
-- Step-by-step interactions
-- Decision points and branches
-- Error cases
-
-### Domain Model
-
-Define types ONCE in Overall Design. Reference them everywhere:
-- `@DomainModel.User` in Feature Design
-- Redefining User type in Feature Design
-
-### OpenSpec Changes
-
-Each change is atomic and deployable:
-- `proposal.md` - Why this change
-- `tasks.md` - Implementation checklist
-- `specs/` - Delta specifications
-- `design.md` - Technical decisions (optional)
-
----
-
-## Best Practices
-
-### Design Phase
-
-1. **Start with Actor Flows** - Section B drives everything
-2. **Use FDL only** - Never write code in DESIGN.md
-3. **Reference, don't redefine** - Link to Overall Design types
-4. **Keep features small** - ≤3000 lines recommended, ≤4000 hard limit
-5. **Validate early, validate often** - Catch issues before coding
-
-### Implementation Phase
-
-1. **Design is source of truth** - If contradiction found, fix design first
-2. **Atomic changes** - Each OpenSpec change is deployable
-3. **Follow the plan** - Feature DESIGN.md Section F has the roadmap
-4. **Update as you learn** - Use workflow 08-fix-design when needed
-5. **Test continuously** - OpenSpec validates each change
-
-### Team Collaboration
-
-1. **Read the adapter** - Understand project-specific conventions
-2. **Check FEATURES.md** - See what's blocked/in-progress
-3. **Review designs first** - Before implementation starts
-4. **Use workflows** - Don't skip validation steps
-5. **Document decisions** - Section D for context, design.md for technical choices
-
-### Common Pitfalls
-
-**Skip adapter creation** → ALL workflows blocked without adapter
-**Incomplete adapter** → Create specs or skip optional sections
-**Write code in DESIGN.md** → Use FDL instead
-**Redefine types** → Reference Overall Design
-**Skip validation** → Catch issues early, not late
-**Make features too large** → Break into smaller features
-**Fix code when design wrong** → Fix design, then re-validate
-
----
-
-## Examples
-
-### Example 1: Simple REST API
-
-**Overall Design** (architecture/DESIGN.md):
-```markdown
-## A. Business Context
-
-### System Vision
-User management API for authentication and profile management.
-
-### Actors
-- **End User**: Can register, login, view/update profile
-- **Admin**: Can manage all users
-- **System**: Handles token generation and validation
-
-## B. Requirements & Principles
-
-### Business Rules
-- Email must be unique
-- Passwords hashed with bcrypt
-- JWT tokens expire after 24 hours
-
 ## C. Technical Architecture
 
 ### Domain Model
-@DomainModel.User:
+
+@DomainModel.Task:
 - id: UUID
-- email: string (unique)
-- passwordHash: string
-- role: "user" | "admin"
+- title: string
+- description: string
+- status: "todo" | "in_progress" | "done"
+- assigneeId: UUID (optional)
+- projectId: UUID
+- createdAt: timestamp
+- updatedAt: timestamp
+
+@DomainModel.Project:
+- id: UUID
+- name: string
+- ownerId: UUID
 - createdAt: timestamp
 
 ### API Contracts
-@API.POST:/auth/register - User registration
-@API.POST:/auth/login - User login
-@API.GET:/users/me - Get current user profile
+
+@API.POST:/tasks - Create task
+@API.GET:/tasks - List tasks
+@API.GET:/tasks/:id - Get task
+@API.PUT:/tasks/:id - Update task
+@API.DELETE:/tasks/:id - Delete task
 ```
 
-**Feature Design** (architecture/features/feature-user-auth/DESIGN.md):
+**Result**: `architecture/DESIGN.md` and `architecture/ADR.md` created
+
+---
+
+### Step 6: Validate Design (5 minutes)
+
+**Recommended model**: Reasoning model (e.g., GPT o1, GPT 4.5 Medium Reasoning Fast) - strictly follows validation instructions
+
+**All scenarios use same prompt**:
+```
+fdd validate overall design
+```
+
+**What happens**:
+- Agent runs `workflows/design-validate.md`
+- Reads `requirements/overall-design-structure.md` and `requirements/adr-structure.md`
+- Agent performs systematic deterministic validation using skills
+- Validates structure and completeness
+- Must score ≥90/100
+- Auto-validates ADR.md
+- Works same for all scenarios
+
+**Result**: Design approved or issues found to fix
+
+---
+
+### Step 7: Decompose Design into Features (5 minutes)
+
+**Recommended model**: Thinking model (e.g., Claude Opus Thinking, Claude Sonnet Thinking)
+
+**All scenarios use same prompt**:
+```
+fdd extract features from design
+```
+
+**What happens**:
+- Agent runs `workflows/features.md`
+- Reads `requirements/features-manifest-structure.md`
+- Agent analyzes DESIGN.md (created in Step 5)
+- Decomposes design into discrete features
+- Identifies features from capabilities and API contracts
+- **Creates artifact**: `architecture/features/FEATURES.md` (features manifest)
+
+**Note**: Works same for all scenarios - always based on DESIGN.md
+
+**What you get**:
+```markdown
+## Features
+
+### feature-task-crud
+**Priority**: CRITICAL  
+**Status**: ⏳ NOT_STARTED  
+**Description**: Create, read, update, delete tasks
+
+### feature-project-management
+**Priority**: HIGH  
+**Status**: ⏳ NOT_STARTED  
+**Description**: Organize tasks into projects
+```
+
+**Result**: `architecture/features/FEATURES.md` created
+
+---
+
+### Step 8: Design First Feature (30 minutes)
+
+**Recommended model**: Thinking model (e.g., Claude Opus Thinking, Claude Sonnet Thinking)
+
+---
+
+#### 🆕 New Project
+
+**Prompt**:
+```
+fdd design feature task-crud
+```
+
+**What happens**:
+- Agent runs `workflows/feature.md`
+- Reads `requirements/feature-design-structure.md` and `requirements/FDL.md`
+- Agent asks interactive questions per section:
+  - **Section A**: Feature purpose and scope boundaries
+  - **Section B**: Actor flows (main flow, alternative flows) in FDL
+  - **Section C**: Algorithms (business logic, state transitions) in FDL
+  - **Section D**: State machines (if applicable) in FDL
+  - **Section E**: Technical details (DB schemas, API endpoints, integrations)
+  - **Section F**: Requirements mapping from DESIGN.md
+  - **Section G**: Test scenarios (acceptance criteria, edge cases)
+- Uses FDL (plain English), no code
+- References domain model from Overall Design
+- **Creates artifact**: `architecture/features/feature-task-crud/DESIGN.md`
+
+---
+
+#### 📚 Existing Project + Docs
+
+**Prompt**:
+```
+fdd design feature task-crud based on:
+- user stories: docs/user-stories.md
+- feature specs: docs/features/task-management.md
+```
+
+**What happens**:
+- Agent runs `workflows/feature.md`
+- Reads `requirements/feature-design-structure.md` and `requirements/FDL.md`
+- Agent reads existing feature documentation
+- Maps user stories to actor flows
+- Creates feature DESIGN.md in FDD format
+- **Creates artifact**: `architecture/features/feature-task-crud/DESIGN.md`
+
+---
+
+#### 💻 Existing Project (Code Only)
+
+**Prompt**:
+```
+fdd reverse engineer feature task-crud from code
+```
+
+**What happens**:
+- Agent runs `workflows/feature.md`
+- Reads `requirements/feature-design-structure.md` and `requirements/FDL.md`
+- Agent analyzes code for task CRUD operations
+- Infers actor flows from controllers/handlers
+- Creates feature DESIGN.md documenting what code does
+- **Creates artifact**: `architecture/features/feature-task-crud/DESIGN.md`
+
+**What you get** (example):
 ```markdown
 ## B. Actor Flows (FDL)
 
-### Flow 1: User Registration
-1. End User submits registration form with email and password
-2. System validates email format (RFC 5322)
-3. System checks email not already registered
-4. IF email exists:
-   - Return "Email already registered" error
-5. System hashes password with bcrypt (cost factor 10)
-6. System creates User record in database
-7. System generates JWT token with user ID and role
-8. Return token and user data to End User
+### Flow 1: Create Task
 
-### Flow 2: User Login
-1. End User submits login form with email and password
-2. System finds User by email in database
-3. IF User not found:
-   - Return "Invalid credentials" error
-4. System compares password hash with bcrypt
-5. IF password invalid:
-   - Return "Invalid credentials" error
-6. System generates JWT token with user ID and role
-7. Return token and user data to End User
+1. User submits task form with title, description, projectId
+2. System validates title is not empty
+3. System validates projectId exists in database
+4. IF project not found:
+   - Return "Project not found" error (404)
+5. System creates Task record with status "todo"
+6. System returns created task to User
+
+### Flow 2: List Tasks
+
+1. User requests task list with optional filters (projectId, status)
+2. System queries database with filters
+3. System returns paginated task list to User
+
+### Flow 3: Update Task
+
+1. User submits update with taskId and changed fields
+2. System finds Task by id
+3. IF task not found:
+   - Return "Task not found" error (404)
+4. System updates allowed fields (title, description, status, assigneeId)
+5. System saves Task to database
+6. System returns updated task to User
 ```
 
-### Example 2: CLI Tool
+**Result**: `architecture/features/feature-task-crud/DESIGN.md` created
 
-**Adapter** uses **CLISPEC** for API contracts:
-```
-COMMAND validate-feature
-SYNOPSIS: mytool validate-feature <slug> [options]
-DESCRIPTION: Validate feature design completeness
-WORKFLOW: 06-validate-feature
-
-ARGUMENTS:
-  slug  <slug>  required  Feature identifier
-
-OPTIONS:
-  --strict  <boolean>  Enable strict validation mode
-
-EXIT CODES:
-  0  Valid (score 100/100)
-  2  Validation failed
-
-EXAMPLE:
-  $ mytool validate-feature user-authentication
 ---
+
+### Step 9: Validate Feature (5 minutes)
+
+**Recommended model**: Reasoning model (e.g., GPT o1, GPT 4.5 Medium Reasoning Fast) - strictly follows validation instructions
+
+**All scenarios use same prompt**:
+```
+fdd validate feature task-crud
 ```
 
-### Example 3: Domain Model with GTS
+**What happens**:
+- Agent runs `workflows/feature-validate.md`
+- Reads `requirements/feature-design-structure.md` and `requirements/FDL.md`
+- Agent performs systematic deterministic validation using skills
+- Validates feature design
+- Must score 100/100 + 100% completeness
+- Checks FDL usage, no code in design
+- Works same for all scenarios
 
-**Overall Design** defines types:
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "gts://gts.myapp.core.user.v1~",
-  "type": "object",
-  "properties": {
-    "gtsId": { "type": "string" },
-    "email": { "type": "string", "format": "email" },
-    "role": { "enum": ["user", "admin"] }
-  }
-}
+**Result**: Feature approved or issues found to fix
+
+---
+
+### Step 10: Create Implementation Plan (15 minutes)
+
+**Recommended model**: Thinking model (e.g., Claude Opus Thinking, Claude Sonnet Thinking)
+
+---
+
+#### 🆕 New Project
+
+**Prompt**:
+```
+fdd create implementation plan for feature-task-crud
 ```
 
-**Feature Design** references it:
+**What happens**:
+- Agent runs `workflows/feature-changes.md`
+- Reads `requirements/feature-changes-structure.md`
+- Agent decomposes feature design into atomic implementation changes
+- Creates task checklists from scratch
+- **Creates artifact**: `architecture/features/feature-task-crud/CHANGES.md`
+
+---
+
+#### 📚 & 💻 Existing Projects
+
+**Prompt**:
+```
+fdd create implementation plan for feature-task-crud
+Consider existing code structure
+```
+
+**What happens**:
+- Agent runs `workflows/feature-changes.md`
+- Reads `requirements/feature-changes-structure.md`
+- Agent analyzes existing codebase
+- Decomposes feature into changes that fit existing architecture
+- May include refactoring tasks if needed
+- **Creates artifact**: `architecture/features/feature-task-crud/CHANGES.md`
+
+**What you get**:
 ```markdown
-## E. Technical Details
+## Change 001: Task API Endpoints
 
-### Database Schema
-Uses @DomainModel[gts.myapp.core.user.v1~]
+**Purpose**: Implement REST API endpoints for task operations
 
-Operations:
-- Create: INSERT INTO users (email, password_hash, role)
-- Read: SELECT * FROM users WHERE id = ?
-- Update: UPDATE users SET email = ? WHERE id = ?
+**Tasks**:
+- [ ] Create POST /tasks endpoint
+- [ ] Create GET /tasks endpoint with filtering
+- [ ] Create GET /tasks/:id endpoint
+- [ ] Create PUT /tasks/:id endpoint
+- [ ] Create DELETE /tasks/:id endpoint
+- [ ] Add request validation
+- [ ] Add error handling
+- [ ] Write integration tests
+
+**Status**: NOT_STARTED
+```
+
+**Result**: `architecture/features/feature-task-crud/CHANGES.md` created
+
+---
+
+### Step 11: Implement (varies)
+
+**Recommended model**: Thinking model (e.g., Claude Opus Thinking, Claude Sonnet Thinking)
+
+---
+
+#### 🆕 New Project
+
+**Prompt**:
+```
+fdd implement change 001 from feature-task-crud
+```
+
+**What happens**:
+- Agent runs `workflows/feature-change-implement.md`
+- Reads feature DESIGN.md and CHANGES.md
+- Agent creates new files/modules
+- Implements from scratch following DESIGN.md
+- Writes tests
+
+---
+
+#### 📚 & 💻 Existing Projects
+
+**Prompt**:
+```
+fdd implement change 001 from feature-task-crud
+Update existing code
+```
+
+**What happens**:
+- Agent runs `workflows/feature-change-implement.md`
+- Reads feature DESIGN.md and CHANGES.md
+- Agent modifies existing files
+- Integrates with current codebase
+- Updates or adds tests
+- May refactor if needed
+
+**Result**: Code implemented, tests written
+
+---
+
+### Step 12: Final Validation
+
+**Recommended model**: Reasoning model (e.g., GPT o1, GPT 4.5 Medium Reasoning Fast) - strictly follows validation instructions
+
+**All scenarios use same prompt**:
+```
+fdd validate feature code task-crud
+```
+
+**What happens**:
+- Agent runs `workflows/feature-code-validate.md`
+- Reads feature DESIGN.md and implementation code
+- Agent performs systematic deterministic validation using skills
+- Validates code matches design
+- Checks all flows implemented
+- Verifies no design contradictions
+- Works same for all scenarios
+
+**Result**: Feature complete ✅
+
+---
+
+### Step 13: Create or Update Project Adapter (optional, can run anytime)
+
+**What it does**: Configure tech stack details for your project
+
+**When to use**: Run this workflow anytime you need to define or update tech stack configuration. Not required for basic FDD workflows.
+
+**Prompt to type**:
+```
+fdd create adapter
+```
+
+**What happens**:
+- Agent runs `workflows/adapter.md`
+- Creates `spec/FDD-Adapter/AGENTS.md` (minimal, with Extends only)
+- Creates `specs/domain-model.md` and `specs/api-contracts.md` placeholders
+- You configure tech stack details as needed
+- **Creates artifact**: `spec/FDD-Adapter/AGENTS.md` and spec files
+
+**Result**: `spec/FDD-Adapter/` folder with configuration
+
+---
+
+**Auto-Discovery Alternative**: For existing projects, use `adapter-auto`:
+
+**Prompt**:
+```
+fdd auto-scan adapter
+```
+
+**What it does**:
+- Agent runs `workflows/adapter-auto.md`
+- Automatically scans your existing project:
+  - Documentation (README, ARCHITECTURE, CONTRIBUTING)
+  - ADRs (architecture decision records)
+  - Config files (package.json, docker-compose.yml, etc.)
+  - Code structure (frameworks, patterns, conventions)
+  - API definitions (OpenAPI, GraphQL schemas)
+  - Domain models (entities, schemas)
+- Generates adapter specs from discovered patterns:
+  - `specs/tech-stack.md` (detected technologies, frameworks, libraries)
+  - `specs/domain-model.md` (extracted from code entities/schemas)
+  - `specs/api-contracts.md` (from OpenAPI/GraphQL definitions)
+  - `specs/patterns.md` (architectural patterns found)
+  - `specs/conventions.md` (code style, naming conventions)
+  - `specs/build-deploy.md` (CI/CD, deployment instructions)
+  - `specs/testing.md` (test frameworks, strategies)
+
+**When to use**: Perfect for existing projects with established codebase. Saves time by discovering tech stack automatically instead of manual configuration.
+
+**Note**: This workflow can be executed at any point in your FDD process, whenever you need to formalize tech stack specifications.
+
+---
+
+## Common Scenarios
+
+### Scenario 1: Requirements Changed (Business Context)
+
+**Situation**: Need to add "Task Comments" capability
+
+**Prompts**:
+```
+1. fdd update business context - add Task Comments capability
+
+2. fdd validate business context
+
+3. fdd update overall design - add Comment domain model and API
+
+4. fdd validate overall design
+
+5. fdd add feature task-comments
+
+6. fdd design feature task-comments
+
+7. fdd validate feature task-comments
+```
+
+**Result**: New feature added to roadmap
+
+---
+
+### Scenario 2: Design Changed (Overall Design)
+
+**Situation**: Realized Task needs "priority" field
+
+**Prompts**:
+```
+1. fdd update Task model - add priority field
+
+2. fdd validate overall design
+
+3. fdd update feature task-crud - add priority handling
+
+4. fdd validate feature task-crud
+
+5. fdd update implementation plan - add priority migration
+```
+
+**Result**: Design updated, feature updated, implementation plan adjusted
+
+---
+
+### Scenario 3: Feature Design Changed
+
+**Situation**: Need to add validation - tasks must have assignee
+
+**Prompts**:
+```
+1. fdd update feature task-crud - add assignee validation
+
+2. fdd validate feature task-crud
+
+3. fdd update implementation plan - add validation task
+
+4. fdd implement validation
+
+5. fdd validate feature code task-crud
+```
+
+**Result**: Validation added to flow, implementation updated
+
+---
+
+### Scenario 4: Already Have Documentation
+
+**Situation**: You have architecture docs, want to generate FDD artifacts
+
+**Prompt**:
+```
+fdd generate artifacts from existing docs:
+- architecture: docs/architecture.md
+- api specs: docs/api-spec.yaml
+```
+
+**What happens**:
+- Agent reads your existing docs
+- Maps to FDD structure
+- Creates BUSINESS.md and DESIGN.md
+
+**Then validate**:
+```
+1. fdd validate business context
+
+2. fdd validate overall design
+```
+
+**Result**: FDD artifacts generated from existing documentation
+
+---
+
+### Scenario 5: Part of the Artifacts Already Exist
+
+**Situation**: You have BUSINESS.md and DESIGN.md, want to start implementing
+
+**Prompts**:
+```
+1. fdd validate business context
+
+2. fdd validate overall design
+
+3. fdd extract features from design
+
+4. fdd design feature [feature-name]
+
+5. fdd validate feature [feature-name]
+
+6. Continue with implementation steps...
+```
+
+**Result**: Jump into the workflow at the right point
+
+---
+
+## Quick Reference: What to Type
+
+### Starting New Project
+```
+1. fdd create adapter
+2. fdd create business requirements
+3. fdd create overall design
+4. fdd validate overall design
+5. fdd extract features
+6. fdd design feature [name]
+7. fdd validate feature [name]
+8. fdd create implementation plan
+9. fdd implement changes
+```
+
+### Updating Existing Project
+```
+# Update business context
+fdd update business context - add [capability]
+
+# Update design
+fdd update overall design - add [domain type or API]
+
+# Add new feature
+fdd add feature [slug]
+
+fdd design feature [slug]
+```
+
+### When Code Contradicts Design
+```
+1. STOP coding immediately
+2. fdd update feature design - fix contradiction
+3. fdd validate feature
+4. fdd regenerate code
 ```
 
 ---
 
-## Workflow Cheatsheet
+## Tips
 
-**All operation workflows support CREATE & UPDATE modes**
+**✅ Do**:
+- Start with Business Context → shows what you're building
+- Write Actor Flows first → drives everything else
+- Use FDL only in designs → plain English, reviewable by anyone
+- Validate early → catch issues before coding
+- Update designs when requirements change → then regenerate code
 
-```bash
-# Adapter Setup (REQUIRED FIRST)
-adapter.md                             # Create OR update adapter
-adapter-from-sources.md                # Create OR update from codebase
-adapter-agents.md                      # Create OR update AI agent config
-
-# Architecture & Requirements
-business-context.md                    # Create OR update BUSINESS.md
-adr.md                                 # Create/add/edit ADRs
-design.md                              # Create OR update DESIGN.md
-
-# Validation
-business-validate.md                   # Validate BUSINESS.md
-adr-validate.md                        # Validate ADR.md
-design-validate.md                     # Validate DESIGN.md (≥90/100)
-
-# Feature Management
-features.md                            # Create OR update FEATURES.md
-feature.md                             # Create OR update feature DESIGN.md
-feature-changes.md                     # Create OR update CHANGES.md
-feature-change-implement.md            # Implement changes
-
- # Feature Validation
- features-validate.md                   # Validate FEATURES.md
- feature-validate.md                    # Validate feature DESIGN.md (100/100)
- feature-changes-validate.md            # Validate CHANGES.md
- feature-code-validate.md               # Validate entire feature code vs design
- ```
+**❌ Don't**:
+- Skip adapter creation → blocks all workflows
+- Write code in DESIGN.md → use FDL instead
+- Redefine types in features → reference Overall Design
+- Fix code when design is wrong → fix design first
+- Make features too big → keep under 3000 lines
 
 ---
 
 ## Next Steps
 
-1. **Read AGENTS.md** - Full FDD methodology
-2. **Read workflows/AGENTS.md** - Workflow selection guide
-3. **Read FDL.md** - Flow Description Language syntax
-4. **Check ADAPTER_GUIDE.md** - How to create adapters
-5. **See CLISPEC.md** - CLI command specification format (if building CLI tools)
-
----
-
-## Resources
-
-- **FDD Core**: `AGENTS.md`
-- **Workflows**: `workflows/AGENTS.md`
-- **FDL Syntax**: `FDL.md`
-- **Adapter Guide**: `ADAPTER_GUIDE.md`
-- **CLI Format**: `CLISPEC.md`
-- **OpenSpec**: https://openspec.dev
+1. **Try the example** - Follow prompts above for task management API
+2. **Read full docs** - See `README.md` for complete methodology
+3. **Learn FDL syntax** - See `FDL.md` for all keywords
+4. **Understand workflows** - See `workflows/AGENTS.md` for workflow guide
+5. **Create your adapter** - Use `ADAPTER_GUIDE.md` for details (TODO: update doc)
 
 ---
 
 ## Get Help
 
-**Validation failed?** 
-- Check error messages carefully
-- Review the specific section mentioned
-- Use FDL for flows/algorithms
+**Validation failed?**
+- Read error message carefully
+- Check specific section mentioned
+- Use FDL for flows (no code)
 - Reference domain types from Overall Design
 
 **Feature too large?**
-- Break into multiple smaller features
-- Each feature should be one capability
+- Break into multiple features
+- Each feature = one capability
 - Target ≤3000 lines per DESIGN.md
 
 **Code contradicts design?**
-- STOP coding immediately
-- Fix design using workflow 08-fix-design
-- Re-validate with workflow 06-validate-feature
-- Resume coding only after validation passes
+- Fix design first
+- Re-validate design
+- Then regenerate code
 
 **Need to change Overall Design?**
-- Update architecture/DESIGN.md
-- Re-validate with workflow 02-validate-architecture
-- Update affected Feature Designs
+- Update DESIGN.md
+- Re-validate with design-validate.md
+- Update affected features
 - Re-validate features
 
 ---
 
 ## Remember
 
-✅ **Run adapter-config first** - ALL workflows blocked without adapter at `spec/FDD-Adapter/`
-✅ **Design before code** - Always validate designs first
-✅ **Actor flows are primary** - Start with Section B
-✅ **Use FDL, not code** - Plain English in DESIGN.md
-✅ **Reference, don't redefine** - Link to Overall Design
-✅ **Validate often** - Catch issues early
-✅ **Design is truth** - Fix design first, code second
+✅ Design before code  
+✅ Validate before implementing  
+✅ Use FDL, not code in designs  
+✅ Reference, don't redefine  
+✅ Fix design first, code second  
 
-**Start with adapter-config, then happy designing! 🎨**
+**Now start with the example above!** 🚀
