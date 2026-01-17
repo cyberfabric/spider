@@ -896,3 +896,15 @@ If QUICKSTART steps fail, check:
 - All prerequisites installed
 - Network connectivity for repository access
 <!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-handle-quickstart-failure -->
+
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-report-issue -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-fallback-manual -->
+## If QUICKSTART Fails
+
+If you encounter issues:
+1. Report the issue in the FDD repository
+2. Fall back to manual navigation using AGENTS.md
+
+Check AGENTS.md in the project root for detailed navigation instructions.
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-fallback-manual -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-report-issue -->
