@@ -3094,7 +3094,11 @@ def validate_generic_sections(artifact_text: str, requirements_path: Path) -> Di
     # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-init-result
     # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-extract-headings
     # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-parse-markdown
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-read-artifactartifact_path: Path,
+    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-read-artifact
+
+
+def validate(
+    artifact_path: Path,
     requirements_path: Path,
     artifact_kind: str,
     *,
