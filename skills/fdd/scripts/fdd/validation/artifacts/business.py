@@ -238,17 +238,3 @@ def validate_business_context(artifact_text: str) -> Dict[str, object]:
 FEATURE_HEADING_RE = re.compile(
     r"^###\s+(\d+)\.\s+\[(.+?)\]\((feature-[^)]+/)\)\s+([⏳🔄✅])\s+(CRITICAL|HIGH|MEDIUM|LOW)\s*$"
 )
-
-
-def _line_has_field(line: str, field_name: str, *, allow_empty_value: bool) -> bool:
-    # Accept list form and plain form:
-    # - **Field**: ...
-    # **Field**: ...
-    # Some fields allow list-style values:
-    # **Phases**:
-    #   - `ph-1`: ...
-    if allow_empty_value:
-        return re.match(rf"^\s*[-*]?\s*\*\*{re.escape(field_name)}\*\*:\s*(.*)$", line) is not None
-    return re.match(rf"^\s*[-*]?\s*\*\*{re.escape(field_name)}\*\*:\s*.+$", line) is not None
-
-

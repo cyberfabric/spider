@@ -275,10 +275,13 @@ def validate_fdl_code_implementation(
     return errors
 def validate_fdl_completion(
     changes_text: str,
-    design_fdl: Dict[str, Dict[str, List]]
+    design_fdl: Dict[str, Dict[str, List]],
+    *,
+    feature_root: Optional[Path] = None
 ) -> List[Dict[str, object]]:
     """
     Validate that COMPLETED feature has all FDL instructions marked [x] in DESIGN.md.
+    For IMPLEMENTED status, verify all [x] instructions have fdd-begin/end tags in code.
     """
     errors: List[Dict[str, object]] = []
     
@@ -292,7 +295,7 @@ def validate_fdl_completion(
         return errors
     
     # For IMPLEMENTED status, verify all [x] instructions have fdd-begin/end tags in code
-    if status == "IMPLEMENTED" and feature_root:
+    if "IMPLEMENTED" in status and feature_root:
         code_inst_tags = extract_inst_tags_from_code(feature_root)
         
         missing_implementations = []
@@ -322,7 +325,10 @@ def validate_fdl_completion(
         
         return errors
     
-    # For COMPLETED/DESIGNED status, verify design completeness
+    # For COMPLETED status only, verify all instructions are marked [x]
+    if "COMPLETED" not in status:
+        return errors
+    
     uncompleted_instructions: List[Tuple[str, str]] = []
     for scope_id, data in design_fdl.items():
         for i, inst_id in enumerate(data["instructions"]):
@@ -341,89 +347,3 @@ def validate_fdl_completion(
         })
     
     return errors
-
-
-# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-read-artifact
-# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-parse-markdown
-# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-extract-headings
-# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-init-result
-def validate_feature_design(
-    artifact_text: str,
-    *,
-    artifact_path: Optional[Path] = None,
-    skip_fs_checks: bool = False,
-) -> Dict[str, object]:
-    errors: List[Dict[str, object]] = []
-    placeholders = find_placeholders(artifact_text)
-    section_order, sections = _split_by_feature_section_letter(artifact_text)
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-init-result
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-extract-headings
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-parse-markdown
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-read-artifact
-    
-    # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-for-each-required
-    # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-search-heading
-    expected = ["A", "B", "C", "D", "E", "F"]
-    if "G" in sections:
-        expected.append("G")
-    # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-validate-order
-    if section_order and section_order[: len(expected)] != expected:
-        errors.append({"type": "structure", "message": "Section order invalid", "required_order": expected, "found_order": section_order})
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-validate-order
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-search-heading
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-for-each-required
-
-    feature_slug: Optional[str] = None
-    if artifact_path is not None:
-        parent = artifact_path.parent.name
-        if parent.startswith("feature-"):
-            feature_slug = parent[len("feature-") :]
-
-    def _extract_full_ids(line: str, kind: str) -> List[str]:
-        ids: List[str] = []
-        pat = {
-            "flow": re.compile(r"\bfdd-[a-z0-9-]+-feature-[a-z0-9-]+-flow-[a-z0-9-]+\b"),
-            "algo": re.compile(r"\bfdd-[a-z0-9-]+-feature-[a-z0-9-]+-algo-[a-z0-9-]+\b"),
-            "state": re.compile(r"\bfdd-[a-z0-9-]+-feature-[a-z0-9-]+-state-[a-z0-9-]+\b"),
-            "req": re.compile(r"\bfdd-[a-z0-9-]+-feature-[a-z0-9-]+-req-[a-z0-9-]+\b"),
-            "test": re.compile(r"\bfdd-[a-z0-9-]+-feature-[a-z0-9-]+-test-[a-z0-9-]+\b"),
-        }[kind]
-
-        for tok in re.findall(r"`([^`]+)`", line):
-            if pat.fullmatch(tok.strip()):
-                ids.append(tok.strip())
-
-        for m in pat.finditer(line):
-            ids.append(m.group(0))
-
-        dedup: List[str] = []
-        for x in ids:
-            if x not in dedup:
-                dedup.append(x)
-        return dedup
-
-    def _check_section_fdl(section_letter: str, kind: str) -> Tuple[set, set]:
-        lines = sections.get(section_letter, [])
-        ids: set = set()
-        phases: set = set()
-
-        current_scope_id: Optional[str] = None
-        scope_inst_seen: set = set()
-
-        in_code = False
-        for idx, line in enumerate(lines, start=1):
-            if line.strip().startswith("```"):
-                in_code = not in_code
-                errors.append({"type": "fdl", "message": "Code blocks are not allowed in Section {section_letter}", "line": idx, "text": line.strip()})
-                continue
-            if in_code:
-                continue
-
-            if "**WHEN**" in line and section_letter in ("B", "C"):
-                errors.append({"type": "fdl", "message": "**WHEN** is only allowed in state machines (Section D)", "section": section_letter, "line": idx, "text": line.strip()})
-
-            bad_bold = re.findall(r"\*\*([A-Z ]+)\*\*", line)
-            prohibited = {"THEN", "SET", "VALIDATE", "CHECK", "LOAD", "READ", "WRITE", "CREATE", "ADD"}
-            if section_letter in ("B", "C"):
-                prohibited.add("WHEN")
-                prohibited.add("AND")

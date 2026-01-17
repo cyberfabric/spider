@@ -25,6 +25,12 @@ from .utils import (
     parse_required_sections,
     split_by_section_letter,
 )
+from .utils.files import (
+    find_project_root,
+    load_project_config,
+    find_adapter_directory,
+    load_adapter_config,
+)
 from . import constants
 
 
@@ -1351,7 +1357,7 @@ def _cmd_adapter_info(argv: List[str]) -> int:
     fdd_root_path = Path(args.fdd_root).resolve() if args.fdd_root else None
     
     # Find project root
-    project_root = _find_project_root(start_path)
+    project_root = find_project_root(start_path)
     if project_root is None:
         print(json.dumps(
             {
@@ -1366,10 +1372,10 @@ def _cmd_adapter_info(argv: List[str]) -> int:
         return 1
     
     # Find adapter
-    adapter_dir = _find_adapter_directory(start_path, fdd_root=fdd_root_path)
+    adapter_dir = find_adapter_directory(start_path, fdd_root=fdd_root_path)
     if adapter_dir is None:
         # Check if config exists to provide better error message
-        cfg = _load_project_config(project_root)
+        cfg = load_project_config(project_root)
         if cfg is not None:
             adapter_rel = cfg.get("fddAdapterPath")
             if adapter_rel is not None and isinstance(adapter_rel, str):
@@ -1402,7 +1408,7 @@ def _cmd_adapter_info(argv: List[str]) -> int:
         return 1
     
     # Load adapter config
-    config = _load_adapter_config(adapter_dir)
+    config = load_adapter_config(adapter_dir)
     config["status"] = "FOUND"
     config["project_root"] = project_root.as_posix()
     

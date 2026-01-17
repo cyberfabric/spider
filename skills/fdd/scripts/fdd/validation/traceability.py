@@ -9,15 +9,19 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 
 
-from ..utils import load_text, extract_backticked_ids
+from ..utils import (
+    load_text,
+    extract_backticked_ids,
+    load_language_config,
+    build_fdd_begin_regex,
+    build_fdd_end_regex,
+    build_no_fdd_begin_regex,
+    build_no_fdd_end_regex,
+)
 from ..validation.fdl import extract_fdl_instructions, extract_scope_references_from_changes
 from ..validation.artifacts import validate_feature_design, validate_feature_changes
 from ..constants import (
-    FDD_BEGIN_LINE_RE,
-    FDD_END_LINE_RE,
     UNWRAPPED_INST_TAG_RE,
-    NO_FDD_BLOCK_BEGIN_RE,
-    NO_FDD_BLOCK_END_RE,
     FDD_TAG_CHANGE_RE,
     FDD_TAG_FLOW_RE,
     FDD_TAG_ALGO_RE,
@@ -30,21 +34,27 @@ from ..constants import (
 )
 
 
-def compute_excluded_line_ranges(text: str) -> List[Tuple[int, int]]:
+def compute_excluded_line_ranges(text: str, lang_config: Optional['LanguageConfig'] = None) -> List[Tuple[int, int]]:
     """
     Compute line ranges (0-indexed, inclusive) that should be excluded from FDD scanning.
     Ranges are defined by !no-fdd-begin and !no-fdd-end markers.
     Unmatched !no-fdd-begin markers exclude everything to end of file.
     Returns list of (start_line, end_line) tuples.
     """
+    if lang_config is None:
+        lang_config = load_language_config()
+    
+    no_fdd_begin_re = build_no_fdd_begin_regex(lang_config)
+    no_fdd_end_re = build_no_fdd_end_regex(lang_config)
+    
     ranges: List[Tuple[int, int]] = []
     lines = text.splitlines()
     stack: List[int] = []
     
     for i, line in enumerate(lines):
-        if NO_FDD_BLOCK_BEGIN_RE.search(line):
+        if no_fdd_begin_re.search(line):
             stack.append(i)
-        elif NO_FDD_BLOCK_END_RE.search(line):
+        elif no_fdd_end_re.search(line):
             if stack:
                 start = stack.pop()
                 ranges.append((start, i))
@@ -64,30 +74,19 @@ def is_line_excluded(line_idx: int, excluded_ranges: List[Tuple[int, int]]) -> b
     return False
 
 
-def is_effective_code_line(line: str) -> bool:
+def is_effective_code_line(line: str, lang_config: Optional['LanguageConfig'] = None) -> bool:
     """
     Check if line contains effective code (not just comments or whitespace).
     Used to determine if fdd-begin/fdd-end block is empty.
+    Uses language config for comment detection.
     """
-    s = line.strip()
-    if not s:
-        return False
-    if s.startswith("//"):
-        return False
-    if s.startswith("#"):
-        return False
-    if s.startswith("--"):
-        return False
-    if s.startswith("/*"):
-        return False
-    if s.startswith("*/"):
-        return False
-    if s.startswith("*") and not s.startswith("**"):
-        return False
-    return True
+    if lang_config is None:
+        lang_config = load_language_config()
+    
+    return lang_config.is_effective_code_line(line)
 
 
-def empty_fdd_tag_blocks_in_text(text: str) -> List[Dict[str, object]]:
+def empty_fdd_tag_blocks_in_text(text: str, lang_config: Optional['LanguageConfig'] = None) -> List[Dict[str, object]]:
     """
     Find malformed fdd-begin/fdd-end blocks in text.
     
@@ -96,9 +95,15 @@ def empty_fdd_tag_blocks_in_text(text: str) -> List[Dict[str, object]]:
     - begin_without_end: fdd-begin without matching fdd-end
     - end_without_begin: fdd-end without matching fdd-begin
     """
+    if lang_config is None:
+        lang_config = load_language_config()
+    
+    fdd_begin_re = build_fdd_begin_regex(lang_config)
+    fdd_end_re = build_fdd_end_regex(lang_config)
+    
     issues: List[Dict[str, object]] = []
     lines = text.splitlines()
-    excluded_ranges = compute_excluded_line_ranges(text)
+    excluded_ranges = compute_excluded_line_ranges(text, lang_config)
 
     stack: List[Tuple[str, int]] = []
     for i, line in enumerate(lines):
@@ -107,14 +112,14 @@ def empty_fdd_tag_blocks_in_text(text: str) -> List[Dict[str, object]]:
         
         line_for_scan = re.sub(r"`[^`]*`", "", line)
 
-        mb = FDD_BEGIN_LINE_RE.search(line_for_scan)
+        mb = fdd_begin_re.search(line_for_scan)
         if mb:
             tag = mb.group(1)
             if ":inst-" in tag:
                 stack.append((tag, i))
             continue
 
-        me = FDD_END_LINE_RE.search(line_for_scan)
+        me = fdd_end_re.search(line_for_scan)
         if not me:
             continue
         end_tag = me.group(1)
@@ -137,7 +142,7 @@ def empty_fdd_tag_blocks_in_text(text: str) -> List[Dict[str, object]]:
             continue
         stack.pop()
 
-        has_code = any(is_effective_code_line(lines[j]) for j in range(start_idx + 1, i) if not is_line_excluded(j, excluded_ranges))
+        has_code = any(is_effective_code_line(lines[j], lang_config) for j in range(start_idx + 1, i) if not is_line_excluded(j, excluded_ranges))
         if not has_code:
             issues.append(
                 {
@@ -154,14 +159,20 @@ def empty_fdd_tag_blocks_in_text(text: str) -> List[Dict[str, object]]:
     return issues
 
 
-def paired_inst_tags_in_text(text: str) -> Set[str]:
+def paired_inst_tags_in_text(text: str, lang_config: Optional['LanguageConfig'] = None) -> Set[str]:
     """
     Extract all properly paired instruction tags from text.
     Returns set of tags like "fdd-project-feature-x-flow-y:ph-1:inst-step"
     """
+    if lang_config is None:
+        lang_config = load_language_config()
+    
+    fdd_begin_re = build_fdd_begin_regex(lang_config)
+    fdd_end_re = build_fdd_end_regex(lang_config)
+    
     tags: Set[str] = set()
     lines = text.splitlines()
-    excluded_ranges = compute_excluded_line_ranges(text)
+    excluded_ranges = compute_excluded_line_ranges(text, lang_config)
 
     stack: List[str] = []
     for i, line in enumerate(lines):
@@ -170,14 +181,14 @@ def paired_inst_tags_in_text(text: str) -> Set[str]:
         
         line_for_scan = re.sub(r"`[^`]*`", "", line)
 
-        mb = FDD_BEGIN_LINE_RE.search(line_for_scan)
+        mb = fdd_begin_re.search(line_for_scan)
         if mb:
             tag = mb.group(1)
             if ":inst-" in tag:
                 stack.append(tag)
             continue
 
-        me = FDD_END_LINE_RE.search(line_for_scan)
+        me = fdd_end_re.search(line_for_scan)
         if not me:
             continue
         end_tag = me.group(1)
@@ -194,34 +205,43 @@ def paired_inst_tags_in_text(text: str) -> Set[str]:
     return tags
 
 
-def unwrapped_inst_tag_hits_in_text(text: str) -> List[Dict[str, object]]:
+def unwrapped_inst_tag_hits_in_text(text: str, lang_config: Optional['LanguageConfig'] = None) -> List[Dict[str, object]]:
     """
     Find instruction tags that are NOT wrapped in fdd-begin/fdd-end blocks.
     These should be wrapped for proper traceability.
     
     Returns list of {tag, line} dicts.
     """
+    if lang_config is None:
+        lang_config = load_language_config()
+    
+    fdd_begin_re = build_fdd_begin_regex(lang_config)
+    fdd_end_re = build_fdd_end_regex(lang_config)
+    
     hits: List[Dict[str, object]] = []
-    excluded_ranges = compute_excluded_line_ranges(text)
+    excluded_ranges = compute_excluded_line_ranges(text, lang_config)
     
     for i, line in enumerate(text.splitlines()):
         if is_line_excluded(i, excluded_ranges):
             continue
         
         line_for_scan = re.sub(r"`[^`]*`", "", line)
-        if FDD_BEGIN_LINE_RE.search(line_for_scan) or FDD_END_LINE_RE.search(line_for_scan):
+        if fdd_begin_re.search(line_for_scan) or fdd_end_re.search(line_for_scan):
             continue
         for m in UNWRAPPED_INST_TAG_RE.finditer(line_for_scan):
             hits.append({"tag": m.group(1), "line": i + 1})
     return hits
 
 
-def code_tag_hits(text: str) -> Dict[str, List[Tuple[str, str]]]:
+def code_tag_hits(text: str, lang_config: Optional['LanguageConfig'] = None) -> Dict[str, List[Tuple[str, str]]]:
     """
     Extract all @fdd-* tags from text (change, flow, algo, state, req, test).
     
     Returns dict mapping tag kind to list of (scope_id, phase) tuples.
     """
+    if lang_config is None:
+        lang_config = load_language_config()
+    
     hits: Dict[str, List[Tuple[str, str]]] = {
         "change": [],
         "flow": [],
@@ -231,7 +251,7 @@ def code_tag_hits(text: str) -> Dict[str, List[Tuple[str, str]]]:
         "test": [],
     }
     
-    excluded_ranges = compute_excluded_line_ranges(text)
+    excluded_ranges = compute_excluded_line_ranges(text, lang_config)
     
     # Remove backticked content and filter out lines in exclusion blocks
     filtered_lines = []
@@ -258,14 +278,17 @@ def code_tag_hits(text: str) -> Dict[str, List[Tuple[str, str]]]:
     return hits
 
 
-def iter_code_files(root: Path) -> List[Path]:
+def iter_code_files(root: Path, lang_config: Optional['LanguageConfig'] = None) -> List[Path]:
     """
     Iterate code files for traceability scanning.
     
-    Scans: .rs, .py, .ts, .tsx, .js, .go, .java, .cs, .sql, .md
+    Uses configured file extensions from language config.
     For .md files: only includes files that contain FDD tags.
     """
-    exts = {".rs", ".py", ".ts", ".tsx", ".js", ".go", ".java", ".cs", ".sql", ".md"}
+    if lang_config is None:
+        lang_config = load_language_config(root)
+    
+    exts = lang_config.file_extensions
     files: List[Path] = []
     for p in root.rglob("*"):
         if not p.is_file():
@@ -446,7 +469,8 @@ def validate_codebase_traceability(
                 break
             p = p.parent
     
-    scanned_files = iter_code_files(scan_root)
+    lang_config = load_language_config(scan_root)
+    scanned_files = iter_code_files(scan_root, lang_config)
     found_scope_ids: Dict[str, set] = {k: set() for k in expected_scope_ids.keys()}
     found_inst_tags: set = set()
 
@@ -461,12 +485,12 @@ def validate_codebase_traceability(
         except Exception:
             rel_fp = fp.as_posix()
 
-        hits = code_tag_hits(txt)
+        hits = code_tag_hits(txt, lang_config)
 
-        paired_inst_tags = paired_inst_tags_in_text(txt)
-        unwrapped_inst_hits = unwrapped_inst_tag_hits_in_text(txt)
+        paired_inst_tags = paired_inst_tags_in_text(txt, lang_config)
+        unwrapped_inst_hits = unwrapped_inst_tag_hits_in_text(txt, lang_config)
 
-        empty_blocks = empty_fdd_tag_blocks_in_text(txt)
+        empty_blocks = empty_fdd_tag_blocks_in_text(txt, lang_config)
         if empty_blocks:
             for eb in empty_blocks:
                 msg = "Invalid fdd-begin/fdd-end pairing"

@@ -53,4 +53,6 @@ ALWAYS open and follow `specs/build-deploy.md` WHEN executing workflows: feature
 
 ALWAYS open and follow `specs/testing.md` WHEN executing workflows: feature-change-implement.md, feature-code-validate.md
 
+ALWAYS open and follow `specs/language-config.md` WHEN executing workflows: feature-code-validate.md
+
 ALWAYS open and follow `specs/project-structure.md` WHEN executing workflows: adapter-auto.md, adapter-manual.md, adapter-bootstrap.md, adapter-validate.md, feature.md, feature-validate.md, feature-changes.md, feature-changes-validate.md

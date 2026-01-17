@@ -67,7 +67,8 @@
 {project-root}/
 ├── .fdd-config.json       # Project configuration (mandatory)
 │                          # Contains: {"fddAdapterPath": "FDD-Adapter"}
-│                          # User can change name to any directory
+│                          # Optional: {"codeScanning": {...}}
+│                          # User can change adapter name to any directory
 └── FDD-Adapter/           # Default name (customizable via config)
     ├── AGENTS.md          # Minimal: only Extends declaration
     └── specs/             # Created dynamically during workflows
@@ -76,6 +77,7 @@
         ├── domain-model.md   # From DESIGN.md Section C.2
         ├── api-contracts.md  # From DESIGN.md Section C.3
         ├── conventions.md    # From code style + ADRs
+        ├── language-config.md # Language-specific file extensions and comment formats
         ├── build-deploy.md   # From configs + ADRs
         ├── testing.md        # From test frameworks + ADRs
         ├── snippets/         # Code examples from implementation
@@ -103,7 +105,16 @@
 ```json
 {
   "fddAdapterPath": "FDD-Adapter",
-  "fddCorePath": ".fdd"
+  "fddCorePath": ".fdd",
+  "codeScanning": {
+    "fileExtensions": [".py", ".js", ".ts", ".go", ".rs"],
+    "singleLineComments": ["#", "//", "--"],
+    "multiLineComments": [
+      {"start": "/*", "end": "*/"},
+      {"start": "<!--", "end": "-->"}
+    ],
+    "blockCommentPrefixes": ["*"]
+  }
 }
 ```
 
@@ -113,12 +124,15 @@
 - [ ] `fddAdapterPath` field present
 - [ ] Path points to existing directory with AGENTS.md
 - [ ] Config is used by `fdd adapter-info` for discovery
+- [ ] If `codeScanning` present, all fields are valid arrays/objects
 
 **Notes**:
 - Config ensures reliable adapter discovery
 - Allows custom adapter locations
 - Required for multi-module projects
 - Speeds up adapter search (no recursive scan)
+- `codeScanning` enables FDD to work with any programming language
+- If `codeScanning` omitted, sensible defaults are used (Python, JS/TS, Go, Rust, Java, etc.)
 
 ### AGENTS.md
 
@@ -177,6 +191,8 @@ ALWAYS open and follow `specs/build-deploy.md` WHEN executing workflows: feature
 
 ALWAYS open and follow `specs/testing.md` WHEN executing workflows: feature-change-implement.md, feature-code-validate.md
 
+ALWAYS open and follow `specs/language-config.md` WHEN executing workflows: feature-code-validate.md
+
 ALWAYS open and follow `specs/linting.md` WHEN executing workflows: feature-change-implement.md, feature-code-validate.md
 
 ALWAYS open and follow `specs/security.md` WHEN executing workflows: design.md, design-validate.md, feature.md, feature-validate.md, feature-change-implement.md, feature-code-validate.md
@@ -199,6 +215,7 @@ ALWAYS open and follow `specs/project-structure.md` WHEN executing workflows: ad
 | `conventions.md` | Code analysis + ADRs + configs | Naming, style, file organization |
 | `build-deploy.md` | Configs + ADRs + discovery | Build commands, CI/CD, deployment steps |
 | `testing.md` | Test code + ADRs + discovery | Test frameworks, structure, commands |
+| `language-config.md` | Project language stack + file analysis | File extensions, comment formats for code scanning |
 | `linting.md` | Linter configs + ADRs | Linting rules, tools, custom lints |
 | `security.md` | Security requirements + ADRs | Auth, validation, encryption, audit logging |
 | `performance.md` | Performance requirements + ADRs | Benchmarks, profiling, optimization guidelines |

@@ -15,6 +15,7 @@ from ...constants import (
     CONSTRAINT_ID_RE,
     ADR_ID_RE,
     ADR_NUM_RE,
+    ACTOR_ID_RE,
     CAPABILITY_ID_RE,
     USECASE_ID_RE,
 )
@@ -214,64 +215,3 @@ KNOWN_FIELD_NAMES = {
     "Testing Scenarios (FDL)",
     "Acceptance Criteria",
 }
-
-
-def _field_block(lines: List[str], field_name: str) -> Optional[Dict[str, object]]:
-    for idx, line in enumerate(lines):
-        m = FIELD_HEADER_RE.match(line)
-        if not m:
-            continue
-        if m.group(1).strip() != field_name:
-            continue
-        value = m.group(2)
-        tail: List[str] = []
-        for j in range(idx + 1, len(lines)):
-            m2 = FIELD_HEADER_RE.match(lines[j])
-            if m2 and m2.group(1).strip() in KNOWN_FIELD_NAMES:
-                break
-            tail.append(lines[j])
-        return {"index": idx, "value": value, "tail": tail}
-    return None
-
-
-def _has_list_item(lines: List[str]) -> bool:
-    return any(re.match(r"^\s*[-*]\s+\S+", l) for l in lines)
-
-
-SECTION_BUSINESS_RE = re.compile(r"^##\s+(?:Section\s+)?([A-E])\s*[:.]\s*(.+)?$", re.IGNORECASE)
-
-
-def _split_by_business_section_letter(text: str) -> Tuple[List[str], Dict[str, List[str]]]:
-    """Split BUSINESS.md by section letters (A-E)."""
-    return _split_by_section_letter(text, SECTION_BUSINESS_RE)
-
-
-def _extract_backticked_ids(line: str, pattern: re.Pattern) -> List[str]:
-    ids: List[str] = []
-    for tok in re.findall(r"`([^`]+)`", line):
-        t = tok.strip()
-        if pattern.fullmatch(t) or pattern.search(t):
-            ids.append(t)
-    if ids:
-        return ids
-    return pattern.findall(line)
-
-
-def _paragraph_count(lines: List[str]) -> int:
-    paras = 0
-    buf: List[str] = []
-    for l in lines:
-        s = l.strip()
-        if not s:
-            if any(x.strip() for x in buf):
-                paras += 1
-            buf = []
-            continue
-        if s.startswith("#"):
-            continue
-        buf.append(s)
-    if any(x.strip() for x in buf):
-        paras += 1
-    return paras
-
-

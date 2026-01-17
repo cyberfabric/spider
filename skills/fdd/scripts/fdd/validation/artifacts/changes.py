@@ -17,6 +17,7 @@ from ...constants import (
     PHASE_TOKEN_RE,
     CHANGE_TASK_LINE_RE,
     FEATURE_REQ_ID_RE,
+    LINK_RE,
 )
 
 from ...utils import find_placeholders, load_text
@@ -322,8 +323,12 @@ def validate_feature_changes(
                 fdl_reverse_errors = validate_fdl_code_to_design(feature_root, design_text)
                 errors.extend(fdl_reverse_errors)
                 
-                # Validate FDL completion (if feature is marked COMPLETED)
-                fdl_completion_errors = validate_fdl_completion(artifact_text, design_fdl)
+                # Validate FDL completion (if feature is marked COMPLETED or IMPLEMENTED)
+                fdl_completion_errors = validate_fdl_completion(
+                    artifact_text, 
+                    design_fdl, 
+                    feature_root=feature_root
+                )
                 errors.extend(fdl_completion_errors)
             except Exception:
                 pass
@@ -374,59 +379,3 @@ def _extract_id_list(field_block: Dict[str, object]) -> List[str]:
     return ids
 
 
-def _find_disallowed_link_notation(text: str) -> List[Dict[str, object]]:
-    hits: List[Dict[str, object]] = []
-    for idx, line in enumerate(text.splitlines(), start=1):
-        if DISALLOWED_LINK_TOKEN_RE.search(line):
-            hits.append({"line": idx, "text": line.strip()})
-    return hits
-
-
-def _find_html_comment_placeholders(text: str) -> List[Dict[str, object]]:
-    hits: List[Dict[str, object]] = []
-    for m in HTML_COMMENT_RE.finditer(text):
-        frag = m.group(0)
-        if PLACEHOLDER_RE.search(frag):
-            pre = text[: m.start()].splitlines()
-            line_no = len(pre) + 1
-            hits.append({"line": line_no, "text": frag.strip()})
-    return hits
-
-
-def _find_brace_placeholders(text: str) -> List[Dict[str, object]]:
-    hits: List[Dict[str, object]] = []
-    in_code = False
-    for idx, line in enumerate(text.splitlines(), start=1):
-        if line.strip().startswith("```"):
-            in_code = not in_code
-            continue
-        if in_code:
-            continue
-        line_wo_inline_code = re.sub(r"`[^`]*`", "", line)
-        if BRACE_PLACEHOLDER_RE.search(line_wo_inline_code):
-            hits.append({"line": idx, "text": line.strip()})
-    return hits
-
-
-def _parse_size_hard_limit(requirements_path: Path) -> Optional[int]:
-    try:
-        rt = requirements_path.read_text(encoding="utf-8")
-    except Exception:
-        return None
-    m = SIZE_HARD_LIMIT_RE.search(rt)
-    if not m:
-        return None
-    try:
-        return int(m.group(1))
-    except Exception:
-        return None
-
-
-def _common_checks(
-    *,
-    artifact_text: str,
-    artifact_path: Path,
-    requirements_path: Path,
-    skip_fs_checks: bool,
-) -> Tuple[List[Dict[str, object]], List[Dict[str, object]]]:
-    errors: List[Dict[str, object]] = []

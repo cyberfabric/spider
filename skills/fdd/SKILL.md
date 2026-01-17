@@ -31,19 +31,38 @@ python3 scripts/fdd.py <subcommand> [options]
 This tool optionally reads a project-level configuration file located at the project root:
 - `.fdd-config.json`
 
-If present, it can override where the FDD core (requirements/workflows/AGENTS.md) is located.
+If present, it can configure FDD core location, adapter path, and language-specific settings.
 
 **Example**:
 ```json
 {
   "fddCorePath": ".fdd",
-  "adapterPath": ".fdd-adapter"
+  "fddAdapterPath": "FDD-Adapter",
+  "codeScanning": {
+    "fileExtensions": [".py", ".js", ".ts", ".go", ".rs"],
+    "singleLineComments": ["#", "//", "--"],
+    "multiLineComments": [
+      {"start": "/*", "end": "*/"},
+      {"start": "<!--", "end": "-->"}
+    ],
+    "blockCommentPrefixes": ["*"]
+  }
 }
 ```
 
 **Supported fields**:
 - **`fddCorePath`**: Relative path from project root to the FDD core directory.
-- **`adapterPath`**: Reserved for future use (adapter discovery). Not used by this tool yet.
+- **`fddAdapterPath`**: Relative path to the FDD adapter directory (e.g., `FDD-Adapter`, `.fdd-adapter`).
+- **`codeScanning`**: Language-specific configuration for code traceability scanning (optional).
+  - **`fileExtensions`**: Array of file extensions to scan (e.g., `[".py", ".js", ".go"]`).
+  - **`singleLineComments`**: Array of single-line comment prefixes (e.g., `["#", "//", "--"]`).
+  - **`multiLineComments`**: Array of multi-line comment marker objects with `start` and `end` fields.
+  - **`blockCommentPrefixes`**: Array of continuation markers inside comment blocks (e.g., `["*"]`).
+
+**Language Configuration**:
+- Enables FDD to work with **any programming language** by configuring comment styles.
+- If `codeScanning` is omitted, defaults are used (Python, JS/TS, Go, Rust, Java, C#, SQL, etc.).
+- Custom languages (PHP, Ruby, Kotlin, Swift, etc.) can be configured via this section.
 
 **Discovery rules**:
 - The tool searches upwards from the current working directory.

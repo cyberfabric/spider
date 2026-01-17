@@ -1,4 +1,4 @@
-.PHONY: test test-verbose test-quick validate validate-feature validate-code validate-code-feature install clean help
+.PHONY: test test-verbose test-quick test-coverage validate validate-feature validate-code validate-code-feature install clean help
 
 # Detect Python version with pytest installed
 PYTHON := $(shell python3.11 -c "import pytest" 2>/dev/null && echo python3.11 || echo python3)
@@ -11,6 +11,7 @@ help:
 	@echo "  make test                          - Run all tests"
 	@echo "  make test-verbose                  - Run tests with verbose output"
 	@echo "  make test-quick                    - Run fast tests only (skip slow integration tests)"
+	@echo "  make test-coverage                 - Run tests with coverage report"
 	@echo "  make validate                      - Validate core methodology feature"
 	@echo "  make validate-feature FEATURE=name - Validate specific feature"
 	@echo "  make validate-code                 - Validate codebase traceability (entire project)"
@@ -45,6 +46,28 @@ test-verbose:
 test-quick:
 	@echo "Running quick tests with $(PYTHON)..."
 	$(PYTHON) -m pytest tests/ -v -m "not slow"
+
+# Run tests with coverage
+test-coverage:
+	@echo "Running tests with coverage..."
+	@$(PYTHON) -c "import pytest_cov" 2>/dev/null || { \
+		echo ""; \
+		echo "ERROR: pytest-cov not installed"; \
+		echo ""; \
+		echo "Install it with:"; \
+		echo "  make install"; \
+		echo ""; \
+		exit 1; \
+	}
+	$(PYTHON) -m pytest tests/ \
+		--cov=skills/fdd/scripts/fdd \
+		--cov-report=term \
+		--cov-report=html \
+		-v --tb=short
+	@echo ""
+	@echo "Coverage report generated:"
+	@echo "  HTML: htmlcov/index.html"
+	@echo "  Open with: open htmlcov/index.html"
 
 # Validate core methodology feature
 validate:

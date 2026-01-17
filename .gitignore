@@ -35,3 +35,4 @@ coverage/
 /test-projects/
 ~$deck.pptx
 deck.pptx
+.coverage

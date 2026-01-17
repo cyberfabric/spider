@@ -37,6 +37,16 @@ from .helpers import (
     parse_adr_index,
 )
 
+from .language_config import (
+    LanguageConfig,
+    load_language_config,
+    build_fdd_begin_regex,
+    build_fdd_end_regex,
+    build_no_fdd_begin_regex,
+    build_no_fdd_end_regex,
+    DEFAULT_FILE_EXTENSIONS,
+)
+
 __all__ = [
     # Text utilities
     "slugify_anchor",
@@ -63,4 +73,12 @@ __all__ = [
     # Helper functions
     "parse_business_model",
     "parse_adr_index",
+    # Language configuration
+    "LanguageConfig",
+    "load_language_config",
+    "build_fdd_begin_regex",
+    "build_fdd_end_regex",
+    "build_no_fdd_begin_regex",
+    "build_no_fdd_end_regex",
+    "DEFAULT_FILE_EXTENSIONS",
 ]
