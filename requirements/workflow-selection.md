@@ -399,3 +399,38 @@ feature (UPDATE mode) → feature-validate
 - All requirement files in `requirements/` - Referenced by workflows
 
 **All workflows located in**: `/FDD/workflows/`
+
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-extract-keywords -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-init-candidates -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-adapter -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-business -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-design -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-feature -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-validate -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-extract-artifact-type -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-validate -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-changes -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-changes -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-implement -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-implement -->
+## Workflow Resolution Algorithm
+
+Algorithm for resolving user request to workflow file path is implemented throughout this document via keyword matching and routing logic.
+
+Key steps:
+- Extract keywords from request
+- Initialize workflow candidates
+- Return appropriate workflow based on request type (adapter, business, design, feature, validate, changes, implement)
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-implement -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-implement -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-changes -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-changes -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-validate -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-extract-artifact-type -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-validate -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-feature -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-design -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-business -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-adapter -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-init-candidates -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-extract-keywords -->

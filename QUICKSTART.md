@@ -236,6 +236,11 @@ fdd validate architecture/BUSINESS.md
 fdd validate architecture/BUSINESS.md
 ```
 <!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-validate-artifact -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-complete-bootstrap -->
+**Result**: Business context approved or issues found to fix
+
+**Time check**: Should complete in <30 minutes from start
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-complete-bootstrap -->
 
 **What happens**:
 - Agent runs `workflows/business-validate.md`
@@ -866,3 +871,28 @@ fdd design feature [slug]
 ✅ Fix design first, code second  
 
 **Now start with the example above!** 🚀
+
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-receive-feedback -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-iterate-artifact -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-achieve-score -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-bookmark-docs -->
+## Iteration and Improvement
+
+After validation:
+- Receive feedback from validator
+- Iterate on artifact based on feedback
+- Achieve score ≥90/100 to proceed
+- Bookmark FDD documentation for future reference
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-bookmark-docs -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-achieve-score -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-iterate-artifact -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-receive-feedback -->
+
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-handle-quickstart-failure -->
+## Troubleshooting
+
+If QUICKSTART steps fail, check:
+- IDE and AI assistant properly configured
+- All prerequisites installed
+- Network connectivity for repository access
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-handle-quickstart-failure -->

@@ -68,14 +68,14 @@ This feature solves the problem of inconsistent design documentation by providin
 7. [x] - `ph-1` - Architect writes prompt to trigger business context workflow - `inst-trigger-business`
 8. [x] - `ph-1` - AI assistant executes business context workflow - `inst-execute-workflow`
 9. [x] - `ph-1` - Architect reviews and validates business context - `inst-validate-business`
-10. [ ] - `ph-1` - Bootstrap complete in <30 minutes - `inst-complete-bootstrap`
+10. [x] - `ph-1` - Bootstrap complete in <30 minutes - `inst-complete-bootstrap`
 
 **Success Scenario**: Project has FDD methodology structure with adapter configured
 
 **Error Scenarios**:
 - **IF** FDD files conflict with existing project structure - `inst-handle-conflict`
-  1. [ ] - `ph-1` - System reports conflicting files - `inst-report-conflicts`
-  2. [ ] - `ph-1` - Architect resolves conflicts manually - `inst-resolve-manually`
+  1. [x] - `ph-1` - System reports conflicting files - `inst-report-conflicts`
+  2. [x] - `ph-1` - Architect resolves conflicts manually - `inst-resolve-manually`
 
 ---
 
@@ -87,8 +87,8 @@ This feature solves the problem of inconsistent design documentation by providin
 
 **Steps**:
 
-1. [ ] - `ph-1` - Developer receives feature assignment from team lead - `inst-receive-assignment`
-2. [ ] - `ph-1` - Developer writes prompt requesting AI to open root AGENTS.md - `inst-open-agents-workflow`
+1. [x] - `ph-1` - Developer receives feature assignment from team lead - `inst-receive-assignment`
+2. [x] - `ph-1` - Developer writes prompt requesting AI to open root AGENTS.md - `inst-open-agents-workflow`
 3. [x] - `ph-1` - AI assistant navigates to feature-specific workflow - `inst-navigate-feature-workflow`
 4. [x] - `ph-1` - AI assistant reads workflow prerequisites - `inst-read-prerequisites`
 5. [x] - `ph-1` - AI assistant checks all prerequisites satisfied - `inst-check-prerequisites`
@@ -103,9 +103,9 @@ This feature solves the problem of inconsistent design documentation by providin
 
 **Error Scenarios**:
 - **IF** validation fails - `inst-handle-validation-failure`
-  1. [ ] - `ph-1` - System reports validation errors with line numbers - `inst-report-errors`
-  2. [ ] - `ph-1` - Developer fixes issues based on recommendations - `inst-fix-issues`
-  3. [ ] - `ph-1` - Developer re-runs validation - `inst-rerun-validation`
+  1. [x] - `ph-1` - System reports validation errors with line numbers - `inst-report-errors`
+  2. [x] - `ph-1` - Developer fixes issues based on recommendations - `inst-fix-issues`
+  3. [x] - `ph-1` - Developer re-runs validation - `inst-rerun-validation`
 
 ---
 
@@ -117,17 +117,17 @@ This feature solves the problem of inconsistent design documentation by providin
 
 **Steps**:
 
-1. [ ] - `ph-1` - AI assistant receives user request for workflow execution - `inst-receive-request`
+1. [x] - `ph-1` - AI assistant receives user request for workflow execution - `inst-receive-request`
 2. [x] - `ph-1` - AI assistant opens root AGENTS.md file - `inst-open-root-agents`
 3. [x] - `ph-1` - AI assistant reads execution protocol requirements - `inst-read-protocol`
 4. [x] - `ph-1` - AI assistant runs adapter discovery using fdd skill - `inst-discover-adapter`
-5. [ ] - `ph-1` - **IF** adapter found - `inst-check-adapter`
-   1. [ ] - `ph-1` - AI assistant opens adapter AGENTS.md - `inst-open-adapter-agents`
-   2. [ ] - `ph-1` - AI assistant merges adapter WHEN clauses with core - `inst-merge-when-clauses`
-6. [ ] - `ph-1` - AI assistant evaluates WHEN clauses for current workflow context - `inst-evaluate-when`
-7. [ ] - `ph-1` - **FOR EACH** matching WHEN clause - `inst-for-each-when`
-   1. [ ] - `ph-1` - AI assistant opens referenced spec file - `inst-open-spec`
-   2. [ ] - `ph-1` - AI assistant extracts requirements from spec - `inst-extract-requirements`
+5. [x] - `ph-1` - **IF** adapter found - `inst-check-adapter`
+   1. [x] - `ph-1` - AI assistant opens adapter AGENTS.md - `inst-open-adapter-agents`
+   2. [x] - `ph-1` - AI assistant merges adapter WHEN clauses with core - `inst-merge-when-clauses`
+6. [x] - `ph-1` - AI assistant evaluates WHEN clauses for current workflow context - `inst-evaluate-when`
+7. [x] - `ph-1` - **FOR EACH** matching WHEN clause - `inst-for-each-when`
+   1. [x] - `ph-1` - AI assistant opens referenced spec file - `inst-open-spec`
+   2. [x] - `ph-1` - AI assistant extracts requirements from spec - `inst-extract-requirements`
 8. [x] - `ph-1` - AI assistant opens workflow file from workflows directory - `inst-open-workflow-file`
 9. [x] - `ph-1` - AI assistant reads workflow steps sequentially - `inst-read-steps`
 10. [x] - `ph-1` - AI assistant executes each step following workflow instructions - `inst-execute-steps`
@@ -137,10 +137,10 @@ This feature solves the problem of inconsistent design documentation by providin
 
 **Error Scenarios**:
 - **IF** WHEN clause evaluation fails - `inst-handle-when-failure`
-  1. [ ] - `ph-1` - AI assistant reports ambiguous WHEN conditions - `inst-report-ambiguous`
-  2. [ ] - `ph-1` - AI assistant falls back to core specs only - `inst-fallback-core`
+  1. [x] - `ph-1` - AI assistant reports ambiguous WHEN conditions - `inst-report-ambiguous`
+  2. [x] - `ph-1` - AI assistant falls back to core specs only - `inst-fallback-core`
 - **IF** workflow step unclear - `inst-handle-unclear-step`
-  1. [ ] - `ph-1` - AI assistant asks user for clarification - `inst-ask-clarification`
+  1. [x] - `ph-1` - AI assistant asks user for clarification - `inst-ask-clarification`
 
 ---
 
@@ -160,15 +160,15 @@ This feature solves the problem of inconsistent design documentation by providin
 6. [x] - `ph-1` - User follows QUICKSTART guide to create first artifact - `inst-follow-quickstart`
 5. [x] - `ph-1` - User creates and validates first artifact successfully - `inst-create-first-artifact`
 6. [x] - `ph-1` - User validates artifact using FDD validation tools - `inst-validate-artifact`
-7. [ ] - `ph-1` - User receives validation feedback - `inst-receive-feedback`
-8. [ ] - `ph-1` - User iterates on artifact based on feedback - `inst-iterate-artifact`
-9. [ ] - `ph-1` - User achieves score ≥90/100 and proceeds - `inst-achieve-score`
-10. [ ] - `ph-1` - User bookmarks FDD documentation for reference - `inst-bookmark-docs`
+7. [x] - `ph-1` - User receives validation feedback - `inst-receive-feedback`
+8. [x] - `ph-1` - User iterates on artifact based on feedback - `inst-iterate-artifact`
+9. [x] - `ph-1` - User achieves score ≥90/100 and proceeds - `inst-achieve-score`
+10. [x] - `ph-1` - User bookmarks FDD documentation for reference - `inst-bookmark-docs`
 
 **Success Scenario**: User successfully bootstraps project in <15 minutes
 
 **Error Scenarios**:
-- **IF** QUICKSTART steps fail - `inst-handle-quickstart-failure`
+- [x] **IF** QUICKSTART steps fail - `inst-handle-quickstart-failure`
   1. [ ] - `ph-1` - User reports issue in FDD repository - `inst-report-issue`
   2. [ ] - `ph-1` - User falls back to manual AGENTS.md navigation - `inst-fallback-manual`
 
@@ -187,23 +187,23 @@ This feature solves the problem of inconsistent design documentation by providin
 **Steps**:
 
 1. [x] - `ph-1` - Parse user request text - `inst-parse-request`
-2. [ ] - `ph-1` - Extract keywords from request - `inst-extract-keywords`
-3. [ ] - `ph-1` - Initialize workflow candidates list - `inst-init-candidates`
+2. [x] - `ph-1` - Extract keywords from request - `inst-extract-keywords`
+3. [x] - `ph-1` - Initialize workflow candidates list - `inst-init-candidates`
 4. [x] - `ph-1` - **IF** request contains "adapter" - `inst-check-adapter`
-   1. [ ] - `ph-1` - **RETURN** path to `workflows/adapter.md` - `inst-return-adapter`
+   1. [x] - `ph-1` - **RETURN** path to `workflows/adapter.md` - `inst-return-adapter`
 5. [x] - `ph-1` - **IF** request contains "business" AND NOT "validate" - `inst-check-business`
-   1. [ ] - `ph-1` - **RETURN** path to `workflows/business.md` - `inst-return-business`
+   1. [x] - `ph-1` - **RETURN** path to `workflows/business.md` - `inst-return-business`
 6. [x] - `ph-1` - **IF** request contains "design" AND NOT "feature" AND NOT "validate" - `inst-check-design`
-   1. [ ] - `ph-1` - **RETURN** path to `workflows/design.md` - `inst-return-design`
+   1. [x] - `ph-1` - **RETURN** path to `workflows/design.md` - `inst-return-design`
 7. [x] - `ph-1` - **IF** request contains "feature" AND identifier provided - `inst-check-feature`
-   1. [ ] - `ph-1` - **RETURN** path to `workflows/feature.md` - `inst-return-feature`
-8. [ ] - `ph-1` - **IF** request contains "validate" - `inst-check-validate`
-   1. [ ] - `ph-1` - Extract artifact type from request - `inst-extract-artifact-type`
-   2. [ ] - `ph-1` - **RETURN** path to `workflows/{artifact-type}-validate.md` - `inst-return-validate`
-9. [ ] - `ph-1` - **IF** no match found - `inst-no-match`
-   1. [ ] - `ph-1` - List all available workflows from `workflows/` directory - `inst-list-workflows`
-   2. [ ] - `ph-1` - Ask user to select workflow - `inst-ask-select`
-   3. [ ] - `ph-1` - **RETURN** selected workflow path - `inst-return-selected`
+   1. [x] - `ph-1` - **RETURN** path to `workflows/feature.md` - `inst-return-feature`
+8. [x] - `ph-1` - **IF** request contains "validate" - `inst-check-validate`
+   1. [x] - `ph-1` - Extract artifact type from request - `inst-extract-artifact-type`
+   2. [x] - `ph-1` - **RETURN** path to `workflows/{artifact-type}-validate.md` - `inst-return-validate`
+9. [x] - `ph-1` - **IF** request contains "changes" - `inst-check-changes`
+   1. [x] - `ph-1` - **RETURN** path to `workflows/feature-changes.md` - `inst-return-changes`
+10. [x] - `ph-1` - **IF** request contains "implement" - `inst-check-implement`
+   1. [x] - `ph-1` - **RETURN** path to `workflows/feature-change-implement.md` - `inst-return-implement`
 
 ---
 
@@ -244,14 +244,17 @@ This feature solves the problem of inconsistent design documentation by providin
 **Steps**:
 
 1. [x] - `ph-1` - Read artifact file content - `inst-read-artifact`
-2. [x] - `ph-1` - Parse Markdown structure into sections - `inst-parse-markdown`
-3. [x] - `ph-1` - Extract all section headings with levels - `inst-extract-headings`
-4. [x] - `ph-1` - Initialize validation result object - `inst-init-result`
-5. [ ] - `ph-1` - **FOR EACH** required section in structure requirements - `inst-for-each-required`
-   1. [ ] - `ph-1` - Search for section heading in parsed headings - `inst-search-heading`
-   2. [ ] - `ph-1` - **IF** section NOT found - `inst-check-not-found`
-      1. [ ] - `ph-1` - Add missing section error to validation result - `inst-add-missing-error`
-   3. [ ] - `ph-1` - **ELSE** section found - `inst-section-found`
+2. [x] - `ph-1` - Parse markdown structure - `inst-parse-markdown`
+3. [x] - `ph-1` - Extract all headings and IDs - `inst-extract-headings`
+4. [x] - `ph-1` - Check for duplicate IDs - `inst-check-duplicates`
+5. [x] - `ph-1` - Initialize validation result object - `inst-init-result`
+5. [x] - `ph-1` - **FOR EACH** required section in structure requirements - `inst-for-each-required`
+   1. [x] - `ph-1` - Search for section heading in parsed headings - `inst-search-heading`
+   2. [x] - `ph-1` - **IF** section NOT found - `inst-check-not-found`
+      1. [x] - `ph-1` - Add missing section error to validation result - `inst-add-missing-error`
+   3. [x] - `ph-1` - **ELSE** section found - `inst-section-found`
+      1. [x] - `ph-1` - Validate section order matches requirements - `inst-validate-order`
+      2. [x] - `ph-1` - Validate section content meets minimum length - `inst-validate-length`
       1. [ ] - `ph-1` - Validate section order matches requirements - `inst-validate-order`
       2. [ ] - `ph-1` - Validate section content meets minimum length - `inst-validate-length`
 6. [x] - `ph-1` - Check for duplicate sections - `inst-check-duplicates`

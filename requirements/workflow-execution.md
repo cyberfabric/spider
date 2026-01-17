@@ -266,3 +266,45 @@ ALWAYS open and follow `workflow-execution-validations.md` WHEN executing valida
 - `workflow-execution-validations.md` - Validation workflow execution specifics
 - `core-workflows.md` - Workflow file structure requirements
 - `core.md` - Core FDD principles
+
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-receive-request -->
+## AI Workflow Execution Context
+
+AI assistant receives user request to execute workflow and processes it according to AGENTS.md navigation rules.
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-receive-request -->
+
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-adapter-agents -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-merge-when-clauses -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-evaluate-when -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-for-each-when -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-spec -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-extract-requirements -->
+## Adapter Integration (Future)
+
+When adapter exists:
+1. Open adapter AGENTS.md
+2. Merge WHEN clauses with core
+3. Evaluate WHEN clauses for workflow context
+4. For each matching WHEN clause:
+   - Open referenced spec file
+   - Extract requirements from spec
+
+**Note**: Full adapter integration pending implementation.
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-extract-requirements -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-spec -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-for-each-when -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-evaluate-when -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-merge-when-clauses -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-adapter-agents -->
+
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-report-ambiguous -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-fallback-core -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-ask-clarification -->
+## Error Handling
+
+**If WHEN evaluation fails**: Report ambiguous conditions, fallback to core specs
+
+**If workflow step unclear**: Ask user for clarification
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-ask-clarification -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-fallback-core -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-report-ambiguous -->

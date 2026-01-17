@@ -237,3 +237,14 @@ Validation: 100/100 (PASS)
 
 Next: Run 'design' workflow to start architecture design
 ```
+
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-report-conflicts -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-resolve-manually -->
+## Error Handling
+
+**If conflicts detected**:
+- Report conflicting files to user
+- User manually resolves (rename, move, or merge)
+- Re-run bootstrap after resolution
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-resolve-manually -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-report-conflicts -->

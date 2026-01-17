@@ -739,19 +739,22 @@ def validate_fdl_completion(
 
 
 # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-read-artifact
-def validate_feature_design(
-    artifact_text: str,
+# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-parse-markdown
+# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-extract-headings
+# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-check-duplicates
+# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-init-result
+# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-return-result
+def validate_feature_design(design_file: Path, feature_root: Path) -> Dict[str, Any]:
     *,
     artifact_path: Optional[Path] = None,
     skip_fs_checks: bool = False,
 ) -> Dict[str, object]:
     # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-init-result
     errors: List[Dict[str, object]] = []
-    placeholders = find_placeholders(artifact_text)
+    placeholders = find_placeholders(design_file.read_text())
     # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-init-result
-
     # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-parse-markdown
-    section_order, sections = _split_by_feature_section_letter(artifact_text)
+    section_order, sections = _split_by_feature_section_letter(design_file.read_text())
     # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-parse-markdown
     # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-extract-headings
     required = ["A", "B", "C", "D", "E", "F"]
@@ -765,7 +768,14 @@ def validate_feature_design(
     unknown = [s for s in sections.keys() if s not in allowed]
     if unknown:
         errors.append({"type": "structure", "message": "Unknown top-level sections", "sections": sorted(unknown)})
+    return errors
     # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-check-duplicates
+    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-return-result
+    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-init-result
+    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-check-duplicates
+    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-extract-headings
+    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-parse-markdown
+    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-read-artifact
 
     expected = ["A", "B", "C", "D", "E", "F"]
     if "G" in sections:

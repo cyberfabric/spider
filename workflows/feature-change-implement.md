@@ -263,3 +263,28 @@ Expected:
 - Run `feature-code-validate` to validate entire feature
 - If validation passes: mark feature as COMPLETE in FEATURES.md
 - If validation fails: Fix code, re-validate
+
+---
+
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-receive-assignment -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-open-agents-workflow -->
+## Context
+
+Developer receives feature assignment from team lead and opens root AGENTS.md to start workflow.
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-open-agents-workflow -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-receive-assignment -->
+
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-report-errors -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-fix-issues -->
+<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-rerun-validation -->
+## Error Recovery
+
+**If validation fails**:
+1. System reports validation errors with line numbers
+2. Developer fixes issues based on recommendations  
+3. Developer re-runs validation
+
+Repeat until validation passes.
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-rerun-validation -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-fix-issues -->
+<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-report-errors -->
