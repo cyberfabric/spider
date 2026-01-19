@@ -8,6 +8,7 @@ Tests find_present_section_ids, parse_business_model, and parse_adr_index.
 import unittest
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "fdd" / "scripts"))
 
@@ -15,6 +16,27 @@ from fdd.utils.helpers import (
     find_present_section_ids,
     parse_business_model,
     parse_adr_index,
+)
+
+from fdd.utils.markdown import (
+    business_block_bounds,
+    design_item_block_bounds,
+    extract_heading_block,
+    find_anchor_idx_for_id,
+    list_items,
+    list_section_entries,
+    read_change_block,
+    read_letter_section,
+    resolve_under_heading,
+)
+
+from fdd.utils.search import (
+    compile_trace_regex,
+    definition_hits_in_file,
+    iter_candidate_definition_files,
+    scan_ids,
+    where_defined_internal,
+    where_used,
 )
 
 
@@ -377,6 +399,498 @@ This date should not be for ADR-0001.
         self.assertEqual(adrs[1]["status"], "Proposed")
         self.assertEqual(adrs[2]["status"], "Deprecated")
         self.assertEqual(adrs[3]["status"], "Superseded")
+
+
+class TestMarkdownUtils(unittest.TestCase):
+    def test_extract_heading_block_from_body_line(self) -> None:
+        lines = [
+            "# Top\n",
+            "intro\n",
+            "## Section B\n",
+            "b1\n",
+            "### Inner\n",
+            "inner text\n",
+            "## Section C\n",
+            "c1\n",
+        ]
+
+        start, end = extract_heading_block(lines, 5)
+        self.assertEqual(start, 4)
+        self.assertEqual(end, 6)
+
+    def test_resolve_under_heading_returns_bounds_and_level(self) -> None:
+        lines = [
+            "# Top\n",
+            "intro\n",
+            "## Section B\n",
+            "b1\n",
+            "### Inner\n",
+            "inner text\n",
+            "## Section C\n",
+            "c1\n",
+        ]
+
+        resolved = resolve_under_heading(lines, "Section B")
+        self.assertIsNotNone(resolved)
+        assert resolved is not None
+        start, end, level = resolved
+        self.assertEqual((start, end, level), (2, 6, 2))
+
+    def test_find_anchor_idx_for_id_prefers_id_line(self) -> None:
+        fid = "fdd-example-feature-x-req-do-thing"
+        lines = [
+            "# Doc\n",
+            f"- **ID**: `{fid}`\n",
+            f"## {fid}\n",
+        ]
+
+        idx = find_anchor_idx_for_id(lines, fid)
+        self.assertEqual(idx, 1)
+
+    def test_business_block_bounds_returns_enclosing_heading_block(self) -> None:
+        lines = [
+            "## B. Actors\n",
+            "\n",
+            "#### Admin\n",
+            "**ID**: `fdd-app-actor-admin`\n",
+            "extra\n",
+            "#### User\n",
+            "**ID**: `fdd-app-actor-user`\n",
+        ]
+
+        bounds = business_block_bounds(lines, section_start=0, section_end=len(lines), id_idx=3)
+        self.assertEqual(bounds, (2, 5))
+
+    def test_design_item_block_bounds_respects_boundaries(self) -> None:
+        lines = [
+            "## A. Section\n",
+            "\n",
+            "#### Item One\n",
+            "some text\n",
+            "- **ID**: `fdd-example-item-one`\n",
+            "more text\n",
+            "**Outputs**:\n",
+            "- ok\n",
+            "#### Item Two\n",
+        ]
+
+        start, end = design_item_block_bounds(lines, start=0, end=len(lines), id_idx=4)
+        self.assertEqual((start, end), (2, 6))
+
+    def test_read_change_block_bounds(self) -> None:
+        lines = [
+            "# Implementation Plan\n",
+            "\n",
+            "## Change 1: First\n",
+            "x\n",
+            "## Change 2: Second\n",
+            "y\n",
+        ]
+
+        b = read_change_block(lines, 1)
+        self.assertEqual(b, (2, 4))
+        self.assertIsNone(read_change_block(lines, 3))
+
+    def test_read_letter_section_is_case_insensitive(self) -> None:
+        lines = [
+            "# Doc\n",
+            "## A. First\n",
+            "a\n",
+            "## B. Second\n",
+            "b\n",
+        ]
+
+        sec = read_letter_section(lines, "b")
+        self.assertEqual(sec, (3, 5))
+
+    def test_list_section_entries_features_manifest(self) -> None:
+        lines = [
+            "# Features\n",
+            "\n",
+            "### 1. [Feature One](feature-one/) ✅ HIGH\n",
+            "### 2. [Feature Two](feature-two/) ⏳ MEDIUM\n",
+        ]
+
+        entries = list_section_entries(lines, kind="features-manifest")
+        self.assertEqual(len(entries), 2)
+        self.assertEqual(entries[0]["line"], 3)
+        self.assertEqual(entries[0]["feature_id"], "Feature One")
+        self.assertEqual(entries[0]["dir"], "feature-one/")
+        self.assertEqual(entries[0]["emoji"], "✅")
+        self.assertEqual(entries[0]["priority"], "HIGH")
+
+    def test_list_items_feature_changes_summary(self) -> None:
+        cid = "fdd-app-feature-x-change-first"
+        lines = [
+            "# Implementation Plan: X\n",
+            "\n",
+            "## Change 1: Do thing\n",
+            f"**ID**: `{cid}`\n",
+            "**Status**: IN_PROGRESS\n",
+            "\n",
+            "## Change 2: Another\n",
+            "**Status**: NOT_STARTED\n",
+        ]
+
+        items = list_items(
+            kind="feature-changes",
+            artifact_name="CHANGES.md",
+            lines=lines,
+            active_lines=lines,
+            base_offset=0,
+            lod="summary",
+            pattern=None,
+            regex=False,
+            type_filter=None,
+        )
+
+        self.assertEqual(len(items), 2)
+        by_change = {int(it["change"]): it for it in items}
+        self.assertEqual(set(by_change.keys()), {1, 2})
+
+        self.assertEqual(by_change[1]["type"], "change")
+        self.assertEqual(by_change[1]["id"], cid)
+        self.assertEqual(by_change[1]["title"], "Do thing")
+        self.assertEqual(by_change[1]["status"], "IN_PROGRESS")
+
+        self.assertEqual(by_change[2]["type"], "change")
+        self.assertEqual(by_change[2]["id"], "change-2")
+
+    def test_list_items_generic_adr_summary(self) -> None:
+        lines = [
+            "# ADR Index\n",
+            "\n",
+            "## ADR-0001: Use Python\n",
+            "**Date**: 2024-01-15\n",
+            "**Status**: Accepted\n",
+            "\n",
+            "## ADR-0002: Use Rust\n",
+        ]
+
+        items = list_items(
+            kind="generic",
+            artifact_name="ADR.md",
+            lines=lines,
+            active_lines=lines,
+            base_offset=0,
+            lod="summary",
+            pattern=None,
+            regex=False,
+            type_filter=None,
+        )
+
+        self.assertEqual([it["id"] for it in items], ["ADR-0001", "ADR-0002"])
+        self.assertEqual(items[0]["type"], "adr")
+        self.assertEqual(items[0]["title"], "Use Python")
+        self.assertEqual(items[0]["date"], "2024-01-15")
+        self.assertEqual(items[0]["status"], "Accepted")
+
+    def test_list_items_generic_business_summary(self) -> None:
+        a1 = "fdd-app-actor-admin"
+        c1 = "fdd-app-capability-manage"
+        u1 = "fdd-app-usecase-login"
+        lines = [
+            "# Business Context\n",
+            "\n",
+            "## B. Actors\n",
+            "\n",
+            "#### Admin\n",
+            f"**ID**: `{a1}`\n",
+            "\n",
+            "## C. Capabilities\n",
+            "\n",
+            "#### Manage\n",
+            f"**ID**: `{c1}`\n",
+            "\n",
+            "## D. Use Cases\n",
+            "\n",
+            "#### Login\n",
+            f"**ID**: `{u1}`\n",
+        ]
+
+        items = list_items(
+            kind="generic",
+            artifact_name="BUSINESS.md",
+            lines=lines,
+            active_lines=lines,
+            base_offset=0,
+            lod="summary",
+            pattern=None,
+            regex=False,
+            type_filter=None,
+        )
+
+        self.assertEqual([it["type"] for it in items], ["actor", "capability", "usecase"])
+        self.assertEqual([it["id"] for it in items], [a1, c1, u1])
+        self.assertEqual(items[0]["title"], "Admin")
+        self.assertEqual(items[0]["section"], "B")
+
+    def test_list_items_overall_design_checked_and_title(self) -> None:
+        rid = "fdd-app-req-login"
+        lines = [
+            "# Overall Design\n",
+            "\n",
+            "## A. Requirements\n",
+            "- [x] **ID**: `fdd-app-req-login`\n",
+        ]
+
+        items = list_items(
+            kind="overall-design",
+            artifact_name="DESIGN.md",
+            lines=lines,
+            active_lines=lines,
+            base_offset=0,
+            lod="summary",
+            pattern=None,
+            regex=False,
+            type_filter=None,
+        )
+
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["id"], rid)
+        self.assertEqual(items[0]["type"], "requirement")
+        self.assertEqual(items[0]["checked"], True)
+        self.assertEqual(items[0]["title"], "A. Requirements")
+
+    def test_list_items_feature_design_checked_and_title(self) -> None:
+        fid = "fdd-app-feature-x-algo-do-thing"
+        lines = [
+            "# Feature: X\n",
+            "\n",
+            "## C. Algorithms (FDL)\n",
+            "### Algo\n",
+            "- [ ] **ID**: `fdd-app-feature-x-algo-do-thing`\n",
+        ]
+
+        items = list_items(
+            kind="feature-design",
+            artifact_name="DESIGN.md",
+            lines=lines,
+            active_lines=lines,
+            base_offset=0,
+            lod="summary",
+            pattern=None,
+            regex=False,
+            type_filter=None,
+        )
+
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["id"], fid)
+        self.assertEqual(items[0]["type"], "algo")
+        self.assertEqual(items[0]["checked"], False)
+        self.assertEqual(items[0]["title"], "Algo")
+
+
+class TestSearchUtils(unittest.TestCase):
+    def test_compile_trace_regex_matches_variants(self) -> None:
+        base = "fdd-app-feature-x-algo-do-thing"
+        rx = compile_trace_regex(base, "ph-1", "inst-ok")
+
+        self.assertIsNotNone(rx.search(f"// {base}:ph-1:inst-ok"))
+        self.assertIsNotNone(rx.search(f"// {base} `ph-1` `inst-ok`"))
+        self.assertIsNotNone(rx.search(f"// {base} :ph-1 :inst-ok"))
+
+    def test_iter_candidate_definition_files_prefers_expected_files(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            (td / "architecture" / "features" / "feature-x").mkdir(parents=True)
+            (td / "architecture" / "features").mkdir(parents=True, exist_ok=True)
+
+            (td / "architecture" / "BUSINESS.md").write_text("# Biz\n", encoding="utf-8")
+            (td / "architecture" / "DESIGN.md").write_text("# Design\n", encoding="utf-8")
+            (td / "architecture" / "ADR.md").write_text("# ADR\n", encoding="utf-8")
+            (td / "architecture" / "features" / "FEATURES.md").write_text("# Features\n", encoding="utf-8")
+            (td / "architecture" / "features" / "feature-x" / "DESIGN.md").write_text("# Feature\n", encoding="utf-8")
+            (td / "architecture" / "features" / "feature-x" / "CHANGES.md").write_text("# Implementation Plan: X\n", encoding="utf-8")
+
+            actor = "fdd-app-actor-admin"
+            req = "fdd-app-req-login"
+            adr = "ADR-0001"
+            f_adr = "fdd-app-adr-0001"
+            algo = "fdd-app-feature-x-algo-do-thing"
+            change = "fdd-app-feature-x-change-first"
+
+            actor_files = iter_candidate_definition_files(td, needle=actor)
+            self.assertTrue(any(str(p).endswith("architecture/BUSINESS.md") for p in actor_files))
+
+            req_files = iter_candidate_definition_files(td, needle=req)
+            self.assertTrue(any(str(p).endswith("architecture/DESIGN.md") for p in req_files))
+
+            adr_files = iter_candidate_definition_files(td, needle=adr)
+            self.assertTrue(any(str(p).endswith("architecture/ADR.md") for p in adr_files))
+
+            fadr_files = iter_candidate_definition_files(td, needle=f_adr)
+            self.assertTrue(any(str(p).endswith("architecture/ADR.md") for p in fadr_files))
+
+            algo_files = iter_candidate_definition_files(td, needle=algo)
+            self.assertTrue(any("architecture/features/" in str(p) and str(p).endswith("/DESIGN.md") for p in algo_files))
+
+            change_files = iter_candidate_definition_files(td, needle=change)
+            self.assertTrue(any("/CHANGES.md" in str(p) for p in change_files))
+
+    def test_definition_hits_in_file_business_filters_by_section(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            (td / "architecture").mkdir(parents=True)
+            p = td / "architecture" / "BUSINESS.md"
+            fid = "fdd-app-actor-admin"
+            p.write_text(
+                "\n".join(
+                    [
+                        "# Biz",
+                        "",
+                        "## B. Actors",
+                        "",
+                        "#### Admin",
+                        f"**ID**: `{fid}`",
+                        "",
+                        "## C. Capabilities",
+                        "",
+                        f"**ID**: `{fid}`",
+                        "",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            hits = definition_hits_in_file(path=p, root=td, needle=fid, include_tags=False)
+            self.assertEqual(len(hits), 1)
+            self.assertEqual(hits[0]["match"], "id_line")
+            self.assertEqual(hits[0]["path"], "architecture/BUSINESS.md")
+
+    def test_definition_hits_in_file_design_filters_by_subsection(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            (td / "architecture").mkdir(parents=True)
+            p = td / "architecture" / "DESIGN.md"
+            rid = "fdd-app-req-login"
+            p.write_text(
+                "\n".join(
+                    [
+                        "# Design",
+                        "",
+                        "## A. Overview",
+                        "",
+                        "## B. Requirements",
+                        "",
+                        "### 1. Functional Requirements",
+                        f"- [ ] **ID**: `{rid}`",
+                        "",
+                        "### 2. NFR",
+                        f"- [ ] **ID**: `fdd-app-nfr-fast`",
+                        "",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            hits = definition_hits_in_file(path=p, root=td, needle=rid, include_tags=False)
+            self.assertEqual(len(hits), 1)
+            self.assertEqual(hits[0]["match"], "id_line")
+            self.assertEqual(hits[0]["path"], "architecture/DESIGN.md")
+
+    def test_where_defined_internal_returns_segment_defs_for_phase_inst(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            (td / "architecture" / "features" / "feature-x").mkdir(parents=True)
+
+            base = "fdd-app-feature-x-algo-do-thing"
+            inst = "inst-return-ok"
+            (td / "architecture" / "features" / "feature-x" / "DESIGN.md").write_text(
+                "\n".join(
+                    [
+                        "# Feature: X",
+                        "",
+                        "## C. Algorithms (FDL)",
+                        "### Algo",
+                        "",
+                        f"- [ ] **ID**: `{base}`",
+                        "",
+                        f"1. [ ] - `ph-1` - RETURN ok - `{inst}`",
+                        "",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            raw = f"{base}:ph-1:{inst}"
+            _, defs, ctx_defs = where_defined_internal(
+                root=td,
+                raw_id=raw,
+                include_tags=False,
+                includes=None,
+                excludes=None,
+                max_bytes=1_000_000,
+            )
+
+            self.assertTrue(len(ctx_defs) >= 1)
+            self.assertTrue(any(d.get("segment") == "inst" for d in defs))
+
+    def test_where_used_excludes_definition_lines(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            (td / "architecture" / "features" / "feature-x").mkdir(parents=True)
+            (td / "src").mkdir(parents=True)
+
+            base = "fdd-app-feature-x-algo-do-thing"
+            inst = "inst-return-ok"
+            (td / "architecture" / "features" / "feature-x" / "DESIGN.md").write_text(
+                "\n".join(
+                    [
+                        "# Feature: X",
+                        "",
+                        "## C. Algorithms (FDL)",
+                        "### Algo",
+                        "",
+                        f"- [ ] **ID**: `{base}`",
+                        "",
+                        f"1. [ ] - `ph-1` - RETURN ok - `{inst}`",
+                        "",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (td / "src" / "lib.rs").write_text(
+                f"// usage {base}:ph-1:{inst}\n",
+                encoding="utf-8",
+            )
+
+            raw = f"{base}:ph-1:{inst}"
+            _base, _ph, _inst, hits = where_used(root=td, raw_id=raw, include=None, exclude=None, max_bytes=1_000_000)
+            paths = [h["path"] for h in hits]
+            self.assertIn("src/lib.rs", paths)
+            self.assertNotIn("architecture/features/feature-x/DESIGN.md", paths)
+
+    def test_scan_ids_deduplicates_by_default(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            p = td / "doc.md"
+            p.write_text(
+                "\n".join(
+                    [
+                        "**ID**: `fdd-app-actor-admin`",
+                        "**ID**: `fdd-app-actor-admin`",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            hits = scan_ids(
+                root=p,
+                pattern=None,
+                regex=False,
+                kind="fdd",
+                include=None,
+                exclude=None,
+                max_bytes=1_000_000,
+                all_ids=False,
+            )
+            self.assertEqual(len(hits), 1)
 
 
 if __name__ == "__main__":

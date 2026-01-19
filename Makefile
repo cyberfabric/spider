@@ -1,7 +1,9 @@
-.PHONY: test test-verbose test-quick test-coverage validate validate-feature validate-code validate-code-feature install clean help
+.PHONY: test test-verbose test-quick test-coverage validate validate-feature validate-code validate-code-feature install install-pipx clean help check-pytest check-pytest-cov check-pipx
 
-# Detect Python version with pytest installed
-PYTHON := $(shell python3.11 -c "import pytest" 2>/dev/null && echo python3.11 || echo python3)
+PYTHON ?= python3
+PIPX ?= pipx
+PYTEST_PIPX ?= $(PIPX) run --spec pytest pytest
+PYTEST_PIPX_COV ?= $(PIPX) run --spec pytest-cov pytest
 
 # Default target
 help:
@@ -21,47 +23,61 @@ help:
 	@echo "  make help                          - Show this help message"
 
 # Run all tests
-test:
-	@echo "Running FDD tests with $(PYTHON)..."
-	@$(PYTHON) -c "import pytest" 2>/dev/null || { \
+check-pipx:
+	@command -v $(PIPX) >/dev/null 2>&1 || { \
 		echo ""; \
-		echo "ERROR: pytest not installed"; \
+		echo "ERROR: pipx not found"; \
 		echo ""; \
 		echo "Install it with:"; \
-		echo "  pip3 install pytest pytest-cov"; \
-		echo ""; \
-		echo "Or use python3.11:"; \
-		echo "  python3.11 -m pip install pytest pytest-cov"; \
+		echo "  brew install pipx"; \
+		echo "  pipx ensurepath"; \
 		echo ""; \
 		exit 1; \
 	}
-	$(PYTHON) -m pytest tests/ -v --tb=short
 
-# Run tests with verbose output
-test-verbose:
-	@echo "Running FDD tests (verbose) with $(PYTHON)..."
-	$(PYTHON) -m pytest tests/ -vv
-
-# Run quick tests only
-test-quick:
-	@echo "Running quick tests with $(PYTHON)..."
-	$(PYTHON) -m pytest tests/ -v -m "not slow"
-
-# Run tests with coverage
-test-coverage:
-	@echo "Running tests with coverage..."
-	@$(PYTHON) -c "import pytest_cov" 2>/dev/null || { \
+check-pytest: check-pipx
+	@$(PYTEST_PIPX) --version >/dev/null 2>&1 || { \
 		echo ""; \
-		echo "ERROR: pytest-cov not installed"; \
+		echo "ERROR: pytest is not runnable via pipx"; \
 		echo ""; \
 		echo "Install it with:"; \
 		echo "  make install"; \
 		echo ""; \
 		exit 1; \
 	}
-	$(PYTHON) -m pytest tests/ \
+
+check-pytest-cov: check-pytest
+	@$(PYTEST_PIPX_COV) --help 2>/dev/null | grep -q -- '--cov' || { \
+		echo ""; \
+		echo "ERROR: pytest-cov not available (missing --cov option)"; \
+		echo ""; \
+		echo "Install it with:"; \
+		echo "  make install"; \
+		echo ""; \
+		exit 1; \
+	}
+
+test: check-pytest
+	@echo "Running FDD tests with pipx..."
+	$(PYTEST_PIPX) tests/ -v --tb=short
+
+# Run tests with verbose output
+test-verbose: check-pytest
+	@echo "Running FDD tests (verbose) with pipx..."
+	$(PYTEST_PIPX) tests/ -vv
+
+# Run quick tests only
+test-quick: check-pytest
+	@echo "Running quick tests with pipx..."
+	$(PYTEST_PIPX) tests/ -v -m "not slow"
+
+# Run tests with coverage
+
+test-coverage: check-pytest-cov
+	@echo "Running tests with coverage..."
+	$(PYTEST_PIPX_COV) tests/ \
 		--cov=skills/fdd/scripts/fdd \
-		--cov-report=term \
+		--cov-report=term-missing \
 		--cov-report=html \
 		-v --tb=short
 	@echo ""
@@ -104,9 +120,13 @@ validate-code-feature:
 	@python3.11 skills/fdd/scripts/fdd.py validate --artifact architecture/features/$(FEATURE)
 
 # Install Python dependencies
-install:
-	@echo "Installing Python dependencies..."
-	python3 -m pip install --user pytest pytest-cov
+install-pipx: check-pipx
+	@echo "Installing pytest + pytest-cov via pipx..."
+	@$(PIPX) install pytest >/dev/null 2>&1 || $(PIPX) upgrade pytest
+	@$(PIPX) inject pytest pytest-cov
+	@echo "Done. If pytest is not found, run: pipx ensurepath (then restart your shell)."
+
+install: install-pipx
 
 # Clean Python cache
 clean:

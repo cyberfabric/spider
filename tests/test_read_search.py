@@ -161,6 +161,25 @@ class TestFddArtifactEditorReadSearch(TestCase):
             self.assertIn("docs/DESIGN.md", paths)
             self.assertIn("src/lib.rs", paths)
 
+    def test_where_used_finds_across_docs_and_code_at_prefixed(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            (td / "docs").mkdir(parents=True)
+            (td / "src").mkdir(parents=True)
+
+            fid = "fdd-example-feature-x-req-do-thing"
+            (td / "docs" / "DESIGN.md").write_text(f"**ID**: `{fid}`\n", encoding="utf-8")
+            (td / "src" / "lib.rs").write_text(f"// @fdd-req:{fid}:ph-1\n", encoding="utf-8")
+
+            proc = self._run(td=td, args=["where-used", "--root", str(td), "--id", f"@{fid}"])
+            self.assertEqual(proc.returncode, 0, msg=proc.stdout + "\n" + proc.stderr)
+            payload = json.loads(proc.stdout)
+            self.assertEqual(payload["id"], f"@{fid}")
+            self.assertEqual(payload["base_id"], fid)
+            paths = [h["path"] for h in payload["hits"]]
+            self.assertIn("docs/DESIGN.md", paths)
+            self.assertIn("src/lib.rs", paths)
+
     def test_where_defined_is_normative_docs_only_by_default(self) -> None:
         with TemporaryDirectory() as tds:
             td = Path(tds)
@@ -293,6 +312,94 @@ class TestFddArtifactEditorReadSearch(TestCase):
             self.assertEqual(payload["inst"], inst)
             self.assertEqual(payload["definitions"][0]["path"], "architecture/features/feature-x/DESIGN.md")
             self.assertIn(inst, payload["definitions"][0]["text"])
+
+    def test_where_defined_accepts_at_prefixed_query(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            (td / "architecture" / "features" / "feature-x").mkdir(parents=True)
+
+            base = "fdd-example-feature-x-algo-do-thing"
+            inst = "inst-return-ok"
+            art = td / "architecture" / "features" / "feature-x" / "DESIGN.md"
+            art.write_text(
+                "\n".join(
+                    [
+                        "# Feature: X",
+                        "",
+                        "## C. Algorithms (FDL)",
+                        "### Algo",
+                        "",
+                        f"- [ ] **ID**: {base}",
+                        "",
+                        "1. [ ] - `ph-1` - **RETURN** ok - `inst-return-ok`",
+                        "",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            q = f"@{base}:ph-1:{inst}"
+            proc = self._run(td=td, args=["where-defined", "--root", str(td), "--id", q])
+            self.assertEqual(proc.returncode, 0, msg=proc.stdout + "\n" + proc.stderr)
+            payload = json.loads(proc.stdout)
+            self.assertEqual(payload["status"], "FOUND")
+            self.assertEqual(payload["base_id"], base)
+            self.assertEqual(payload["phase"], "ph-1")
+            self.assertEqual(payload["inst"], inst)
+
+    def test_where_defined_accepts_at_prefixed_tagged_query(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            (td / "architecture" / "features" / "feature-x").mkdir(parents=True)
+
+            base = "fdd-example-feature-x-algo-do-thing"
+            inst = "inst-return-ok"
+            art = td / "architecture" / "features" / "feature-x" / "DESIGN.md"
+            art.write_text(
+                "\n".join(
+                    [
+                        "# Feature: X",
+                        "",
+                        "## C. Algorithms (FDL)",
+                        "### Algo",
+                        "",
+                        f"- [ ] **ID**: {base}",
+                        "",
+                        "1. [ ] - `ph-1` - **RETURN** ok - `inst-return-ok`",
+                        "",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            q = f"@fdd-algo:{base}:ph-1:{inst}"
+            proc = self._run(td=td, args=["where-defined", "--root", str(td), "--id", q])
+            self.assertEqual(proc.returncode, 0, msg=proc.stdout + "\n" + proc.stderr)
+            payload = json.loads(proc.stdout)
+            self.assertEqual(payload["status"], "FOUND")
+            self.assertEqual(payload["base_id"], base)
+            self.assertEqual(payload["phase"], "ph-1")
+            self.assertEqual(payload["inst"], inst)
+
+    def test_where_used_accepts_at_prefixed_tagged_query(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            (td / "docs").mkdir(parents=True)
+            (td / "src").mkdir(parents=True)
+
+            fid = "fdd-example-feature-x-req-do-thing"
+            (td / "docs" / "DESIGN.md").write_text(f"**ID**: `{fid}`\n", encoding="utf-8")
+            (td / "src" / "lib.rs").write_text(f"// @fdd-req:{fid}:ph-1\n", encoding="utf-8")
+
+            proc = self._run(td=td, args=["where-used", "--root", str(td), "--id", f"@fdd-req:{fid}:ph-1"])
+            self.assertEqual(proc.returncode, 0, msg=proc.stdout + "\n" + proc.stderr)
+            payload = json.loads(proc.stdout)
+            self.assertEqual(payload["base_id"], fid)
+            self.assertEqual(payload["phase"], "ph-1")
+            paths = [h["path"] for h in payload["hits"]]
+            self.assertIn("src/lib.rs", paths)
 
     def test_where_used_excludes_definitions_for_base_id(self) -> None:
         with TemporaryDirectory() as tds:

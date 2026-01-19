@@ -11,9 +11,15 @@ from typing import Dict, List, Optional, Set
 from ...constants import (
     FEATURE_HEADING_RE,
     STATUS_OVERVIEW_RE,
+    REQ_ID_RE,
+    NFR_ID_RE,
+    PRINCIPLE_ID_RE,
+    CONSTRAINT_ID_RE,
 )
 
 from ...utils import find_placeholders, load_text, field_block, has_list_item
+
+from .changes import _extract_feature_links, _extract_id_list
 
 
 __all__ = ["validate_features_manifest"]

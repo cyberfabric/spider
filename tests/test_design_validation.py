@@ -8,9 +8,24 @@ Tests REAL DESIGN.md files structure.
 Tests for: fdd-fdd-feature-core-methodology-test-block-unvalidated
            fdd-fdd-feature-core-methodology-test-validate-design-structure
 """
-import pytest
+import unittest
 from pathlib import Path
 import sys
+
+try:
+    import pytest  # type: ignore
+except ModuleNotFoundError:  # pragma: no cover
+    class _PytestShim:
+        @staticmethod
+        def skip(message: str = "") -> None:
+            raise unittest.SkipTest(message)
+
+        @staticmethod
+        def fail(message: str = "") -> None:
+            raise AssertionError(message)
+
+    pytest = _PytestShim()  # type: ignore
+
 
 # Add fdd.py to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "fdd" / "scripts"))

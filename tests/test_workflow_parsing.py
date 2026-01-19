@@ -8,7 +8,17 @@ Tests REAL workflow files from workflows/ directory.
 Tests for: fdd-fdd-feature-core-methodology-test-parse-workflow
            fdd-fdd-feature-core-methodology-test-validate-workflow-structure
 """
-import pytest
+import unittest
+ 
+try:
+    import pytest  # type: ignore
+except ModuleNotFoundError:  # pragma: no cover
+    class _PytestShim:
+        @staticmethod
+        def fail(message: str = "") -> None:
+            raise AssertionError(message)
+ 
+    pytest = _PytestShim()  # type: ignore
 from pathlib import Path
 
 

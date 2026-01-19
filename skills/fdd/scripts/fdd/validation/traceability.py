@@ -31,6 +31,9 @@ from ..constants import (
     SCOPE_ID_BY_KIND_RE,
     FDL_STEP_LINE_RE,
     ADR_ID_RE,
+    ACTOR_ID_RE,
+    CAPABILITY_ID_RE,
+    USECASE_ID_RE,
 )
 
 
