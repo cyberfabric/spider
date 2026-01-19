@@ -138,6 +138,23 @@ This file defines requirements that are shared across multiple `*-structure.md` 
 **MUST NOT**:
 - Place the `**ID**:` line immediately after the heading (no blank line)
 
+### ID Payload Blocks (Artifacts)
+
+**Applies to**: Any artifact doc line that defines an FDD ID using `**ID**: \`fdd-...\``.
+
+**MUST**:
+- Include a deterministic payload block delimited by `<!-- fdd-id-content -->` immediately after the `**ID**:` line (allowing optional blank lines)
+- Close the payload block with a matching `<!-- fdd-id-content -->` line
+- Keep the payload block content inside the delimiters (payload MAY be empty)
+  - Ensure the payload block contains all content of the enclosing element
+    - Enclosing element content MUST be computed as all lines after the element heading until the next heading of the same level or higher
+    - Enclosing element content MAY contain multiple `**ID**:` blocks; each `**ID**:` starts a new element
+    - For each element: no non-empty lines are allowed outside the payload block until the next `**ID**:` line or the enclosing element boundary
+
+**MUST NOT**:
+- Place any content for an `**ID**:` outside the payload block
+- Use unmatched payload delimiters
+
 ### Section Heading Format (Artifacts)
 
 **Applies to**: Artifact docs that use lettered top-level sections (A, B, C, ...).
@@ -255,6 +272,13 @@ This file defines requirements that are shared across multiple `*-structure.md` 
 
 **Check**:
 - [ ] All `**ID**:` lines appear after exactly one blank line following their headings
+
+### ID Payload Blocks (Artifacts)
+
+**Check**:
+- [ ] For every FDD ID definition line ``**ID**: `fdd-...` ``, the next non-empty line is exactly the literal HTML comment line `<!-- fdd-id-content -->` (without surrounding backticks)
+- [ ] The payload block is closed by a matching literal HTML comment line `<!-- fdd-id-content -->` (without surrounding backticks) before the next element boundary (next heading of same-or-higher level, or next `**ID**:` line)
+- [ ] No non-empty lines exist outside the payload block between the `**ID**:` line and the end of the element (except an optional Markdown horizontal rule line `---` after the payload close)
 
 ### Section Heading Format (Artifacts)
 

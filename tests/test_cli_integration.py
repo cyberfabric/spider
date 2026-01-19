@@ -122,6 +122,20 @@ class TestCLIValidateCommand(unittest.TestCase):
             self.assertIn(exit_code, (0, 2))
             self.assertTrue(out_path.exists())
 
+    def test_validate_dir_mode_writes_output_file(self):
+        """Cover --output branch when --artifact is a directory."""
+        with TemporaryDirectory() as tmpdir:
+            td = Path(tmpdir)
+            (td / ".git").mkdir()
+            (td / "architecture" / "features" / "feature-a").mkdir(parents=True)
+            (td / "architecture" / "features" / "feature-a" / "DESIGN.md").write_text("# Feature: A\n", encoding="utf-8")
+            (td / "architecture" / "features" / "feature-a" / "CHANGES.md").write_text("# Implementation Plan: A\n", encoding="utf-8")
+
+            out_path = td / "out.json"
+            exit_code = main(["validate", "--artifact", str(td), "--output", str(out_path), "--skip-fs-checks"])
+            self.assertIn(exit_code, (0, 2))
+            self.assertTrue(out_path.exists())
+
     def test_validate_feature_dir_with_design_md_runs_codebase_traceability(self):
         """Cover validate branch when --artifact is a feature directory containing DESIGN.md."""
         with TemporaryDirectory() as tmpdir:
@@ -283,6 +297,35 @@ other
                 exit_code = main(["list-ids", "--artifact", str(doc), "--under-heading", "Missing"])
             self.assertEqual(exit_code, 1)
 
+    def test_list_ids_under_heading_found(self):
+        """Cover FOUND branch for --under-heading with base_offset adjustment."""
+        with TemporaryDirectory() as tmpdir:
+            doc = Path(tmpdir) / "doc.md"
+            doc.write_text(
+                "\n".join(
+                    [
+                        "# Doc",
+                        "",
+                        "## A",
+                        "",
+                        "**ID**: `fdd-test-actor-user`",
+                        "",
+                        "## B",
+                        "",
+                        "**ID**: `fdd-test-actor-admin`",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                exit_code = main(["list-ids", "--artifact", str(doc), "--under-heading", "A"])
+            self.assertEqual(exit_code, 0)
+            out = json.loads(stdout.getvalue())
+            self.assertEqual(out.get("count"), 1)
+            self.assertEqual(out.get("ids")[0].get("id"), "fdd-test-actor-user")
+
     def test_read_section_change_wrong_kind(self):
         """Cover --change only valid for CHANGES.md."""
         with TemporaryDirectory() as tmpdir:
@@ -328,6 +371,33 @@ other
             self.assertEqual(exit_code, 1)
             out = json.loads(stdout.getvalue())
             self.assertEqual(out["status"], "NOT_FOUND")
+
+    def test_list_items_under_heading_found(self):
+        """Cover list-items --under-heading FOUND path."""
+        with TemporaryDirectory() as tmpdir:
+            doc = Path(tmpdir) / "BUSINESS.md"
+            doc.write_text(
+                "\n".join(
+                    [
+                        "# Business Context",
+                        "",
+                        "## B. Actors",
+                        "",
+                        "#### Admin",
+                        "**ID**: `fdd-test-actor-admin`",
+                        "**Role**: Admin",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                exit_code = main(["list-items", "--artifact", str(doc), "--under-heading", "B. Actors", "--lod", "id"])
+            self.assertEqual(exit_code, 0)
+            out = json.loads(stdout.getvalue())
+            self.assertEqual(out.get("count"), 1)
+            self.assertEqual(out.get("items")[0].get("id"), "fdd-test-actor-admin")
 
 
 class TestCLITraceabilityCommands(unittest.TestCase):
@@ -409,7 +479,7 @@ Another reference to fdd-test-req-auth here.
                         "# Design",
                         "## A. x",
                         "## B. Requirements",
-                        "- [ ] **ID**: fdd-test-req-auth",
+                        "- [ ] **ID**: `fdd-test-req-auth`",
                     ]
                 )
                 + "\n",
@@ -520,6 +590,73 @@ class TestCLIErrorHandling(unittest.TestCase):
                 exit_code = main(["find-id", "--artifact", str(doc), "--id", "fdd-missing"])
             self.assertEqual(exit_code, 1)
 
+    def test_find_id_found(self):
+        with TemporaryDirectory() as tmpdir:
+            doc = Path(tmpdir) / "doc.md"
+            doc.write_text("# Doc\n\n**ID**: `fdd-test-actor-user`\n", encoding="utf-8")
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                exit_code = main(["find-id", "--artifact", str(doc), "--id", "fdd-test-actor-user"])
+            self.assertEqual(exit_code, 0)
+            out = json.loads(stdout.getvalue())
+            self.assertEqual(out.get("status"), "FOUND")
+            self.assertIn("payload", out)
+            self.assertIsNone(out.get("payload"))
+
+    def test_find_id_found_with_payload(self):
+        with TemporaryDirectory() as tmpdir:
+            doc = Path(tmpdir) / "doc.md"
+            doc.write_text(
+                "\n".join(
+                    [
+                        "# Doc",
+                        "",
+                        "**ID**: `fdd-test-actor-user`",
+                        "",
+                        "---",
+                        "payload-line",
+                        "---",
+                        "",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                exit_code = main(["find-id", "--artifact", str(doc), "--id", "fdd-test-actor-user"])
+            self.assertEqual(exit_code, 0)
+            out = json.loads(stdout.getvalue())
+            self.assertEqual(out.get("status"), "FOUND")
+            payload = out.get("payload")
+            self.assertIsInstance(payload, dict)
+            self.assertEqual(payload.get("open_line"), 5)
+            self.assertEqual(payload.get("close_line"), 7)
+            self.assertEqual(payload.get("text"), "payload-line")
+
+    def test_read_section_id_delegates_to_find_id(self):
+        """Cover read-section --id delegation."""
+        with TemporaryDirectory() as tmpdir:
+            doc = Path(tmpdir) / "doc.md"
+            doc.write_text("# Doc\n\n**ID**: `fdd-test-actor-user`\n", encoding="utf-8")
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                exit_code = main(["read-section", "--artifact", str(doc), "--id", "fdd-test-actor-user"])
+            self.assertEqual(exit_code, 0)
+            out = json.loads(stdout.getvalue())
+            self.assertEqual(out.get("status"), "FOUND")
+
+    def test_get_item_id_delegates_to_find_id(self):
+        """Cover get-item --id delegation."""
+        with TemporaryDirectory() as tmpdir:
+            doc = Path(tmpdir) / "doc.md"
+            doc.write_text("# Doc\n\n**ID**: `fdd-test-actor-user`\n", encoding="utf-8")
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                exit_code = main(["get-item", "--artifact", str(doc), "--id", "fdd-test-actor-user"])
+            self.assertEqual(exit_code, 0)
+            out = json.loads(stdout.getvalue())
+            self.assertEqual(out.get("status"), "FOUND")
+
 
 class TestCLIBackwardCompatibility(unittest.TestCase):
     """Test CLI backward compatibility features."""
@@ -581,6 +718,29 @@ class TestCLIAdapterInfo(unittest.TestCase):
                 self.assertEqual(out.get("status"), "CONFIG_ERROR")
             finally:
                 os.chdir(cwd)
+
+    def test_adapter_info_relative_path_outside_project_root(self):
+        """Cover adapter-info relative_to() ValueError branch when adapter is outside project root."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir) / "project"
+            root.mkdir(parents=True)
+            (root / ".git").mkdir()
+
+            outside = Path(tmpdir) / "outside-adapter"
+            outside.mkdir(parents=True)
+            (outside / "AGENTS.md").write_text("# FDD Adapter: Outside\n\n**Extends**: `../AGENTS.md`\n", encoding="utf-8")
+
+            # Point config path outside the project.
+            (root / ".fdd-config.json").write_text('{"fddAdapterPath": "../outside-adapter"}', encoding="utf-8")
+
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                exit_code = main(["adapter-info", "--root", str(root)])
+
+            self.assertEqual(exit_code, 0)
+            out = json.loads(stdout.getvalue())
+            self.assertEqual(out.get("status"), "FOUND")
+            self.assertEqual(out.get("relative_path"), str(outside.resolve().as_posix()))
 
 
 if __name__ == "__main__":

@@ -508,6 +508,61 @@ def find_id_line(lines: List[str], needle: str) -> Optional[int]:
     return None
 
 
+def extract_payload_block(lines: List[str], *, start_idx: int) -> Optional[Tuple[int, int]]:
+    """
+    Extract a payload block delimited by either:
+    - lines containing exactly "<!-- fdd-id-content -->" (preferred)
+    - legacy lines containing exactly "---" (migration support)
+
+    The opening delimiter is expected at start_idx. The closing delimiter is the next
+    line that equals the same delimiter (after start_idx).
+
+    Returns:
+        (open_idx, close_idx) where close_idx is the index of the closing delimiter.
+        Returns None if the opening delimiter is not present at start_idx or if there
+        is no closing delimiter.
+    """
+    if start_idx < 0 or start_idx >= len(lines):
+        return None
+    open_marker = lines[start_idx].strip()
+    if open_marker not in {"<!-- fdd-id-content -->", "---"}:
+        return None
+    end = start_idx + 1
+    while end < len(lines) and lines[end].strip() != open_marker:
+        end += 1
+    if end >= len(lines):
+        return None
+    return start_idx, end
+
+
+def extract_id_payload_block(lines: List[str], *, id_idx: int) -> Optional[Dict[str, object]]:
+    """
+    Extract an ID payload block that appears immediately after an **ID** line.
+
+    The payload block may be preceded by optional blank lines.
+
+    Returns:
+        Dict with:
+        - open_idx: opening delimiter line index
+        - close_idx: closing delimiter line index
+        - text: payload text (without delimiters)
+        Returns None if no payload block is present.
+    """
+    j = id_idx + 1
+    while j < len(lines) and not lines[j].strip():
+        j += 1
+    rng = extract_payload_block(lines, start_idx=j)
+    if rng is None:
+        return None
+    open_idx, close_idx = rng
+    payload_lines = lines[open_idx + 1 : close_idx]
+    return {
+        "open_idx": open_idx,
+        "close_idx": close_idx,
+        "text": "\n".join(payload_lines).rstrip("\n"),
+    }
+
+
 def find_anchor_idx_for_id(lines: List[str], needle: str) -> Optional[int]:
     """
     Find anchor index for ID in lines.
@@ -630,6 +685,8 @@ __all__ = [
     "find_id_line",
     "find_anchor_idx_for_id",
     "extract_id_block",
+    "extract_payload_block",
+    "extract_id_payload_block",
     "business_block_bounds",
     "design_item_block_bounds",
 ]

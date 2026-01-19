@@ -57,12 +57,13 @@ I will NOT skip any steps.
 <!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-discover-adapter -->
 ### Step 4: Discover FDD Adapter
 
-**ALWAYS run first**:
+**ALWAYS run first** (canonical, repo-local invocation) to discover the FDD adapter:
 ```bash
-fdd adapter-info --root . --fdd-root {fdd-core-location}
+<FDD_ROOT>/skills/fdd/scripts python3 -m fdd.cli adapter-info --root <PROJECT_ROOT> --fdd-root <FDD_ROOT>
 ```
 
-**Agent must pass FDD location**: Use `--fdd-root` with path from system prompts/context
+**Agent must pass FDD location**:
+- Use `--fdd-root` with the FDD core repository root
 
 **Parse output**:
 - [ ] If `status: FOUND` → Load adapter AGENTS.md from `adapter_dir`
@@ -88,15 +89,15 @@ fdd adapter-info --root . --fdd-root {fdd-core-location}
 
 **Agent MUST use this skill without exceptions**:
 
-**FDD Unified Tool (`skills/fdd`)**:
+**FDD Unified Tool (`<FDD_ROOT>/skills/fdd`)**:
 - ALWAYS use for discovering FDD adapter configuration (adapter-info)
 - ALWAYS use for searching FDD artifacts (DESIGN.md, BUSINESS.md, FEATURES.md, CHANGES.md, ADR.md)
 - ALWAYS use for ID lookup (actors, capabilities, requirements, flows, algorithms, states, changes)
 - ALWAYS use for traceability scans (where-defined, where-used)
-- ALWAYS use for code traceability (@fdd-* tags)
+- ALWAYS use for code traceability (fdd-* tags)
 - ALWAYS use for cross-referencing IDs across artifacts and code
 - ALWAYS use for validating DESIGN.md and CHANGES.md structure and content
-- ALWAYS use for code traceability validation (@fdd-* markers in code)
+- ALWAYS use for code traceability validation (fdd-* markers in code)
 - ALWAYS use for systematic artifact validation before manual checks
 - ALWAYS run as Deterministic Gate (fail fast before LLM validation)
 

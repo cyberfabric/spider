@@ -35,6 +35,7 @@ from .utils.document import detect_artifact_kind
 from .utils.markdown import (
     extract_block,
     extract_id_block,
+    extract_id_payload_block,
     find_anchor_idx_for_id,
     find_id_line,
     list_items,
@@ -355,10 +356,19 @@ def _cmd_find_id(argv: List[str]) -> int:
 
     anchor = find_anchor_idx_for_id(lines, args.id) or idx
     start, end = extract_id_block(lines, anchor_idx=anchor, id_value=args.id, kind=kind)
+    payload = extract_id_payload_block(lines, id_idx=idx)
+    payload_out: Optional[Dict[str, object]] = None
+    if payload is not None:
+        payload_out = {
+            "open_line": int(payload["open_idx"]) + 1,
+            "close_line": int(payload["close_idx"]) + 1,
+            "text": str(payload["text"]),
+        }
     print(json.dumps({
         "status": "FOUND",
         "id": args.id,
         "line": idx + 1,
+        "payload": payload_out,
         "block_start_line": start + 1,
         "block_end_line": end,
         "text": "\n".join(lines[start:end]),

@@ -80,6 +80,7 @@ def validate(
         artifact_text=artifact_text,
         artifact_path=artifact_path,
         requirements_path=requirements_path,
+        artifact_kind=artifact_kind,
         skip_fs_checks=skip_fs_checks,
     )
     

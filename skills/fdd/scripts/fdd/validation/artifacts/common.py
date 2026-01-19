@@ -83,6 +83,7 @@ def common_checks(
     artifact_text: str,
     artifact_path: Path,
     requirements_path: Path,
+    artifact_kind: str,
     skip_fs_checks: bool = False,
 ) -> Tuple[List[Dict[str, object]], List[Dict[str, object]]]:
     """
@@ -144,13 +145,138 @@ def common_checks(
             continue
         val = m.group(1).strip()
 
-        is_checkbox_id_line = re.match(r"^\s*[-*]\s+\[[ xX]\]\s+\*\*ID\*\*:\s+", line) is not None
-        if "fdd-" in val and "`" not in val and not is_checkbox_id_line:
+        if "fdd-" in val and "`" not in val:
             errors.append({"type": "id", "message": "ID values must be wrapped in backticks", "line": i + 1, "text": line.strip()})
 
         for tok in re.findall(r"`([^`]+)`", val):
             if tok.startswith("fdd-"):
                 ids_seen.append(tok)
+
+    # Enforce strict ID payload blocks for FDD artifacts.
+    # After any **ID**: `fdd-*` line, require a payload block delimited by
+    # <!-- fdd-id-content --> ... <!-- fdd-id-content --> (payload may be empty)
+    # and require that no non-empty lines exist outside the payload within the enclosing element.
+    # Enclosing element is computed as the range between headings of the same level
+    # (stop at next heading with level <= the element's heading level).
+    if artifact_kind in {"business-context", "overall-design", "adr", "features-manifest", "feature-design", "feature-changes"}:
+        id_line_start_re = re.compile(r"^\s*(?:[-*]\s*)?(?:\[[ xX]\]\s*)?\*\*ID\*\*:\s*(.+)$", re.IGNORECASE)
+        heading_re = re.compile(r"^(#{1,6})\s+")
+
+        def _heading_level(s: str) -> Optional[int]:
+            mh = heading_re.match(s)
+            if not mh:
+                return None
+            return len(mh.group(1))
+
+        def _enclosing_heading_bounds(id_idx: int) -> Tuple[int, int, Optional[int]]:
+            start = id_idx
+            while start >= 0 and _heading_level(lines[start].strip()) is None:
+                start -= 1
+            if start < 0:
+                return 0, len(lines), None
+            lvl = _heading_level(lines[start].strip())
+            if lvl is None:
+                return 0, len(lines), None
+            end = start + 1
+            while end < len(lines):
+                nlvl = _heading_level(lines[end].strip())
+                if nlvl is not None and nlvl <= lvl:
+                    break
+                end += 1
+            return start, end, lvl
+
+        def _next_id_idx(id_idx: int, *, stop_at: int) -> int:
+            j = id_idx + 1
+            while j < stop_at:
+                if id_line_start_re.match(lines[j]):
+                    return j
+                j += 1
+            return stop_at
+
+        for i, line in enumerate(lines):
+            m = id_line_start_re.match(line)
+            if not m:
+                continue
+            val = m.group(1)
+            fdd_ids = [tok.strip() for tok in re.findall(r"`([^`]+)`", val) if tok.strip().startswith("fdd-")]
+            for tok in re.findall(r"\bfdd-[a-z0-9-]+\b", val):
+                if tok not in fdd_ids:
+                    fdd_ids.append(tok)
+            if not fdd_ids:
+                continue
+
+            _, heading_end, _heading_lvl = _enclosing_heading_bounds(i)
+            next_id = _next_id_idx(i, stop_at=heading_end)
+            elem_end = min(next_id, heading_end)
+
+            # Find payload open delimiter after optional blank lines (must be inside the element).
+            j = i + 1
+            while j < elem_end and lines[j].strip() == "":
+                j += 1
+            open_marker = None
+            if j < elem_end:
+                s = lines[j].strip()
+                if s == "<!-- fdd-id-content -->":
+                    open_marker = s
+                elif s == "---":
+                    # Temporary migration support.
+                    open_marker = s
+                    errors.append(
+                        {
+                            "type": "id_payload_legacy",
+                            "message": "Legacy payload delimiter '---' is deprecated; use '<!-- fdd-id-content -->'",
+                            "line": j + 1,
+                            "id": fdd_ids[0],
+                        }
+                    )
+
+            if open_marker is None:
+                errors.append(
+                    {
+                        "type": "id_payload",
+                        "message": "Missing payload block after **ID** line (expected '<!-- fdd-id-content --> ... <!-- fdd-id-content -->')",
+                        "line": i + 1,
+                        "id": fdd_ids[0],
+                    }
+                )
+                continue
+
+            # Find payload close delimiter (must be inside the element).
+            k = j + 1
+            while k < elem_end and lines[k].strip() != open_marker:
+                k += 1
+            if k >= elem_end:
+                errors.append(
+                    {
+                        "type": "id_payload",
+                        "message": "Payload block must close before element boundary",
+                        "line": i + 1,
+                        "id": fdd_ids[0],
+                    }
+                )
+                continue
+
+            # After payload close, only blank lines are allowed until the end of this element.
+            t = k + 1
+            while t < elem_end:
+                s = lines[t].strip()
+                if s == "":
+                    t += 1
+                    continue
+
+                # Allow markdown horizontal rules as separators (outside payload).
+                if s == "---":
+                    break
+
+                errors.append(
+                    {
+                        "type": "id_payload",
+                        "message": "Content after payload block must be inside the payload block",
+                        "line": t + 1,
+                        "id": fdd_ids[0],
+                    }
+                )
+                break
 
     dup_ids = sorted({x for x in ids_seen if ids_seen.count(x) > 1})
     if dup_ids:

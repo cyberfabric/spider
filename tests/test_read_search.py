@@ -110,6 +110,11 @@ class TestFddArtifactEditorReadSearch(TestCase):
                         "",
                         "**ID**: `fdd-example-req-abc`",
                         "",
+                        "<!-- fdd-id-content -->",
+                        "payload line 1",
+                        "payload line 2",
+                        "<!-- fdd-id-content -->",
+                        "",
                         "More.",
                         "",
                         "## B. Two",
@@ -128,6 +133,10 @@ class TestFddArtifactEditorReadSearch(TestCase):
             self.assertEqual(payload["id"], "fdd-example-req-abc")
             self.assertIn("## A. One", payload["text"])
             self.assertNotIn("## B. Two", payload["text"])
+            self.assertIn("payload", payload)
+            self.assertIsNotNone(payload["payload"])
+            self.assertIn("payload line 1", payload["payload"]["text"])
+            self.assertIn("payload line 2", payload["payload"]["text"])
 
     def test_search_literal(self) -> None:
         with TemporaryDirectory() as tds:

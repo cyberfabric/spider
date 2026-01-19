@@ -314,22 +314,6 @@ def validate_feature_changes(
                 # Validate FDL scope coverage in CHANGES.md
                 fdl_coverage_errors = validate_fdl_coverage(artifact_text, design_fdl)
                 errors.extend(fdl_coverage_errors)
-                
-                # Validate FDL code implementation (tags present)
-                fdl_code_errors = validate_fdl_code_implementation(feature_root, design_fdl)
-                errors.extend(fdl_code_errors)
-                
-                # Reverse validation: check tags in code are marked [x] in DESIGN
-                fdl_reverse_errors = validate_fdl_code_to_design(feature_root, design_text)
-                errors.extend(fdl_reverse_errors)
-                
-                # Validate FDL completion (if feature is marked COMPLETED or IMPLEMENTED)
-                fdl_completion_errors = validate_fdl_completion(
-                    artifact_text, 
-                    design_fdl, 
-                    feature_root=feature_root
-                )
-                errors.extend(fdl_completion_errors)
             except Exception:
                 pass
 

@@ -462,7 +462,10 @@ def scan_ids(
 
     rx: Optional[re.Pattern] = None
     if pattern and regex:
-        rx = re.compile(str(pattern))
+        pat = str(pattern)
+        if "\\\\" in pat:
+            pat = pat.replace("\\\\", "\\")
+        rx = re.compile(pat)
 
     hits: List[Dict[str, object]] = []
     for fp in files:

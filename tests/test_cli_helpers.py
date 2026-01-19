@@ -12,7 +12,7 @@ from tempfile import TemporaryDirectory
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "fdd" / "scripts"))
 
-from fdd.utils.document import detect_artifact_kind, to_relative_posix
+from fdd.utils.document import detect_artifact_kind, iter_text_files, read_text_safe, to_relative_posix
 from fdd.utils.markdown import find_nearest_heading, get_heading_level
 from fdd.utils.search import (
     extract_ids,
@@ -265,6 +265,12 @@ class TestDetectKind(unittest.TestCase):
         kind = detect_artifact_kind(path)
         self.assertEqual(kind, "overall-design")
 
+    def test_detect_feature_design(self):
+        """Test detecting feature DESIGN.md."""
+        path = Path("/test/architecture/features/feature-x/DESIGN.md")
+        kind = detect_artifact_kind(path)
+        self.assertEqual(kind, "feature-design")
+
     def test_detect_changes(self):
         """Test detecting CHANGES.md."""
         path = Path("/test/CHANGES.md")
@@ -325,6 +331,78 @@ class TestRelativePosix(unittest.TestCase):
             
             # Should return absolute path when outside root
             self.assertIn("outside", rel)
+
+
+class TestIterTextFiles(unittest.TestCase):
+    def test_iter_text_files_include_exclude_and_max_bytes(self):
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            (root / "a").mkdir()
+            (root / "a" / "small.md").write_text("x\n", encoding="utf-8")
+            (root / "a" / "big.md").write_text("x" * 200, encoding="utf-8")
+            (root / "a" / "skip.md").write_text("x\n", encoding="utf-8")
+
+            hits = iter_text_files(
+                root,
+                includes=["**/*.md"],
+                excludes=["**/skip.md"],
+                max_bytes=100,
+            )
+            rels = sorted([p.resolve().relative_to(root.resolve()).as_posix() for p in hits])
+            self.assertEqual(rels, ["a/small.md"])
+
+    def test_iter_text_files_relative_to_value_error_is_ignored(self):
+        import os
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+
+            orig_walk = os.walk
+
+            def fake_walk(_root):
+                yield ("/", [], ["outside.md"])
+
+            os.walk = fake_walk
+            try:
+                hits = iter_text_files(root)
+                self.assertEqual(hits, [])
+            finally:
+                os.walk = orig_walk
+
+
+class TestReadTextSafe(unittest.TestCase):
+    def test_read_text_safe_nonexistent_returns_none(self):
+        with TemporaryDirectory() as tmpdir:
+            p = Path(tmpdir) / "missing.txt"
+            self.assertIsNone(read_text_safe(p))
+
+    def test_read_text_safe_null_bytes_returns_none(self):
+        with TemporaryDirectory() as tmpdir:
+            p = Path(tmpdir) / "bin.txt"
+            p.write_bytes(b"a\x00b")
+            self.assertIsNone(read_text_safe(p))
+
+    def test_read_text_safe_invalid_utf8_ignores(self):
+        with TemporaryDirectory() as tmpdir:
+            p = Path(tmpdir) / "bad.txt"
+            p.write_bytes(b"hi\xff\xfe")
+            lines = read_text_safe(p)
+            self.assertIsNotNone(lines)
+            self.assertTrue(any("hi" in x for x in lines or []))
+
+    def test_read_text_safe_normalizes_crlf_when_linesep_differs(self):
+        import os
+
+        with TemporaryDirectory() as tmpdir:
+            p = Path(tmpdir) / "crlf.txt"
+            p.write_bytes(b"a\r\nb\r\n")
+
+            orig = os.linesep
+            try:
+                os.linesep = "\r\n"
+                lines = read_text_safe(p)
+                self.assertEqual(lines, ["a", "b"])
+            finally:
+                os.linesep = orig
 
 
 class TestHeadingLevel(unittest.TestCase):

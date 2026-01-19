@@ -17,7 +17,7 @@ PROJECT_CONFIG_FILENAME = ".fdd-config.json"
 SECTION_RE = re.compile(r"^###\s+Section\s+([A-Z0-9]+):\s+(.+?)\s*$")
 HEADING_ID_RE = re.compile(r"^#{1,6}\s+([A-Z])\.\s+.*$")
 SECTION_FEATURE_RE = re.compile(r"^##\s+([A-G])\.\s+(.+?)\s*$")
-SECTION_BUSINESS_RE = re.compile(r"^##\s+(?:Section\s+)?([A-E])\s*[:.]\s*(.+)?$", re.IGNORECASE)
+SECTION_BUSINESS_RE = re.compile(r"^##\s+(?:Section\s+)?([A-Z])\s*[:.]\s*(.+)?$", re.IGNORECASE)
 
 # === FDD ID PATTERNS ===
 

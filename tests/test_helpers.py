@@ -21,19 +21,26 @@ from fdd.utils.helpers import (
 from fdd.utils.markdown import (
     business_block_bounds,
     design_item_block_bounds,
+    extract_id_payload_block,
     extract_heading_block,
+    extract_payload_block,
     find_anchor_idx_for_id,
     list_items,
     list_section_entries,
     read_change_block,
+    read_feature_entry,
+    read_heading_block_by_title,
     read_letter_section,
+    resolve_heading,
     resolve_under_heading,
 )
 
 from fdd.utils.search import (
     compile_trace_regex,
+    _match_phase_inst_in_line,
     definition_hits_in_file,
     iter_candidate_definition_files,
+    parse_trace_query,
     scan_ids,
     where_defined_internal,
     where_used,
@@ -447,6 +454,25 @@ class TestMarkdownUtils(unittest.TestCase):
         idx = find_anchor_idx_for_id(lines, fid)
         self.assertEqual(idx, 1)
 
+    def test_find_anchor_idx_for_id_falls_back_to_heading(self) -> None:
+        fid = "fdd-example-feature-x-req-do-thing"
+        lines = [
+            "# Doc\n",
+            f"## {fid}\n",
+            "body\n",
+        ]
+        idx = find_anchor_idx_for_id(lines, fid)
+        self.assertEqual(idx, 1)
+
+    def test_find_anchor_idx_for_id_falls_back_to_plain_line(self) -> None:
+        fid = "fdd-example-feature-x-req-do-thing"
+        lines = [
+            "# Doc\n",
+            f"some {fid} in body\n",
+        ]
+        idx = find_anchor_idx_for_id(lines, fid)
+        self.assertEqual(idx, 1)
+
     def test_business_block_bounds_returns_enclosing_heading_block(self) -> None:
         lines = [
             "## B. Actors\n",
@@ -490,6 +516,127 @@ class TestMarkdownUtils(unittest.TestCase):
         b = read_change_block(lines, 1)
         self.assertEqual(b, (2, 4))
         self.assertIsNone(read_change_block(lines, 3))
+
+    def test_read_feature_entry_finds_bounds(self) -> None:
+        fid = "fdd-app-feature-x"
+        lines = [
+            "# Features\n",
+            f"### 1. [{fid}](feature-x/) ✅ HIGH\n",
+            "a\n",
+            "### 2. [fdd-app-feature-y](feature-y/) ✅ HIGH\n",
+            "b\n",
+        ]
+        b = read_feature_entry(lines, fid)
+        self.assertEqual(b, (1, 3))
+
+    def test_read_heading_block_by_title_not_found_returns_none(self) -> None:
+        lines = ["# Top\n", "x\n"]
+        self.assertIsNone(read_heading_block_by_title(lines, "Missing"))
+
+    def test_resolve_heading_found_and_not_found(self) -> None:
+        lines = [
+            "# Top\n",
+            "x\n",
+            "## Section\n",
+            "y\n",
+            "## Other\n",
+        ]
+        self.assertIsNone(resolve_heading(lines, "Nope"))
+        resolved = resolve_heading(lines, "Section")
+        self.assertIsNotNone(resolved)
+        assert resolved is not None
+        idx, level, end = resolved
+        self.assertEqual((idx, level, end), (2, 2, 4))
+
+    def test_extract_payload_block_edge_cases(self) -> None:
+        lines = ["<!-- fdd-id-content -->\n", "a\n"]
+        self.assertIsNone(extract_payload_block(lines, start_idx=-1))
+        self.assertIsNone(extract_payload_block(lines, start_idx=10))
+        self.assertIsNone(extract_payload_block(lines, start_idx=1))
+        self.assertIsNone(extract_payload_block(lines, start_idx=0))
+
+        lines2 = ["<!-- fdd-id-content -->\n", "a\n", "<!-- fdd-id-content -->\n"]
+        self.assertEqual(extract_payload_block(lines2, start_idx=0), (0, 2))
+
+    def test_extract_id_payload_block_none_and_found(self) -> None:
+        lines = [
+            "**ID**: `fdd-x`\n",
+            "x\n",
+        ]
+        self.assertIsNone(extract_id_payload_block(lines, id_idx=0))
+
+        lines2 = [
+            "**ID**: `fdd-x`\n",
+            "\n",
+            "<!-- fdd-id-content -->\n",
+            "p\n",
+            "<!-- fdd-id-content -->\n",
+        ]
+        payload = extract_id_payload_block(lines2, id_idx=0)
+        self.assertIsNotNone(payload)
+        assert payload is not None
+        self.assertEqual(payload.get("open_idx"), 2)
+        self.assertEqual(payload.get("close_idx"), 4)
+        self.assertEqual(payload.get("text"), "p")
+
+    def test_list_items_features_manifest_and_filtering(self) -> None:
+        lines = [
+            "# Features\n",
+            "### 1. [fdd-app-feature-a](feature-a/) ✅ HIGH\n",
+            "### 2. [fdd-app-feature-b](feature-b/) ✅ HIGH\n",
+        ]
+        items = list_items(
+            kind="features-manifest",
+            artifact_name="FEATURES.md",
+            lines=lines,
+            active_lines=lines,
+            base_offset=0,
+            lod="summary",
+            pattern="feature-b",
+            regex=False,
+            type_filter="feature",
+        )
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["id"], "fdd-app-feature-b")
+
+        items_rx = list_items(
+            kind="features-manifest",
+            artifact_name="FEATURES.md",
+            lines=lines,
+            active_lines=lines,
+            base_offset=0,
+            lod="summary",
+            pattern=r"feature-[ab]$",
+            regex=True,
+            type_filter=None,
+        )
+        self.assertEqual(len(items_rx), 2)
+
+    def test_list_items_feature_changes_summary(self) -> None:
+        fid = "fdd-app-feature-x-change-1"
+        lines = [
+            "# Implementation Plan: X\n",
+            "\n",
+            "## Change 1: First\n",
+            f"**ID**: `{fid}`\n",
+            "**Status**: Not Started\n",
+            "\n",
+        ]
+        items = list_items(
+            kind="feature-changes",
+            artifact_name="CHANGES.md",
+            lines=lines,
+            active_lines=lines,
+            base_offset=0,
+            lod="summary",
+            pattern=None,
+            regex=False,
+            type_filter=None,
+        )
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["type"], "change")
+        self.assertEqual(items[0]["id"], fid)
+        self.assertEqual(items[0].get("status"), "Not Started")
 
     def test_read_letter_section_is_case_insensitive(self) -> None:
         lines = [
@@ -689,6 +836,79 @@ class TestSearchUtils(unittest.TestCase):
         self.assertIsNotNone(rx.search(f"// {base}:ph-1:inst-ok"))
         self.assertIsNotNone(rx.search(f"// {base} `ph-1` `inst-ok`"))
         self.assertIsNotNone(rx.search(f"// {base} :ph-1 :inst-ok"))
+
+    def test_parse_trace_query_variants(self) -> None:
+        base, ph, inst = parse_trace_query("@fdd-x-flow-y:ph-1:inst-a")
+        self.assertEqual((base, ph, inst), ("fdd-x-flow-y", "ph-1", "inst-a"))
+
+        base, ph, inst = parse_trace_query("fdd-x:fdd-y:ph-1")
+        self.assertEqual((base, ph, inst), ("fdd-y", "ph-1", None))
+
+        base, ph, inst = parse_trace_query("fdd-x:inst-a:ph-1")
+        self.assertEqual((base, ph, inst), ("fdd-x", "ph-1", "inst-a"))
+
+    def test_match_phase_inst_in_line_rules(self) -> None:
+        self.assertIsNone(_match_phase_inst_in_line("x", phase=None, inst=None))
+        self.assertIsNone(_match_phase_inst_in_line("x", phase="ph-1", inst=None))
+
+        seg = _match_phase_inst_in_line("do :ph-1 now", phase="ph-1", inst=None)
+        self.assertEqual(seg, ("phase", 3))
+
+        seg = _match_phase_inst_in_line("ok inst-a", phase=None, inst="inst-a")
+        self.assertEqual(seg, ("inst", 3))
+
+        self.assertIsNone(_match_phase_inst_in_line("inst-a then ph-1", phase="ph-1", inst="inst-a"))
+
+    def test_definition_hits_in_file_adr_heading(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            (td / "architecture").mkdir(parents=True)
+            p = td / "architecture" / "ADR.md"
+            p.write_text("## ADR-0001: Title\n\ntext\n", encoding="utf-8")
+            hits = definition_hits_in_file(path=p, root=td, needle="ADR-0001", include_tags=False)
+            self.assertEqual(len(hits), 1)
+            self.assertEqual(hits[0]["match"], "adr_heading")
+
+    def test_definition_hits_in_file_include_tags(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            p = td / "src.py"
+            needle = "fdd-app-feature-x-algo-do-thing"
+            p.write_text(f"// @fdd-flow:{needle}:ph-1\n", encoding="utf-8")
+            hits = definition_hits_in_file(path=p, root=td, needle=needle, include_tags=True)
+            self.assertTrue(any(h.get("match") == "tag" for h in hits))
+
+    def test_scan_ids_filters_by_kind_pattern_and_all_ids(self) -> None:
+        with TemporaryDirectory() as tds:
+            td = Path(tds)
+            p = td / "doc.md"
+            p.write_text("**ID**: `fdd-app-actor-a`\nADR-0001\n", encoding="utf-8")
+
+            hits_fdd = scan_ids(
+                root=p,
+                pattern="actor",
+                regex=False,
+                kind="fdd",
+                include=None,
+                exclude=None,
+                max_bytes=1_000_000,
+                all_ids=True,
+            )
+            self.assertEqual(len(hits_fdd), 1)
+            self.assertEqual(hits_fdd[0]["kind"], "fdd")
+
+            hits_adr = scan_ids(
+                root=p,
+                pattern=r"ADR-\\d{4}",
+                regex=True,
+                kind="adr",
+                include=None,
+                exclude=None,
+                max_bytes=1_000_000,
+                all_ids=True,
+            )
+            self.assertEqual(len(hits_adr), 1)
+            self.assertEqual(hits_adr[0]["id"], "ADR-0001")
 
     def test_iter_candidate_definition_files_prefers_expected_files(self) -> None:
         with TemporaryDirectory() as tds:
