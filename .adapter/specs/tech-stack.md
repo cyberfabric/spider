@@ -11,7 +11,7 @@
 **Python 3**
 - Primary language for all tooling
 - Version: Python 3.6+ (standard library only)
-- No external dependencies required
+- No runtime dependencies required
 
 ---
 
@@ -36,8 +36,9 @@
 - Git for version control
 
 **Testing**:
-- `unittest` (Python standard library)
-- No test runners needed beyond Python itself
+- `pipx` (recommended for isolated CLI tooling)
+- `pytest` (executed via `pipx`) for repository test suite in `tests/`
+- `pytest-cov` (executed via `pipx`) for coverage runs
 
 ---
 
@@ -45,7 +46,8 @@
 
 **Discovered from**:
 - `skills/fdd/scripts/fdd.py` - Main tool (4317 lines)
-- `skills/fdd/tests/*.py` - Test files
+- `tests/` - Repository test suite
+- `Makefile` - Test and coverage targets
 - Import analysis - Only standard library imports
 
 ---
@@ -54,8 +56,8 @@
 
 Agent MUST verify before implementation:
 - [ ] Python 3.6+ is available
-- [ ] No external dependencies installed
-- [ ] Standard library modules are sufficient
+- [ ] Runtime dependencies are standard library only
+- [ ] Test tooling is available via `pipx`
 - [ ] Code uses type hints from `typing` module
 
 **Self-test**:

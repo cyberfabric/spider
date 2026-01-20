@@ -1,9 +1,17 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-requirements-structure:ph-1 -->
+---
+fdd: true
+type: requirement
+name: ADR Structure
+version: 1.0
+purpose: Define required structure for ADR.md files
+---
+
 # ADR Structure Requirements
+
+
 
 **ALWAYS open and follow**: `../workflows/adr.md`
 **ALWAYS open and follow**: `requirements.md`
-**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -12,14 +20,14 @@
 
 ---
 
-**Version**: 1.0  
-**Purpose**: Defines structure and validation criteria for Architecture Decision Records documentation
+## Prerequisite Checklist
 
-**Scope**: This document specifies required structure for `architecture/ADR.md`
-
-**Format**: MADR (Markdown Any Decision Records) format with FDD extensions
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
 
 ---
+
+## Overview
 
 ## File Overview
 
@@ -488,6 +496,26 @@ compilation via Secure ORM ensures tenant isolation.
 ```
 
 ---
+
+## Examples
+
+**Valid ADR.md**:
+- ALWAYS open `examples/requirements/adr/valid.md` WHEN creating or editing `architecture/ADR.md`
+
+**Issues**:
+- Missing required ADR fields (`**Date**`, `**Status**`)
+- Missing required ADR sections (Context, Drivers, Options, Outcome, Related Design Elements)
+- Related Design Elements does not reference any IDs
+
+---
+
+## Validation Checklist
+
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
+
+---
+
 
 ## References
 

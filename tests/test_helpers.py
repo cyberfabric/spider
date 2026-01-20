@@ -1,4 +1,3 @@
-# @fdd-test:fdd-fdd-feature-core-methodology-test-helpers:ph-1
 """
 Test helper functions for parsing artifacts.
 

@@ -1,3 +1,11 @@
+---
+fdd: true
+type: workflow
+name: Adapter Bootstrap
+version: 1.0
+purpose: Bootstrap minimal FDD adapter initialization
+---
+
 # FDD Adapter: Bootstrap (Minimal Initialization)
 
 **Type**: Operation  
@@ -6,7 +14,21 @@
 
 ---
 
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+## Prerequisite Checklist
+
+- [ ] Agent has read execution-protocol.md
+- [ ] Agent has read workflow-execution.md
+- [ ] Agent understands this workflow's purpose
+
+---
+
+## Overview
+
+This workflow guides the execution of the specified task.
+
+---
+
+
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
@@ -147,7 +169,6 @@ Store as: `{project-root}/.fdd-config.json`
 mkdir -p {ADAPTER_DIR}/FDD-Adapter/
 ```
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-create-adapter -->
 ### 7. Create AGENTS.md
 
 Create `{ADAPTER_DIR}/FDD-Adapter/AGENTS.md`:
@@ -157,7 +178,6 @@ Create `{ADAPTER_DIR}/FDD-Adapter/AGENTS.md`:
 
 **Extends**: `{RELATIVE_PATH}`
 ```
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-create-adapter -->
 
 ### 8. Verify
 
@@ -207,6 +227,22 @@ Automatically runs `adapter-validate` at completion
 
 ---
 
+## Validation Criteria
+
+- [ ] All workflow steps completed
+- [ ] Output artifacts are valid
+
+---
+
+
+## Validation Checklist
+
+- [ ] All prerequisites were met
+- [ ] All steps were executed in order
+
+---
+
+
 ## Next Steps
 
 **Recommended**:
@@ -238,13 +274,9 @@ Validation: 100/100 (PASS)
 Next: Run 'design' workflow to start architecture design
 ```
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-report-conflicts -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-resolve-manually -->
 ## Error Handling
 
 **If conflicts detected**:
 - Report conflicting files to user
 - User manually resolves (rename, move, or merge)
 - Re-run bootstrap after resolution
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-resolve-manually -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-report-conflicts -->

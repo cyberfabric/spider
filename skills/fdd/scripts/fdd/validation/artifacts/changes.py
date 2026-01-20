@@ -92,8 +92,11 @@ def validate_feature_changes(
         m_completed = re.search(r"\*\*Completed\*\*:\s*(\d+)", artifact_text)
         m_in_progress = re.search(r"\*\*In Progress\*\*:\s*(\d+)", artifact_text)
         m_not_started = re.search(r"\*\*Not Started\*\*:\s*(\d+)", artifact_text)
+        m_effort = re.search(r"\*\*Estimated Effort\*\*:\s*.+", artifact_text)
         if not (m_total and m_completed and m_in_progress and m_not_started):
             errors.append({"type": "structure", "message": "Summary must include Total/Completed/In Progress/Not Started counts"})
+        if not m_effort:
+            errors.append({"type": "structure", "message": "Summary must include **Estimated Effort**"})
         else:
             total = int(m_total.group(1))
             completed = int(m_completed.group(1))
@@ -132,6 +135,59 @@ def validate_feature_changes(
             if m:
                 return m.group(1).strip()
         return None
+
+    def _subsection_bounds(block_lines: List[str], title: str) -> Optional[Tuple[int, int]]:
+        start = None
+        for i, l in enumerate(block_lines):
+            if l.strip() == title:
+                start = i
+                break
+        if start is None:
+            return None
+        end = len(block_lines)
+        for j in range(start + 1, len(block_lines)):
+            if block_lines[j].strip().startswith("### "):
+                end = j
+                break
+        return start, end
+
+    def _count_list_items(lines: List[str]) -> int:
+        return sum(1 for l in lines if re.match(r"^\s*[-*]\s+\S+", l))
+
+    def _task_has_affected_path(desc: str) -> bool:
+        # Accept any backticked filename/path/pattern (excluding fdd-* IDs), e.g.:
+        # - `src/lib.rs`
+        # - `Makefile`
+        # - `requirements/`
+        # - `*-structure.md`
+        # Reject: `fdd-...` IDs
+        toks = [t.strip() for t in re.findall(r"`([^`]+)`", desc) if t.strip()]
+        for tok in toks:
+            if tok.startswith("fdd-"):
+                continue
+            if "/" in tok:
+                return True
+            if tok.endswith("/"):
+                return True
+            if "." in tok:
+                return True
+            if "*" in tok and "." in tok:
+                return True
+            if tok in {"Makefile", "Dockerfile", "LICENSE"}:
+                return True
+        return False
+
+    def _task_is_allowed_pathless(desc: str) -> bool:
+        s = desc.strip().lower()
+        if "validate:" not in s:
+            return False
+        if "fdd" in s and "tag" in s:
+            return True
+        if s.startswith("verify "):
+            return True
+        if s.startswith("run "):
+            return True
+        return False
 
     change_ids: List[str] = []
     implements_by_change: Dict[int, List[str]] = {}
@@ -214,6 +270,89 @@ def validate_feature_changes(
             tasks.append((nums, m_task.group(2).strip()))
         if not tasks:
             errors.append({"type": "content", "message": "Change must contain checkbox tasks with hierarchical numbering", "change": n})
+        else:
+            has_any_path = False
+            for _nums, desc in tasks:
+                if "validate:" not in desc.lower():
+                    errors.append({"type": "content", "message": "Task must include validation criteria (use 'validate: ...')", "change": n, "task": desc})
+                if _task_has_affected_path(desc):
+                    has_any_path = True
+                elif not _task_is_allowed_pathless(desc):
+                    errors.append({"type": "content", "message": "Task must specify affected file paths using backticks", "change": n, "task": desc})
+
+            if not has_any_path:
+                errors.append({"type": "content", "message": "At least one task must specify an affected file path using backticks", "change": n})
+
+            if len(tasks) > 10:
+                errors.append({"type": "content", "message": "No change too large (>10 tasks)", "change": n, "count": len(tasks)})
+
+        # Requirements Coverage section content checks
+        rng_rc = _subsection_bounds(block, "### Requirements Coverage")
+        if rng_rc is not None:
+            rc_lines = block[rng_rc[0] : rng_rc[1]]
+            rc_text = "\n".join(rc_lines)
+            if "**Implements**:" not in rc_text:
+                errors.append({"type": "content", "message": "Requirements Coverage must include **Implements** list", "change": n})
+            else:
+                covered = set(re.findall(r"`(fdd-[^`]+)`", rc_text))
+                missing_cov = sorted([rid for rid in implements_by_change.get(n, []) if rid not in covered])
+                if missing_cov:
+                    errors.append({"type": "cross", "message": "Requirements Coverage must include entries for all IDs from **Implements**", "change": n, "missing": missing_cov})
+
+            if "**References**:" not in rc_text:
+                errors.append({"type": "content", "message": "Requirements Coverage must include **References** list", "change": n})
+            else:
+                if not re.search(r"\bfdd-[a-z0-9-]+-feature-[a-z0-9-]+-(?:flow|algo|state|td)-[a-z0-9-]+\b", rc_text):
+                    errors.append({"type": "content", "message": "References must include at least one flow/algo/state/technical-detail ID", "change": n})
+
+        # Specification section content checks
+        rng_spec = _subsection_bounds(block, "### Specification")
+        if rng_spec is not None:
+            spec_lines = block[rng_spec[0] : rng_spec[1]]
+            spec_text = "\n".join(spec_lines)
+
+            required_spec_headers = [
+                "**Domain Model Changes**:",
+                "**API Changes**:",
+                "**Database Changes**:",
+                "**Code Changes**:",
+            ]
+            for h in required_spec_headers:
+                if h not in spec_text:
+                    errors.append({"type": "content", "message": "Specification must include required section", "change": n, "section": h})
+
+            # Require at least one list item under each spec header when present.
+            for i, l in enumerate(spec_lines):
+                if l.strip() not in required_spec_headers:
+                    continue
+                j = i + 1
+                bucket: List[str] = []
+                while j < len(spec_lines) and not spec_lines[j].strip().startswith("**"):
+                    bucket.append(spec_lines[j])
+                    j += 1
+                if _count_list_items(bucket) == 0:
+                    errors.append({"type": "content", "message": "Specification section must include at least one list item", "change": n, "section": l.strip()})
+
+            if "@fdd-change:" not in spec_text:
+                errors.append({"type": "content", "message": "Specification must mention code tagging via @fdd-change", "change": n})
+            if ":ph-" not in spec_text:
+                errors.append({"type": "content", "message": "Specification must mention phase postfix ':ph-' for code tags", "change": n})
+
+        # Dependencies section structure checks
+        rng_deps = _subsection_bounds(block, "### Dependencies")
+        if rng_deps is not None:
+            deps_text = "\n".join(block[rng_deps[0] : rng_deps[1]])
+            if "**Depends on**" not in deps_text:
+                errors.append({"type": "content", "message": "Dependencies section must include **Depends on**", "change": n})
+            if "**Blocks**" not in deps_text:
+                errors.append({"type": "content", "message": "Dependencies section must include **Blocks**", "change": n})
+
+        # Testing section structure checks
+        rng_test = _subsection_bounds(block, "### Testing")
+        if rng_test is not None:
+            t_text = "\n".join(block[rng_test[0] : rng_test[1]])
+            if "**Unit Tests**" not in t_text and "**Integration Tests**" not in t_text and "**E2E Tests**" not in t_text:
+                errors.append({"type": "content", "message": "Testing section must specify Unit/Integration/E2E tests (or explicitly None)", "change": n})
 
         deps.setdefault(n, [])
         in_deps = False
@@ -317,12 +456,99 @@ def validate_feature_changes(
             except Exception:
                 pass
 
-    passed = (len(errors) == 0) and (len(placeholders) == 0)
+    # ----------------------------
+    # Scoring
+    # ----------------------------
+    buckets = {
+        "file_structure": [],
+        "change_structure": [],
+        "task_breakdown": [],
+        "specification": [],
+        "code_tagging": [],
+        "testing": [],
+        "consistency": [],
+        "completeness": [],
+    }
+
+    def _bucket_for_error(e: Dict[str, object]) -> str:
+        t = str(e.get("type", ""))
+        msg = str(e.get("message", ""))
+        if t in {"header"}:
+            return "file_structure"
+        if t == "structure":
+            # Summary/ordering are file structure; missing subsections are change structure.
+            if "Summary" in msg or "number" in msg or "Total Changes" in msg:
+                return "file_structure"
+            return "change_structure"
+        if t == "id":
+            return "change_structure"
+        if t == "content":
+            if msg.startswith("Task") or "task" in msg.lower() or "checkbox" in msg.lower():
+                return "task_breakdown"
+            if "Specification" in msg or "spec" in msg.lower():
+                return "specification"
+            if "Testing" in msg or "tests" in msg.lower():
+                return "testing"
+            if "Dependencies" in msg or "dependency" in msg.lower():
+                return "consistency"
+            return "change_structure"
+        if t == "cross":
+            if "requirements" in msg.lower() or "covered" in msg.lower():
+                return "completeness"
+            return "consistency"
+        if t.startswith("fdl"):
+            return "consistency"
+        return "consistency"
+
+    for e in errors:
+        buckets[_bucket_for_error(e)].append(e)
+    if placeholders:
+        buckets["completeness"].append({"type": "placeholder", "message": "Placeholders found"})
+
+    max_points = {
+        "file_structure": 10,
+        "change_structure": 20,
+        "task_breakdown": 15,
+        "specification": 15,
+        "code_tagging": 5,
+        "testing": 15,
+        "consistency": 10,
+        "completeness": 10,
+    }
+
+    def _penalty(cat: str, issue: Dict[str, object]) -> int:
+        t = str(issue.get("type", ""))
+        msg = str(issue.get("message", ""))
+        if cat == "file_structure" and "Missing" in msg:
+            return 5
+        if t == "cross" and "Not all feature requirements" in msg:
+            return 10
+        if "Dependency graph contains a cycle" in msg:
+            return 10
+        return 5
+
+    score_breakdown: Dict[str, int] = {}
+    for cat, maxv in max_points.items():
+        pen = sum(_penalty(cat, it) for it in buckets[cat])
+        score_breakdown[cat] = max(0, int(maxv - pen))
+
+    score = sum(score_breakdown.values())
+
+    # Critical failures override scoring.
+    critical = any(
+        (e.get("type") == "header")
+        or (e.get("type") == "structure" and str(e.get("message", "")).startswith("No change entries"))
+        for e in errors
+    )
+
+    passed = (not critical) and (score >= 90)
     return {
         "required_section_count": 0,
         "missing_sections": [],
         "placeholder_hits": placeholders,
         "status": "PASS" if passed else "FAIL",
+        "score": score,
+        "score_breakdown": score_breakdown,
         "errors": errors,
     }
 

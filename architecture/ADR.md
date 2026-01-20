@@ -2,11 +2,13 @@
 
 ## ADR-0001: Initial FDD Architecture
 
-**ID**: `fdd-fdd-adr-0001`
+**ID**: `fdd-fdd-adr-initial-architecture-v1`
+
+<!-- fdd-id-content -->
 
 **Date**: 2025-01-17
 
-**Status**: ACCEPTED
+**Status**: Accepted
 
 ### Context and Problem Statement
 
@@ -208,3 +210,93 @@ The architecture is designed for evolution: new components can be added as plugi
 **Superseded by**: None (current)
 
 **Related ADRs**: None yet (this is ADR-0001)
+
+<!-- fdd-id-content -->
+
+## ADR-0002: Proposal-Only Changes to Approved Artifacts
+
+**ID**: `fdd-fdd-adr-proposal-only-changes-v1`
+
+<!-- fdd-id-content -->
+
+**Date**: 2026-01-20
+
+**Status**: Accepted
+
+### Context and Problem Statement
+
+FDD workflows and AI agents may need to update approved artifacts under `architecture/` (e.g., `BUSINESS.md`, `DESIGN.md`, `ADR.md`, `FEATURES.md`, feature `DESIGN.md`, feature `CHANGES.md`). Direct edits by automated tooling can cause accidental loss of content, non-deterministic diffs, and unreviewed changes to the authoritative state.
+
+We need a single deterministic process for changing approved artifacts that supports review, conflict detection, auditability, and automated validation.
+
+### Decision Drivers
+
+1. **Determinism**
+   - Changes must be representable as deterministic operations over precise selectors.
+
+2. **Reviewability**
+   - Human review must be possible before applying changes to approved artifacts.
+
+3. **Traceability and Auditability**
+   - The repository must preserve what was proposed, what was approved, and what was merged.
+
+4. **AI Safety**
+   - AI agents must not directly mutate approved artifacts.
+
+### Considered Options
+
+### Option 1: Allow Direct Writes to Approved Artifacts
+**Description**: Operation workflows directly edit files under `architecture/`.
+
+**Pros**:
+- Simple implementation
+
+**Cons**:
+- High risk of accidental content loss
+- Non-deterministic edits (agent rewriting formatting)
+- Weak review story for automated changes
+
+**Rejected**.
+
+### Option 2: Proposal-Only Workflow Outputs (SELECTED)
+**Description**: Operation workflows output deterministic proposals under `architecture/changes/` and never directly modify approved artifacts.
+
+**Pros**:
+- Deterministic, reviewable changes
+- Enables automated proposal validation before merge
+- Preserves audit trail
+
+**Cons**:
+- Requires proposal tooling (`fdd` merge/archive) and conventions
+
+**Selected**.
+
+### Decision Outcome
+
+All operation workflows MUST produce proposals under `architecture/changes/`.
+
+Workflows MUST NOT directly modify approved artifacts under `architecture/` and `architecture/features/`.
+
+Approved artifacts MUST be updated only by applying approved proposals via `fdd` merge/archive operations.
+
+### Related Design Elements
+
+This decision is directly tied to:
+
+- Requirements:
+  - `fdd-fdd-req-artifact-change-management`
+  - `fdd-fdd-req-proposal-validation`
+  - `fdd-fdd-req-core-artifact-status`
+- Capabilities:
+  - `fdd-fdd-capability-change-management`
+
+---
+
+**Supersedes**: None
+
+**Superseded by**: None
+
+**Related ADRs**: `fdd-fdd-adr-initial-architecture-v1`
+
+<!-- fdd-id-content -->
+

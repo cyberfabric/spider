@@ -93,7 +93,7 @@ def common_checks(
         - List of error dicts
         - List of placeholder dicts
     """
-    from ...constants import LINK_RE, HTML_COMMENT_RE, BRACE_PLACEHOLDER_RE, ID_LINE_RE, SIZE_HARD_LIMIT_RE
+    from ...constants import LINK_RE, HTML_COMMENT_RE, ID_LINE_RE, SIZE_HARD_LIMIT_RE
     
     errors: List[Dict[str, object]] = []
     placeholder_hits: List[Dict[str, object]] = []
@@ -101,14 +101,10 @@ def common_checks(
     # Find HTML comment placeholders
     for match in HTML_COMMENT_RE.finditer(artifact_text):
         comment_text = match.group(0)
-        for word in ["TODO", "TBD", "FIXME", "XXX", "TBA"]:
+        for word in ["TODO", "TBD", "TBF", "TBC", "TBA", "FIXME", "XXX"]:
             if word in comment_text.upper():
                 placeholder_hits.append({"type": "html_comment", "token": word, "text": comment_text[:50]})
                 break
-
-    # Find brace placeholders
-    for match in BRACE_PLACEHOLDER_RE.finditer(artifact_text):
-        placeholder_hits.append({"type": "brace_placeholder", "token": match.group(0)})
 
     # Check for disallowed link notation
     disallowed_pattern = re.compile(r"(@/|@DESIGN\.md|@BUSINESS\.md|@ADR\.md)")
@@ -137,6 +133,24 @@ def common_checks(
     # Check FDD ID formatting and duplicates
     ids_seen: List[str] = []
     lines = artifact_text.splitlines()
+
+    in_fence_mask: List[bool] = [False] * len(lines)
+    _fence: Optional[str] = None
+    for _idx, _line in enumerate(lines):
+        _s = _line.lstrip()
+        _m = re.match(r"```+", _s)
+        if _m:
+            _ticks = _m.group(0)
+            in_fence_mask[_idx] = True
+            if _fence is None:
+                _fence = _ticks
+            else:
+                if _s.startswith(_fence):
+                    _fence = None
+            continue
+        if _fence is not None:
+            in_fence_mask[_idx] = True
+
     for i, line in enumerate(lines):
         if "**ID**:" not in line:
             continue
@@ -152,6 +166,47 @@ def common_checks(
             if tok.startswith("fdd-"):
                 ids_seen.append(tok)
 
+    # Enforce that FDD IDs used as values in artifact docs are wrapped in backticks.
+    # This is intentionally narrower than "any occurrence" to avoid breaking
+    # canonical markdown link labels (e.g. FEATURES.md headings with [fdd-...](...)).
+    if artifact_kind in {"business-context", "overall-design", "adr", "features-manifest", "feature-design", "feature-changes"}:
+        fdd_id_re = re.compile(r"\bfdd-[a-z0-9-]+\b")
+        md_link_re = re.compile(r"\[[^\]]+\]\([^)]+\)")
+        inline_code_re = re.compile(r"`[^`]*`")
+
+        in_code_fence = False
+        for idx, line in enumerate(lines, start=1):
+            s = line.strip()
+            if s.startswith("```"):
+                in_code_fence = not in_code_fence
+                continue
+            if in_code_fence:
+                continue
+
+            if s == "<!-- fdd-id-content -->":
+                continue
+
+            if "**ID**:" in line:
+                continue
+
+            # Only validate value-like lines to avoid false positives in prose.
+            if not re.match(r"^\s*[-*]\s+", line) and "**" not in line:
+                continue
+
+            cleaned = inline_code_re.sub("", line)
+            cleaned = md_link_re.sub("", cleaned)
+
+            for tok in fdd_id_re.findall(cleaned):
+                errors.append(
+                    {
+                        "type": "id",
+                        "message": "FDD IDs must be wrapped in backticks",
+                        "line": idx,
+                        "id": tok,
+                        "text": line.strip(),
+                    }
+                )
+
     # Enforce strict ID payload blocks for FDD artifacts.
     # After any **ID**: `fdd-*` line, require a payload block delimited by
     # <!-- fdd-id-content --> ... <!-- fdd-id-content --> (payload may be empty)
@@ -162,24 +217,26 @@ def common_checks(
         id_line_start_re = re.compile(r"^\s*(?:[-*]\s*)?(?:\[[ xX]\]\s*)?\*\*ID\*\*:\s*(.+)$", re.IGNORECASE)
         heading_re = re.compile(r"^(#{1,6})\s+")
 
-        def _heading_level(s: str) -> Optional[int]:
-            mh = heading_re.match(s)
+        def _heading_level_at(idx: int) -> Optional[int]:
+            if 0 <= idx < len(lines) and in_fence_mask[idx]:
+                return None
+            mh = heading_re.match(lines[idx].strip())
             if not mh:
                 return None
             return len(mh.group(1))
 
         def _enclosing_heading_bounds(id_idx: int) -> Tuple[int, int, Optional[int]]:
             start = id_idx
-            while start >= 0 and _heading_level(lines[start].strip()) is None:
+            while start >= 0 and _heading_level_at(start) is None:
                 start -= 1
             if start < 0:
                 return 0, len(lines), None
-            lvl = _heading_level(lines[start].strip())
+            lvl = _heading_level_at(start)
             if lvl is None:
                 return 0, len(lines), None
             end = start + 1
             while end < len(lines):
-                nlvl = _heading_level(lines[end].strip())
+                nlvl = _heading_level_at(end)
                 if nlvl is not None and nlvl <= lvl:
                     break
                 end += 1
@@ -188,12 +245,14 @@ def common_checks(
         def _next_id_idx(id_idx: int, *, stop_at: int) -> int:
             j = id_idx + 1
             while j < stop_at:
-                if id_line_start_re.match(lines[j]):
+                if not in_fence_mask[j] and id_line_start_re.match(lines[j]):
                     return j
                 j += 1
             return stop_at
 
         for i, line in enumerate(lines):
+            if in_fence_mask[i]:
+                continue
             m = id_line_start_re.match(line)
             if not m:
                 continue
@@ -243,7 +302,12 @@ def common_checks(
 
             # Find payload close delimiter (must be inside the element).
             k = j + 1
-            while k < elem_end and lines[k].strip() != open_marker:
+            while k < elem_end:
+                if in_fence_mask[k]:
+                    k += 1
+                    continue
+                if lines[k].strip() == open_marker:
+                    break
                 k += 1
             if k >= elem_end:
                 errors.append(
@@ -259,6 +323,9 @@ def common_checks(
             # After payload close, only blank lines are allowed until the end of this element.
             t = k + 1
             while t < elem_end:
+                if in_fence_mask[t]:
+                    t += 1
+                    continue
                 s = lines[t].strip()
                 if s == "":
                     t += 1

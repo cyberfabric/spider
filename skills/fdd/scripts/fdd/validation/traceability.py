@@ -617,7 +617,14 @@ def validate_code_root_traceability(
             scan_root_override=code_root,
             skip_fs_checks=skip_fs_checks,
         )
-        feature_reports.append({"feature_dir": str(fd), "status": rep.get("status"), "traceability": rep.get("traceability")})
+        feature_reports.append(
+            {
+                "feature_dir": str(fd),
+                "status": rep.get("status"),
+                "errors": rep.get("errors", []) or [],
+                "traceability": rep.get("traceability"),
+            }
+        )
 
     passed = all((fr.get("status") == "PASS") for fr in feature_reports)
 

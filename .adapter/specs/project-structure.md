@@ -6,6 +6,8 @@
 
 ---
 
+When requirements in this spec conflict with `architecture/features/feature-init-structure/DESIGN.md`, follow `architecture/features/feature-init-structure/DESIGN.md`.
+
 ## Root Structure
 
 ```
@@ -13,10 +15,13 @@ FDD/
 ├── .adapter/              # Project adapter (this directory)
 │   ├── AGENTS.md         # Adapter navigation
 │   └── specs/            # Adapter specifications
+├── architecture/          # Architecture artifacts
+├── examples/              # Reference examples
 ├── requirements/          # 22 structure requirement files
 ├── workflows/            # 22 workflow definition files
 ├── skills/               # FDD skills/tools
 │   └── fdd/             # Unified FDD tool
+├── tests/                # Pytest tests
 ├── images/              # Documentation assets
 ├── .fdd-config.json     # Project configuration
 ├── .gitignore

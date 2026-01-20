@@ -1,13 +1,20 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-agents-navigation:ph-1 -->
+---
+fdd: true
+type: requirement
+name: FDL Language
+version: 1.1
+purpose: Define syntax and grammar for behavior description language
+---
+
 # FDL - FDD Description Language
 
-**Version**: 1.1  
-**Purpose**: Define syntax and grammar for behavior description language  
-**Scope**: Actor Flows, Algorithms, State Machines
+## Prerequisite Checklist
+
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
 
 ---
 
-**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 ## Overview
 
@@ -344,6 +351,14 @@ example_code();
 **Pass threshold**: ≥90/100
 
 ---
+
+## Validation Checklist
+
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
+
+---
+
 
 ## References
 

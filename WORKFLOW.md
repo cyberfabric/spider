@@ -1,4 +1,3 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-quickstart-docs:ph-1 -->
 # FDD Workflow System
 
 **Version**: 2.0  
@@ -49,7 +48,7 @@
 **Operation Workflows** (Type: Operation):
 - Create or update documents/code
 - Include user interactions (questions, proposals)
-- ALWAYS open and follow `core.md` WHEN creating or modifying FDD core files changes
+- ALWAYS open and follow `.adapter/specs/conventions.md` WHEN creating or modifying FDD core files changes
 - Run validation workflow after completion
 
 **Validation Workflows** (Type: Validation):
@@ -547,7 +546,7 @@ feature-validate (checks DESIGN.md + FEATURES.md)
 
 **For workflow execution**: See `requirements/workflow-execution.md`
 
-**For requirements files**: See `requirements/core-requirements.md`
+**For requirements files**: See `.adapter/specs/patterns.md`
 
 **For agent navigation**: See `AGENTS.md`
 

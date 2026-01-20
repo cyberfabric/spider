@@ -35,6 +35,13 @@ from .artifacts import (
     validate_features_manifest,
 )
 
+from .cascade import (
+    ARTIFACT_DEPENDENCIES,
+    find_artifact_path,
+    resolve_dependencies,
+    validate_with_dependencies,
+)
+
 __all__ = [
     # Traceability
     "compute_excluded_line_ranges",
@@ -63,4 +70,10 @@ __all__ = [
     "validate_business_context",
     "validate_adr",
     "validate_features_manifest",
+    
+    # Cascade validation
+    "ARTIFACT_DEPENDENCIES",
+    "find_artifact_path",
+    "resolve_dependencies",
+    "validate_with_dependencies",
 ]

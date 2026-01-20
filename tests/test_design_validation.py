@@ -1,12 +1,8 @@
-# @fdd-test:fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1
-# @fdd-test:fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1
 """
 Test design-first enforcement and validation.
 
 Tests REAL DESIGN.md files structure.
 
-Tests for: fdd-fdd-feature-core-methodology-test-block-unvalidated
-           fdd-fdd-feature-core-methodology-test-validate-design-structure
 """
 import unittest
 from pathlib import Path
@@ -31,11 +27,6 @@ except ModuleNotFoundError:  # pragma: no cover
 sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "fdd" / "scripts"))
 
 
-# fdd-begin fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-create-features-no-design
-# fdd-begin fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-run-features-workflow
-# fdd-begin fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-verify-prereq-check
-# fdd-begin fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-verify-fails-prereq
-# fdd-begin fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-verify-guidance
 def test_features_manifest_references_design():
     """Verify FEATURES.md references DESIGN.md for each feature."""
     features_path = Path(__file__).parent.parent / "architecture" / "features" / "FEATURES.md"
@@ -52,28 +43,16 @@ def test_features_manifest_references_design():
     # Check that feature entries have proper structure
     assert '## ' in content or '###' in content, \
         "FEATURES.md should have feature sections"
-# fdd-end   fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-verify-guidance
-# fdd-end   fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-verify-fails-prereq
-# fdd-end   fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-verify-prereq-check
-# fdd-end   fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-run-features-workflow
-# fdd-end   fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-create-features-no-design
 
 
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-create-design-complete
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-run-structure-validation
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-verify-validation-passes
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-remove-section-b
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-rerun-after-remove
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-verify-missing-section
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-verify-section-b-error
 def test_validate_all_feature_designs_have_required_sections():
-    """Validate feature-core-methodology DESIGN.md has required sections A-F."""
+    """Validate feature-init-structure DESIGN.md has required sections A-F."""
     features_dir = Path(__file__).parent.parent / "architecture" / "features"
     assert features_dir.exists(), "architecture/features/ directory not found"
     
-    # Only validate core-methodology feature (others are placeholders)
-    design_path = features_dir / "feature-core-methodology" / "DESIGN.md"
-    assert design_path.exists(), "feature-core-methodology/DESIGN.md not found"
+    # Only validate init-structure feature (others are placeholders)
+    design_path = features_dir / "feature-init-structure" / "DESIGN.md"
+    assert design_path.exists(), "feature-init-structure/DESIGN.md not found"
     design_files = [design_path]
     
     # Required sections for feature design
@@ -105,10 +84,3 @@ def test_validate_all_feature_designs_have_required_sections():
     # Report all errors found
     if errors:
         pytest.fail(f"Feature DESIGN.md structure validation failed:\n" + "\n".join(errors))
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-verify-section-b-error
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-verify-missing-section
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-rerun-after-remove
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-remove-section-b
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-verify-validation-passes
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-run-structure-validation
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-create-design-complete

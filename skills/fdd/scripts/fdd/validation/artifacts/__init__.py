@@ -42,6 +42,7 @@ def validate(
         report = validate_features_manifest(
             artifact_text,
             artifact_path=artifact_path,
+            design_path=design_path,
             skip_fs_checks=skip_fs_checks,
         )
     elif artifact_kind == "business-context":

@@ -78,16 +78,19 @@ This spec defines which file types to scan for FDD tags and how to recognize com
 **Valid examples**:
 ```python
 # fdd-begin fdd-project-feature-x-flow-y:ph-1:inst-step
+do_something()
 # fdd-end fdd-project-feature-x-flow-y:ph-1:inst-step
 ```
 
 ```javascript
 // fdd-begin fdd-project-feature-x-flow-y:ph-1:inst-step
+doSomething();
 // fdd-end fdd-project-feature-x-flow-y:ph-1:inst-step
 ```
 
 ```sql
 -- fdd-begin fdd-project-feature-x-flow-y:ph-1:inst-step
+SELECT 1;
 -- fdd-end fdd-project-feature-x-flow-y:ph-1:inst-step
 ```
 

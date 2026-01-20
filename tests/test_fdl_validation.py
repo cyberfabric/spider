@@ -1,8 +1,4 @@
-# @fdd-change:fdd-fdd-feature-core-methodology-change-requirements-structure:ph-1
 # Tests implement:
-# - fdd-fdd-feature-core-methodology-test-parse-workflow
-# - fdd-fdd-feature-core-methodology-test-validate-design-structure  
-# - fdd-fdd-feature-core-methodology-test-block-unvalidated
 """
 Tests for FDL coverage and completion validation.
 
@@ -28,20 +24,13 @@ from fdd import (
 )
 
 
-# fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-add-tags
 _TRACEABILITY_DEV_ADD_TAGS = True
-# fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-add-tags
 
-# fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-write-code
 _TRACEABILITY_DEV_WRITE_CODE = True
-# fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-write-code
 
-# fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-mark-complete
 _TRACEABILITY_DEV_MARK_COMPLETE = True
-# fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-mark-complete
 
 
-# fdd-begin fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-test-extraction
 class TestFDLInstructionExtraction(unittest.TestCase):
     """Test FDL instruction extraction from DESIGN.md."""
 
@@ -90,10 +79,8 @@ class TestFDLInstructionExtraction(unittest.TestCase):
         self.assertNotIn("inst-check-title", result[algo_id]["instructions"])
 
 
-# fdd-end   fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-test-extraction
 
 
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-test-scope-extraction
 class TestScopeReferenceExtraction(unittest.TestCase):
     """Test scope ID extraction from CHANGES.md."""
 
@@ -129,10 +116,8 @@ class TestScopeReferenceExtraction(unittest.TestCase):
         self.assertEqual(result, set())
 
 
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-test-scope-extraction
 
 
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-test-coverage
 class TestFDLCoverageValidation(unittest.TestCase):
     """Test FDL coverage validation."""
 
@@ -178,10 +163,8 @@ class TestFDLCoverageValidation(unittest.TestCase):
         self.assertIn("fdd-x-feature-y-algo-validate", errors[0]["message"])
 
 
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-test-coverage
 
 
-# fdd-begin fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-test-completion
 class TestFDLCompletionValidation(unittest.TestCase):
     """Test FDL completion validation."""
 
@@ -236,10 +219,8 @@ class TestFDLCompletionValidation(unittest.TestCase):
         self.assertIn("inst-c", str(errors[0]["examples"]))
 
 
-# fdd-end   fdd-fdd-feature-core-methodology-test-block-unvalidated:ph-1:inst-test-completion
 
 
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-test-integration
 class TestIntegratedValidation(unittest.TestCase):
     """Test integrated FDL validation in validate_feature_changes."""
 
@@ -393,10 +374,8 @@ Test change.
             self.assertIn("fdd-x-feature-x-flow-test", str(fdl_errors[0]))
 
 
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-test-integration
 
 
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-test-cross-reference
 class TestFDLCrossReferenceValidation(unittest.TestCase):
     """Test reverse validation: fdd tags in code must be marked [x] in DESIGN.md."""
 
@@ -531,7 +510,6 @@ def do_something():
             
             # Should pass reverse validation (forward validation would fail)
             self.assertEqual(len(errors), 0)
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-design-structure:ph-1:inst-test-cross-reference
 
 
 class TestFDLCompletionValidation(unittest.TestCase):
@@ -1313,12 +1291,12 @@ def step_one():
             
             # Create code file with incomplete tag (no fdd-end)
             code_file = feature_root / "implementation.py"
-            code_file.write_text("""
-# fdd-begin fdd-test-flow-example:ph-1:inst-step-1
-def step_one():
-    pass
-# Missing fdd-end here
-""")
+            code_file.write_text(
+                "# fdd-begin fdd-test-flow-example:ph-1:inst-step-1\n"
+                "def step_one():\n"
+                "    pass\n"
+                "# Missing fdd-end here\n"
+            )
             
             design_fdl = {
                 "fdd-test-flow-example": {

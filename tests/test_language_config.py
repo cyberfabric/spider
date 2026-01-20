@@ -1,4 +1,3 @@
-# @fdd-test:fdd-fdd-feature-core-methodology-test-language-config:ph-1
 """
 Test language configuration loading and dynamic regex building.
 

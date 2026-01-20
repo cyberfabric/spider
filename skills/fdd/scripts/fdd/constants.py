@@ -16,7 +16,7 @@ PROJECT_CONFIG_FILENAME = ".fdd-config.json"
 
 SECTION_RE = re.compile(r"^###\s+Section\s+([A-Z0-9]+):\s+(.+?)\s*$")
 HEADING_ID_RE = re.compile(r"^#{1,6}\s+([A-Z])\.\s+.*$")
-SECTION_FEATURE_RE = re.compile(r"^##\s+([A-G])\.\s+(.+?)\s*$")
+SECTION_FEATURE_RE = re.compile(r"^##\s+([A-H])\.\s+(.+?)\s*$")
 SECTION_BUSINESS_RE = re.compile(r"^##\s+(?:Section\s+)?([A-Z])\s*[:.]\s*(.+)?$", re.IGNORECASE)
 
 # === FDD ID PATTERNS ===
@@ -98,7 +98,7 @@ SCOPE_ID_BY_KIND_RE: Dict[str, re.Pattern] = {
 
 # === VALIDATION PATTERNS ===
 
-PLACEHOLDER_RE = re.compile(r"\b(TODO|TBD|FIXME|XXX|TBA)\b", re.IGNORECASE)
+PLACEHOLDER_RE = re.compile(r"\b(TODO|TBD|TBF|TBC|TBA|FIXME|XXX)\b", re.IGNORECASE)
 LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 DISALLOWED_LINK_TOKEN_RE = re.compile(r"(@/|@DESIGN\.md|@BUSINESS\.md|@ADR\.md)")
 HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
@@ -112,12 +112,16 @@ ADR_STATUS_RE = re.compile(r"\*\*Status\*\*:\s*(Proposed|Accepted|Deprecated|Sup
 
 # Status overview pattern
 STATUS_OVERVIEW_RE = re.compile(
-    r"\*\*Status Overview\*\*:\s*(\d+)\s+features\s+total\s*\(\s*(\d+)\s+completed,\s*(\d+)\s+in progress,\s*(\d+)\s+not started\s*\)"
+    r"\*\*Status Overview\*\*:\s*(\d+)\s+features\s+total\s*\(\s*"
+    r"(\d+)\s+(?:completed|implemented),\s*"
+    r"(\d+)\s+(?:in progress|in development),\s*"
+    r"(?:(\d+)\s+design ready,\s*(\d+)\s+in design,\s*)?"
+    r"(\d+)\s+not started\s*\)"
 )
 
 # Feature heading pattern
 FEATURE_HEADING_RE = re.compile(
-    r"^###\s+(\d+)\.\s+\[(.+?)\]\((feature-[^)]+/)\)\s+([⏳🔄✅])\s+(CRITICAL|HIGH|MEDIUM|LOW)\s*$"
+    r"^###\s+(\d+)\.\s+\[(.+?)\]\((feature-[^)]+/)\)\s+([⏳📝📘🔄✅])\s+(CRITICAL|HIGH|MEDIUM|LOW)\s*$"
 )
 
 # Field header pattern
@@ -132,6 +136,16 @@ KNOWN_FIELD_NAMES = {
     "References",
     "Implements",
     "Phases",
+    "Depends On",
+    "Blocks",
+    "Scope",
+    "Requirements Covered",
+    "Principles Covered",
+    "Constraints Affected",
+    "Actors",
+    "Capabilities",
+    "Use Cases",
+    "ADRs",
     "Testing Scenarios (FDL)",
     "Testing Scenarios",
     "Acceptance Criteria",

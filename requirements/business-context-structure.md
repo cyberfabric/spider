@@ -1,9 +1,17 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-requirements-structure:ph-1 -->
+---
+fdd: true
+type: requirement
+name: Business Context Structure
+version: 1.0
+purpose: Define required structure for BUSINESS.md files
+---
+
 # Business Context Structure Requirements
+
+
 
 **ALWAYS open and follow**: `../workflows/business-context.md`
 **ALWAYS open and follow**: `requirements.md`
-**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -12,10 +20,14 @@
 
 ---
 
-**Version**: 1.0  
-**Purpose**: Defines structure and validation criteria for Business Context documentation
+## Prerequisite Checklist
 
-**Scope**: This document specifies required structure for `architecture/BUSINESS.md`
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
+
+---
+
+## Overview
 
 **Size limits**:
 - Recommended: ≤500 lines
@@ -434,61 +446,8 @@
 
 ## Examples
 
-**Valid BUSINESS.md structure**:
-```markdown
-# Business Context
-
-## A. Vision
-
-Provide analytics platform for tracking user behavior...
-
-## B. Actors
-
-**Human Actors**:
-
-#### Admin User
-- **ID**: `fdd-hyperspot-actor-admin-user`
-- **Role**: Administrator managing the system configuration and access
-
-#### Data Analyst
-- **ID**: `fdd-hyperspot-actor-data-analyst`
-- **Role**: Analyzes user behavior and usage metrics
-
-**System Actors**:
-
-#### UI Application
-- **ID**: `fdd-hyperspot-actor-ui-app`
-- **Role**: Frontend application used by human actors
-
-## C. Capabilities
-
-#### Analytics Dashboard
-- **ID**: `fdd-hyperspot-capability-analytics-dashboard`
-- View and analyze key user behavior metrics
-- Filter metrics by tenant, time range, and segments
-
-**Actors**: `fdd-hyperspot-actor-admin-user`, `fdd-hyperspot-actor-data-analyst`
-
-#### Usage Analytics
-- **ID**: `fdd-hyperspot-capability-usage-analytics`
-- Track usage events and aggregate metrics
-
-**Actors**: `fdd-hyperspot-actor-data-analyst`, `fdd-hyperspot-actor-ui-app`
-```
-
-**Invalid BUSINESS.md**:
-```markdown
-# Business Stuff
-
-Some information about the business.
-
-We have users and admins.
-
-## Actors
-
-Admin
-ID: fdd-actor-admin
-```
+**Valid BUSINESS.md**:
+- ALWAYS open `examples/requirements/business-context/valid.md` WHEN creating or editing `architecture/BUSINESS.md`
 
 **Issues**:
 - Missing required section structure (A/B/C headings and required content)
@@ -499,11 +458,19 @@ ID: fdd-actor-admin
 
 ---
 
+## Validation Checklist
+
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
+
+---
+
+
 ## References
 
 **This file is referenced by**:
 - ALWAYS open and follow this file WHEN creating or modifying BUSINESS.md
 
 **References**:
-- `core.md` - Core FDD principles
+- `../.adapter/specs/conventions.md` - Core FDD principles
 - `overall-design-structure.md` - DESIGN.md references actors/capabilities from BUSINESS.md

@@ -1,4 +1,3 @@
-# @fdd-test:fdd-fdd-feature-core-methodology-test-cli-integration:ph-1
 """
 Integration tests for CLI commands.
 
@@ -22,18 +21,19 @@ from fdd.cli import main
 class TestCLIValidateCommand(unittest.TestCase):
     """Test validate command variations."""
 
-    def test_validate_missing_artifact_argument(self):
-        """Test validate command without --artifact argument."""
+    def test_validate_default_artifact_is_current_dir(self):
+        """Test validate command without --artifact uses current directory."""
+        # --artifact now defaults to "." (current directory)
+        # This test just verifies it doesn't raise an error for missing argument
         stdout = io.StringIO()
         stderr = io.StringIO()
         
         with redirect_stdout(stdout), redirect_stderr(stderr):
-            try:
-                exit_code = main(["validate"])
-                self.assertNotEqual(exit_code, 0)
-            except SystemExit as e:
-                # argparse calls sys.exit on error
-                self.assertNotEqual(e.code, 0)
+            # Should not raise SystemExit for missing argument
+            # (may still fail validation but that's expected)
+            exit_code = main(["validate", "--skip-code-traceability"])
+            # Exit code 0 = PASS, 2 = FAIL - both are valid (not argument error)
+            self.assertIn(exit_code, [0, 2])
 
     def test_validate_nonexistent_artifact(self):
         """Test validate command with non-existent artifact."""

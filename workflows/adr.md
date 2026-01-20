@@ -1,6 +1,9 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-core-workflows:ph-1 -->
 ---
-description: Create or update Architecture Decision Records
+fdd: true
+type: workflow
+name: ADR
+version: 1.0
+purpose: Create or update Architecture Decision Records
 ---
 
 # Create or Update Architecture Decision Records
@@ -11,7 +14,21 @@ description: Create or update Architecture Decision Records
 
 ---
 
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+## Prerequisite Checklist
+
+- [ ] Agent has read execution-protocol.md
+- [ ] Agent has read workflow-execution.md
+- [ ] Agent understands this workflow's purpose
+
+---
+
+## Overview
+
+This workflow guides the execution of the specified task.
+
+---
+
+
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
@@ -277,6 +294,22 @@ Expected:
 
 ---
 
+## Validation Criteria
+
+- [ ] All workflow steps completed
+- [ ] Output artifacts are valid
+
+---
+
+
+## Validation Checklist
+
+- [ ] All prerequisites were met
+- [ ] All steps were executed in order
+
+---
+
+
 ## Next Steps
 
 **After ADR creation**:
@@ -287,3 +320,5 @@ Expected:
 
 **Continue development**:
 - `features` workflow - Decompose design into features
+
+

@@ -63,40 +63,85 @@ def _cmd_validate(argv: List[str]) -> int:
     Validation command handler - wraps validate() function.
     """
     p = argparse.ArgumentParser(prog="validate")
-    p.add_argument("--artifact", required=True, help="Path to artifact to validate")
+    p.add_argument("--artifact", default=".", help="Path to artifact to validate (default: current directory = validate all)")
     p.add_argument("--requirements", default=None, help="Path to requirements file (optional, auto-detected)")
     p.add_argument("--design", default=None, help="Path to DESIGN.md for cross-references")
     p.add_argument("--business", default=None, help="Path to BUSINESS.md for cross-references")
     p.add_argument("--adr", default=None, help="Path to ADR.md for cross-references")
     p.add_argument("--skip-fs-checks", action="store_true", help="Skip filesystem checks")
+    p.add_argument("--skip-code-traceability", action="store_true", help="Skip code traceability validation (only validate artifacts)")
     p.add_argument("--output", default=None, help="Write report to file instead of stdout")
     p.add_argument("--features", default=None, help="Comma-separated feature slugs for code-root traceability")
     args = p.parse_args(argv)
 
     artifact_path = Path(args.artifact).resolve()
+    
+    # Check .fdd-config.json for skip-code-traceability setting
+    skip_code_traceability = args.skip_code_traceability
+    config_path = artifact_path / ".fdd-config.json" if artifact_path.is_dir() else artifact_path.parent / ".fdd-config.json"
+    if not skip_code_traceability and config_path.exists():
+        try:
+            config = json.loads(config_path.read_text(encoding="utf-8"))
+            skip_code_traceability = config.get("skipCodeTraceability", False)
+        except (json.JSONDecodeError, OSError):
+            pass
 
     if artifact_path.is_dir():
+        from .validation.cascade import validate_all_artifacts
+        
         # Backwards-compatible: feature directory mode (artifact contains DESIGN.md).
         if (artifact_path / "DESIGN.md").exists():
             if args.features:
                 raise SystemExit("--features is only supported when --artifact is a code root directory")
-            report = validate_codebase_traceability(
-                artifact_path,
-                feature_design_path=Path(args.design).resolve() if args.design else None,
-                feature_changes_path=None,
-                skip_fs_checks=bool(args.skip_fs_checks),
-            )
+            if skip_code_traceability:
+                # Only validate the artifact, skip code traceability
+                from .validation.cascade import validate_with_dependencies
+                report = validate_with_dependencies(
+                    artifact_path / "DESIGN.md",
+                    skip_fs_checks=bool(args.skip_fs_checks),
+                )
+            else:
+                report = validate_codebase_traceability(
+                    artifact_path,
+                    feature_design_path=Path(args.design).resolve() if args.design else None,
+                    feature_changes_path=None,
+                    skip_fs_checks=bool(args.skip_fs_checks),
+                )
             report["artifact_kind"] = "codebase-trace"
         else:
-            slugs: Optional[List[str]] = None
-            if args.features:
-                slugs = [x.strip() for x in str(args.features).split(",") if x.strip()]
-            report = validate_code_root_traceability(
+            # First validate all FDD artifacts
+            artifacts_report = validate_all_artifacts(
                 artifact_path,
-                feature_slugs=slugs,
                 skip_fs_checks=bool(args.skip_fs_checks),
             )
-            report["artifact_kind"] = "codebase-trace"
+            
+            if skip_code_traceability:
+                # Only artifact validation, no code traceability
+                report = {
+                    "status": artifacts_report.get("status", "PASS"),
+                    "artifact_kind": "codebase-trace",
+                    "artifact_validation": artifacts_report.get("artifact_validation", {}),
+                    "code_traceability_skipped": True,
+                }
+            else:
+                # Then validate codebase traceability
+                slugs: Optional[List[str]] = None
+                if args.features:
+                    slugs = [x.strip() for x in str(args.features).split(",") if x.strip()]
+                trace_report = validate_code_root_traceability(
+                    artifact_path,
+                    feature_slugs=slugs,
+                    skip_fs_checks=bool(args.skip_fs_checks),
+                )
+                
+                # Combine reports
+                report = trace_report
+                report["artifact_kind"] = "codebase-trace"
+                report["artifact_validation"] = artifacts_report.get("artifact_validation", {})
+                
+                # Overall status fails if either fails
+                if artifacts_report.get("status") != "PASS":
+                    report["status"] = "FAIL"
 
         out = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
         if args.output:
@@ -106,29 +151,31 @@ def _cmd_validate(argv: List[str]) -> int:
 
         return 0 if report["status"] == "PASS" else 2
 
-    elif args.requirements:
+    # If custom requirements provided, use direct validation (no cascading)
+    if args.requirements:
         requirements_path = Path(args.requirements).resolve()
-        artifact_kind = "custom"
+        if not requirements_path.exists() or not requirements_path.is_file():
+            raise SystemExit(f"Requirements file not found: {requirements_path}")
+        
+        artifact_kind, _ = detect_requirements(artifact_path) if artifact_path.name in (
+            "BUSINESS.md", "ADR.md", "FEATURES.md", "CHANGES.md", "DESIGN.md"
+        ) else ("custom", None)
+        
+        report = validate(
+            artifact_path,
+            requirements_path,
+            artifact_kind,
+            skip_fs_checks=bool(args.skip_fs_checks),
+        )
+        report["artifact_kind"] = artifact_kind
     else:
-        artifact_kind, requirements_path = detect_requirements(artifact_path)
-
-    if not requirements_path.exists() or not requirements_path.is_file():
-        raise SystemExit(f"Requirements file not found: {requirements_path}")
-
-    design_path = Path(args.design).resolve() if args.design else None
-    business_path = Path(args.business).resolve() if args.business else None
-    adr_path = Path(args.adr).resolve() if args.adr else None
-
-    report = validate(
-        artifact_path,
-        requirements_path,
-        artifact_kind,
-        design_path=design_path,
-        business_path=business_path,
-        adr_path=adr_path,
-        skip_fs_checks=bool(args.skip_fs_checks),
-    )
-    report["artifact_kind"] = artifact_kind
+        # Use core cascading validation - automatically discovers and validates all dependencies
+        from .validation.cascade import validate_with_dependencies
+        
+        report = validate_with_dependencies(
+            artifact_path,
+            skip_fs_checks=bool(args.skip_fs_checks),
+        )
 
     out = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
 

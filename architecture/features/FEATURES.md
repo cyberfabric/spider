@@ -1,42 +1,43 @@
 # Features: FDD
-
-**Status Overview**: 13 features total (0 completed, 1 in progress, 12 not started)
-
+ 
+**Status Overview**: 13 features total (1 implemented, 0 in development, 0 design ready, 0 in design, 12 not started)
+ 
 **Meaning**:
 - ⏳ NOT_STARTED
-- 🔄 IN_PROGRESS
+- 📝 IN_DESIGN
+- 📘 DESIGN_READY
+- 🔄 IN_DEVELOPMENT
 - ✅ IMPLEMENTED
-
+ 
 ---
 
 ## Features List
 
-### 1. [fdd-fdd-feature-core-methodology](feature-core-methodology/) 🔄 CRITICAL
+### 1. [fdd-fdd-feature-init-structure](feature-init-structure/) ✅ CRITICAL
 
-- **Purpose**: Foundation FDD methodology framework with requirements files, workflow specifications, and base AGENTS.md navigation
-- **Status**: IN_PROGRESS
+- **Purpose**: Project skeleton and base file templates with common structure elements
+- **Status**: IMPLEMENTED
 - **Depends On**: None
 - **Blocks**: 
   - [feature-adapter-system](feature-adapter-system/)
   - [feature-workflow-engine](feature-workflow-engine/)
   - [feature-validation-engine](feature-validation-engine/)
 - **Phases**:
-  - `ph-1`: ⏳ NOT_STARTED — Core requirements files and base AGENTS.md
+  - `ph-1`: ✅ IMPLEMENTED — Directory structure and base file templates
 - **Requirements Covered**:
-  - fdd-fdd-req-executable-workflows
-  - fdd-fdd-req-design-first
-  - fdd-fdd-req-interactive-docs
+  - `fdd-fdd-req-design-first`
+  - `fdd-fdd-nfr-compatibility`
+  - `fdd-fdd-nfr-maintainability`
 - **Principles Covered**:
-  - fdd-fdd-principle-tech-agnostic
-  - fdd-fdd-principle-design-first
+  - `fdd-fdd-principle-tech-agnostic`
+  - `fdd-fdd-principle-design-first`
 - **Constraints Affected**:
-  - fdd-fdd-constraint-markdown
+  - `fdd-fdd-constraint-markdown`
 - **Scope**:
-  - Requirements files defining artifact structures (*-structure.md)
-  - Workflow specification files in workflows/ directory
-  - Core AGENTS.md with base navigation rules
-  - QUICKSTART guide and README for onboarding
-  - Methodology version tracking
+  - Directory structure specification
+  - Base file templates (header, overview, validation criteria)
+  - Core rules (migrated to `.adapter/specs/*.md`)
+  - Pytest tests for structure validation
 
 ---
 
@@ -45,7 +46,7 @@
 - **Purpose**: Project-specific customization layer through adapter configuration with Extends mechanism
 - **Status**: NOT_STARTED
 - **Depends On**:
-  - [feature-core-methodology](feature-core-methodology/)
+  - [feature-init-structure](feature-init-structure/)
 - **Blocks**:
   - [feature-workflow-engine](feature-workflow-engine/)
   - [feature-ai-integration](feature-ai-integration/)
@@ -53,12 +54,15 @@
 - **Phases**:
   - `ph-1`: ⏳ NOT_STARTED — Adapter directory structure and Extends mechanism
 - **Requirements Covered**:
-  - fdd-fdd-req-adapter-configuration
-  - fdd-fdd-req-pattern-reusability
+  - `fdd-fdd-req-adapter-configuration`
+  - `fdd-fdd-req-pattern-reusability`
+  - `fdd-fdd-nfr-compatibility`
+  - `fdd-fdd-nfr-maintainability`
+  - `fdd-fdd-nfr-extensibility`
 - **Principles Covered**:
-  - fdd-fdd-principle-tech-agnostic
+  - `fdd-fdd-principle-tech-agnostic`
 - **Constraints Affected**:
-  - fdd-fdd-constraint-markdown
+  - `fdd-fdd-constraint-markdown`
 - **Scope**:
   - Adapter AGENTS.md with Extends mechanism
   - Tech stack specification (specs/tech-stack.md)
@@ -77,7 +81,7 @@
 - **Purpose**: Deterministic validators with 100-point scoring system for structural artifact validation
 - **Status**: NOT_STARTED
 - **Depends On**:
-  - [feature-core-methodology](feature-core-methodology/)
+  - [feature-init-structure](feature-init-structure/)
   - [feature-id-management](feature-id-management/)
 - **Blocks**:
   - [feature-workflow-engine](feature-workflow-engine/)
@@ -86,12 +90,14 @@
   - `ph-1`: ⏳ NOT_STARTED — Core validation framework with scoring
   - `ph-2`: ⏳ NOT_STARTED — Artifact-specific validators (BUSINESS, DESIGN, ADR, FEATURES, etc.)
 - **Requirements Covered**:
-  - fdd-fdd-req-deterministic-validation
+  - `fdd-fdd-req-deterministic-validation`
+  - `fdd-fdd-req-proposal-validation`
+  - `fdd-fdd-nfr-performance`
 - **Principles Covered**:
-  - fdd-fdd-principle-deterministic-gate
-  - fdd-fdd-principle-machine-readable
+  - `fdd-fdd-principle-deterministic-gate`
+  - `fdd-fdd-principle-machine-readable`
 - **Constraints Affected**:
-  - fdd-fdd-constraint-stdlib-only
+  - `fdd-fdd-constraint-stdlib-only`
 - **Scope**:
   - fdd validation tool (Python 3 standard library only)
   - 100-point scoring system with category breakdown
@@ -109,7 +115,7 @@
 - **Purpose**: FDD ID generation, validation, and repository-wide scanning for complete traceability
 - **Status**: NOT_STARTED
 - **Depends On**:
-  - [feature-core-methodology](feature-core-methodology/)
+  - [feature-init-structure](feature-init-structure/)
 - **Blocks**:
   - [feature-validation-engine](feature-validation-engine/)
   - [feature-workflow-engine](feature-workflow-engine/)
@@ -117,9 +123,9 @@
   - `ph-1`: ⏳ NOT_STARTED — ID format validation and generation
   - `ph-2`: ⏳ NOT_STARTED — Repository scanning and traceability queries
 - **Requirements Covered**:
-  - fdd-fdd-req-traceability
+  - `fdd-fdd-req-traceability`
 - **Principles Covered**:
-  - fdd-fdd-principle-traceability
+  - `fdd-fdd-principle-traceability`
 - **Scope**:
   - ID format follows pattern: `fdd-PROJECT-KIND-NAME`
   - Qualified ID support: base:ph-N:inst-name format
@@ -136,7 +142,7 @@
 - **Purpose**: Executable workflow system with operation workflows (CREATE/UPDATE) and validation workflows
 - **Status**: NOT_STARTED
 - **Depends On**:
-  - [feature-core-methodology](feature-core-methodology/)
+  - [feature-init-structure](feature-init-structure/)
   - [feature-adapter-system](feature-adapter-system/)
   - [feature-validation-engine](feature-validation-engine/)
   - [feature-id-management](feature-id-management/)
@@ -147,10 +153,13 @@
   - `ph-1`: ⏳ NOT_STARTED — Operation workflows (business, design, adr, features, feature, changes)
   - `ph-2`: ⏳ NOT_STARTED — Validation workflows for each artifact type
 - **Requirements Covered**:
-  - fdd-fdd-req-executable-workflows
-  - fdd-fdd-req-incremental-development
+  - `fdd-fdd-req-executable-workflows`
+  - `fdd-fdd-req-incremental-development`
+  - `fdd-fdd-req-artifact-change-management`
+  - `fdd-fdd-req-requirements-catalog`
+  - `fdd-fdd-nfr-extensibility`
 - **Principles Covered**:
-  - fdd-fdd-principle-design-first
+  - `fdd-fdd-principle-design-first`
 - **Scope**:
   - Operation workflows with CREATE/UPDATE mode detection
   - Interactive question-answer flow with context-based proposals
@@ -174,12 +183,13 @@
   - `ph-1`: ⏳ NOT_STARTED — WHEN clause navigation and skill system
   - `ph-2`: ⏳ NOT_STARTED — Deterministic gate pattern implementation
 - **Requirements Covered**:
-  - fdd-fdd-req-ai-integration
+  - `fdd-fdd-req-ai-integration`
+  - `fdd-fdd-nfr-usability`
 - **Principles Covered**:
-  - fdd-fdd-principle-deterministic-gate
-  - fdd-fdd-principle-machine-readable
+  - `fdd-fdd-principle-deterministic-gate`
+  - `fdd-fdd-principle-machine-readable`
 - **Constraints Affected**:
-  - fdd-fdd-constraint-no-forced-tools
+  - `fdd-fdd-constraint-no-forced-tools`
 - **Scope**:
   - AGENTS.md two-level hierarchy (Core + Adapter)
   - WHEN clause pattern for conditional navigation
@@ -196,14 +206,14 @@
 - **Purpose**: Plain-English algorithm description language (FDL) for behavioral specifications
 - **Status**: NOT_STARTED
 - **Depends On**:
-  - [feature-core-methodology](feature-core-methodology/)
+  - [feature-init-structure](feature-init-structure/)
 - **Blocks**: None
 - **Phases**:
   - `ph-1`: ⏳ NOT_STARTED — FDL syntax and structure specification
 - **Requirements Covered**:
-  - fdd-fdd-req-fdl
+  - `fdd-fdd-req-fdl`
 - **Principles Covered**:
-  - fdd-fdd-principle-machine-readable
+  - `fdd-fdd-principle-machine-readable`
 - **Scope**:
   - Structured numbered lists for algorithms
   - Bold keywords (**IF**, **ELSE**, **WHILE**, **FOR EACH**, **AND**, **OR**, **NOT**, **MUST**, **REQUIRED**, **OPTIONAL**)
@@ -220,13 +230,13 @@
 - **Purpose**: Architecture decision tracking with MADR format and impact analysis
 - **Status**: NOT_STARTED
 - **Depends On**:
-  - [feature-core-methodology](feature-core-methodology/)
+  - [feature-init-structure](feature-init-structure/)
   - [feature-validation-engine](feature-validation-engine/)
 - **Blocks**: None
 - **Phases**:
   - `ph-1`: ⏳ NOT_STARTED — ADR creation and MADR format validation
 - **Requirements Covered**:
-  - fdd-fdd-req-arch-decision-mgmt
+  - `fdd-fdd-req-arch-decision-mgmt`
 - **Scope**:
   - MADR format (Markdown ADR)
   - ADR ID format follows pattern: `ADR-NNNN` or `fdd-PROJECT-adr-NAME`
@@ -250,7 +260,8 @@
   - `ph-1`: ⏳ NOT_STARTED — Feature status tracking (NOT_STARTED, IN_PROGRESS, IMPLEMENTED)
   - `ph-2`: ⏳ NOT_STARTED — Dependency management and blocking detection
 - **Requirements Covered**:
-  - fdd-fdd-req-feature-lifecycle
+  - `fdd-fdd-req-feature-lifecycle`
+  - `fdd-fdd-req-core-artifact-status`
 - **Scope**:
   - Feature status lifecycle (NOT_STARTED → IN_PROGRESS → IMPLEMENTED)
   - Automated status updates based on CHANGES.md completion
@@ -273,9 +284,9 @@
 - **Phases**:
   - `ph-1`: ⏳ NOT_STARTED — Scaffolding generation from design specs
 - **Requirements Covered**:
-  - fdd-fdd-req-code-generation
+  - `fdd-fdd-req-code-generation`
 - **Principles Covered**:
-  - fdd-fdd-principle-traceability
+  - `fdd-fdd-principle-traceability`
 - **Scope**:
   - API endpoint generation from Section E (API Contracts)
   - Domain type generation from Section C.2 (Domain Model)
@@ -298,10 +309,13 @@
   - `ph-1`: ⏳ NOT_STARTED — Real-time validation as files are edited
   - `ph-2`: ⏳ NOT_STARTED — IDE integration (navigation, syntax highlighting)
 - **Requirements Covered**:
-  - fdd-fdd-req-realtime-validation
-  - fdd-fdd-req-ide-integration
+  - `fdd-fdd-req-realtime-validation`
+  - `fdd-fdd-req-ide-integration`
+  - `fdd-fdd-nfr-performance`
+
 - **Constraints Affected**:
-  - fdd-fdd-constraint-no-forced-tools
+  - `fdd-fdd-constraint-no-forced-tools`
+
 - **Scope**:
   - IDE file watcher integration for auto-validation
   - Instant feedback on ID format errors (<1 second)
@@ -326,7 +340,8 @@
   - `ph-1`: ⏳ NOT_STARTED — Auto-detection from existing codebases
   - `ph-2`: ⏳ NOT_STARTED — Reverse-engineering BUSINESS.md and DESIGN.md
 - **Requirements Covered**:
-  - fdd-fdd-req-migration
+  - `fdd-fdd-req-migration`
+
 - **Scope**:
   - Add FDD to existing projects without disruption
   - Auto-detect tech stack from code and configs
@@ -343,14 +358,17 @@
 - **Purpose**: Interactive documentation, onboarding guides, and pattern examples
 - **Status**: NOT_STARTED
 - **Depends On**:
-  - [feature-core-methodology](feature-core-methodology/)
+  - [feature-init-structure](feature-init-structure/)
 - **Blocks**: None
 - **Phases**:
   - `ph-1`: ⏳ NOT_STARTED — QUICKSTART and progressive disclosure docs
 - **Requirements Covered**:
-  - fdd-fdd-req-interactive-docs
+  - `fdd-fdd-req-interactive-docs`
+  - `fdd-fdd-nfr-usability`
+
 - **Constraints Affected**:
-  - fdd-fdd-constraint-markdown
+  - `fdd-fdd-constraint-markdown`
+
 - **Scope**:
   - QUICKSTART guide (<15 minute bootstrap)
   - README for human readers
@@ -364,17 +382,17 @@
 
 ## NFR Coverage
 
-**Performance (fdd-fdd-nfr-performance)**:
+**Performance (`fdd-fdd-nfr-performance`)**:
 - Covered by: [feature-validation-engine](feature-validation-engine/), [feature-realtime-validation](feature-realtime-validation/)
 
-**Compatibility (fdd-fdd-nfr-compatibility)**:
-- Covered by: [feature-core-methodology](feature-core-methodology/), [feature-adapter-system](feature-adapter-system/)
+**Compatibility (`fdd-fdd-nfr-compatibility`)**:
+- Covered by: [feature-init-structure](feature-init-structure/), [feature-adapter-system](feature-adapter-system/)
 
-**Usability (fdd-fdd-nfr-usability)**:
+**Usability (`fdd-fdd-nfr-usability`)**:
 - Covered by: [feature-ai-integration](feature-ai-integration/), [feature-documentation](feature-documentation/)
 
-**Maintainability (fdd-fdd-nfr-maintainability)**:
-- Covered by: [feature-core-methodology](feature-core-methodology/), [feature-adapter-system](feature-adapter-system/)
+**Maintainability (`fdd-fdd-nfr-maintainability`)**:
+- Covered by: [feature-init-structure](feature-init-structure/), [feature-adapter-system](feature-adapter-system/)
 
-**Extensibility (fdd-fdd-nfr-extensibility)**:
+**Extensibility (`fdd-fdd-nfr-extensibility`)**:
 - Covered by: [feature-adapter-system](feature-adapter-system/), [feature-workflow-engine](feature-workflow-engine/)

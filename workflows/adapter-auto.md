@@ -1,3 +1,11 @@
+---
+fdd: true
+type: workflow
+name: Adapter Auto-Scan
+version: 1.0
+purpose: Auto-discover and configure FDD adapter
+---
+
 # FDD Adapter: Auto-Scan (Discovery)
 
 **Type**: Operation  
@@ -6,7 +14,21 @@
 
 ---
 
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+## Prerequisite Checklist
+
+- [ ] Agent has read execution-protocol.md
+- [ ] Agent has read workflow-execution.md
+- [ ] Agent understands this workflow's purpose
+
+---
+
+## Overview
+
+This workflow guides the execution of the specified task.
+
+---
+
+
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
@@ -354,6 +376,22 @@ All specs validated with source references.
 Automatically runs `adapter-validate` at completion
 
 ---
+
+## Validation Criteria
+
+- [ ] All workflow steps completed
+- [ ] Output artifacts are valid
+
+---
+
+
+## Validation Checklist
+
+- [ ] All prerequisites were met
+- [ ] All steps were executed in order
+
+---
+
 
 ## Next Steps
 

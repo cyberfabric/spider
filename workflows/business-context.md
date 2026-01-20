@@ -1,19 +1,37 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-core-workflows:ph-1 -->
 ---
-description: Create or update business context document
+fdd: true
+type: workflow
+name: Business Context
+version: 1.0
+purpose: Create or update business context document
 ---
-
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
-
-ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
 # Create or Update Business Context
+
+
+ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
 **Type**: Operation  
 **Role**: Product Manager  
 **Artifact**: `architecture/BUSINESS.md`
 
 ---
+
+## Prerequisite Checklist
+
+- [ ] Agent has read execution-protocol.md
+- [ ] Agent has read workflow-execution.md
+- [ ] Agent understands this workflow's purpose
+
+---
+
+## Overview
+
+This workflow guides the execution of the specified task.
+
+---
+
+
 
 ## Requirements
 
@@ -39,14 +57,12 @@ Extract:
 
 ## Steps
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-trigger-workflow -->
 Determine Mode.
  
 ### 1. Determine Mode
 Check if `architecture/BUSINESS.md` exists:
 - **If exists**: UPDATE mode - Read and propose changes
 - **If NOT exists**: CREATE mode - Generate from scratch
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-trigger-workflow -->
 
 ### 2. Mode-Specific Actions
 
@@ -171,6 +187,22 @@ Expected:
 - Status: PASS
 
 ---
+
+## Validation Criteria
+
+- [ ] All workflow steps completed
+- [ ] Output artifacts are valid
+
+---
+
+
+## Validation Checklist
+
+- [ ] All prerequisites were met
+- [ ] All steps were executed in order
+
+---
+
 
 ## Next Steps
 

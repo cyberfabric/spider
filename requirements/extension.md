@@ -1,12 +1,19 @@
-# FDD Extension Mechanism
-
-**Version**: 1.0  
-**Purpose**: Define how files extend other files using **Extends** directive  
-**Scope**: All FDD files that can extend base files
-
+---
+fdd: true
+type: requirement
+name: Extension Mechanism
+version: 1.0
+purpose: Define how files extend other files using Extends directive
 ---
 
-**ALWAYS open and follow**: `core.md` WHEN editing this file
+# FDD Extension Mechanism
+
+## Prerequisite Checklist
+
+- [ ] Agent understands extension mechanism concept
+- [ ] Agent has identified the base file being extended
+
+---
 
 ## Overview
 
@@ -62,7 +69,7 @@ Merged Result (base + modifications)
 ```markdown
 # FDD AI Agent Navigation
 
-ALWAYS open and follow `requirements/core.md` WHEN modifying FDD files
+ALWAYS open and follow `.adapter/specs/conventions.md` WHEN modifying FDD files
 ```
 
 **Extension**: `{adapter-directory}/AGENTS.md`
@@ -166,11 +173,20 @@ DO NOT read requirements files
 
 ---
 
+## Validation Checklist
+
+- [ ] Extension has valid **Extends** directive
+- [ ] Base file exists and is accessible
+- [ ] No circular dependencies
+- [ ] Extension complements (not contradicts) base
+
+---
+
 ## References
 
 **This file is referenced by**:
 - All files using **Extends** directive
 
 **References**:
-- `core-agents.md` - Defines structure for AGENTS.md files
+- `../.adapter/specs/patterns.md` - Defines structure for AGENTS.md files
 - `adapter-structure.md` - Requires adapter AGENTS.md to extend FDD AGENTS.md

@@ -1,4 +1,3 @@
-# @fdd-test:fdd-fdd-feature-core-methodology-test-adr-validation:ph-1
 """
 Test ADR.md validation.
 

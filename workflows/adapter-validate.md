@@ -1,5 +1,9 @@
 ---
-description: Validate FDD adapter structure
+fdd: true
+type: workflow
+name: Adapter Validate
+version: 1.0
+purpose: Validate FDD adapter structure
 ---
 
 # Validate FDD Adapter
@@ -10,7 +14,21 @@ description: Validate FDD adapter structure
 
 ---
 
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+## Prerequisite Checklist
+
+- [ ] Agent has read execution-protocol.md
+- [ ] Agent has read workflow-execution.md
+- [ ] Agent understands this workflow's purpose
+
+---
+
+## Overview
+
+This workflow guides the execution of the specified task.
+
+---
+
+
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
@@ -300,6 +318,22 @@ Self-validating workflow
 **Output**: Always to chat only (no files)
 
 ---
+
+## Validation Criteria
+
+- [ ] All workflow steps completed
+- [ ] Output artifacts are valid
+
+---
+
+
+## Validation Checklist
+
+- [ ] All prerequisites were met
+- [ ] All steps were executed in order
+
+---
+
 
 ## Next Steps
 

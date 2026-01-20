@@ -1,9 +1,15 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-requirements-structure:ph-1 -->
+---
+fdd: true
+type: requirement
+name: Features Manifest Structure
+version: 1.0
+purpose: Define required structure for FEATURES.md files
+---
+
 # Features Manifest (FEATURES.md) Structure Requirements
 
 **ALWAYS open and follow**: `../workflows/features.md`
 **ALWAYS open and follow**: `requirements.md`
-**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -12,8 +18,14 @@
 
 ---
 
-**Version**: 1.0  
-**Purpose**: Define required structure for `architecture/features/FEATURES.md`
+## Prerequisite Checklist
+
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
+
+---
+
+## Overview
 
 **Used by**:
 - Workflow 03 (init-features): Generate FEATURES.md from Overall Design
@@ -37,11 +49,13 @@
 ```markdown
 # Features: {PROJECT_NAME}
 
-**Status Overview**: X features total (Y completed, Z in progress, W not started)
+**Status Overview**: X features total (Y implemented, A in development, B design ready, C in design, D not started)
 
 **Meaning**:
 - ⏳ NOT_STARTED
-- 🔄 IN_PROGRESS
+- 📝 IN_DESIGN
+- 📘 DESIGN_READY
+- 🔄 IN_DEVELOPMENT
 - ✅ IMPLEMENTED
 ```
 
@@ -57,12 +71,12 @@
 1. **Section heading**: `### N. [fdd-{project}-feature-{feature-slug}](feature-{feature-slug}/) EMOJI PRIORITY`
    - N: Sequential number (1, 2, 3, ...)
    - Slug: Lowercase kebab-case
-   - Emoji: ⏳ (NOT_STARTED), 🔄 (IN_PROGRESS), ✅ (IMPLEMENTED)
+   - Emoji: ⏳ (NOT_STARTED), 📝 (IN_DESIGN), 📘 (DESIGN_READY), 🔄 (IN_DEVELOPMENT), ✅ (IMPLEMENTED)
    - Priority: CRITICAL, HIGH, MEDIUM, LOW
 
 2. **Purpose**: `**Purpose**: One-line description`
 
-3. **Status**: `**Status**: NOT_STARTED | IN_PROGRESS | IMPLEMENTED`
+3. **Status**: `**Status**: NOT_STARTED | IN_DESIGN | DESIGN_READY | IN_PROGRESS | IN_DEVELOPMENT | IMPLEMENTED`
 
 4. **Depends On**: MUST be one of:
    - `**Depends On**: None`
@@ -189,7 +203,7 @@ Allowed formats:
    - All features have required fields
 
 2. **Feature entry format**
-   - Status emoji valid (⏳🔄✅)
+   - Status emoji valid (⏳📝📘🔄✅)
    - Slug is kebab-case
    - Design path exists
    - Dependencies reference valid features
@@ -344,78 +358,25 @@ BUSINESS.md:
 
 ---
 
-## Example FEATURES.md
+## Examples
 
-```markdown
-# Features: hyperspot
+**Valid FEATURES.md**:
+- ALWAYS open `examples/requirements/features-manifest/valid.md` WHEN creating or editing `architecture/features/FEATURES.md`
 
-**Status Overview**: 3 features total (1 completed, 1 in progress, 1 not started)
-
-**Meaning**:
-- ⏳ NOT_STARTED
-- 🔄 IN_PROGRESS
-- ✅ IMPLEMENTED
+**Issues**:
+- Missing required header (`# Features: {PROJECT_NAME}`)
+- Missing `**Status Overview**:` and `**Meaning**:` blocks
+- Invalid feature entry format or numbering
 
 ---
 
-## Features List
+## Validation Checklist
 
-### 1. [fdd-hyperspot-feature-user-auth](feature-user-auth/) ✅ CRITICAL
-- **Purpose**: User authentication and authorization
-- **Status**: IMPLEMENTED
-- **Depends On**: None
-- **Blocks**: None
-- **Requirements Covered**:
-  - fdd-hyperspot-req-authentication
-  - fdd-hyperspot-req-authorization
-- **Phases**:
-  - `ph-1`: ✅ IMPLEMENTED — Login/logout flows
-  - `ph-2`: ✅ IMPLEMENTED — Token validation and refresh
-- **Scope**:
-  - Login/logout flows
-  - Token issuance/validation
-  - Session revocation
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
 
 ---
 
-### 2. [fdd-hyperspot-feature-analytics-dashboard](feature-analytics-dashboard/) 🔄 HIGH
-- **Purpose**: Analytics dashboard for key metrics
-- **Status**: IN_PROGRESS
-- **Depends On**:
-  - [fdd-hyperspot-feature-user-auth](feature-user-auth/) `ph-2`
-- **Blocks**: None
-- **Requirements Covered**:
-  - fdd-hyperspot-req-usage-analytics
-- **Phases**:
-  - `ph-1`: 🔄 IN_PROGRESS — Initial dashboard render with metrics list
-  - `ph-2`: ⏳ NOT_STARTED — Filters and rerender
-    - **Depends On**:
-      - [fdd-hyperspot-feature-user-auth](feature-user-auth/) `ph-2`
-- **Scope**:
-  - Read-only metrics UI
-  - Filtered views
-  - Role-based access
-
----
-
-### 3. [fdd-hyperspot-feature-notifications](feature-notifications/) ⏳ MEDIUM
-- **Purpose**: Notification delivery (email + in-app)
-- **Status**: NOT_STARTED
-- **Depends On**:
-  - [fdd-hyperspot-feature-user-auth](feature-user-auth/)
-- **Blocks**: None
-- **Requirements Covered**:
-  - fdd-hyperspot-req-notifications
-- **Phases**:
-  - `ph-1`: ⏳ NOT_STARTED — Email notifications
-  - `ph-2`: ⏳ NOT_STARTED — In-app notifications
-- **Scope**:
-  - Email notifications
-  - In-app notifications
-  - User preferences
-```
-
----
 
 ## References
 

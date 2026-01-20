@@ -1,8 +1,6 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-quickstart-docs:ph-1 -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-open-readme -->
+<!-- @fdd-change:fdd-fdd-feature-init-structure-change-infrastructure:ph-1 -->
 # Feature-Driven Design (FDD)
 FDD project overview.
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-open-readme -->
 
 **Version**: 1.0  
 **Status**: Active  
@@ -14,11 +12,9 @@ Feature-Driven Design is a **universal methodology** for building software syste
 
 ---
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-discover-fdd -->
 ## 🚀 Quick Start
 
 **New to FDD?** Start here: **[QUICKSTART.md](QUICKSTART.md)**
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-discover-fdd -->
 
 Learn FDD in 10 minutes with:
 - **Exact prompts to copy-paste** into your AI chat

@@ -1,15 +1,20 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-agents-navigation:ph-1 -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-parse-request -->
+---
+fdd: true
+type: requirement
+name: Workflow Selection
+version: 2.1
+purpose: Select appropriate FDD workflow based on project state
+---
+
 # Workflow Selection Guide
 
-**Version**: 2.1  
-**Purpose**: Select appropriate FDD workflow based on project state  
-**Scope**: All FDD workflow selection decisions
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-parse-request -->
+## Prerequisite Checklist
+
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
 
 ---
 
-**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 ## Overview
 
@@ -43,7 +48,6 @@ This guide helps you select the correct FDD workflow based on:
 
 ## Available Workflows
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-adapter -->
 ### Phase 0: Adapter Setup
 
 **adapter.md** - Create or update FDD adapter
@@ -67,35 +71,30 @@ This guide helps you select the correct FDD workflow based on:
 - **Use when**: Adapter created or updated
 - **Validates**: File structure, AGENTS.md format, spec files
 - **Next**: `business-context` or `design`
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-adapter -->
 
 ---
 
 ### Phase 1: Business & Architecture
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-business -->
- 
 ## Phase 1: Business & Architecture
 
 ### Workflow: `business-context`
- 
+
 **business-context.md** - Create or update BUSINESS.md
 - **Use when**: Need to document business context
 - **Creates**: `architecture/BUSINESS.md`
 - **Sections**: Vision, Actors, Capabilities
 - **Modes**: CREATE or UPDATE
 - **Next**: `business-validate`
- 
+
 ### Workflow: `business-validate`
- 
+
 **business-validate.md** - Validate business
- 
+
 **When**: After BUSINESS.md created or updated
 - **Validates**: Required sections, actor/capability IDs
 - **Score**: ≥90/100
 - **Next**: `design`
- 
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-business -->
 
 **design.md** - Create or update overall design
 - **Use when**: Need architecture/system design
@@ -127,19 +126,15 @@ This guide helps you select the correct FDD workflow based on:
 
 ### Phase 2: Feature Planning
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-feature -->
- 
 ## Phase 2: Feature Planning
- 
+
 ### Workflow: `features`
- 
+
 **features.md** - Create or update features manifest
 - **Use when**: Need to plan/list features
 - **Creates**: `architecture/FEATURES.md`
 - **Modes**: CREATE (from DESIGN.md) or UPDATE (manual)
 - **Next**: `features-validate`
- 
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-feature -->
 
 **features-validate.md** - Validate features manifest
 - **Use when**: FEATURES.md created or updated
@@ -180,7 +175,7 @@ This guide helps you select the correct FDD workflow based on:
 **feature-change-implement.md** - Implement specific change
 - **Use when**: Ready to code a change from CHANGES.md
 - **Implements**: Tasks for one change, updates checkboxes
-- **Updates**: Change status (⏳ → 🔄 → ✅)
+- **Updates**: Change status (→ → )
 - **Next**: `feature-code-validate`
 
 **feature-code-validate.md** - Validate feature code
@@ -395,6 +390,22 @@ feature (UPDATE mode) → feature-validate
 
 ---
 
+## Validation Criteria
+
+- [ ] All MUST requirements are satisfied
+- [ ] No MUST NOT rules are violated
+
+---
+
+
+## Validation Checklist
+
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
+
+---
+
+
 ## References
 
 **This file is used by**:
@@ -403,24 +414,11 @@ feature (UPDATE mode) → feature-validate
 
 **This file references**:
 - `workflow-execution.md` - How to execute selected workflow
-- `core-workflows.md` - Workflow file format specification
+- `../.adapter/specs/patterns.md` - Workflow file format specification
 - All requirement files in `requirements/` - Referenced by workflows
 
 **All workflows located in**: `/FDD/workflows/`
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-extract-keywords -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-init-candidates -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-adapter -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-business -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-design -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-feature -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-validate -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-extract-artifact-type -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-validate -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-changes -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-changes -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-implement -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-implement -->
 ## Workflow Resolution Algorithm
 
 Algorithm for resolving user request to workflow file path is implemented throughout this document via keyword matching and routing logic.
@@ -429,16 +427,3 @@ Key steps:
 - Extract keywords from request
 - Initialize workflow candidates
 - Return appropriate workflow based on request type (adapter, business, design, feature, validate, changes, implement)
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-implement -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-implement -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-changes -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-changes -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-validate -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-extract-artifact-type -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-check-validate -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-feature -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-design -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-business -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-return-adapter -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-init-candidates -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-algo-resolve-workflow:ph-1:inst-extract-keywords -->

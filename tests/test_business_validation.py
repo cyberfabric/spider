@@ -1,4 +1,3 @@
-# @fdd-test:fdd-fdd-feature-core-methodology-test-business-validation:ph-1
 """
 Test BUSINESS.md validation.
 

@@ -1,9 +1,17 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-requirements-structure:ph-1 -->
+---
+fdd: true
+type: requirement
+name: Feature Changes Structure
+version: 1.0
+purpose: Define required structure for feature CHANGES.md files
+---
+
 # Feature Changes (Implementation Plan) Structure Requirements
+
+
 
 **ALWAYS open and follow**: `../workflows/feature-changes.md`
 **ALWAYS open and follow**: `requirements.md`
-**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -12,10 +20,10 @@
 
 ---
 
-**Version**: 1.0  
-**Purpose**: Define structure for feature implementation plan (replaces OpenSpec)
+## Prerequisite Checklist
 
-**Scope**: Implementation plan for feature requirements
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
 
 ---
 
@@ -108,27 +116,9 @@
 
 ## 1. Implementation
 
-### Code Tagging Tasks (Mandatory Pattern)
-
-**Rule**: Code tagging MUST be represented as an explicit task that appears **immediately after** the specific task that changes code.
-
-**Meaning**:
-- If task `1.1.1` changes code, then task `1.1.2` MUST be: add the required FDD comment tags at the exact code location introduced/modified by `1.1.1`.
-- Tagging MUST NOT be a separate "Task 0" done somewhere else; it MUST be attached to the relevant task.
-
-**Required tag formats** (phase is ALWAYS a postfix):
-- `@fdd-change:fdd-{project}-{feature}-change-{slug}:ph-{N}`
-- `@fdd-req:fdd-{project}-{feature}-req-{id}:ph-{N}`
-- `@fdd-flow:fdd-{project}-feature-{feature}-flow-{slug}:ph-{N}`
-- `@fdd-algo:fdd-{project}-feature-{feature}-algo-{slug}:ph-{N}`
-- `@fdd-state:fdd-{project}-feature-{feature}-state-{slug}:ph-{N}`
-- `@fdd-test:fdd-{project}-{feature}-test-{id}:ph-{N}`
-
 ### 1.1 {Task Group Name}
 - [ ] 1.1.1 {Task description with file path and action}
-- [ ] 1.1.2 Add required FDD comment tags (with `:ph-{N}` postfix) at the exact code location changed in 1.1.1
-- [ ] 1.1.3 {Next task description with file path and action}
-- [ ] 1.1.4 Add required FDD comment tags (with `:ph-{N}` postfix) at the exact code location changed in 1.1.3
+- [ ] 1.1.2 {Next task description with file path and action}
 
 ### 1.2 {Task Group Name}
 - [ ] 1.2.1 {Task description with file path and action}
@@ -386,7 +376,6 @@ mod schema_v1_tests {
    - All requirement IDs exist in feature DESIGN.md Section F
    - References contain explicit FDD IDs (flow/algo/state/technical detail)
    - Tasks are granular and actionable
-   - Tasks include mandatory code tagging instructions (comments with FDD IDs)
    - Specification is complete
    - Testing plan covers all scenarios
 
@@ -395,7 +384,6 @@ mod schema_v1_tests {
    - Each task specifies affected files
    - Each task has validation criteria
    - Tasks in logical order
-   - Each change includes a dedicated code tagging task group ensuring tags are added to code comments
 
 3. **Specification completeness**
    - Domain model changes specified
@@ -473,139 +461,14 @@ mod schema_v1_tests {
 
 ## Examples
 
-### Valid CHANGES.md Entry
+**Valid CHANGES.md**:
+- ALWAYS open `examples/requirements/feature-changes/valid.md` WHEN creating or editing `architecture/features/feature-{slug}/CHANGES.md`
 
-```markdown
-# Implementation Plan: Analytics Event Tracking
-
-**Feature**: `analytics-event-tracking`  
-**Version**: 1.0  
-**Last Updated**: 2025-01-07  
-**Status**: 🔄 IN_PROGRESS
-
-**Feature DESIGN**: [DESIGN.md](DESIGN.md)
-
----
-
-## Summary
-
-**Total Changes**: 3  
-**Completed**: 1  
-**In Progress**: 1  
-**Not Started**: 1
-
-**Estimated Effort**: 13 story points
-
----
-
-## Change 1: Event Schema Definition
-
-**ID**: `fdd-analytics-feature-event-tracking-change-event-schema`  
-**Status**: ✅ COMPLETED  
-**Priority**: HIGH  
-**Effort**: 3 story points  
-**Implements**: `fdd-analytics-event-req-domain-model`
-
----
-
-### Objective
-
-Define domain model for analytics events including event types, properties, and metadata.
-
-### Requirements Coverage
-
-**Implements**:
-- **`fdd-analytics-event-req-domain-model`**: System MUST define event schema with type, properties, timestamp, user context
-
-**References**:
-- Actor Flow: Section B.1 - User triggers event
-- Technical Detail: Section E.1 - Domain model specification
-
-### Tasks
-
-## 1. Implementation
-
-### 1.1 Define Type Schemas
-- [x] 1.1.1 Create GTS type definition for Event at `gts/analytics/event.v1.gts`
-- [x] 1.1.2 Create GTS type for EventProperties at `gts/analytics/event_properties.v1.gts`
-- [x] 1.1.3 Create GTS type for EventMetadata at `gts/analytics/event_metadata.v1.gts`
-
-## 2. Testing
-
-### 2.1 Schema Validation
-- [x] 2.1.1 Verify all types compile and export valid JSON Schema
-- [x] 2.1.2 Verify EventProperties supports arbitrary key-value pairs
-- [x] 2.1.3 Verify EventMetadata includes timestamp and user context
-
-### Specification
-
-**Domain Model Changes**:
-- Type: `gts.analytics.event.v1`
-- Fields:
-  - `id: string` - Unique event identifier
-  - `type: string` - Event type (e.g., "page_view", "click")
-  - `properties: EventProperties` - Event-specific properties
-  - `metadata: EventMetadata` - Timestamp, user context
-- Relationships: None
-
-**API Changes**: None (domain model only)
-
-**Database Changes**: None (domain model only)
-
-**Code Changes**:
-- Module: `domain/analytics/`
-- Functions: Type definitions only
-- Implementation: GTS schema compilation
-
-### Dependencies
-
-**Depends on**: None (first change)
-
-**Blocks**: Change 2, Change 3
-
-### Testing
-
-**Unit Tests**:
-- Test: Event schema validation
-- File: `tests/domain/analytics/event_test.rs`
-- Validates: Schema compiles, all fields present
-
-### Validation Criteria
-
-**Code validation**:
-- ✅ All tasks completed
-- ✅ GTS types compile
-- ✅ JSON Schema output valid
-- ✅ No linter errors
-- ✅ Implements `fdd-analytics-event-req-domain-model`
-
----
-
-## Change 2: Event Ingestion API
-
-**ID**: `fdd-analytics-feature-event-tracking-change-event-api`  
-**Status**: 🔄 IN_PROGRESS  
-**Priority**: HIGH  
-**Effort**: 5 story points  
-**Implements**: `fdd-analytics-event-req-ingest-api`, `fdd-analytics-event-req-validation`
-
----
-
-{Similar structure for Change 2}
-
----
-
-## Change 3: Event Storage
-
-**ID**: `fdd-analytics-feature-event-tracking-change-event-storage`  
-**Status**: ⏳ NOT_STARTED  
-**Priority**: MEDIUM  
-**Effort**: 5 story points  
-**Implements**: `fdd-analytics-event-req-persistence`
-
----
-
-{Similar structure for Change 3}
+**Issues**:
+- Missing required header fields
+- Missing or invalid summary counts
+- Missing change entries or invalid numbering
+- Missing required `<!-- fdd-id-content -->` payload blocks
 
 ---
 
@@ -685,6 +548,14 @@ architecture/features/feature-{slug}/archive/YYYY-MM-DD-CHANGES.md
 - `feature-changes-validate` workflow - Suggests archiving when all completed
 
 ---
+
+## Validation Checklist
+
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
+
+---
+
 
 ## References
 

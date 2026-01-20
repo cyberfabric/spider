@@ -1,10 +1,15 @@
+---
+fdd: true
+type: requirement
+name: Adapter Structure
+version: 1.0
+purpose: Define required structure for FDD adapter files
+---
+
 # FDD Adapter Structure Requirements
 
 **ALWAYS open and follow**: `../workflows/adapter.md`
 **ALWAYS open and follow**: `requirements.md`
-**ALWAYS open and follow**: `core.md` WHEN editing this file
-**ALWAYS open and follow**: `core.md` WHEN editing adapter artifacts
-
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
 
@@ -12,10 +17,10 @@
 
 ---
 
-**Version**: 1.0  
-**Purpose**: Define structure and validation criteria for FDD Adapter
+## Prerequisite Checklist
 
-**Scope**: Project-specific adapter configuration that extends FDD core methodology
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
 
 ---
 
@@ -139,12 +144,6 @@
 **Location**: `{adapter-directory}/AGENTS.md`
 
 **Purpose**: Adapter-specific navigation for AI agents (MUST WHEN format)
-
-ALWAYS add to the header of AGENTS.md:
-
-  ```markdown
-  **ALWAYS open and follow**: `{FDD directory / submodule}/requirements/core.md` WHEN editing this file
-  ```
 
 **Adapter AGENTS.md WHEN rule (mandatory)**:
 - Each navigation rule MUST use a WHEN clause that is ONLY a list of FDD workflows.
@@ -333,7 +332,7 @@ Adapter validation depends on project phase:
 
 ## Validation Criteria for This File
 
-**This section validates adapter-structure.md itself against core.md requirements**
+**This section validates adapter-structure.md itself against `.adapter/specs/conventions.md` requirements**
 
 ### Structure (20 points)
 
@@ -381,120 +380,12 @@ Adapter validation depends on project phase:
 
 ## Examples
 
-### Valid Adapter (Rust + GTS + OpenAPI)
+**Valid adapter example**:
+- ALWAYS open `examples/requirements/adapter/valid.md` WHEN creating or editing `{adapter-directory}/AGENTS.md`
 
-```markdown
-# FDD Adapter: Hyperspot
-
-**Extends**: `../../FDD/AGENTS.md`
-
-**Version**: 1.0  
-**Status**: COMPLETE  
-**Last Updated**: 2025-01-07
-
----
-
-## Project Identification
-
-**Project Name**: Hyperspot  
-**Project Root**: `/project/root`  
-**Architecture Root**: `/project/root/architecture`
-
----
-
-## Technology Stack
-
-### Domain Model
-
-**Technology**: GTS (Global Type System)  
-**Location**: `gts/`  
-**Format**: TypeScript-like syntax with JSON Schema output
-
-**Type Identifier Format**: `gts.{namespace}.{type}.v{version}`
-
-**Example**:
-```
-gts.analytics.event.v1
-```
-
-### API Contracts
-
-**Technology**: OpenAPI 3.1  
-**Location**: `docs/api/`  
-**Format**: YAML files per service
-
-**Endpoint Format**: `/{version}/{service}/{resource}`
-
-**Example**:
-```
-/v1/analytics/events
-```
-
-### Testing Framework
-
-**Unit Tests**: cargo test  
-**Integration Tests**: cargo test --test '*'  
-**E2E Tests**: pytest testing/e2e/
-
-**Test Location**: `tests/`, `testing/e2e/`  
-**Test Command**: `make test`  
-**Coverage Command**: `make coverage`
-
-### Build Tools
-
-**Build Command**: `cargo build --release`  
-**Clean Command**: `cargo clean`  
-**Lint Command**: `cargo clippy -- -D warnings`
-
-### Behavior Description Language
-
-**Uses**: FDL  
-**Specification**: `../FDL.md`
-
----
-
-## Project Structure
-
-### Architecture Files
-
-```
-architecture/
-├── BUSINESS.md
-├── DESIGN.md
-├── ADR.md
-└── features/
-    ├── FEATURES.md
-    └── feature-{slug}/
-        ├── DESIGN.md
-        └── CHANGES.md
-```
-
-### Source Code
-
-```
-src/
-├── domain/      # Domain models (from gts/)
-├── api/         # API implementations
-├── core/        # Core business logic
-└── infra/       # Infrastructure
-```
-```
-
-### Invalid Adapter (Missing Specifications)
-
-```markdown
-# FDD Adapter: MyProject
-
-**Extends**: `../../FDD/AGENTS.md`
-
-**Status**: INCOMPLETE
-
-Missing specifications:
-- Domain model technology
-- API contracts format
-- Testing framework
-```
-❌ Missing required sections, marked as INCOMPLETE
+**Issues**:
+- Missing required sections and specifications
+- Missing or invalid `**Extends**` declaration
 
 ---
 

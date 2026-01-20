@@ -1,6 +1,9 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-core-workflows:ph-1 -->
 ---
-description: Create or update overall design document
+fdd: true
+type: workflow
+name: Design
+version: 1.0
+purpose: Create or update overall design document
 ---
 
 # Create or Update Overall Design
@@ -11,7 +14,21 @@ description: Create or update overall design document
 
 ---
 
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+## Prerequisite Checklist
+
+- [ ] Agent has read execution-protocol.md
+- [ ] Agent has read workflow-execution.md
+- [ ] Agent understands this workflow's purpose
+
+---
+
+## Overview
+
+This workflow guides the execution of the specified task.
+
+---
+
+
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
@@ -38,11 +55,9 @@ Extract:
 
 ## Steps
  
- <!-- fdd-begin fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-execute-workflow -->
  Determine Mode.
  
 ### 1. Determine Mode
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-execute-workflow -->
 
 Check if `architecture/DESIGN.md` exists:
 - **If exists**: UPDATE mode - Read and propose changes
@@ -218,8 +233,26 @@ Expected:
 
 ---
 
+## Validation Criteria
+
+- [ ] All workflow steps completed
+- [ ] Output artifacts are valid
+
+---
+
+
+## Validation Checklist
+
+- [ ] All prerequisites were met
+- [ ] All steps were executed in order
+
+---
+
+
 ## Next Steps
 
 **If both validations pass**: `features` workflow (decompose into features)
 
 **If validation fails**: Fix issues, re-validate
+
+

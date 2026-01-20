@@ -1,14 +1,25 @@
+---
+fdd: true
+type: requirement
+name: Adapter Triggers
+version: 1.0
+purpose: Define when AI agent proposes running adapter workflow
+---
+
 # Adapter Evolution Triggers
 
-**Version**: 1.0  
-**Purpose**: Define when AI agent ALWAYS proposes running adapter workflow to capture technical decisions  
-**Scope**: All FDD workflows that create/modify technical artifacts
+## Prerequisite Checklist
 
-**Philosophy**: Adapter evolves naturally as project progresses - agent detects changes and proposes updates
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
 
 ---
 
-**ALWAYS open and follow**: `core.md` WHEN editing this file
+## Overview
+
+This document defines when AI agents should propose running the adapter workflow.
+
+---
 
 ## Mandatory Adapter Initialization
 
@@ -373,6 +384,14 @@ Execute: Monitor triggers during workflow
 **Pass threshold**: ≥95/100
 
 ---
+
+## Validation Checklist
+
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
+
+---
+
 
 ## References
 

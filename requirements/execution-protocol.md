@@ -1,15 +1,26 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-agents-navigation:ph-1 -->
+---
+fdd: true
+type: requirement
+name: Execution Protocol
+version: 1.3
+purpose: MANDATORY execution protocol for ALL workflows
+---
+
 # FDD Workflow Execution Protocol
 
-**Version**: 1.3  
-**Purpose**: MANDATORY execution protocol for ALL workflows  
-**Scope**: EVERY workflow execution without exceptions
+## Prerequisite Checklist
+
+- [ ] Agent is about to execute a workflow
+- [ ] Agent understands this protocol is MANDATORY
 
 ---
 
-**ALWAYS open and follow**: `core.md` WHEN editing this file
+## Overview
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-read-protocol -->
+This document defines the mandatory pre-execution protocol for ALL FDD workflows.
+
+---
+
 ## ⚠️ MANDATORY PRE-EXECUTION PROTOCOL ⚠️
 
 **Before executing ANY workflow, agent ALWAYS follows this protocol**
@@ -17,7 +28,6 @@
 This protocol is **NON-NEGOTIABLE** and applies to **EVERY** workflow without exception.
 
 **One skipped step = INVALID execution = output DISCARDED**
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-read-protocol -->
 
 ---
 
@@ -54,13 +64,15 @@ I will NOT skip any steps.
 4. [ ] Note all validation criteria (for validation workflows)
 5. [ ] Verify ALL prerequisites are satisfied
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-discover-adapter -->
 ### Step 4: Discover FDD Adapter
 
-**ALWAYS run first** (canonical, repo-local invocation) to discover the FDD adapter:
+**ALWAYS run first** (canonical, agent-safe invocation) to discover the FDD adapter:
 ```bash
-<FDD_ROOT>/skills/fdd/scripts python3 -m fdd.cli adapter-info --root <PROJECT_ROOT> --fdd-root <FDD_ROOT>
+python3 <FDD_ROOT>/skills/fdd/scripts/fdd.py adapter-info --root <PROJECT_ROOT> --fdd-root <FDD_ROOT>
 ```
+
+**MUST** prefer invoking `scripts/fdd.py` over `python3 -m fdd.cli`.
+- Rationale: avoids `cwd`/`PYTHONPATH` issues that can cause `ModuleNotFoundError`.
 
 **Agent must pass FDD location**:
 - Use `--fdd-root` with the FDD core repository root
@@ -69,7 +81,6 @@ I will NOT skip any steps.
 - [ ] If `status: FOUND` → Load adapter AGENTS.md from `adapter_dir`
 - [ ] If `status: NOT_FOUND` → Use FDD core defaults only
 - [ ] Extract `adapter_dir`, `project_name`, `specs` list
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-discover-adapter -->
 
 **If adapter found**:
 1. [ ] Open and follow `{adapter_dir}/AGENTS.md`
@@ -404,6 +415,23 @@ I will NOT skip any steps.
 - Maintains FDD quality standards
 
 **Remember**: One missed step = entire workflow is INVALID
+
+---
+
+## Validation Criteria
+
+- [ ] Agent read protocol before workflow execution
+- [ ] Agent completed all pre-flight checklist items
+- [ ] Agent discovered and loaded adapter (if exists)
+- [ ] Agent ran self-test before reporting
+
+---
+
+## Validation Checklist
+
+- [ ] Protocol was followed completely
+- [ ] No steps were skipped
+- [ ] Compliance report included in output
 
 ---
 

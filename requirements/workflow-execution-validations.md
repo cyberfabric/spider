@@ -1,12 +1,20 @@
+---
+fdd: true
+type: requirement
+name: Workflow Execution Validations
+version: 1.3
+purpose: Define execution specifics for validation workflows
+---
+
 # FDD Validation Workflow Execution
 
-**Version**: 1.2  
-**Purpose**: Define execution specifics for validation workflows  
-**Scope**: All validation workflows (validate structure/completeness)
+## Prerequisite Checklist
+
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
 
 ---
 
-**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 ## ⚠️ CRITICAL: Maximum Attention to Detail Required ⚠️
 
@@ -43,6 +51,20 @@
 **Read after**: `workflow-execution.md` (general instructions)
 
 **Applies when**: Workflow has `**Type**: Validation`
+
+---
+
+## Deterministic Gate Is Not Workflow Completion
+
+**MUST** treat `fdd validate` as a deterministic gate only.
+
+**If deterministic gate PASS**:
+- **MUST** continue the workflow steps (LLM-heavy checks, cross-references, coverage, scoring, reporting).
+- **MUST NOT** end the workflow after reporting tool PASS/FAIL.
+
+**If deterministic gate FAIL**:
+- **MUST** stop immediately and report workflow FAIL.
+- **MUST NOT** proceed with any LLM-heavy checks.
 
 ---
 
@@ -656,6 +678,14 @@ Should be: `fdd-actor-admin`
 
 ---
 
+## Validation Checklist
+
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
+
+---
+
+
 ## References
 
 **This file is referenced by**:
@@ -663,5 +693,5 @@ Should be: `fdd-actor-admin`
 
 **References**:
 - `workflow-execution.md` - General execution instructions
-- `core-workflow-validation.md` - Validation workflow structure requirements
-- `core-requirements.md` - Requirements file validation format
+- `../.adapter/specs/patterns.md` - Validation workflow structure requirements
+- `../.adapter/specs/patterns.md` - Requirements file validation format

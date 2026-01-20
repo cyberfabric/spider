@@ -1,9 +1,17 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-requirements-structure:ph-1 -->
+---
+fdd: true
+type: requirement
+name: Feature Design Structure
+version: 1.0
+purpose: Define required structure for feature DESIGN.md files
+---
+
 # Feature Design Structure Requirements
+
+
 
 **ALWAYS open and follow**: `../workflows/feature.md`
 **ALWAYS open and follow**: `requirements.md`
-**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -11,6 +19,17 @@
 ⚠️ **Do NOT use this file alone. Execute the workflow, not just the structure.**
 
 ---
+
+## Prerequisite Checklist
+
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
+
+---
+
+## Overview
+
+This document defines the required structure for feature DESIGN.md files.
 
 **Purpose**: Define required structure for `architecture/features/feature-{slug}/DESIGN.md`
 
@@ -43,6 +62,10 @@
 2. **Purpose**: Why it exists, what problem it solves
 3. **Actors**: Who interacts with this feature (may be empty for structural/init features)
 4. **References**: Links to Overall Design sections and dependencies
+
+**Required header fields** (before subsections):
+- **Feature ID**: `**Feature ID**: \`fdd-{project}-feature-{slug}\`` — MUST match directory name
+- **Status**: `**Status**: NOT_STARTED | IN_DESIGN | DESIGN_READY | IN_PROGRESS | IN_DEVELOPMENT | IMPLEMENTED` — feature-level status
 
 **Content requirements**:
 - Clear feature scope definition
@@ -248,38 +271,10 @@
 - **Usage**: Each requirement must have an `**ID**:` line after exactly one blank line following the requirement heading
 - **Format in document**: `**ID**: fdd-project-feature-slug-req-name`
 
-**Testing Scenario ID Format**: `fdd-{project-name}-feature-{feature-slug}-test-{scenario-name}`
-- **Components**:
-  - `fdd-` - Prefix indicating FDD methodology
-  - `{project-name}` - Project name in kebab-case
-  - `-feature-` - Feature scope indicator
-  - `{feature-slug}` - Feature identifier in kebab-case
-  - `-test-` - Testing scenario indicator
-  - `{scenario-name}` - Scenario name in kebab-case (2-4 words)
-- **Example**: `fdd-payment-system-feature-user-auth-test-valid-login`, `fdd-analytics-feature-dashboard-test-create-widget-success`
-- **Usage**: Each testing scenario must have an `**ID**:` line after exactly one blank line following the testing scenario heading
-- **Format in document**: `**ID**: fdd-project-feature-slug-test-scenario`
-
 **ID status tracking (mandatory)**:
 - Each requirement ID MUST be written with a checkbox:
   - `- [ ] **ID**: {req-id}`
   - `- [x] **ID**: {req-id}`
-
-**Phase + implementation in tests**:
-- Each testing scenario ID MUST be written with a checkbox:
-  - `- [ ] **ID**: {test-id}`
-  - `- [x] **ID**: {test-id}`
-- Testing scenario steps MUST be written in FDL syntax ONLY (see `FDL.md`).
-- Every FDL step line in a testing scenario MUST follow the required FDL step-line format (including the `-` separators):
-  ```markdown
-  1. [ ] - `ph-1` - {instruction} - `inst-some-job`
-  ```
-  - This applies to every step line, including control-flow keyword lines (e.g., **IF**, **FOR EACH**, **TRY**, **CATCH**, **RETURN**).
-
-**Instruction IDs (mandatory in FDL)**:
-- Every FDL step line in a testing scenario MUST include a stable instruction ID token at the end of the line:
-  - `inst-{short-id}` (kebab-case)
-- Instruction IDs MUST be unique within a single testing scenario.
 
 **Required content per requirement**:
 - **ID**: Requirement ID in format above (for traceability)
@@ -296,15 +291,10 @@
   - Each requirement MUST define at least `ph-1`
   - Phase IDs used in a requirement MUST be a subset of the feature phases
   - Each phase description MUST be specific enough to validate (what changes, what becomes true)
-  - Each phase SHOULD reference the implementing design artifacts (flow/algo/state) and the validating tests
-- **Testing Scenarios**: ≥1 test scenario written in FDL syntax ONLY (see `FDL.md`)
-  - Each testing scenario must have unique ID in format above
-  - ❌ **NO Gherkin/BDD keywords**: **GIVEN**, **WHEN**, **THEN**, **AND** prohibited in Testing Scenarios
-  - ✅ **MUST be implemented**: Testing Scenarios are specifications for actual test code
-  - ✅ **Test generation**: Every Testing Scenario must have corresponding automated test in implementation
-  - ✅ **Traceability**: Test files must reference Testing Scenario ID for traceability
-  - ✅ Use plain English: "User provides command", "System parses", "Verify output"
-  - ✅ Every step line MUST include `[ ]` or `[x]` and an inline-code phase token `ph-{N}` (e.g., `ph-1`) using the FDL step-line format
+- **Tests Covered**: List of test scenario IDs that validate this requirement
+  - Format: backtick-wrapped test IDs from Section G
+  - Example: `- \`fdd-project-feature-slug-test-scenario-name\``
+  - Each requirement MUST reference ≥1 test scenario
 - **Acceptance Criteria**: ≥2 specific, testable criteria
 
 **Validation**:
@@ -313,12 +303,61 @@
 - Each requirement defines `**Phases**` with checkboxes and at least `ph-1`
 - Phase IDs used in requirements are valid feature phase IDs
 - References are valid (target sections exist)
-- Testing scenarios are written in FDL syntax ONLY (not Gherkin)
-- Every testing scenario step line follows the FDL step-line format (checkbox + `ph-{N}` + separators)
+- Tests Covered references valid test IDs from Section G
 
 ---
 
-### Section G: Additional Context (Optional)
+### Section G: Testing Scenarios
+
+**Purpose**: Test specifications that validate requirements
+
+**Testing Scenario ID Format**: `fdd-{project-name}-feature-{feature-slug}-test-{scenario-name}`
+- **Components**:
+  - `fdd-` - Prefix indicating FDD methodology
+  - `{project-name}` - Project name in kebab-case
+  - `-feature-` - Feature scope indicator
+  - `{feature-slug}` - Feature identifier in kebab-case
+  - `-test-` - Testing scenario indicator
+  - `{scenario-name}` - Scenario name in kebab-case (2-4 words)
+- **Example**: `fdd-payment-system-feature-user-auth-test-valid-login`, `fdd-analytics-feature-dashboard-test-create-widget-success`
+- **Usage**: Each testing scenario must have an `**ID**:` line after exactly one blank line following the testing scenario heading
+- **Format in document**: `- [ ] **ID**: \`fdd-project-feature-slug-test-scenario\``
+
+**ID status tracking (mandatory)**:
+- Each testing scenario ID MUST be written with a checkbox:
+  - `- [ ] **ID**: {test-id}` for NOT implemented
+  - `- [x] **ID**: {test-id}` for implemented
+
+**Required content per test scenario**:
+- **ID**: Test scenario ID in format above (for traceability)
+- **Title**: `### {Title}` (simple title, no numbering)
+- **Validates**: List of requirement IDs this test validates (backtick-wrapped)
+  - Format: `**Validates**: \`fdd-project-feature-slug-req-name\``
+  - MAY validate multiple requirements
+- **Steps**: Test steps written in FDL syntax ONLY (see `FDL.md`)
+  - Every FDL step line MUST follow the required FDL step-line format:
+    ```markdown
+    1. [ ] - `ph-1` - {instruction} - `inst-some-job`
+    ```
+  - ❌ **NO Gherkin/BDD keywords**: **GIVEN**, **WHEN**, **THEN**, **AND** prohibited
+  - ✅ Use plain English: "User provides command", "System parses", "Verify output"
+  - ✅ Every step line MUST include `[ ]` or `[x]` and phase token `ph-{N}`
+
+**Instruction IDs (mandatory in FDL)**:
+- Every FDL step line MUST include a stable instruction ID token at the end: `inst-{short-id}`
+- Instruction IDs MUST be unique within a single testing scenario
+
+**Validation**:
+- ≥1 testing scenario present
+- All test scenarios have all required fields
+- Testing scenarios use FDL syntax ONLY (not Gherkin)
+- Every step line follows the FDL step-line format (checkbox + `ph-{N}` + separators)
+- Validates field references valid requirement IDs from Section F
+- Test code must reference Testing Scenario ID for traceability
+
+---
+
+### Section H: Additional Context (Optional)
 
 **Purpose**: Dependencies, references, and supplementary information
 
@@ -343,9 +382,9 @@
 ### Structure Validation
 
 1. **All required sections present**
-   - Sections A, B, C, D, E, F (6 sections required)
-   - Section G (Additional Context) is optional
-   - Correct section order (A → B → C → D → E → F → [G])
+   - Sections A, B, C, D, E, F, G (7 sections required)
+   - Section H (Additional Context) is optional
+   - Correct section order (A → B → C → D → E → F → G → [H])
    - No duplicate sections
 
 ### Content Validation
@@ -395,19 +434,25 @@
 6. **Section F (Requirements)**
    - ≥1 requirement present
    - Each requirement has all required fields
-   - Testing Scenarios use FDL syntax ONLY (not Gherkin)
-   - Testing Scenarios: every step line follows the FDL step-line format (checkbox + `ph-{N}` + `-` separators + trailing `inst-{short-id}`)
    - References are valid markdown anchors
+   - Tests Covered references valid test IDs from Section G
    - **Requirement ID Format Validation**:
      - All requirement IDs match format with `**ID**: fdd-{project-name}-feature-{feature-slug}-req-{short-name}`
      - All IDs are unique within Section F
      - Each requirement has an `**ID**:` line after exactly one blank line following the requirement heading
+
+7. **Section G (Testing Scenarios)**
+   - ≥1 testing scenario present
+   - Each test scenario has all required fields
+   - Testing Scenarios use FDL syntax ONLY (not Gherkin)
+   - Every step line follows the FDL step-line format (checkbox + `ph-{N}` + `-` separators + trailing `inst-{short-id}`)
+   - Validates field references valid requirement IDs from Section F
    - **Testing Scenario ID Format Validation**:
      - All testing scenarios have unique IDs with `**ID**: fdd-{project-name}-feature-{feature-slug}-test-{scenario-name}` format
      - Each testing scenario has an `**ID**:` line after exactly one blank line following the testing scenario heading
      - Test code must reference these IDs for traceability
 
-7. **Section G (Additional Context)** - Optional
+8. **Section H (Additional Context)** - Optional
    - If present, may include dependencies, references, notes
    - No specific structure requirements
    - **Note**: Implementation changes belong in `CHANGES.md`, not in DESIGN.md
@@ -463,135 +508,35 @@
 5. Completeness
 
 **Scoring**:
-- Structure (20 points): All required sections present (A-F)
-- FDL Compliance (30 points): Sections B, C, D use valid FDL
-- Technical Details (25 points): Section E complete
-- Requirements (25 points): Section F formalized with tests
+- Structure (15 points): All required sections present (A-G)
+- FDL Compliance (30 points): Sections B, C, D, G use valid FDL
+- Technical Details (20 points): Section E complete
+- Requirements (20 points): Section F formalized with traceability
+- Testing Scenarios (15 points): Section G with valid test specifications
 
 ---
 
 ## Examples
 
-**Valid feature DESIGN.md structure**:
-```markdown
-# Feature: Analytics Dashboard
-
-## A. Feature Context
-
-- **Feature ID**: `fdd-hyperspot-feature-analytics-dashboard`
-- **Feature Directory**: `architecture/features/feature-analytics-dashboard/`
-- **References**:
-  - `architecture/features/FEATURES.md` entry: `fdd-hyperspot-feature-analytics-dashboard`
-
-### 1. Overview
-
-Dashboard UI for visualizing aggregated product and tenant analytics.
-
-### 2. Purpose
-
-Provide a single place to inspect key business metrics and drill down via filters.
-
-### 3. Actors
-
-- `fdd-hyperspot-actor-admin`
-- `fdd-hyperspot-actor-analyst`
-
-### 4. References
-
-- Overall Design: `architecture/DESIGN.md`
-
-## B. Actor Flows (FDL)
-
-### Admin views dashboard
-
-- [ ] **ID**: fdd-hyperspot-feature-analytics-dashboard-flow-admin-views-dashboard
-
-1. [ ] - `ph-1` - Admin opens dashboard page - `inst-open-dashboard-page`
-2. [ ] - `ph-1` - System loads available metrics - `inst-load-available-metrics`
-3. [ ] - `ph-1` - **FOR EACH** metric: - `inst-for-each-metric`
-   1. [ ] - `ph-1` - System calculates metric value - `inst-calculate-metric-value`
-   2. [ ] - `ph-1` - System renders a chart - `inst-render-chart`
-4. [ ] - `ph-2` - Admin applies filters - `inst-apply-filters`
-5. [ ] - `ph-2` - System reloads data and rerenders charts - `inst-reload-and-rerender`
-
-## C. Algorithms (FDL)
-
-### Calculate metric value
-
-- [ ] **ID**: fdd-hyperspot-feature-analytics-dashboard-algo-calculate-metric-value
-
-**Input**: metric_id, date_range
-**Output**: metric_value
-
-1. [ ] - `ph-1` - Load raw events for date_range - `inst-load-raw-events`
-2. [ ] - `ph-1` - **FOR EACH** event: - `inst-for-each-event`
-   1. [ ] - `ph-1` - Add event contribution to accumulator - `inst-add-event-contribution`
-3. [ ] - `ph-1` - **RETURN** accumulator - `inst-return-accumulator`
-
-## D. States (FDL)
-
-### Widget state
-
-- [ ] **ID**: fdd-hyperspot-feature-analytics-dashboard-state-widget
-
-**States**: LOADING, READY, ERROR
-
-1. [ ] - `ph-1` - **FROM** LOADING **TO** READY **WHEN** data loaded - `inst-loading-to-ready`
-2. [ ] - `ph-1` - **FROM** LOADING **TO** ERROR **WHEN** load failed - `inst-loading-to-error`
-3. [ ] - `ph-2` - **FROM** READY **TO** LOADING **WHEN** filters changed - `inst-ready-to-loading`
-
-## E. Technical Details
-
-### API Endpoints
-
-- `GET /analytics-dashboard/v1/metrics` — reference: [analytics-dashboard.yaml](../../../openapi/analytics-dashboard.yaml)
-- `GET /analytics-dashboard/v1/widgets` — reference: [analytics-dashboard.yaml](../../../openapi/analytics-dashboard.yaml)
-
-### Security
-
-- Access controlled per tenant and role.
-
-## F. Requirements
-
-### Load dashboard
-
-- [ ] **ID**: fdd-hyperspot-feature-analytics-dashboard-req-load-dashboard
-**Status**: 🔄 IN_PROGRESS
-**Description**: The dashboard MUST return a metrics list and widget data for a selected date range.
-**References**:
-- [Admin views dashboard](#admin-views-dashboard)
-- [Calculate metric value](#calculate-metric-value)
-**Implements**:
-- `fdd-hyperspot-feature-analytics-dashboard-flow-admin-views-dashboard`
-- `fdd-hyperspot-feature-analytics-dashboard-algo-calculate-metric-value`
-**Phases**:
-- [ ] `ph-1`: Initial dashboard render with metrics list
-- [ ] `ph-2`: Filters apply and rerender
-**Testing Scenarios (FDL)**:
-- [ ] **ID**: fdd-hyperspot-feature-analytics-dashboard-test-dashboard-loads-with-metrics
-  1. [ ] - `ph-1` - Seed raw events for the tenant - `inst-seed-raw-events`
-  2. [ ] - `ph-1` - Call dashboard endpoint for date_range - `inst-call-endpoint`
-  3. [ ] - `ph-1` - Verify metrics list is present - `inst-verify-metrics-present`
-  4. [ ] - `ph-2` - Apply a filter and call endpoint again - `inst-apply-filter-and-recall`
-  5. [ ] - `ph-2` - Verify filtered results differ - `inst-verify-filtered-differs`
-**Acceptance Criteria**:
-- Response contains ≥1 metric
-- Filtered response differs from unfiltered response
-
-## G. Additional Context (Optional)
-
-### Dependencies
-
-- Depends on feature: `fdd-hyperspot-feature-user-auth`
+**Valid feature DESIGN.md**:
+- ALWAYS open `examples/requirements/feature-design/valid.md` WHEN creating or editing `architecture/features/feature-{slug}/DESIGN.md`
 
 **Issues**:
-- Wrong feature ID format (`feature-*` instead of `fdd-{project}-feature-*`)
-- Missing checkboxes on all `**ID**:` lines
-- FDL steps missing required per-line `ph-{N}` markers and checkboxes
-- Uses deprecated `Phase:` field instead of requirement `**Phases**` list
-- Testing scenario uses prohibited Gherkin keywords (**GIVEN**, **WHEN**, **THEN**)
+- Missing required sections (A-G)
+- Invalid section order
+- Missing or invalid FDL step format
+- Missing required requirement fields
+- Missing required `<!-- fdd-id-content -->` payload blocks
 
 ---
+
+## Validation Checklist
+
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
+
+---
+
 
 ## References
 

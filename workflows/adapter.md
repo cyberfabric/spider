@@ -1,5 +1,9 @@
 ---
-description: FDD Adapter Router - Choose adapter workflow mode
+fdd: true
+type: workflow
+name: Adapter
+version: 1.0
+purpose: FDD Adapter Router - Choose adapter workflow mode
 ---
 
 # FDD Adapter Workflow (Router)
@@ -10,7 +14,21 @@ description: FDD Adapter Router - Choose adapter workflow mode
 
 ---
 
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+## Prerequisite Checklist
+
+- [ ] Agent has read execution-protocol.md
+- [ ] Agent has read workflow-execution.md
+- [ ] Agent understands this workflow's purpose
+
+---
+
+## Overview
+
+This workflow guides the execution of the specified task.
+
+---
+
+
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
@@ -305,6 +323,22 @@ Router does NOT validate - it only routes.
 **User-initiated updates**: Always go through this router for clarity
 
 ---
+
+## Validation Criteria
+
+- [ ] All workflow steps completed
+- [ ] Output artifacts are valid
+
+---
+
+
+## Validation Checklist
+
+- [ ] All prerequisites were met
+- [ ] All steps were executed in order
+
+---
+
 
 ## References
 

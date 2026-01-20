@@ -1,5 +1,9 @@
 ---
-description: Validate feature code implementation against feature design
+fdd: true
+type: workflow
+name: Feature Code Validate
+version: 1.0
+purpose: Validate feature code implementation against feature design
 ---
 
 # Validate Feature Code
@@ -10,7 +14,14 @@ description: Validate feature code implementation against feature design
 
 ---
 
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+## Prerequisite Checklist
+
+- [ ] Agent has read execution-protocol.md
+- [ ] Agent has read workflow-execution.md
+- [ ] Agent understands this workflow's purpose
+
+---
+
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
@@ -455,6 +466,22 @@ Self-validating workflow
 - Single validation for entire feature code
 
 ---
+
+## Validation Criteria
+
+- [ ] All workflow steps completed
+- [ ] Output artifacts are valid
+
+---
+
+
+## Validation Checklist
+
+- [ ] All prerequisites were met
+- [ ] All steps were executed in order
+
+---
+
 
 ## References
 

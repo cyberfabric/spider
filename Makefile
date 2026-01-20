@@ -1,4 +1,5 @@
-.PHONY: test test-verbose test-quick test-coverage validate validate-feature validate-code validate-code-feature install install-pipx clean help check-pytest check-pytest-cov check-pipx
+# @fdd-change:fdd-fdd-feature-init-structure-change-infrastructure:ph-1
+.PHONY: test test-verbose test-quick test-coverage validate validate-examples validate-feature validate-code validate-code-feature install install-pipx clean help check-pytest check-pytest-cov check-pipx
 
 PYTHON ?= python3
 PIPX ?= pipx
@@ -14,6 +15,7 @@ help:
 	@echo "  make test-verbose                  - Run tests with verbose output"
 	@echo "  make test-quick                    - Run fast tests only (skip slow integration tests)"
 	@echo "  make test-coverage                 - Run tests with coverage report"
+	@echo "  make validate-examples             - Validate requirements examples under examples/requirements"
 	@echo "  make validate                      - Validate core methodology feature"
 	@echo "  make validate-feature FEATURE=name - Validate specific feature"
 	@echo "  make validate-code                 - Validate codebase traceability (entire project)"
@@ -78,19 +80,22 @@ test-coverage: check-pytest-cov
 	$(PYTEST_PIPX_COV) tests/ \
 		--cov=skills/fdd/scripts/fdd \
 		--cov-report=term-missing \
+		--cov-report=json:coverage.json \
 		--cov-report=html \
 		-v --tb=short
+	@$(PYTHON) scripts/check_coverage.py coverage.json --root skills/fdd/scripts/fdd --min 90
 	@echo ""
 	@echo "Coverage report generated:"
 	@echo "  HTML: htmlcov/index.html"
 	@echo "  Open with: open htmlcov/index.html"
 
+validate-examples: check-pytest
+	@echo "Validating requirements examples..."
+	$(PYTEST_PIPX) tests/test_validate.py -k TestRequirementExamples -v --tb=short
+
 # Validate core methodology feature
 validate:
-	@echo "Validating core methodology feature..."
-	$(PYTHON) skills/fdd/scripts/fdd.py validate \
-		--artifact architecture/features/feature-core-methodology/CHANGES.md \
-		--design architecture/features/feature-core-methodology/DESIGN.md
+	$(PYTHON) skills/fdd/scripts/fdd.py validate
 
 # Validate specific feature
 validate-feature:
@@ -101,13 +106,8 @@ validate-feature:
 	fi
 	@echo "Validating feature: $(FEATURE)..."
 	@python3.11 skills/fdd/scripts/fdd.py validate \
-		--artifact architecture/features/$(FEATURE)/CHANGES.md \
-		--design architecture/features/$(FEATURE)/DESIGN.md
+		--artifact architecture/features/$(FEATURE)/CHANGES.md
 
-# Validate codebase traceability for entire project
-validate-code:
-	@echo "Validating codebase traceability..."
-	@python3.11 skills/fdd/scripts/fdd.py validate --artifact .
 
 # Validate code traceability for specific feature
 validate-code-feature:

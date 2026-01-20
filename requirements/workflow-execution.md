@@ -1,15 +1,24 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-agents-navigation:ph-1 -->
+---
+fdd: true
+type: requirement
+name: Workflow Execution
+version: 1.2
+purpose: Define how agents execute FDD workflows
+---
+
 # FDD Workflow Execution Instructions
 
-**Version**: 1.0  
-**Purpose**: Define how agents execute FDD workflows  
-**Scope**: All workflow execution (operation and validation)
+## Prerequisite Checklist
+
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
 
 ---
 
-**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 ## Overview
+
+This file defines rules for executing any FDD workflow.
 
 **⚠️ ALWAYS open and follow FIRST**: `execution-protocol.md` - Mandatory protocol for ALL workflows
 
@@ -31,6 +40,30 @@ ALWAYS open and follow `workflow-execution-validations.md` WHEN executing valida
 
 ## General Execution Rules
 
+### Request Intent Resolution (MANDATORY)
+
+**Default behavior**:
+- **MUST** treat any user request as **workflow execution**.
+- **MUST** select and execute the most relevant workflow from `workflows/` using `requirements/workflow-selection.md`.
+
+**Tool-only / skill-only is opt-in**:
+- **MUST** treat a request as **tool-only** ONLY when the user explicitly asks for tool-only/skill-only execution.
+- **MUST** treat a request as **tool-only** when the user explicitly asks to run an `fdd` command only (e.g., "run `fdd validate` only", "skill only: list IDs", "where-defined only").
+
+**MUST NOT** downgrade to tool-only by default.
+
+### FDD CLI Guardrails (MANDATORY)
+
+**MUST** invoke the `fdd` skill using the agent-safe entrypoint:
+```bash
+python3 <FDD_ROOT>/skills/fdd/scripts/fdd.py <subcommand> [options]
+```
+
+**MUST NOT** use `python3 -m fdd.cli` unless the current working directory is `<FDD_ROOT>/skills/fdd/scripts`.
+
+**Pattern arguments**:
+- If a value starts with `-`, **MUST** pass it using `=` form (example: `--pattern=-req-`).
+
 ### Before Starting ANY Workflow
 
 **MUST**:
@@ -39,14 +72,10 @@ ALWAYS open and follow `workflow-execution-validations.md` WHEN executing valida
    - Complete all protocol phases (1-4)
    - Answer all readiness check questions
    - Verify protocol compliance before proceeding
-2.
- 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-check-adapter -->
-**Check Adapter Initialization** - MANDATORY
+2. **Check Adapter Initialization** - MANDATORY
 - Search for `{adapter-directory}/AGENTS.md`
 - If NOT found: STOP, propose bootstrap, run `adapter` workflow
 - If found: Continue
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-check-adapter -->
 3. Read workflow file completely
 4. Identify workflow type (Operation or Validation)
 5. Read type-specific execution instructions
@@ -89,37 +118,29 @@ ALWAYS open and follow `workflow-execution-validations.md` WHEN executing valida
 3. Use requirements as source of truth (not workflow description)
 4. Never invent validation criteria
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-read-steps -->
 ### Workflow Types
 
 **Operation workflow** - Has user interaction, creates/modifies files
 **Validation workflow** - Fully automated, outputs to chat only
 
 **Type indicator**: Check workflow file for `**Type**: Operation` or `**Type**: Validation`
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-read-steps -->
 
 ### Output Requirements
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-execute-steps -->
 **Operation workflows**:
 - Output to chat during interaction
 - Create files only after user confirmation
 - Show summary before creation
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-run-auto-validation -->
 - Run validation after creation
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-run-auto-validation -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-execute-steps -->
 
 **Validation workflows**:
 - Output ONLY to chat (no report files)
 - Show score, status, issues, recommendations
 - Suggest next workflow
 - Never create validation report files
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-run-tests -->
 **When workflow requires tests**:
 - Run the project test suite
 - Report test failures as blocking issues
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-run-tests -->
 
 ### Adapter Trigger Monitoring
 
@@ -265,6 +286,14 @@ ALWAYS open and follow `workflow-execution-validations.md` WHEN executing valida
 
 ---
 
+## Validation Checklist
+
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
+
+---
+
+
 ## References
 
 **This file is referenced by**:
@@ -273,21 +302,13 @@ ALWAYS open and follow `workflow-execution-validations.md` WHEN executing valida
 **References**:
 - `workflow-execution-operations.md` - Operation workflow execution specifics
 - `workflow-execution-validations.md` - Validation workflow execution specifics
-- `core-workflows.md` - Workflow file structure requirements
-- `core.md` - Core FDD principles
+- `../.adapter/specs/patterns.md` - Workflow file structure requirements
+- `../.adapter/specs/conventions.md` - Core FDD principles
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-receive-request -->
 ## AI Workflow Execution Context
 
 AI assistant receives user request to execute workflow and processes it according to AGENTS.md navigation rules.
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-receive-request -->
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-adapter-agents -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-merge-when-clauses -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-evaluate-when -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-for-each-when -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-spec -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-extract-requirements -->
 ## Adapter Integration (Future)
 
 When adapter exists:
@@ -295,25 +316,13 @@ When adapter exists:
 2. Merge WHEN clauses with core
 3. Evaluate WHEN clauses for workflow context
 4. For each matching WHEN clause:
-   - Open referenced spec file
-   - Extract requirements from spec
+    - Open referenced spec file
+    - Extract requirements from spec
 
 **Note**: Full adapter integration pending implementation.
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-extract-requirements -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-spec -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-for-each-when -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-evaluate-when -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-merge-when-clauses -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-adapter-agents -->
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-report-ambiguous -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-fallback-core -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-ask-clarification -->
 ## Error Handling
 
 **If WHEN evaluation fails**: Report ambiguous conditions, fallback to core specs
 
 **If workflow step unclear**: Ask user for clarification
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-ask-clarification -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-fallback-core -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-report-ambiguous -->

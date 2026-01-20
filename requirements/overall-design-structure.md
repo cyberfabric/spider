@@ -1,9 +1,17 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-requirements-structure:ph-1 -->
+---
+fdd: true
+type: requirement
+name: Overall Design Structure
+version: 1.0
+purpose: Define required structure for DESIGN.md files
+---
+
 # Overall Design Structure Requirements
+
+
 
 **ALWAYS open and follow**: `../workflows/design.md`
 **ALWAYS open and follow**: `requirements.md`
-**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 **This file defines**: Structure only (WHAT to create)  
 **Workflow defines**: Process (HOW to create)
@@ -12,10 +20,14 @@
 
 ---
 
-**Version**: 2.0  
-**Purpose**: Defines structure and validation criteria for Technical Design documentation
+## Prerequisite Checklist
 
-**Scope**: This document specifies required structure for `architecture/DESIGN.md`
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
+
+---
+
+## Overview
 
 **Related specifications**:
 - `business-context-structure.md` - For BUSINESS.md structure
@@ -494,36 +506,23 @@ DESIGN.md Section B.1 (Functional Requirements):
 
 ## Examples
 
-### Valid Domain Model Specification
+**Valid DESIGN.md**:
+- ALWAYS open `examples/requirements/overall-design/valid.md` WHEN creating or editing `architecture/DESIGN.md`
 
-```markdown
-#### C.2: Domain Model
-
-**Technology**: GTS (Global Type System) + JSON Schema
-
-**Location**: `gts/`
-
-**Core entities**:
-- `user` - User account and profile
-- `project` - FDD project container
-- `feature` - Individual feature specification
-
-**Relationships**:
-- User owns multiple Projects
-- Project contains multiple Features
-```
-
-### Invalid Domain Model Specification
-
-```markdown
-#### C.2: Domain Model
-
-We use a standard entity-relationship model with users, projects, and features.
-Users can own projects and projects contain features.
-```
-❌ No technology specified, no file location, not machine-readable
+**Issues**:
+- Missing required top-level sections (A/B/C)
+- Missing required C.1..C.5 subsections
+- Missing functional requirement IDs (format: ``**ID**: `fdd-...-req-...` ``)
 
 ---
+
+## Validation Checklist
+
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
+
+---
+
 
 ## References
 

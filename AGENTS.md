@@ -1,11 +1,10 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-agents-navigation:ph-1 -->
+<!-- @fdd-change:fdd-fdd-feature-init-structure-change-agents-structure:ph-1 -->
 # FDD AI Agent Navigation
 
 **Version**: 1.1
 
 ---
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-root-agents -->
 ## ⚠️ MUST Instruction Semantics ⚠️
 
 **MUST** = **MANDATORY**. NOT optional. NOT recommended. NOT suggested.
@@ -20,7 +19,6 @@
 **One skipped MUST = entire workflow FAILED**
 
 **All MUST instructions are CRITICAL without exception.**
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-root-agents -->
 
 ---
 
@@ -40,15 +38,13 @@
 
 ---
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-workflow-file -->
 ## Navigation Rules
 
 ALWAYS open and follow `workflows/AGENTS.md` WHEN receiving any task request
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-ai-execute:ph-1:inst-open-workflow-file -->
 
 ALWAYS open and follow `requirements/extension.md` WHEN you see **Extends**: {file}
 
-ALWAYS open and follow `requirements/core.md` WHEN modifying any FDD core files
+ALWAYS open and follow `.adapter/specs/conventions.md` WHEN modifying any FDD core files
 
 ALWAYS use `fdd adapter-info` skill to discover FDD-Adapter location WHEN starting any FDD work
 
@@ -62,13 +58,13 @@ ALWAYS open and follow `requirements/execution-protocol.md` WHEN executing any w
 
 ALWAYS open and follow `requirements/workflow-execution.md` WHEN executing any workflow
 
-ALWAYS open and follow `requirements/core-workflows.md` WHEN creating or modifying workflow files
+ALWAYS open and follow `.adapter/specs/patterns.md` WHEN creating or modifying workflow files
 
-ALWAYS open and follow `requirements/core-requirements.md` WHEN creating or modifying requirements files
+ALWAYS open and follow `.adapter/specs/patterns.md` WHEN creating or modifying requirements files
 
 ALWAYS open and follow `requirements/requirements.md` WHEN extracting shared requirements or removing duplication across requirements files
 
-ALWAYS open and follow `requirements/core-agents.md` WHEN creating or modifying AGENTS.md files
+ALWAYS open and follow `.adapter/specs/patterns.md` WHEN creating or modifying AGENTS.md files
 
 ALWAYS open and follow `requirements/business-context-structure.md` WHEN working with BUSINESS.md
 

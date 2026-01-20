@@ -1,13 +1,10 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-agents-navigation:ph-1 -->
 # FDD Workflow Navigation
-
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
-
-**Version**: 1.0
 
 ALWAYS open and follow `../requirements/workflow-selection.md` WHEN selecting which workflow to execute
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing any workflow
+
+ALWAYS apply Request Intent Resolution from `../requirements/workflow-execution.md` WHEN receiving any task request
 
 ALWAYS open and follow the specific workflow file from `workflows/` directory WHEN executing that workflow
 

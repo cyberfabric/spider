@@ -1,6 +1,6 @@
 ---
 name: fdd
-description: Unified FDD tool for validation and search. Validates FDD artifacts (BUSINESS.md, DESIGN.md, ADR.md, FEATURES.md, feature DESIGN.md, feature CHANGES.md) against FDD requirements. Provides read-only search and traceability for FDD artifacts and FDD/ADR IDs with repo-wide scanning capabilities. Supports optional project-level configuration via .fdd-config.json (e.g., fddCorePath).
+description: Unified FDD tool for validation and search. Validates FDD artifacts (BUSINESS.md, DESIGN.md, ADR.md, FEATURES.md, feature DESIGN.md, feature CHANGES.md) against FDD requirements with cascading dependency validation. Provides read-only search and traceability for FDD artifacts and FDD/ADR IDs with repo-wide scanning capabilities. Supports optional project-level configuration via .fdd-config.json.
 ---
 
 # FDD Unified Tool
@@ -8,15 +8,28 @@ description: Unified FDD tool for validation and search. Validates FDD artifacts
 ## Goal
 
 Provides comprehensive FDD artifact management:
-1. **Validation**: Deterministic validation reports for FDD artifacts using requirements/*-structure.md files
-2. **Search**: Read-only search and traceability across FDD artifacts and IDs
-3. **Traceability**: Codebase traceability scanning to verify implemented DESIGN/CHANGES items are tagged in code
+1. **Cascading Validation**: Automatically discovers and validates all artifact dependencies
+2. **Cross-Reference Validation**: Validates references between artifacts (BUSINESS → ADR → DESIGN → FEATURES → feature designs)
+3. **Code Traceability**: Codebase scanning to verify implemented DESIGN/CHANGES items are tagged in code
+4. **Search**: Read-only search and traceability across FDD artifacts and IDs
 
 ## Preconditions
 
 1. ALWAYS follow `../SKILLS.md` Toolchain Preflight
 2. `python3` is available
 3. Target paths exist and are readable
+
+## Agent-Safe Invocation (MANDATORY)
+
+**MUST** prefer invoking this tool via the script entrypoint (avoids `cwd`/`PYTHONPATH` issues):
+```bash
+python3 <FDD_ROOT>/skills/fdd/scripts/fdd.py <subcommand> [options]
+```
+
+**MUST NOT** use `python3 -m fdd.cli` unless the current working directory is `<FDD_ROOT>/skills/fdd/scripts`.
+
+**Pattern arguments**:
+- If a value starts with `-`, **MUST** pass it using `=` form (example: `--pattern=-req-`).
 
 ## Command Structure
 
@@ -38,6 +51,7 @@ If present, it can configure FDD core location, adapter path, and language-speci
 {
   "fddCorePath": ".fdd",
   "fddAdapterPath": "FDD-Adapter",
+  "skipCodeTraceability": false,
   "codeScanning": {
     "fileExtensions": [".py", ".js", ".ts", ".go", ".rs"],
     "singleLineComments": ["#", "//", "--"],
@@ -53,6 +67,7 @@ If present, it can configure FDD core location, adapter path, and language-speci
 **Supported fields**:
 - **`fddCorePath`**: Relative path from project root to the FDD core directory.
 - **`fddAdapterPath`**: Relative path to the FDD adapter directory (e.g., `FDD-Adapter`, `.fdd-adapter`).
+- **`skipCodeTraceability`**: Skip code traceability validation (`true`/`false`). Artifact validation and cross-references still work.
 - **`codeScanning`**: Language-specific configuration for code traceability scanning (optional).
   - **`fileExtensions`**: Array of file extensions to scan (e.g., `[".py", ".js", ".go"]`).
   - **`singleLineComments`**: Array of single-line comment prefixes (e.g., `["#", "//", "--"]`).
@@ -71,17 +86,43 @@ If present, it can configure FDD core location, adapter path, and language-speci
 
 ## Validation Commands
 
-### Artifact Validation
+### Full Validation (Default)
 
 ```bash
-# Validate any FDD artifact (auto-detects type)
-python3 scripts/fdd.py validate --artifact {path}
+# Validate everything (artifacts + code traceability)
+python3 scripts/fdd.py validate
 
-# Validate with explicit requirements file
+# Same as above, explicit current directory
+python3 scripts/fdd.py validate --artifact .
+```
+
+This performs **cascading validation**:
+1. **BUSINESS.md** — validates business context structure
+2. **ADR.md** — validates ADR structure, cross-refs to BUSINESS.md
+3. **DESIGN.md** — validates overall design, cross-refs to BUSINESS.md and ADR.md
+4. **FEATURES.md** — validates features manifest, cross-refs to DESIGN.md requirements
+5. **Feature DESIGN.md** — validates each feature design, cross-refs to overall DESIGN.md
+6. **Feature CHANGES.md** — validates each feature changes, cross-refs to feature DESIGN.md
+7. **Code Traceability** — scans code for `@fdd-` tags matching implemented scopes
+
+### Artifact-Only Validation (Skip Code Tracing)
+
+```bash
+# Skip code traceability, only validate artifacts and cross-references
+python3 scripts/fdd.py validate --skip-code-traceability
+
+# Or configure in .fdd-config.json:
+# { "skipCodeTraceability": true }
+```
+
+### Single Artifact Validation
+
+```bash
+# Validate specific artifact with cascading dependencies
+python3 scripts/fdd.py validate --artifact architecture/features/feature-auth/DESIGN.md
+
+# Validate with explicit requirements file (no cascading)
 python3 scripts/fdd.py validate --artifact {path} --requirements {path}
-
-# Validate with cross-references
-python3 scripts/fdd.py validate --artifact {path} --design {path} --business {path} --adr {path}
 
 # Skip filesystem checks
 python3 scripts/fdd.py validate --artifact {path} --skip-fs-checks
@@ -90,19 +131,20 @@ python3 scripts/fdd.py validate --artifact {path} --skip-fs-checks
 python3 scripts/fdd.py validate --artifact {path} --output {path}
 ```
 
-### Codebase Traceability Scan
+### Feature Filtering
 
 ```bash
-# Code-root mode (recommended)
-python3 scripts/fdd.py validate --artifact {code-root}
-# {code-root} MUST contain `architecture/features/feature-*/DESIGN.md`
+# Validate only specific features' code traceability
+python3 scripts/fdd.py validate --features auth,payment
+```
 
-# Optional filtering by feature slugs
-python3 scripts/fdd.py validate --artifact {code-root} --features gts-core,init-module
+### Artifact Dependency Graph
 
-# Feature-dir mode (backwards compatible)
-python3 scripts/fdd.py validate --artifact {feature-dir}
-# Expects `{feature-dir}/DESIGN.md`
+When validating any artifact, the tool automatically discovers and validates its dependencies:
+
+```
+feature-changes → feature-design → features-manifest → overall-design → (business-context, adr)
+                                                                         adr → business-context
 ```
 
 ### What Validation Checks
@@ -113,11 +155,17 @@ python3 scripts/fdd.py validate --artifact {feature-dir}
 - Cross-references between artifacts
 - ID format and uniqueness
 
-**Codebase Traceability**:
-- Validates DESIGN.md and CHANGES.md first
+**Cross-Reference Validation**:
+- FEATURES.md covers all DESIGN.md requirement IDs
+- Feature DESIGN.md status matches FEATURES.md status
+- ADR references valid business context items
+
+**Code Traceability** (when enabled):
 - For each implemented scope (`- [x] **ID**: ...`), expects `@fdd-{kind}:...:ph-{N}` tag in code
 - For each implemented FDL step line (`[x] ... - `inst-...``), expects instruction-level marker
 - For each completed change (`**Status**: ✅ COMPLETED`), expects `@fdd-change:...:ph-{N}` tag
+- File extensions for scanning are configured via `.fdd-config.json` → `codeScanning.fileExtensions`
+- Default extensions: `.py`, `.md`, `.js`, `.ts`, `.tsx`, `.go`, `.rs`, `.java`, `.cs`, `.sql`
 
 ## Search Commands
 
@@ -304,11 +352,20 @@ All commands output JSON to stdout for machine consumption:
 ## Usage Examples
 
 ```bash
+# Full validation (all artifacts + code traceability)
+python3 scripts/fdd.py validate
+
+# Artifact-only validation (skip code tracing)
+python3 scripts/fdd.py validate --skip-code-traceability
+
+# Validate specific artifact with cascading dependencies
+python3 scripts/fdd.py validate --artifact architecture/features/feature-auth/DESIGN.md
+
+# Validate specific features' code traceability only
+python3 scripts/fdd.py validate --features auth,payment
+
 # Discover FDD adapter in project
 python3 scripts/fdd.py adapter-info --root .
-
-# Validate a feature DESIGN.md
-python3 scripts/fdd.py validate --artifact architecture/features/feature-auth/DESIGN.md
 
 # Find all actor IDs in BUSINESS.md
 python3 scripts/fdd.py list-ids --artifact architecture/BUSINESS.md --pattern "-actor-"
@@ -321,12 +378,27 @@ python3 scripts/fdd.py where-defined --root . --id fdd-myapp-req-user-auth
 
 # Find all usages of a feature flow
 python3 scripts/fdd.py where-used --root . --id fdd-myapp-feature-auth-flow-login
+```
 
-# Validate codebase traceability for all features
-python3 scripts/fdd.py validate --artifact .
+## Validation Output
 
-# Validate specific features only
-python3 scripts/fdd.py validate --artifact . --features auth,payment
+The validation report includes:
+
+```json
+{
+  "status": "PASS|FAIL",
+  "artifact_kind": "codebase-trace",
+  "artifact_validation": {
+    "business-context": { "status": "PASS", ... },
+    "adr": { "status": "PASS", ... },
+    "overall-design": { "status": "PASS", ... },
+    "features-manifest": { "status": "PASS", ... },
+    "feature-design:feature-auth": { "status": "PASS", ... },
+    "feature-changes:feature-auth": { "status": "PASS", ... }
+  },
+  "feature_reports": [ ... ],  // code traceability (if not skipped)
+  "code_traceability_skipped": true  // when --skip-code-traceability
+}
 ```
 
 ## Read-Only Guarantee

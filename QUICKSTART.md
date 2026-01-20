@@ -1,9 +1,6 @@
-<!-- @fdd-change:fdd-fdd-feature-core-methodology-change-quickstart-docs:ph-1 -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-open-quickstart -->
 # FDD Quick Start
 
 **Learn FDD in 10 minutes with real prompts and examples**
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-open-quickstart -->
 
 ---
 
@@ -40,7 +37,6 @@ FDD = **Design First, Code Second**
 
 ---
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-check-prereqs -->
 ## Prerequisites
 
 Before starting with FDD, you need:
@@ -84,15 +80,12 @@ FDD requires an IDE with integrated AI coding assistant to execute workflows int
 - IntelliJ IDEA, PyCharm, WebStorm with AI Assistant
 - Multiple model support
 
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-check-prereqs -->
 
 ---
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-read-overview -->
 ## What is FDD?
 
 **FDD (Feature-Driven Documentation)** is a methodology for architecting software through structured documentation.
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-read-overview -->
 
 ---
 
@@ -152,21 +145,17 @@ ALWAYS open and follow `/FDD/AGENTS.md`
 
 ---
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-follow-quickstart -->
 #### 🆕 New Project
 
 **Prompt**:
 ```
 fdd create business requirements for task management service
 ```
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-follow-quickstart -->
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-create-first-artifact -->
 **What happens**:
 - Agent runs `workflows/business-context.md`
 - Reads `requirements/business-context-structure.md`
 - Agent asks interactive questions with proposed answers:
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-create-first-artifact -->
   - **Q1**: System vision - proposes from README.md if exists
   - **Q2**: Key actors (3-5) - proposes based on vision
   - **Q3**: Core capabilities (3-7) - proposes based on vision/actors
@@ -224,7 +213,6 @@ fdd analyze codebase and create business requirements
 ```
 fdd validate architecture/BUSINESS.md
 ```
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-validate-artifact -->
 ### Step 4: Validate Business Context (5 minutes)
 
 **What it does**: Ensures business requirements are complete and clear
@@ -235,12 +223,9 @@ fdd validate architecture/BUSINESS.md
 ```
 fdd validate architecture/BUSINESS.md
 ```
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-validate-artifact -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-complete-bootstrap -->
 **Result**: Business context approved or issues found to fix
 
 **Time check**: Should complete in <30 minutes from start
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-architect-bootstrap:ph-1:inst-complete-bootstrap -->
 
 **What happens**:
 - Agent runs `workflows/business-validate.md`
@@ -872,10 +857,6 @@ fdd design feature [slug]
 
 **Now start with the example above!** 🚀
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-receive-feedback -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-iterate-artifact -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-achieve-score -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-bookmark-docs -->
 ## Iteration and Improvement
 
 After validation:
@@ -883,22 +864,14 @@ After validation:
 - Iterate on artifact based on feedback
 - Achieve score ≥90/100 to proceed
 - Bookmark FDD documentation for future reference
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-bookmark-docs -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-achieve-score -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-iterate-artifact -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-receive-feedback -->
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-handle-quickstart-failure -->
 ## Troubleshooting
 
 If QUICKSTART steps fail, check:
 - IDE and AI assistant properly configured
 - All prerequisites installed
 - Network connectivity for repository access
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-handle-quickstart-failure -->
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-report-issue -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-fallback-manual -->
 ## If QUICKSTART Fails
 
 If you encounter issues:
@@ -906,5 +879,3 @@ If you encounter issues:
 2. Fall back to manual navigation using AGENTS.md
 
 Check AGENTS.md in the project root for detailed navigation instructions.
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-fallback-manual -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-user-onboard:ph-1:inst-report-issue -->

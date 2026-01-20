@@ -16,12 +16,9 @@ This adapter is for FDD project development, not for projects using FDD.
 
 **MUST verify ALL criteria before following this adapter**:
 
-- [ ] Workspace root contains `AGENTS.md`, `FDL.md`, `workflows/`, `requirements/` directories
 - [ ] Workspace root contains `.fdd-config.json` with `"project": "FDD"` or repository name is "FDD"
-- [ ] Task involves modifying FDD core files (`workflows/`, `requirements/`, `AGENTS.md`, `FDL.md`)
 - [ ] Task is NOT about using FDD in another project
 - [ ] No parent directory contains another project's `.fdd-config.json` or project files
-- [ ] User explicitly mentioned "FDD framework development" or "modifying FDD itself"
 
 **If ANY criterion fails**: STOP, IGNORE this adapter, use parent `../AGENTS.md` only
 
@@ -29,13 +26,11 @@ This adapter is for FDD project development, not for projects using FDD.
 
 ---
 
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
-
 **Extends**: `../AGENTS.md`
 
 **Version**: 1.0  
 **Last Updated**: 2025-01-17  
-**Tech Stack**: Python 3 (standard library only)
+**Tech Stack**: Python 3 (runtime stdlib-only) + pytest via pipx
 
 ---
 

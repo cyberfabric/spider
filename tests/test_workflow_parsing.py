@@ -1,12 +1,8 @@
-# @fdd-test:fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1
-# @fdd-test:fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1
 """
 Test workflow file parsing and structure validation.
 
 Tests REAL workflow files from workflows/ directory.
 
-Tests for: fdd-fdd-feature-core-methodology-test-parse-workflow
-           fdd-fdd-feature-core-methodology-test-validate-workflow-structure
 """
 import unittest
  
@@ -22,13 +18,6 @@ except ModuleNotFoundError:  # pragma: no cover
 from pathlib import Path
 
 
-# fdd-begin fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-create-sample
-# fdd-begin fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-load-workflow
-# fdd-begin fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-extract-prerequisites
-# fdd-begin fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-extract-steps
-# fdd-begin fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-extract-validation
-# fdd-begin fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-verify-extracted
-# fdd-begin fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-verify-count
 def test_parse_workflow_extracts_all_sections():
     """Parse REAL workflow files and verify structure."""
     workflows_dir = Path(__file__).parent.parent / "workflows"
@@ -54,21 +43,8 @@ def test_parse_workflow_extracts_all_sections():
     # Verify workflow has Type and Role metadata
     assert '**Type**:' in content, f"{workflow_path.name}: Type metadata not found"
     assert '**Role**:' in content, f"{workflow_path.name}: Role metadata not found"
-# fdd-end   fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-verify-count
-# fdd-end   fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-verify-extracted
-# fdd-end   fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-extract-validation
-# fdd-end   fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-extract-steps
-# fdd-end   fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-extract-prerequisites
-# fdd-end   fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-load-workflow
-# fdd-end   fdd-fdd-feature-core-methodology-test-parse-workflow:ph-1:inst-create-sample
 
 
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-create-missing-prereq
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-run-validation
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-verify-fails
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-add-prereq
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-rerun-validation
-# fdd-begin fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-verify-passes
 def test_validate_all_workflows_have_required_structure():
     """Validate ALL workflow files have required sections."""
     workflows_dir = Path(__file__).parent.parent / "workflows"
@@ -111,9 +87,3 @@ def test_validate_all_workflows_have_required_structure():
     # Verify validation passes for all workflows
     if errors:
         pytest.fail(f"Workflow structure validation failed:\n" + "\n".join(errors))
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-verify-passes
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-rerun-validation
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-add-prereq
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-verify-fails
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-run-validation
-# fdd-end   fdd-fdd-feature-core-methodology-test-validate-workflow-structure:ph-1:inst-create-missing-prereq

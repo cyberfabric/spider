@@ -6,6 +6,76 @@
 
 ---
 
+## FDD Core Principles (Migrated)
+
+When requirements in this spec conflict with `architecture/features/feature-init-structure/DESIGN.md`, follow `architecture/features/feature-init-structure/DESIGN.md`.
+
+### Approved Artifacts Are Proposal-Only
+
+**MUST NOT** directly modify approved artifacts under:
+- `architecture/`
+- `architecture/features/`
+
+**MUST** generate deterministic proposals under `architecture/changes/` and apply them only through the approved proposal mechanism.
+
+**Source of truth**:
+- `architecture/ADR.md` → ADR-0002
+- `requirements/artifact-changes-proposal-structure.md`
+
+### Framework Development Guardrails
+
+When modifying FDD framework sources (requirements, workflows, AGENTS, and the `fdd` tool), the agent MUST apply the following guardrails.
+
+**Requirements and workflows** (`requirements/*.md`, `workflows/*.md`):
+- **MUST** preserve YAML frontmatter and required fields for all FDD spec files.
+- **MUST** keep file naming conventions (requirements: `*-structure.md`, workflows: `kebab-case.md`).
+- **MUST** run deterministic validation using `python3 skills/fdd/scripts/fdd.py validate --artifact .` after edits.
+
+**AGENTS.md files** (`AGENTS.md`, `workflows/AGENTS.md`, `.adapter/AGENTS.md`):
+- **MUST** keep these files navigation-only (no spec duplication).
+- **MUST** keep WHEN clauses workflow-specific (no generic conditions).
+- **MUST** run `python3 skills/fdd/scripts/fdd.py validate --artifact .` after edits.
+
+**Skills / tooling** (`skills/fdd/**`):
+- **MUST** keep runtime Python dependencies standard-library only.
+- **MUST** update `skills/fdd/fdd.clispec` when the CLI surface changes.
+- **MUST** run `python3 skills/fdd/scripts/fdd.py validate --artifact .` after edits.
+
+### English Language Only
+
+**MUST** write all content in English.
+
+### Brevity
+
+**MUST** use concise language and avoid redundancy.
+
+### Imperative Style
+
+**MUST** use command form and start instructions with action verbs.
+
+### Agent-Centric Design
+
+**MUST** structure content for AI parsing:
+- Use consistent formatting
+- Provide clear steps
+- Make prerequisites explicit
+
+### OS Agnostic
+
+**MUST** use cross-platform descriptions and forward slashes in paths.
+
+**MUST NOT** rely on OS-specific commands.
+
+### Formatting Rules
+
+**MUST** use valid Markdown.
+
+**MUST** ensure metadata-like lines render as separate lines:
+- Prefer Markdown lists for metadata fields
+- Or end each metadata line with two spaces (`  `)
+
+**MUST NOT** use TODO/TBD/FIXME/XXX placeholders in spec/requirements artifacts.
+
 ## Python Code Style
 
 ### Naming Conventions
@@ -137,20 +207,16 @@ from typing import Dict, List, Optional, Tuple
 
 **Examples**:
 - `test_validate.py` - Validation tests
-- `test_list_api.py` - List/search tests
-- `test_read_search.py` - Read operations
+- `test_design_validation.py` - Design validation tests
+- `test_core_structure.py` - Core structure tests
 
 ### Test Structure
 
-**unittest framework**:
+**pytest framework**:
 ```python
-import unittest
-from pathlib import Path
-
-class TestValidation(unittest.TestCase):
-    def test_feature_design_valid(self):
-        result = validate_feature_design(text)
-        self.assertEqual(result["status"], "PASS")
+def test_feature_design_valid():
+    result = validate_feature_design(text)
+    assert result["status"] == "PASS"
 ```
 
 ### Test Organization
@@ -166,7 +232,6 @@ class TestValidation(unittest.TestCase):
 
 **Discovered from**:
 - `skills/fdd/scripts/fdd.py` - Main implementation
-- `skills/fdd/tests/*.py` - Test files
 - Code analysis (function names, type hints, imports)
 
 ---

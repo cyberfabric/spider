@@ -1,5 +1,9 @@
 ---
-description: Configure or update AI agent integration for FDD
+fdd: true
+type: workflow
+name: Adapter Agents
+version: 1.0
+purpose: Configure or update AI agent integration for FDD
 ---
 
 # Configure or Update AI Agent Integration
@@ -10,13 +14,27 @@ description: Configure or update AI agent integration for FDD
 
 ---
 
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+## Prerequisite Checklist
+
+- [ ] Agent has read execution-protocol.md
+- [ ] Agent has read workflow-execution.md
+- [ ] Agent understands this workflow's purpose
+
+---
+
+## Overview
+
+This workflow guides the execution of the specified task.
+
+---
+
+
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
 ## Requirements
 
-**ALWAYS open and follow**: `../requirements/adapter-structure.md` (if adapter exists)
+**ALWAYS open and follow**: `../.adapter/specs/patterns.md` (if adapter exists)
 
 Extract adapter conventions if available
 
@@ -339,6 +357,22 @@ ALWAYS open and follow /FDD-Adapter/AGENTS.md for project conventions.
 - Agent should suggest appropriate workflow
 
 ---
+
+## Validation Criteria
+
+- [ ] All workflow steps completed
+- [ ] Output artifacts are valid
+
+---
+
+
+## Validation Checklist
+
+- [ ] All prerequisites were met
+- [ ] All steps were executed in order
+
+---
+
 
 ## Next Steps
 

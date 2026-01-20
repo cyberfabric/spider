@@ -29,10 +29,6 @@ from ...utils import (
 
 
 __all__ = ["validate_feature_design"]
-# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-read-artifact
-# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-parse-markdown
-# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-extract-headings
-# fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-init-result
 def validate_feature_design(
     artifact_text: str,
     *,
@@ -43,31 +39,22 @@ def validate_feature_design(
     Validate feature DESIGN.md structure and content.
     
     Checks:
-    - Section structure (A-F required, G optional)
-    - FDL syntax in flows, algorithms, state machines
+    - Section structure (A-G required, H optional)
+    - FDL syntax in flows, algorithms, state machines, testing scenarios
     - ID formatting and feature slug consistency
     - Cross-references to BUSINESS.md and FEATURES.md
-    - Requirements fields and testing scenarios
+    - Requirements fields with traceability to tests
+    - Testing scenarios in Section G with references to requirements
     """
     errors: List[Dict[str, object]] = []
     placeholders = find_placeholders(artifact_text)
     section_order, sections = split_by_feature_section_letter(artifact_text)
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-init-result
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-extract-headings
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-parse-markdown
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-read-artifact
     
-    # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-for-each-required
-    # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-search-heading
-    expected = ["A", "B", "C", "D", "E", "F"]
-    if "G" in sections:
-        expected.append("G")
-    # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-validate-order
+    expected = ["A", "B", "C", "D", "E", "F", "G"]
+    if "H" in sections:
+        expected.append("H")
     if section_order and section_order[: len(expected)] != expected:
         errors.append({"type": "structure", "message": "Section order invalid", "required_order": expected, "found_order": section_order})
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-validate-order
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-search-heading
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-for-each-required
 
     feature_slug: Optional[str] = None
     if artifact_path is not None:
@@ -226,6 +213,45 @@ def validate_feature_design(
             if sub not in a_text:
                 errors.append({"type": "structure", "message": "Missing required subsection in Section A", "section": "A", "subsection": sub})
 
+        # Validate Feature ID field is present and matches directory slug
+        m_fid = re.search(r"\*\*Feature ID\*\*:\s*`([^`]+)`", a_text)
+        if not m_fid:
+            errors.append({"type": "content", "message": "Missing **Feature ID** field in Section A", "section": "A"})
+        else:
+            feature_id_value = m_fid.group(1).strip()
+            # Check Feature ID matches directory slug pattern
+            if feature_slug is not None:
+                expected_suffix = f"-feature-{feature_slug}"
+                if not feature_id_value.endswith(expected_suffix):
+                    errors.append({"type": "id", "message": "Feature ID does not match directory slug", "section": "A", "expected_suffix": expected_suffix, "found": feature_id_value})
+
+        # Validate feature-level Status field is present and has valid value
+        m_status = re.search(r"\*\*Status\*\*:\s*(.+?)(?:\n|$)", a_text)
+        if not m_status:
+            errors.append({"type": "content", "message": "Missing **Status** field in Section A", "section": "A"})
+        else:
+            status_val = m_status.group(1).strip()
+            valid_statuses = {"NOT_STARTED", "IN_DESIGN", "DESIGN_READY", "IN_DEVELOPMENT", "IMPLEMENTED"}
+
+            normalized: Optional[str] = None
+            if "IN_PROGRESS" in status_val:
+                normalized = "IN_DEVELOPMENT"
+            else:
+                for vs in valid_statuses:
+                    if vs in status_val:
+                        normalized = vs
+                        break
+
+            if normalized is None:
+                errors.append(
+                    {
+                        "type": "content",
+                        "message": "Feature Status must be one of: NOT_STARTED, IN_DESIGN, DESIGN_READY, IN_DEVELOPMENT, IMPLEMENTED",
+                        "section": "A",
+                        "found": status_val,
+                    }
+                )
+
         actors_block = a_text.split("### 3. Actors", 1)[1] if "### 3. Actors" in a_text else ""
         if "### 4. References" in actors_block:
             actors_block = actors_block.split("### 4. References", 1)[0]
@@ -293,7 +319,7 @@ def validate_feature_design(
                     for rid in _extract_full_ids(id_line, "req"):
                         req_ids.add(rid)
 
-                required_fields = ["Status", "Description", "References", "Implements", "Phases"]
+                required_fields = ["Status", "Description", "References", "Implements", "Phases", "Tests Covered"]
                 for field in required_fields:
                     fb = field_block(block, field)
                     if fb is None:
@@ -301,6 +327,19 @@ def validate_feature_design(
                         continue
                     if not str(fb["value"]).strip() and not has_list_item(list(fb["tail"])):
                         errors.append({"type": "content", "message": "Field must not be empty", "section": "F", "field": field, "line": start + 1})
+                    
+                    # Validate Status field value
+                    if field == "Status":
+                        status_val = str(fb["value"]).strip()
+                        valid_statuses = {"NOT_STARTED", "IN_PROGRESS", "IMPLEMENTED"}
+                        # Extract status keyword (with or without emoji)
+                        status_found = False
+                        for vs in valid_statuses:
+                            if vs in status_val:
+                                status_found = True
+                                break
+                        if not status_found:
+                            errors.append({"type": "content", "message": "Status must be one of: NOT_STARTED, IN_PROGRESS, IMPLEMENTED", "section": "F", "field": "Status", "line": start + 1, "found": status_val})
 
                 phases_field = field_block(block, "Phases")
                 phase_list: List[int] = []
@@ -336,24 +375,11 @@ def validate_feature_design(
                     if bad:
                         errors.append({"type": "cross", "message": "Implements references unknown flow/algo/state IDs", "section": "F", "line": start + 1, "ids": bad})
 
-                ts_field = field_block(block, "Testing Scenarios (FDL)") or field_block(block, "Testing Scenarios")
-                if ts_field is None:
-                    errors.append({"type": "content", "message": "Missing Testing Scenarios field", "section": "F", "line": start + 1})
-                else:
-                    ts_lines = list(ts_field["tail"])
-                    if "**GIVEN**" in "\n".join(ts_lines) or "**THEN**" in "\n".join(ts_lines) or re.search(r"^\s*(GIVEN|WHEN|THEN|AND)\b", "\n".join(ts_lines), re.MULTILINE):
-                        errors.append({"type": "fdl", "message": "Gherkin keywords are not allowed in Testing Scenarios", "section": "F", "line": start + 1})
-
-                    for lidx, l in enumerate(ts_lines, start=1):
-                        if "**ID**:" in l:
-                            for m in FEATURE_TEST_ID_RE.finditer(l):
-                                if feature_slug is not None and m.group(1) != feature_slug:
-                                    errors.append({"type": "id", "message": "Feature slug in test ID does not match directory slug", "section": "F", "line": start + lidx})
-                            for tid in _extract_full_ids(l, "test"):
-                                test_ids.add(tid)
-                        if re.match(r"^\s*(?:\d+\.|-)\s+", l.strip()):
-                            if "[" in l and "ph-" in l and not FDL_STEP_LINE_RE.match(l):
-                                errors.append({"type": "fdl", "message": "Invalid FDL step line format in Testing Scenarios", "section": "F", "line": start + lidx, "text": l.strip()})
+                tc_field = field_block(block, "Tests Covered")
+                if tc_field is not None:
+                    tc_text = "\n".join([str(tc_field["value"])] + list(tc_field["tail"]))
+                    for tid in _extract_full_ids(tc_text, "test"):
+                        test_ids.add(tid)
 
                 ac_field = field_block(block, "Acceptance Criteria")
                 if ac_field is None:
@@ -366,27 +392,77 @@ def validate_feature_design(
                         if cnt < 2:
                             errors.append({"type": "content", "message": "Acceptance Criteria must contain at least 2 list items", "section": "F", "line": start + 1})
 
-    # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-check-errors
+    # Section G: Testing Scenarios validation
+    if "G" in sections:
+        g_lines = sections["G"]
+        test_indices: List[int] = []
+        for idx, line in enumerate(g_lines):
+            if line.strip().startswith("### "):
+                test_indices.append(idx)
+
+        if not test_indices:
+            errors.append({"type": "content", "message": "Section G must contain at least one testing scenario heading", "section": "G"})
+        else:
+            g_test_ids: set = set()
+
+            for i, start in enumerate(test_indices):
+                end = test_indices[i + 1] if i + 1 < len(test_indices) else len(g_lines)
+                block = g_lines[start:end]
+                block_text = "\n".join(block)
+
+                id_line = next((l for l in block if "**ID**:" in l), None)
+                if id_line is None:
+                    errors.append({"type": "id", "message": "Testing scenario missing ID line", "section": "G", "line": start + 1})
+                else:
+                    if not re.match(r"^\s*[-*]\s+\[[ xX]\]\s+\*\*ID\*\*:\s+", id_line):
+                        errors.append({"type": "id", "message": "Testing scenario ID line must be a checkbox list item", "section": "G", "line": start + 1, "text": id_line.strip()})
+
+                    for m in FEATURE_TEST_ID_RE.finditer(id_line):
+                        if feature_slug is not None and m.group(1) != feature_slug:
+                            errors.append({"type": "id", "message": "Feature slug in test ID does not match directory slug", "section": "G", "expected": feature_slug, "found": m.group(1), "line": start + 1})
+                    for tid in _extract_full_ids(id_line, "test"):
+                        g_test_ids.add(tid)
+
+                validates_field = field_block(block, "Validates")
+                if validates_field is None:
+                    errors.append({"type": "content", "message": "Testing scenario missing Validates field", "section": "G", "line": start + 1})
+                else:
+                    val_text = "\n".join([str(validates_field["value"])] + list(validates_field["tail"]))
+                    val_req_ids = _extract_full_ids(val_text, "req")
+                    if not val_req_ids:
+                        errors.append({"type": "content", "message": "Validates field must reference at least one requirement ID", "section": "G", "line": start + 1})
+                    elif req_ids:
+                        bad = sorted([r for r in val_req_ids if r not in req_ids])
+                        if bad:
+                            errors.append({"type": "cross", "message": "Validates references unknown requirement IDs", "section": "G", "line": start + 1, "ids": bad})
+
+                # Check for Gherkin keywords
+                if "**GIVEN**" in block_text or "**THEN**" in block_text or re.search(r"^\s*(GIVEN|WHEN|THEN|AND)\b", block_text, re.MULTILINE):
+                    errors.append({"type": "fdl", "message": "Gherkin keywords are not allowed in Testing Scenarios", "section": "G", "line": start + 1})
+
+                # Validate FDL step lines
+                for lidx, l in enumerate(block, start=1):
+                    if re.match(r"^\s*(?:\d+\.|-)\s+", l.strip()):
+                        if "[" in l and "ph-" in l and not FDL_STEP_LINE_RE.match(l):
+                            errors.append({"type": "fdl", "message": "Invalid FDL step line format in Testing Scenarios", "section": "G", "line": start + lidx, "text": l.strip()})
+
+            # Cross-validate: check that all test IDs referenced in Section F exist in Section G
+            if test_ids and g_test_ids:
+                missing_tests = sorted([t for t in test_ids if t not in g_test_ids])
+                if missing_tests:
+                    errors.append({"type": "cross", "message": "Tests Covered references test IDs not defined in Section G", "section": "F", "ids": missing_tests})
+
     passed = (len(errors) == 0) and (len(placeholders) == 0)
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-check-errors
     
-    # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-no-errors
-    # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-set-pass
     status_value = "PASS" if passed else "FAIL"
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-set-pass
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-no-errors
     
-    # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-set-fail
     if not passed:
         status_value = "FAIL"
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-set-fail
     
-    # fdd-begin fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-return-result
     return {
-        "required_section_count": len([s for s in ["A", "B", "C", "D", "E", "F"] if s in sections]),
-        "missing_sections": [s for s in ["A", "B", "C", "D", "E", "F"] if s not in sections],
+        "required_section_count": len([s for s in ["A", "B", "C", "D", "E", "F", "G"] if s in sections]),
+        "missing_sections": [s for s in ["A", "B", "C", "D", "E", "F", "G"] if s not in sections],
         "placeholder_hits": placeholders,
         "status": status_value,
         "errors": errors,
     }
-    # fdd-end   fdd-fdd-feature-core-methodology-algo-validate-structure:ph-1:inst-return-result

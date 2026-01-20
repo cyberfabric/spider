@@ -1,4 +1,3 @@
-# @fdd-test:fdd-fdd-feature-core-methodology-test-overall-design-validation:ph-1
 """
 Test overall DESIGN.md validation.
 

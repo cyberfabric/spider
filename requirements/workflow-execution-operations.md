@@ -1,12 +1,20 @@
+---
+fdd: true
+type: requirement
+name: Workflow Execution Operations
+version: 1.0
+purpose: Define execution specifics for operation workflows
+---
+
 # FDD Operation Workflow Execution
 
-**Version**: 1.0  
-**Purpose**: Define execution specifics for operation workflows  
-**Scope**: All operation workflows (create/update documents)
+## Prerequisite Checklist
+
+- [ ] Agent has read and understood this requirement
+- [ ] Agent will follow the rules defined here
 
 ---
 
-**ALWAYS open and follow**: `core.md` WHEN editing this file
 
 ## Overview
 
@@ -391,6 +399,14 @@ What should the vision be?
 
 ---
 
+## Validation Checklist
+
+- [ ] Document follows required structure
+- [ ] All validation criteria pass
+
+---
+
+
 ## References
 
 **This file is referenced by**:
@@ -398,5 +414,5 @@ What should the vision be?
 
 **References**:
 - `workflow-execution.md` - General execution instructions
-- `core-workflow-operations.md` - Operation workflow structure requirements
+- `../.adapter/specs/patterns.md` - Operation workflow structure requirements
 - `FDL.md` - FDL syntax for behavioral sections

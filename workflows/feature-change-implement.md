@@ -1,5 +1,9 @@
 ---
-description: Implement specific change from implementation plan
+fdd: true
+type: workflow
+name: Feature Change Implement
+version: 1.0
+purpose: Implement specific change from implementation plan
 ---
 
 # Implement Feature Change
@@ -10,11 +14,24 @@ description: Implement specific change from implementation plan
 
 ---
 
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+## Prerequisite Checklist
+
+- [ ] Agent has read execution-protocol.md
+- [ ] Agent has read workflow-execution.md
+- [ ] Agent understands this workflow's purpose
+
+---
+
+## Overview
+
+This workflow guides the execution of the specified task.
+
+---
+
+
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-read-requirements -->
 ## Requirements
 
 **ALWAYS open and follow**: 
@@ -25,17 +42,14 @@ Extract:
 - Task format and execution model
 - Code conventions from adapter
 - Testing requirements from adapter
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-read-requirements -->
 
 ---
 
 ## Prerequisites
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-read-prerequisites -->
 **MUST validate**:
 - [ ] CHANGES.md validated - validate: Score ≥90/100
 - [ ] Adapter exists - validate: Check adapter AGENTS.md (REQUIRED for development)
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-read-prerequisites -->
 
 **If adapter missing**: STOP, run `adapter` workflow first
 
@@ -45,13 +59,11 @@ Extract:
 
 ### 1. Select Change
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-select-task -->
 Ask user: Which change to implement?
 
 Options: List NOT_STARTED or IN_PROGRESS changes from CHANGES.md
 
 Store change ID
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-select-task -->
 
 ### 2. Read Change Specification
 
@@ -72,7 +84,6 @@ Follow MUST WHEN instructions for:
 - Build requirements
 
 ### 3.1 Code Tagging
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-add-tags -->
 Tag code with required @fdd-* markers.
 
 ## Step 4: Add FDD Tags
@@ -80,7 +91,6 @@ Tag code with required @fdd-* markers.
 **Action**: Tag code with @fdd-* markers
 
 Tag code with required @fdd-* markers.
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-add-tags -->
 
 **Rule**: Phase MUST be encoded as a postfix on feature-scoped tags. Standalone phase tags MUST NOT be used.
 
@@ -127,7 +137,6 @@ Tag code with required @fdd-* markers.
 - Prefer multiple tags when a block covers multiple IDs (e.g., change + req + algo)
 
 **Examples (multiple IDs allowed)**:
-<!-- !no-fdd-begin -->
 ```rust
 // @fdd-change:fdd-analytics-feature-schema-query-returns-change-gts-schema-types:ph-1
 // @fdd-req:fdd-analytics-feature-schema-query-returns-req-routing:ph-1
@@ -197,7 +206,6 @@ def validate_schema_structure(schema: dict):
 def convert_gts_to_json_schema(gts_schema):
     pass
 ```
-<!-- !no-fdd-end -->
 
 ### 3.2 Tag Verification (agent checklist)
 
@@ -210,15 +218,12 @@ def convert_gts_to_json_schema(gts_schema):
 - `@fdd-change:` to list change-tagged files
 - `@fdd-flow:`, `@fdd-algo:`, `@fdd-state:`, `@fdd-req:`, `@fdd-test:` to confirm DESIGN coverage
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-run-tests -->
 Run the project test suite.
 
 ## Step 5: Run Tests
 
 **Action**: Execute test suite
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-run-tests -->
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-write-code -->
 Implement code changes for the selected task.
 
 ### 4. Implement Tasks
@@ -228,11 +233,8 @@ Implement code changes for the selected task.
 2. Implement according to adapter conventions
 3. Run task validation
 
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-write-code -->
-
 4.
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-mark-complete -->
 Mark the task as complete in CHANGES.md.
 
 ## Step 6: Update CHANGES.md
@@ -241,7 +243,7 @@ Mark the task as complete in CHANGES.md.
 
 ckbox from `- [ ]` to `- [x]`
    - Example: `- [ ] 1.1.1 Task description` → `- [x] 1.1.1 Task description`
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-mark-complete -->
+
 5. Proceed to next task
 
 **After each task**:
@@ -252,7 +254,7 @@ ckbox from `- [ ]` to `- [x]`
 
 After all tasks done:
 1. **Update change status in CHANGES.md**:
-   - Change header: `**Status**: 🔄 IN_PROGRESS` → `**Status**: ✅ COMPLETED`
+   - Change header: `**Status**: IN_PROGRESS` → `**Status**: COMPLETED`
 2. **Update summary section**:
    - Increment "Completed" count
    - Decrement "In Progress" or "Not Started" count
@@ -274,6 +276,22 @@ Expected:
 
 ---
 
+## Validation Criteria
+
+- [ ] All workflow steps completed
+- [ ] Output artifacts are valid
+
+---
+
+
+## Validation Checklist
+
+- [ ] All prerequisites were met
+- [ ] All steps were executed in order
+
+---
+
+
 ## Next Steps
 
 **After implementing all changes**: 
@@ -283,17 +301,10 @@ Expected:
 
 ---
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-receive-assignment -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-open-agents-workflow -->
 ## Context
 
 Developer receives feature assignment from team lead and opens root AGENTS.md to start workflow.
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-open-agents-workflow -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-receive-assignment -->
 
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-report-errors -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-fix-issues -->
-<!-- fdd-begin fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-rerun-validation -->
 ## Error Recovery
 
 **If validation fails**:
@@ -302,6 +313,3 @@ Developer receives feature assignment from team lead and opens root AGENTS.md to
 3. Developer re-runs validation
 
 Repeat until validation passes.
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-rerun-validation -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-fix-issues -->
-<!-- fdd-end   fdd-fdd-feature-core-methodology-flow-developer-implement:ph-1:inst-report-errors -->

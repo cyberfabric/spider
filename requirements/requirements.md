@@ -1,12 +1,19 @@
-# Common Requirements Structure Requirements
-
-**Version**: 1.0  
-**Purpose**: Define common requirements shared across FDD structure requirements  
-**Scope**: FDD artifact documentation (BUSINESS.md, DESIGN.md, ADR.md, FEATURES.md, feature docs) and adapter spec docs
-
+---
+fdd: true
+type: requirement
+name: Common Requirements
+version: 1.0
+purpose: Define common requirements shared across FDD structure requirements
 ---
 
-**ALWAYS open and follow**: `core.md` WHEN editing this file
+# Common Requirements Structure Requirements
+
+## Prerequisite Checklist
+
+- [ ] Agent has identified which artifact type is being validated
+- [ ] Agent understands that these are SHARED requirements across all structure files
+
+---
 
 ## Overview
 
@@ -321,7 +328,17 @@ See `@ADR.md`
 
 ---
 
+## Validation Checklist
+
+- [ ] All links use standard Markdown format
+- [ ] No IDE-specific link notations used
+- [ ] No placeholder content remains
+- [ ] All FDD IDs are kebab-case and backticked
+- [ ] ID payload blocks properly delimited
+
+---
+
 ## References
 
-- `core.md` - Core formatting and requirement semantics
-- `core-requirements.md` - Requirements file structure and duplication rules
+- `../.adapter/specs/conventions.md` - Core formatting and requirement semantics
+- `../.adapter/specs/patterns.md` - Requirements file structure and duplication rules

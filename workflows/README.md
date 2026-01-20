@@ -1,9 +1,5 @@
+<!-- @fdd-change:fdd-fdd-feature-init-structure-change-workflow-structure:ph-1 -->
 # FDD Workflows (IDE & Agent Agnostic)
-
-**Version**: 1.0  
-**Purpose**: Universal workflow guides that can be adapted to any IDE, AI agent, or manual execution
-
----
 
 ## Overview
 

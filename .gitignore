@@ -36,3 +36,4 @@ coverage/
 ~$deck.pptx
 deck.pptx
 .coverage
+coverage.json

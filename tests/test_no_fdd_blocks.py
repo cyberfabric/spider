@@ -1,4 +1,3 @@
-# @fdd-test:fdd-fdd-feature-core-methodology-test-no-fdd-block-exclusion:ph-1
 """
 Test !no-fdd-begin/!no-fdd-end block exclusion mechanism.
 

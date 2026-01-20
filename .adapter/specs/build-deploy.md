@@ -14,7 +14,7 @@
 - Python is interpreted language
 - No compilation step needed
 - No bundling or packaging required
-- No external dependencies to install
+- No runtime dependencies to install
 
 ---
 
@@ -50,14 +50,10 @@ python3 skills/fdd/scripts/fdd.py list-ids --artifact architecture/BUSINESS.md
 ### Run Tests
 
 ```bash
-# From skills/fdd directory
-python3 -m unittest discover -s tests -p 'test_*.py'
+make test
 
-# Verbose output
-python3 -m unittest discover -s tests -p 'test_*.py' -v
-
-# Specific test file
-python3 -m unittest tests.test_validate
+# Coverage
+make test-coverage
 ```
 
 ---
@@ -66,7 +62,11 @@ python3 -m unittest tests.test_validate
 
 **Runtime**: Python 3.6+
 
-**External dependencies**: None (standard library only)
+**Runtime dependencies**: None (standard library only)
+
+**Dev/Test tooling**:
+- `pipx`
+- `pytest` and `pytest-cov` (installed and executed via `pipx`)
 
 **Verification**:
 ```bash
@@ -108,20 +108,8 @@ python3 --version
 ### For New Projects
 
 **Minimal setup**:
-```bash
-# Create adapter directory
-mkdir -p .adapter
-
-# Create config
-echo '{"fddAdapterPath": ".adapter"}' > .fdd-config.json
-
-# Create minimal AGENTS.md
-cat > .adapter/AGENTS.md << 'EOF'
-# FDD Adapter: ProjectName
-
-**Extends**: `../AGENTS.md`
-EOF
-```
+- Create `.fdd-config.json` at project root with `fddAdapterPath` pointing to the adapter directory.
+- Create `{adapter-directory}/AGENTS.md` with `**Extends**: ../AGENTS.md`.
 
 ---
 
@@ -167,18 +155,12 @@ build/
 ### Quick Start
 
 ```bash
-# 1. Clone/navigate to FDD project
-cd /path/to/FDD
-
-# 2. Verify Python version
 python3 --version
 
-# 3. Run tests to verify setup
-cd skills/fdd
-python3 -m unittest discover -s tests -p 'test_*.py'
+# Run tests to verify setup
+make test
 
-# 4. Use FDD tool
-cd ../..
+# Use FDD tool
 python3 skills/fdd/scripts/fdd.py adapter-info --root .
 ```
 
@@ -187,11 +169,10 @@ python3 skills/fdd/scripts/fdd.py adapter-info --root .
 ```bash
 # 1. Make code changes in skills/fdd/scripts/fdd.py
 
-# 2. Add/update tests in skills/fdd/tests/
+# 2. Add/update tests in tests/
 
 # 3. Run tests
-cd skills/fdd
-python3 -m unittest discover -s tests -p 'test_*.py'
+make test
 
 # 4. Commit changes
 git add .
@@ -230,8 +211,8 @@ Agent MUST verify before implementation:
 - [ ] Python 3.6+ is available
 - [ ] No build step required
 - [ ] Tool runs directly with `python3 scripts/fdd.py`
-- [ ] Tests run with standard unittest
-- [ ] No external dependencies needed
+- [ ] Tests run via `make test` (preferred)
+- [ ] Test tooling is available via `pipx`
 
 **Self-test**:
 - [ ] Did I check all criteria?

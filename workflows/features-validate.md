@@ -1,5 +1,9 @@
 ---
-description: Validate features manifest
+fdd: true
+type: workflow
+name: Features Validate
+version: 1.0
+purpose: Validate features manifest
 ---
 
 # Validate Features Manifest
@@ -10,7 +14,21 @@ description: Validate features manifest
 
 ---
 
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
+## Prerequisite Checklist
+
+- [ ] Agent has read execution-protocol.md
+- [ ] Agent has read workflow-execution.md
+- [ ] Agent understands this workflow's purpose
+
+---
+
+## Overview
+
+This workflow guides the execution of the specified task.
+
+---
+
+
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
@@ -25,7 +43,7 @@ ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing th
 
 **Workflow-Specific Requirements**:
 - [ ] ✅ Open and follow `../requirements/features-manifest-structure.md` (This workflow's requirements)
-- [ ] ✅ Check adapter initialization (FDD-Adapter/AGENTS.md exists)
+- [ ] ✅ Check adapter initialization (`.fdd-config.json` exists and adapter directory exists per `fdd adapter-info`)
 - [ ] ✅ Validate all prerequisites from Prerequisites section below
 
 **Self-Check**:
@@ -55,7 +73,7 @@ Extract:
 **MUST validate**:
 - [ ] FEATURES.md exists - validate: Check file at `architecture/features/FEATURES.md`
 - [ ] DESIGN.md exists - validate: Check file at `architecture/DESIGN.md`
-- [ ] DESIGN.md validated - validate: Score ≥90/100
+- [ ] DESIGN.md validated - validate: Deterministic validator PASS (`fdd validate`, including traceability with BUSINESS.md and ADR.md) and score threshold met (≥90/100 if scoring is reported)
 
 **If missing**: Run prerequisite workflows
 
@@ -70,7 +88,23 @@ Open `architecture/DESIGN.md`
 Extract:
 - All requirement IDs (Section B)
 
-### 2. Execute Validation
+### 2. Run Deterministic Gate
+
+Run the deterministic validator for prerequisites and the target artifact.
+
+**Commands** (run from repo root):
+```bash
+python3 skills/fdd/scripts/fdd.py validate --artifact architecture/DESIGN.md --business architecture/BUSINESS.md --adr architecture/ADR.md
+python3 skills/fdd/scripts/fdd.py validate --artifact architecture/features/FEATURES.md --design architecture/DESIGN.md
+```
+
+**MUST** include the raw JSON output of these commands in the chat under a "Deterministic Gate Output" subsection.
+
+**If FAIL**: Stop and report workflow FAIL.
+
+**If PASS**: Continue. Deterministic PASS is NOT workflow completion.
+
+### 3. Execute Validation
 
 Follow validation criteria from `features-manifest-structure.md`:
 - Structure (20 pts): Required sections present
@@ -80,7 +114,7 @@ Follow validation criteria from `features-manifest-structure.md`:
 
 Calculate total score
 
-### 3. Output Results to Chat
+### 4. Output Results to Chat
 
 **Format**:
 ```markdown
@@ -129,6 +163,22 @@ Calculate total score
 Self-validating workflow
 
 ---
+
+## Validation Criteria
+
+- [ ] All workflow steps completed
+- [ ] Output artifacts are valid
+
+---
+
+
+## Validation Checklist
+
+- [ ] All prerequisites were met
+- [ ] All steps were executed in order
+
+---
+
 
 ## Next Steps
 

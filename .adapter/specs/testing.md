@@ -8,12 +8,14 @@
 
 ## Test Framework
 
-**Framework**: `unittest` (Python standard library)
+**Framework**: `pytest` (executed via `pipx`)
 
-**Why unittest**:
-- Part of Python standard library (no dependencies)
-- Mature and well-documented
-- Sufficient for project needs
+**Why pytest**:
+- The repository test suite under `tests/` is written for `pytest`
+- Matches `Makefile` targets (`make test`, `make test-coverage`)
+
+**Notes**:
+- Some tests import `unittest` utilities (for example, `unittest.SkipTest`) for compatibility shims, but the suite is executed by `pytest`
 
 ---
 
@@ -22,31 +24,29 @@
 ### Test Location
 
 ```
-skills/fdd/tests/
-├── test_validate.py      # 59 validation tests
-├── test_list_api.py      # List/search API tests
-└── test_read_search.py   # Read operations tests
+tests/
+├── test_validate.py
+├── test_design_validation.py
+├── test_core_structure.py
+└── test_workflow_parsing.py
 ```
 
 ### Test Files
 
-**test_validate.py** (59 tests):
+**test_validate.py**:
 - Artifact validation (BUSINESS.md, DESIGN.md, etc.)
 - Code traceability scanning
 - ID format validation
 - Cross-reference checks
 
-**test_list_api.py** (23 tests):
-- list-ids command
-- list-items command
-- list-sections command
-- Pattern matching and filtering
+**test_design_validation.py**:
+- Design-first enforcement checks on real artifacts
 
-**test_read_search.py**:
-- read-section command
-- get-item command
-- find-id command
-- Text search operations
+**test_core_structure.py**:
+- Base structure checks for requirements/workflows/AGENTS
+
+**test_workflow_parsing.py**:
+- Workflow parsing and required section checks
 
 ---
 
@@ -55,37 +55,35 @@ skills/fdd/tests/
 ### Run All Tests
 
 ```bash
-cd skills/fdd
-python3 -m unittest discover -s tests -p 'test_*.py'
+make test
+```
+
+### Run All Tests (Direct)
+
+```bash
+pipx run --spec pytest pytest tests/ -v --tb=short
 ```
 
 ### Run Specific Test File
 
 ```bash
-python3 -m unittest tests.test_validate
-python3 -m unittest tests.test_list_api
-python3 -m unittest tests.test_read_search
+pipx run --spec pytest pytest tests/test_validate.py -v --tb=short
 ```
 
 ### Run Specific Test Case
 
 ```bash
-python3 -m unittest tests.test_validate.TestFeatureDesignValidation
-python3 -m unittest tests.test_validate.TestFeatureDesignValidation.test_valid_minimal
+pipx run --spec pytest pytest tests/test_validate.py -k "TestFeatureDesignValidation and test_valid_minimal" -v --tb=short
 ```
 
 ---
 
 ## Test Coverage
 
-**Current Status**: ✅ 82/82 tests passing (100%)
-
 **Coverage Areas**:
-- ✅ All validation functions
-- ✅ All search/traceability commands
-- ✅ Code traceability scanning
-- ✅ Error handling
-- ✅ Edge cases
+- Artifact structure validation
+- Workflow parsing and structure checks
+- Traceability scanning and ID validation
 
 **Production Tested**:
 - Validated on real project (hyperspot/modules/analytics)
@@ -100,24 +98,16 @@ python3 -m unittest tests.test_validate.TestFeatureDesignValidation.test_valid_m
 ### Test Class Structure
 
 ```python
-import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-class TestFeatureValidation(unittest.TestCase):
-    def setUp(self):
-        # Common setup for all tests
-        pass
-    
-    def test_valid_feature_design(self):
-        # Test valid input
-        result = validate_feature_design(valid_text)
-        self.assertEqual(result["status"], "PASS")
-    
-    def test_invalid_missing_section(self):
-        # Test error handling
-        result = validate_feature_design(invalid_text)
-        self.assertEqual(result["status"], "FAIL")
+def test_valid_feature_design():
+    result = validate_feature_design(valid_text)
+    assert result["status"] == "PASS"
+
+def test_invalid_missing_section():
+    result = validate_feature_design(invalid_text)
+    assert result["status"] == "FAIL"
 ```
 
 ### Naming Convention
@@ -133,10 +123,10 @@ Examples:
 
 **Common patterns**:
 ```python
-self.assertEqual(result["status"], "PASS")
-self.assertIn("error", result)
-self.assertTrue(len(result["errors"]) > 0)
-self.assertIsNone(result["data"])
+assert result["status"] == "PASS"
+assert "error" in result
+assert len(result["errors"]) > 0
+assert result["data"] is None
 ```
 
 ---
@@ -178,7 +168,7 @@ def _valid_feature_design() -> str:
 
 **Command for CI**:
 ```bash
-python3 -m unittest discover -s tests -p 'test_*.py' -v
+pipx run --spec pytest pytest tests/ -v --tb=short
 ```
 
 ---
@@ -186,8 +176,8 @@ python3 -m unittest discover -s tests -p 'test_*.py' -v
 ## Source
 
 **Discovered from**:
-- `skills/fdd/tests/` directory
-- `skills/fdd/README.md` - Test statistics
+- `tests/` directory
+- `Makefile` targets (`test`, `test-coverage`)
 - Test file analysis
 
 ---
@@ -195,11 +185,11 @@ python3 -m unittest discover -s tests -p 'test_*.py' -v
 ## Validation Checklist
 
 Agent MUST verify before implementation:
-- [ ] Tests use `unittest` framework
+- [ ] Tests use `pytest` framework
 - [ ] Test files follow `test_*.py` naming
 - [ ] Test methods start with `test_`
-- [ ] Tests are in `skills/fdd/tests/` directory
-- [ ] Tests can run with standard `python3 -m unittest`
+- [ ] Tests are in `tests/` directory
+- [ ] Tests can run via `make test` (preferred) or `pipx run --spec pytest pytest`
 
 **Self-test**:
 - [ ] Did I check all criteria?

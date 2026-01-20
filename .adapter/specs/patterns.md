@@ -30,8 +30,6 @@
 
 **Examples**:
 ```markdown
-ALWAYS open and follow `requirements/core.md` WHEN editing this file
-
 ALWAYS open and follow `specs/tech-stack.md` WHEN executing workflows: design.md, feature-change-implement.md
 
 ALWAYS open and follow `specs/conventions.md` WHEN executing workflows: adapter-validate.md, feature-code-validate.md
@@ -87,8 +85,6 @@ ALWAYS open and follow `specs/conventions.md` WHEN executing workflows: adapter-
 **Artifact**: {Target artifact path}
 
 ---
-
-**ALWAYS open and follow**: `../requirements/core.md` WHEN editing this file
 
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
@@ -255,11 +251,72 @@ architecture/features/
 
 ---
 
+## FDD Framework Requirements (Migrated)
+
+### Source of Truth
+
+When requirements in this spec conflict with `architecture/features/feature-init-structure/DESIGN.md`, follow `architecture/features/feature-init-structure/DESIGN.md`.
+
+### AGENTS.md Requirements
+
+**AGENTS.md MUST contain ONLY**:
+- Navigation instructions in one of these formats:
+  - `ALWAYS open and follow {file} WHEN {trigger}`
+  - `ALWAYS execute {workflow} WHEN {trigger}`
+  - `ALWAYS do {action} WHEN {trigger}`
+- No duplicated requirements/spec content from referenced files
+
+**Exception (core FDD only)**:
+- `AGENTS.md` MAY include mandatory instruction semantics and enforcement sections
+
+**Adapter AGENTS.md WHEN rule (mandatory)**:
+- Each navigation rule MUST use a WHEN clause that is ONLY a list of FDD workflows
+- Canonical form:
+  - `ALWAYS open and follow {spec-file} WHEN executing workflows: {workflow1.md}, {workflow2.md}, ...`
+- The workflow names MUST match files under `/workflows/`
+
+### Workflow File Requirements
+
+**Workflow files MUST have**:
+1. YAML frontmatter
+2. `# {Workflow Name}` title
+3. Prerequisites section with `- [ ]` checkboxes and validation method
+4. Steps section with sequentially numbered `### {n}. {Action Verb} {Object}` steps
+5. Next Steps section with explicit success/failure paths and exact workflow filenames
+
+**Workflow files MUST NOT**:
+- Use OS-specific commands
+- Omit validation method for prerequisites
+
+### Operation Workflow Content Requirements
+
+Operation workflows MUST:
+- Ask questions with proposed answers
+- Include user confirmation points before file creation/modification
+- Include a Validation section that runs the relevant validation workflow
+
+Operation workflows MUST NOT:
+- Create or modify files without user confirmation
+- Ask open-ended questions without proposals
+
+### Validation Workflow Content Requirements
+
+Validation workflows MUST:
+- Be fully automated (no user interaction)
+- Read the relevant requirements/specs and validate the artifact
+- Calculate a deterministic score and print to chat only
+
+Validation workflows MUST NOT:
+- Create or modify files
+- Invent new validation criteria
+
+---
+
 ## Source
 
 **Discovered from**:
 - `AGENTS.md` - WHEN clause patterns
-- `requirements/core.md` - FDD principles
+- `.adapter/specs/conventions.md` - FDD principles
 - `requirements/FDL.md` - FDL specification
 - `workflows/*.md` - Workflow structure
 - `README.md` - FDD overview
