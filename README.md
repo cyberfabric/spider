@@ -357,49 +357,17 @@ Ongoing: Update artifacts as project evolves
 - **Onboarding speed** - New members follow workflows
 - **Quality gates** - Validation before proceeding
 
-### 4. FDD vs OpenSpec - Design-First vs Change-First
+### 4. FDD vs OpenSpec vs Spec Kit vs MCAF
 
-**Honest comparison**: Both are valuable methodologies, but they solve different problems.
+For a comprehensive comparison of FDD with other AI-assisted development methodologies, see:
 
-| Aspect | OpenSpec | FDD |
-|--------|----------|-----|
-| **Primary Focus** | Change management | Design-first development |
-| **What it defines** | How to track changes<br>How to track changes<br>Change history | What to build (architecture)<br>How it works (actor flows)<br>Why decisions were made |
-| **Starting point** | Assumes you know what to build<br>Start with change proposal | Start with business context<br>Define overall design first |
-| **Design artifacts** | No overall design structure<br>No business context document<br>No feature planning | BUSINESS.md (business context)<br>DESIGN.md (architecture)<br>ADR.md (decision records)<br>FEATURES.md (feature manifest) |
-| **Actor flows** | Not part of methodology<br>Write in change proposals | Section B of every feature<br>Reviewable by non-programmers<br>Uses FDL (plain English) |
-| **Domain model** | No standardized location<br>Define per change | Defined once in Overall Design<br>Referenced by all features<br>Technology-agnostic (GTS, JSON Schema, etc.) |
-| **API contracts** | No standardized location<br>Define per change | Defined once in Overall Design<br>Referenced by all features<br>Format-agnostic (OpenAPI, GraphQL, etc.) |
-| **Cross-feature validation** | No mechanism<br>Manual coordination needed | Built-in validation<br>Detects type redefinitions<br>Validates dependencies |
-| **Stakeholder review** | Technical proposals<br>Requires technical knowledge | Plain English actor flows<br>Business-reviewable designs<br>FDL algorithms |
-| **Change tracking** | Excellent atomic tracking<br>Clear change history<br>Delta specifications | CHANGES.md per feature<br>Task checklists<br>Status tracking |
-| **Implementation** | One change at a time<br>Clear tasks per change | CHANGES.md guides implementation<br>Validated against feature design |
-| **AI integration** | AI can implement changes<br>But must know what to build | AI follows complete methodology<br>AGENTS.md provides full context<br>Workflows guide every step |
-| **Learning curve** | Simple to start<br>Just create changes | Requires understanding methodology<br>But workflows guide you |
-| **Best for** | Tracking implementation changes<br>Delta documentation<br>Audit trails | Design-first projects<br>Team collaboration<br>Stakeholder involvement<br>Complex systems |
+**[COMPARISON_FDD_OPENSPEC_SPECKIT_MCAF.md](COMPARISON_FDD_OPENSPEC_SPECKIT_MCAF.md)**
 
-**When to use what**:
-
-**Use OpenSpec alone** if you:
-- Have clear requirements already documented elsewhere
-- Small team, everyone knows what to build
-- Need only change tracking and audit trail
-- Don't need cross-feature coordination
-
-**Use FDD** if you:
-- Need to design before implementation
-- Want stakeholders to review logic
-- Have multiple features with dependencies
-- Need overall architecture documentation
-- Want AI to follow complete methodology
-- Need validation before coding
-
-**Use FDD + OpenSpec** if you:
-- Want best of both worlds (FDD has built-in CHANGES.md tracking)
-- FDD's CHANGES.md may be sufficient for many projects
-- OpenSpec adds more powerful delta tracking if needed
-
-**Key insight**: FDD includes change tracking via CHANGES.md. You get design artifacts + change tracking in one methodology. OpenSpec is optional if you need more sophisticated change management.
+This document provides:
+- Detailed cross-capability matrix with quantitative scoring
+- Deep comparison across multiple dimensions
+- Best-fit use cases for each framework
+- Practical interoperability patterns
 
 ### 5. FDL (FDD Description Language) - Plain English Logic
 
