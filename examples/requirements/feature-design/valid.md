@@ -1,77 +1,89 @@
-# Feature: Demo Sample
+# Feature: Task CRUD
 
 ## A. Feature Context
 
-**Feature ID**: `fdd-demo-feature-sample`
+**Feature ID**: `fdd-taskflow-feature-task-crud`
 **Status**: IN_PROGRESS
 
 ### 1. Overview
-ok.
+Core task management functionality for creating, viewing, updating, and deleting tasks.
 ### 2. Purpose
-ok.
+Enable team members to manage their work items with full lifecycle tracking.
 ### 3. Actors
-- `fdd-demo-actor-architect`
+- `fdd-taskflow-actor-member`
+- `fdd-taskflow-actor-lead`
 ### 4. References
 - Overall Design: [DESIGN](../../DESIGN.md)
 
 ## B. Actor Flows (FDL)
-### User does thing
+### Create Task
 
-- [ ] **ID**: `fdd-demo-feature-sample-flow-user-does-thing`
+- [ ] **ID**: `fdd-taskflow-feature-task-crud-flow-create`
 
 <!-- fdd-id-content -->
-1. [ ] - `ph-1` - User does it - `inst-user-does-it`
+1. [x] - `ph-1` - User fills task form (title, description, priority) - `inst-fill-form`
+2. [x] - `ph-1` - System validates required fields - `inst-validate`
+3. [ ] - `ph-2` - User optionally assigns to team member - `inst-assign`
+4. [x] - `ph-1` - System saves task with status BACKLOG - `inst-save`
 <!-- fdd-id-content -->
 
 ## C. Algorithms (FDL)
-### Algo
+### Validate Task
 
-- [ ] **ID**: `fdd-demo-feature-sample-algo-do-thing`
+- [x] **ID**: `fdd-taskflow-feature-task-crud-algo-validate`
 
 <!-- fdd-id-content -->
-1. [ ] - `ph-1` - **RETURN** ok - `inst-return-ok`
+1. [x] - `ph-1` - **IF** title is empty **RETURN** error "Title required" - `inst-check-title`
+2. [x] - `ph-1` - **IF** priority not in [LOW, MEDIUM, HIGH] **RETURN** error - `inst-check-priority`
+3. [x] - `ph-1` - **RETURN** valid - `inst-return-valid`
 <!-- fdd-id-content -->
 
 ## D. States (FDL)
-### State
+### Task Status
 
-- [ ] **ID**: `fdd-demo-feature-sample-state-entity`
+- [ ] **ID**: `fdd-taskflow-feature-task-crud-state-status`
 
 <!-- fdd-id-content -->
-1. [ ] - `ph-1` - **FROM** A **TO** B **WHEN** ok - `inst-transition-a-to-b`
+1. [x] - `ph-1` - **FROM** BACKLOG **TO** IN_PROGRESS **WHEN** user starts work - `inst-start`
+2. [ ] - `ph-2` - **FROM** IN_PROGRESS **TO** DONE **WHEN** user completes - `inst-complete`
+3. [ ] - `ph-2` - **FROM** DONE **TO** BACKLOG **WHEN** user reopens - `inst-reopen`
 <!-- fdd-id-content -->
 
 ## E. Technical Details
-ok.
+- API: REST endpoints at `/api/tasks`
+- Storage: PostgreSQL `tasks` table
+- Validation: Server-side with Zod schemas
 
 ## F. Requirements
-### Req
+### Task Creation
 
-- [ ] **ID**: `fdd-demo-feature-sample-req-do-thing`
+- [ ] **ID**: `fdd-taskflow-feature-task-crud-req-create`
 
 <!-- fdd-id-content -->
 **Status**: 🔄 IN_PROGRESS
-**Description**: Must do.
+**Description**: Users can create tasks with title, description, priority, and due date.
 **References**:
-- [User does thing](#user-does-thing)
+- [Create Task](#create-task)
 **Implements**:
-- `fdd-demo-feature-sample-flow-user-does-thing`
-- `fdd-demo-feature-sample-algo-do-thing`
+- `fdd-taskflow-feature-task-crud-flow-create`
+- `fdd-taskflow-feature-task-crud-algo-validate`
 **Phases**:
-- [ ] `ph-1`: initial
+- [x] `ph-1`: basic creation
+- [ ] `ph-2`: assignment support
 **Tests Covered**:
-- `fdd-demo-feature-sample-test-do-thing`
+- `fdd-taskflow-feature-task-crud-test-create`
 **Acceptance Criteria**:
-- A
-- B
+- Task saved with all required fields
+- Validation errors shown for invalid input
 <!-- fdd-id-content -->
 
 ## G. Testing Scenarios
-### Test do thing
+### Create Task Validation
 
-- [x] **ID**: `fdd-demo-feature-sample-test-do-thing`
+- [x] **ID**: `fdd-taskflow-feature-task-crud-test-create`
 
 <!-- fdd-id-content -->
-**Validates**: `fdd-demo-feature-sample-req-do-thing`
-1. [ ] - `ph-1` - Do something - `inst-do-something`
+**Validates**: `fdd-taskflow-feature-task-crud-req-create`
+1. [x] - `ph-1` - Submit form with valid data, verify task created - `inst-valid-create`
+2. [x] - `ph-1` - Submit empty title, verify error message - `inst-empty-title`
 <!-- fdd-id-content -->

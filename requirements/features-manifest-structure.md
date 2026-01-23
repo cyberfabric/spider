@@ -149,14 +149,14 @@ purpose: Define validation rules for FEATURES.md files
 
 1. **Requirements Coverage (MANDATORY)**
    - All requirement IDs from DESIGN.md Section B.1 (FR) MUST appear in at least one feature
-   - All requirement IDs from DESIGN.md Section B.2 (NFR) MUST appear in at least one feature
+   - All NFR IDs from DESIGN.md Section C.4 (NFR) MUST appear in at least one feature
    - No orphaned requirements
 
 2. **Principles Coverage (RECOMMENDED)**
-   - Principle IDs from DESIGN.md Section B.3 SHOULD appear in features that implement them
+   - Principle IDs from DESIGN.md Section B.2 SHOULD appear in features that implement them
 
 3. **Constraints Coverage (RECOMMENDED)**
-   - Constraint IDs from DESIGN.md Section B.4 SHOULD appear in affected features
+   - Constraint IDs from DESIGN.md Section B.3 SHOULD appear in affected features
 
 ### ID Format Validation
 

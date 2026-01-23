@@ -2,71 +2,95 @@
 
 ## A. Vision
 
-**Purpose**: Provide a lightweight framework for creating and validating structured architecture artifacts.
+**Purpose**: TaskFlow is a lightweight task management system for small teams, enabling task creation, assignment, and progress tracking with real-time notifications.
 
-This system defines a small set of artifacts and rules.
+The system focuses on simplicity and speed, allowing teams to manage their daily work without the overhead of complex project management tools. TaskFlow bridges the gap between simple to-do lists and enterprise-grade solutions.
 
 **Target Users**:
-- Architects
-- Developers
+- Team leads managing sprints
+- Developers tracking daily work
+- Project managers monitoring progress
 
 **Key Problems Solved**:
-- Missing structure in architecture docs
-- Inconsistent cross-references between artifacts
+- Scattered task tracking across multiple tools
+- Lack of visibility into team workload
+- Missing deadline notifications
 
 **Success Criteria**:
-- Validation reports are deterministic
-- Cross-references resolve without manual hunting
+- Tasks created and assigned in under 30 seconds
+- Real-time status updates visible to all team members
+- Overdue task alerts delivered within 1 minute
 
 ## B. Actors
 
 ### Human Actors
 
-#### Architect
+#### Team Member
 
-**ID**: `fdd-demo-actor-architect`
+**ID**: `fdd-taskflow-actor-member`
 
 <!-- fdd-id-content -->
-**Role**: Creates and updates architecture artifacts.
+**Role**: Creates tasks, updates progress, and collaborates on assignments.
+<!-- fdd-id-content -->
+
+#### Team Lead
+
+**ID**: `fdd-taskflow-actor-lead`
+
+<!-- fdd-id-content -->
+**Role**: Assigns tasks, sets priorities, and monitors team workload.
 <!-- fdd-id-content -->
 
 ### System Actors
 
-#### Validator
+#### Notification Service
 
-**ID**: `fdd-demo-actor-validator`
+**ID**: `fdd-taskflow-actor-notifier`
 
 <!-- fdd-id-content -->
-**Role**: Validates artifacts and reports issues.
+**Role**: Sends alerts for due dates, assignments, and status changes.
 <!-- fdd-id-content -->
 
 ## C. Capabilities
 
-#### Artifact Validation
+#### Task Management
 
-**ID**: `fdd-demo-capability-artifact-validation`
+**ID**: `fdd-taskflow-capability-task-mgmt`
 
 <!-- fdd-id-content -->
-- Validate artifact structure
-- Validate ID formatting
+- Create, edit, and delete tasks
+- Assign tasks to team members
+- Set due dates and priorities
 
-**Actors**: `fdd-demo-actor-architect`, `fdd-demo-actor-validator`
+**Actors**: `fdd-taskflow-actor-member`, `fdd-taskflow-actor-lead`
+<!-- fdd-id-content -->
+
+#### Notifications
+
+**ID**: `fdd-taskflow-capability-notifications`
+
+<!-- fdd-id-content -->
+- Push notifications for assignments
+- Email alerts for overdue tasks
+
+**Actors**: `fdd-taskflow-actor-notifier`
 <!-- fdd-id-content -->
 
 ## D. Use Cases
 
-#### UC-001: Validate an Artifact
+#### UC-001: Create and Assign Task
 
-**ID**: `fdd-demo-usecase-validate-artifact`
+**ID**: `fdd-taskflow-usecase-create-task`
 
 <!-- fdd-id-content -->
-**Actor**: `fdd-demo-actor-architect`
+**Actor**: `fdd-taskflow-actor-lead`
 
-**Preconditions**: Artifact file exists
+**Preconditions**: User is authenticated and has team lead permissions.
 
 **Flow**:
-1. Architect runs validation
-2. System reports issues
+1. Lead creates a new task with title and description
+2. Lead assigns task to a team member
+3. System sends notification to assignee
 
-**Postconditions**: Issues are visible and actionable
+**Postconditions**: Task appears in assignee's task list.
 <!-- fdd-id-content -->

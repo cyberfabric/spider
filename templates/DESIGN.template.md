@@ -19,7 +19,7 @@
 
 ## B. Requirements & Principles
 
-### B.1 Functional Requirements
+### B.1: Functional Requirements
 
 #### FR-{NNN}: {Requirement Title}
 
@@ -36,20 +36,7 @@
 
 <!-- TODO: Add more functional requirements as needed -->
 
-### B.2 Non-Functional Requirements
-
-#### NFR: {NFR Category}
-
-**ID**: `fdd-{project-name}-nfr-{category-slug}`
-
-<!-- fdd-id-content -->
-- {Specific requirement 1}
-- {Specific requirement 2}
-<!-- fdd-id-content -->
-
-<!-- TODO: Add more NFR categories: performance, scalability, reliability, security, etc. -->
-
-### B.3 Design Principles
+### B.2: Design Principles
 
 #### {Principle Name}
 
@@ -63,7 +50,7 @@
 
 <!-- TODO: Add more design principles as needed -->
 
-### B.4 Constraints
+### B.3: Constraints
 
 #### {Constraint Name}
 
@@ -79,7 +66,7 @@
 
 ## C. Technical Architecture
 
-### C.1 Component Model
+### C.1: Component Model
 
 <!-- TODO: Add component diagram (draw.io, Mermaid, or ASCII) -->
 
@@ -90,7 +77,7 @@
 **Interactions**:
 - {Component 1} → {Component 2}: {Description of interaction}
 
-### C.2 Domain Model
+### C.2: Domain Model
 
 **Technology**: {GTS | JSON Schema | OpenAPI | TypeScript}
 **Location**: [{domain-model-file}]({path/to/domain-model})
@@ -101,7 +88,7 @@
 **Relationships**:
 - {Entity1} → {Entity2}: {Relationship description}
 
-### C.3 API Contracts
+### C.3: API Contracts
 
 **Technology**: {REST/OpenAPI | GraphQL | gRPC | CLISPEC}
 **Location**: [{api-spec-file}]({path/to/api-spec})
@@ -109,23 +96,53 @@
 **Endpoints Overview**:
 - `{METHOD} {/path}` - {Description}
 
-### C.4 Security Model
+### C.4: Non-Functional Requirements
 
-**Authentication**: {Approach description}
-**Authorization**: {Approach description}
-**Data Protection**: {Approach description}
-**Security Boundaries**: {Description}
+#### NFR: Performance
 
-### C.5 Non-Functional Requirements
+**ID**: `fdd-{project-name}-nfr-performance`
 
-**Performance**:
+<!-- fdd-id-content -->
 - {Performance requirement 1}
+<!-- fdd-id-content -->
 
-**Scalability**:
+#### NFR: Scalability
+
+**ID**: `fdd-{project-name}-nfr-scalability`
+
+<!-- fdd-id-content -->
 - {Scalability requirement 1}
+<!-- fdd-id-content -->
 
-**Reliability**:
+#### NFR: Reliability
+
+**ID**: `fdd-{project-name}-nfr-reliability`
+
+<!-- fdd-id-content -->
 - {Reliability requirement 1}
+<!-- fdd-id-content -->
+
+#### NFR: Runtime & Operations
+
+**ID**: `fdd-{project-name}-nfr-runtime-operations`
+
+<!-- fdd-id-content -->
+- Deployment: {Local CLI | CI | Server | Desktop App}
+- Execution context: {Where it runs, constraints}
+- Observability: {Logs/metrics}
+- Failure modes: {Common failure cases}
+<!-- fdd-id-content -->
+
+#### NFR: Security
+
+**ID**: `fdd-{project-name}-nfr-security`
+
+<!-- fdd-id-content -->
+- Authentication: {Approach description}
+- Authorization: {Approach description}
+- Data protection: {Approach description}
+- Security boundaries: {Description}
+<!-- fdd-id-content -->
 
 ## D. Additional Context
 

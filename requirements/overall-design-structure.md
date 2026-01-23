@@ -56,7 +56,7 @@ purpose: Define validation rules for DESIGN.md files
 **Contains**: 
 - Section A: Architecture Overview
 - Section B: Requirements & Principles
-- Section C: Technical Architecture (C.1-C.5)
+- Section C: Technical Architecture (C.1-C.4)
 - Section D: Additional Context (optional)
 
 ---
@@ -87,19 +87,20 @@ purpose: Define validation rules for DESIGN.md files
 
 1. **All required sections present**
    - Section A: Architecture Overview
-   - Section B: Requirements & Principles (B.1-B.4)
-   - Section C: Technical Architecture (C.1-C.5)
+   - Section B: Requirements & Principles (B.1-B.3)
+   - Section C: Technical Architecture (C.1-C.4)
    - Section D: Additional Context (optional)
 
 2. **Section order correct**: A → B → C → D
 
 3. **No prohibited sections**
    - Only A-D allowed at top level
-   - Section C has exactly 5 subsections (C.1-C.5)
+   - Section C has exactly 4 subsections (C.1-C.4)
 
 4. **Headers use proper levels**
    - `##` for sections A-D
-   - `###` for subsections B.1-B.4, C.1-C.5
+   - `###` for subsections B.1-B.3, C.1-C.4
+   - Subsection headers MUST use `:` or `.` after the number (examples: `### B.1: Functional Requirements`, `### C.3: API Contracts`)
 
 ### Content Boundaries Validation
 
@@ -110,22 +111,20 @@ purpose: Define validation rules for DESIGN.md files
 
 ### Section B Subsections
 
-| Subsection | Content |
-|------------|---------|
-| B.1 | Functional Requirements |
-| B.2 | Non-Functional Requirements |
-| B.3 | Design Principles |
-| B.4 | Constraints |
+| Subsection | Content | Expected Content |
+|------------|---------|------------------|
+| B.1 | Functional Requirements | A list of requirement blocks written at overall-system scope (not feature-level FDL). Each requirement MUST have a stable requirement heading and include at least: `**ID**: \`fdd-{project}-req-{name}\`` plus traceability fields (e.g., `**Capabilities**:`, `**Actors**:`, optionally `**Use Cases**:` / `**ADRs**:`). Describe behavior and acceptance intent in plain language; avoid implementation tasks. |
+| B.2 | Design Principles | A list of architectural/design principles that shape decisions across the system. Each principle should be expressed as a short rule with rationale and practical implications, and include `**ID**: \`fdd-{project}-principle-{name}\``. Principles should be stable, reusable, and not duplicate constraints or requirements. |
+| B.3 | Constraints | A list of hard constraints that limit solution space (regulatory, platform, compatibility, vendor, data residency, legacy integration). Each constraint should include `**ID**: \`fdd-{project}-constraint-{name}\`` and a clear statement of what is NOT allowed / must be adhered to, plus any rationale and verification approach. |
 
 ### Section C Subsections
 
-| Subsection | Content |
-|------------|---------|
-| C.1 | Component Model |
-| C.2 | Domain Model |
-| C.3 | API Contracts |
-| C.4 | Security Model |
-| C.5 | Non-Functional Requirements |
+| Subsection | Content | Expected Content |
+|------------|---------|------------------|
+| C.1 | Component Model | High-level decomposition of the system into components/services/modules with responsibilities, boundaries, and key interactions. Include at least one diagram (image, Mermaid, or ASCII) and describe major data/control flows between components. |
+| C.2 | Domain Model | The authoritative domain model: entities/aggregates/value objects and their relationships, core invariants, and how they map to schemas. MUST provide clickable links to machine-readable schema sources (e.g., JSON Schema, TypeScript types, OpenAPI schemas) and indicate where they live in the repo. |
+| C.3 | API Contracts | The authoritative API contract surface (external and/or internal). MUST provide clickable links to machine-readable contracts (OpenAPI/CLISPEC/proto/GraphQL). Describe key endpoints/operations, request/response shapes at a high level, error handling expectations, authn/authz entry points, and versioning strategy if applicable. |
+| C.4 | Non-Functional Requirements | A consolidated list of NFRs (including security and runtime/operations concerns). Each NFR should be stated as a measurable constraint/target (latency/throughput/SLO, availability, durability, auditability, access control, secrets handling, observability, rollout/rollback, cost). Use stable IDs like `**ID**: \`fdd-{project}-nfr-{name}\`` and link to supporting configs/docs where relevant. |
 
 ### Content Validation
 
@@ -228,7 +227,7 @@ Each Functional Requirement (FR) MUST include:
 ## Common Issues
 
 - Missing required top-level sections (A/B/C)
-- Missing required C.1-C.5 subsections
+- Missing required C.1-C.4 subsections
 - Missing functional requirement IDs
 - Orphaned capabilities/use cases (not referenced in DESIGN.md)
 - Domain model/API references not clickable links

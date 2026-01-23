@@ -791,6 +791,20 @@ def _cmd_validate(argv: List[str]) -> int:
     if artifact_path.is_dir():
         from .validation.cascade import validate_all_artifacts
         
+        # ADR directory mode (artifact is architecture/ADR/ or named ADR)
+        if artifact_path.name == "ADR" or (artifact_path / "general").exists():
+            from .validation.cascade import validate_with_dependencies
+            report = validate_with_dependencies(
+                artifact_path,
+                skip_fs_checks=bool(args.skip_fs_checks),
+            )
+            out = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
+            if args.output:
+                Path(args.output).write_text(out, encoding="utf-8")
+            else:
+                print(out, end="")
+            return 0 if report["status"] == "PASS" else 2
+        
         # Backwards-compatible: feature directory mode (artifact contains DESIGN.md).
         if (artifact_path / "DESIGN.md").exists():
             if args.features:

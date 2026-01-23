@@ -2,12 +2,17 @@
 
 ## A. Vision
 
-**Purpose**: Example with intentional validation failures.
+**Purpose**: TaskFlow task management system.
 
 ## B. Actors
 
-#### Architect
+#### Team Member
 
-**ID**: fdd-demo-actor-architect
+**ID**: fdd-taskflow-actor-member
 
-**Role**: Missing required payload block markers and ID is not backticked.
+**Role**: Creates and manages tasks.
+
+This is intentionally invalid:
+- ID is not backticked (should be `fdd-taskflow-actor-member`)
+- Missing `<!-- fdd-id-content -->` markers around role content
+- Missing sections C (Capabilities) and D (Use Cases)

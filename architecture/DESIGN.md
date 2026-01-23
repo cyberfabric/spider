@@ -417,7 +417,7 @@ Methodology updates MUST preserve existing artifact structure. Breaking changes 
 Projects MUST adopt FDD incrementally (adapter → business → design → features). Adapter system MUST support adding new spec files without core changes. Skills system MUST support adding new tools via standard interface. Workflow system MUST support custom workflows via extension mechanism. Validation scoring MUST be configurable per project via adapter.
 
 <!-- fdd-id-content -->
-### B.3: Design Principles
+### B.2: Design Principles
 
 #### Principle 1: Technology Agnostic Core
 
@@ -469,7 +469,7 @@ Deterministic validators MUST run before manual review (Deterministic Gate patte
 Every design element MUST have a unique ID assigned at creation. Code tags (@fdd-*) MUST link implementation to specifications. Qualified IDs (base:ph-N:inst-name) MUST enable granular traceability. Repository-wide scanning MUST verify design-code mapping. This principle maintains design-code coherence and enables impact analysis when designs change.
 
 <!-- fdd-id-content -->
-### B.4: Constraints
+### B.3: Constraints
 
 #### Constraint 1: Python Standard Library Only
 
@@ -716,17 +716,15 @@ The FDD system consists of 6 core components organized in a layered architecture
 
 **CRITICAL**: API contracts are CLISPEC format (command-line interface specification), not REST/HTTP. All commands output JSON for machine consumption.
 
-### C.4: Security Model
+### C.4: Non-Functional Requirements
 
-**Authentication**: None (local command-line tool)
+<!-- fdd-id-content -->
+#### NFR-006: Security
 
-**Authorization**: File system permissions only
+**ID**: `fdd-fdd-nfr-security`
 
-**Data Protection**: 
-- No sensitive data collection or transmission
-- All processing is local to developer machine
-- No network requests or external API calls
-- Git history contains all changes (audit trail)
+<!-- fdd-id-content -->
+The FDD tool MUST operate without authentication (local command-line tool). Authorization MUST rely on file system permissions only. The system MUST NOT collect or transmit sensitive data. All processing MUST be local to the developer machine with no network requests or external API calls. Git history MUST serve as the audit trail for all changes.
 
 **Security Boundaries**:
 - Tool runs with user's file system permissions
@@ -735,16 +733,22 @@ The FDD system consists of 6 core components organized in a layered architecture
 - Write operations only for validation (report generation)
 - Workflows create files only after user confirmation
 
-**Note**: FDD is a methodology framework for design documentation, not a security-critical system. Security considerations are minimal as all operations are local and user-controlled.
+<!-- fdd-id-content -->
+#### NFR-007: Auditability
 
-### C.5: Non-Functional Requirements
+**ID**: `fdd-fdd-nfr-auditability`
 
-See Section B.2 for complete NFR specifications:
-- **NFR-001: Performance** - Validation speed, scanning performance
-- **NFR-002: Compatibility** - Language/framework agnostic
-- **NFR-003: Usability** - AI agent success rate, onboarding time
-- **NFR-004: Maintainability** - Update compatibility, migration paths
-- **NFR-005: Extensibility** - Incremental adoption, adapter system
+<!-- fdd-id-content -->
+All artifact changes MUST be tracked through Git version control. Validation reports MUST be reproducible given the same input artifacts. The system MUST provide traceability from requirements through implementation via FDD ID cross-references.
+
+<!-- fdd-id-content -->
+#### NFR-008: Portability
+
+**ID**: `fdd-fdd-nfr-portability`
+
+<!-- fdd-id-content -->
+The FDD tool MUST run on any platform with Python 3.6+ (Windows, macOS, Linux). No platform-specific dependencies are permitted. All artifacts MUST be plain text (Markdown) for universal accessibility. Note: FDD is a methodology framework for design documentation, not a security-critical system. Security considerations are minimal as all operations are local and user-controlled.
+<!-- fdd-id-content -->
 
 ---
 

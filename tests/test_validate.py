@@ -3164,8 +3164,8 @@ class TestRequirementExamples(unittest.TestCase):
             ("overall-design", Path("architecture/DESIGN.md")),
             ("adr", Path("architecture/ADR")),
             ("features-manifest", Path("architecture/features/FEATURES.md")),
-            ("feature-design", Path("architecture/features/feature-sample/DESIGN.md")),
-            ("feature-changes", Path("architecture/features/feature-sample/CHANGES.md")),
+            ("feature-design", Path("architecture/features/feature-task-crud/DESIGN.md")),
+            ("feature-changes", Path("architecture/features/feature-task-crud/CHANGES.md")),
         ]
 
         for slug, rel_artifact_path in cases:
@@ -3177,8 +3177,9 @@ class TestRequirementExamples(unittest.TestCase):
                 example_text = (examples_dir / slug / "valid.md").read_text(encoding="utf-8")
                 if slug == "adr":
                     # ADR is a directory artifact: write the example as a per-record ADR file inside.
+                    # Filename must match the ADR ID in the example (fdd-taskflow-adr-postgres-storage)
                     (artifact_path / "general").mkdir(parents=True, exist_ok=True)
-                    (artifact_path / "general" / "0001-fdd-demo-adr-deterministic-validation.md").write_text(example_text, encoding="utf-8")
+                    (artifact_path / "general" / "0001-fdd-taskflow-adr-postgres-storage.md").write_text(example_text, encoding="utf-8")
                 else:
                     artifact_path.write_text(example_text, encoding="utf-8")
 

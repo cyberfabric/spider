@@ -28,7 +28,9 @@ Architecture content here.
 
 ## B. Requirements & Principles
 
-### FR-001: First Requirement
+### B.1: Functional Requirements
+
+#### FR-001: First Requirement
 
 **ID**: `fdd-myapp-req-first`
 
@@ -40,25 +42,37 @@ Architecture content here.
 
 Requirement description.
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Entity Schemas
+#### Principle: Simple
+
+**ID**: `fdd-myapp-principle-simple`
+
+Principle description.
+
+### B.3: Constraints
+
+#### Constraint: Limits
+
+**ID**: `fdd-myapp-constraint-limits`
+
+Constraint description.
+
+## C. Technical Architecture
+
+### C.1: Component Model
 
 Content.
 
-### C.2 Schema Format
+### C.2: Domain Model
 
 Content.
 
-### C.3 API Contracts
+### C.3: API Contracts
 
 Content.
 
-### C.4 Contract Format
-
-Content.
-
-### C.5 Event Schemas
+### C.4: Non-Functional Requirements
 
 Content.
 """
@@ -73,11 +87,35 @@ Content.
         """Test that missing Section A fails validation."""
         text = """# Technical Design
 
-## B. Requirements
+## B. Requirements & Principles
+
+### B.1: Functional Requirements
 
 Content.
 
-## C. Domain Model
+### B.2: Design Principles
+
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
 
 Content.
 """
@@ -95,7 +133,21 @@ Content.
 
 Content.
 
-## C. Domain Model
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
 
 Content.
 """
@@ -112,26 +164,11 @@ Content.
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
 
-Content.
-"""
-        report = validate_overall_design(text, skip_fs_checks=True)
-        
-        self.assertEqual(report["status"], "FAIL")
-        self.assertIn("C", [s["id"] for s in report["missing_sections"]])
+### B.1: Functional Requirements
 
-    def test_section_c_subsections_validation(self):
-        """Test that Section C must have exactly C.1-C.5 subsections."""
-        text = """# Technical Design
-
-## A. Architecture
-
-Content.
-
-## B. Requirements
-
-### FR-001: Requirement
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-test`
 
@@ -141,7 +178,52 @@ Content.
 
 Content.
 
-## C. Domain Model
+### B.2: Design Principles
+
+Content.
+
+### B.3: Constraints
+
+Content.
+
+Content.
+"""
+        report = validate_overall_design(text, skip_fs_checks=True)
+        
+        self.assertEqual(report["status"], "FAIL")
+        self.assertIn("C", [s["id"] for s in report["missing_sections"]])
+
+    def test_section_c_subsections_validation(self):
+        """Test that Section C must have exactly C.1-C.4 subsections."""
+        text = """# Technical Design
+
+## A. Architecture
+
+Content.
+
+## B. Requirements & Principles
+
+### B.1: Functional Requirements
+
+#### FR-001: Requirement
+
+**ID**: `fdd-app-req-test`
+
+**Capabilities**: `fdd-app-capability-test`
+
+**Actors**: `fdd-app-actor-user`
+
+Content.
+
+### B.2: Design Principles
+
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
 
 ### C.1: Schemas
 
@@ -157,11 +239,11 @@ Content.
 """
         report = validate_overall_design(text, skip_fs_checks=True)
         
-        # Missing C.4 and C.5
+        # Missing C.4
         structure_errors = [e for e in report["errors"] if e.get("type") == "structure"]
         if structure_errors:
             # Should detect missing subsections
-            self.assertIn("C.1..C.5", structure_errors[0]["message"])
+            self.assertIn("C.1..C.4", structure_errors[0]["message"])
         else:
             # Validator may not enforce this strictly
             pass
@@ -174,9 +256,11 @@ Content.
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
 
-### FR-001: Requirement
+### B.1: Functional Requirements
+
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-test`
 
@@ -186,7 +270,15 @@ Content.
 
 Content.
 
-## C. Domain Model
+### B.2: Design Principles
+
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
 
 ### C.2: Schema Format
 
@@ -203,17 +295,13 @@ Content.
 ### C.4: Contract Format
 
 Content.
-
-### C.5: Event Schemas
-
-Content.
 """
         report = validate_overall_design(text, skip_fs_checks=True)
         
         structure_errors = [e for e in report["errors"] if e.get("type") == "structure"]
         if structure_errors:
             # Should detect wrong order
-            self.assertIn("C.1..C.5", structure_errors[0]["message"])
+            self.assertIn("C.1..C.4", structure_errors[0]["message"])
         else:
             # Validator may not enforce order strictly
             pass
@@ -230,17 +318,37 @@ class TestOverallDesignRequirements(unittest.TestCase):
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
+
+### B.1: Functional Requirements
 
 No requirement IDs here.
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Schemas
-### C.2 Format
-### C.3 Contracts
-### C.4 Contract Format
-### C.5 Events
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
         report = validate_overall_design(text, skip_fs_checks=True)
         
@@ -257,9 +365,11 @@ No requirement IDs here.
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
 
-### FR-001: Requirement
+### B.1: Functional Requirements
+
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-test`
 
@@ -267,13 +377,31 @@ Content.
 
 No capabilities listed.
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Schemas
-### C.2 Format
-### C.3 Contracts
-### C.4 Contract Format
-### C.5 Events
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
         report = validate_overall_design(text, skip_fs_checks=True)
         
@@ -290,9 +418,11 @@ No capabilities listed.
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
 
-### FR-001: Requirement
+### B.1: Functional Requirements
+
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-test`
 
@@ -300,13 +430,31 @@ Content.
 
 No actors listed.
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Schemas
-### C.2 Format
-### C.3 Contracts
-### C.4 Contract Format
-### C.5 Events
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
         report = validate_overall_design(text, skip_fs_checks=True)
         
@@ -323,9 +471,11 @@ No actors listed.
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
 
-### FR-001: First Requirement
+### B.1: Functional Requirements
+
+#### FR-001: First Requirement
 
 **ID**: `fdd-app-req-first`
 
@@ -337,7 +487,7 @@ Content.
 
 Description.
 
-### FR-002: Second Requirement
+#### FR-002: Second Requirement
 
 **ID**: `fdd-app-req-second`
 
@@ -349,13 +499,39 @@ Description.
 
 Description.
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Schemas
-### C.2 Format
-### C.3 Contracts
-### C.4 Contract Format
-### C.5 Events
+#### Principle: Simple
+
+**ID**: `fdd-app-principle-simple`
+
+Content.
+
+### B.3: Constraints
+
+#### Constraint: Limits
+
+**ID**: `fdd-app-constraint-limits`
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
         report = validate_overall_design(text, skip_fs_checks=True)
         
@@ -402,9 +578,11 @@ class TestOverallDesignCrossReferences(unittest.TestCase):
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
 
-### FR-001: Requirement
+### B.1: Functional Requirements
+
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-first`
 
@@ -416,13 +594,31 @@ Content.
 
 Description.
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Schemas
-### C.2 Format
-### C.3 Contracts
-### C.4 Contract Format
-### C.5 Events
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
             design.write_text(design_text)
             
@@ -433,9 +629,8 @@ Description.
                 skip_fs_checks=False
             )
             
-            # Should have minimal or no errors
-            # May have warnings about missing subsections, but cross-refs should be valid
-            self.assertLessEqual(len(report["errors"]), 1)
+            # Cross-refs should be valid.
+            self.assertEqual(len(report["errors"]), 0)
             self.assertEqual(len(report["requirement_issues"]), 0)
 
     def test_unknown_actor_reference_fails(self):
@@ -468,9 +663,11 @@ Description.
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
 
-### FR-001: Requirement
+### B.1: Functional Requirements
+
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-test`
 
@@ -480,13 +677,31 @@ Content.
 
 Unknown actor!
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Schemas
-### C.2 Format
-### C.3 Contracts
-### C.4 Contract Format
-### C.5 Events
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
             design.write_text(design_text)
             
@@ -532,9 +747,11 @@ Unknown actor!
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
 
-### FR-001: Requirement
+### B.1: Functional Requirements
+
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-test`
 
@@ -544,13 +761,31 @@ Content.
 
 Unknown capability!
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Schemas
-### C.2 Format
-### C.3 Contracts
-### C.4 Contract Format
-### C.5 Events
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
             design.write_text(design_text)
             
@@ -602,9 +837,11 @@ Unknown capability!
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
 
-### FR-001: Requirement
+### B.1: Functional Requirements
+
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-test`
 
@@ -614,13 +851,31 @@ Content.
 
 Only references 'used' capability.
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Schemas
-### C.2 Format
-### C.3 Contracts
-### C.4 Contract Format
-### C.5 Events
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
             design.write_text(design_text)
             
@@ -689,9 +944,11 @@ class TestOverallDesignADRReferences(unittest.TestCase):
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
 
-### FR-001: Requirement
+### B.1: Functional Requirements
+
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-test`
 
@@ -703,13 +960,31 @@ Content.
 
 References ADR-0001.
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Schemas
-### C.2 Format
-### C.3 Contracts
-### C.4 Contract Format
-### C.5 Events
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
             design.write_text(design_text)
             
@@ -775,9 +1050,11 @@ References ADR-0001.
 
 Content.
 
-## B. Requirements
+## B. Requirements & Principles
 
-### FR-001: Requirement
+### B.1: Functional Requirements
+
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-test`
 
@@ -789,13 +1066,31 @@ Content.
 
 Unknown ADR!
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Schemas
-### C.2 Format
-### C.3 Contracts
-### C.4 Contract Format
-### C.5 Events
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
             design.write_text(design_text)
             
@@ -823,9 +1118,13 @@ class TestOverallDesignPlaceholders(unittest.TestCase):
 
 TODO: Add architecture details
 
-## B. Requirements
+## B. Requirements & Principles
+
+### B.1: Functional Requirements
 
 ### FR-001: Requirement
+
+**ID**: `fdd-app-req-test`
 
 **ID**: `fdd-app-req-test`
 
@@ -835,16 +1134,31 @@ TODO: Add architecture details
 
 TBD: Add requirement description
 
-## C. Domain Model
+### B.2: Design Principles
 
-### C.1 Schemas
+Content.
 
-FIXME: Update schemas
+### B.3: Constraints
 
-### C.2 Format
-### C.3 Contracts
-### C.4 Contract Format
-### C.5 Events
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
         report = validate_overall_design(text, skip_fs_checks=True)
         
@@ -863,13 +1177,11 @@ class TestRequirementBlocks(unittest.TestCase):
 
 Purpose here.
 
-## B. Business Model
+## B. Requirements & Principles
 
-Business model.
+### B.1: Functional Requirements
 
-## C. Requirements
-
-### C.1 Functional Requirements
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-001`
 
@@ -880,6 +1192,32 @@ Business model.
 **Use Cases**: `fdd-app-usecase-login`
 
 **ADRs**: `fdd-app-adr-0001`
+
+### B.2: Design Principles
+
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
         report = validate_overall_design(text, skip_fs_checks=True)
         
@@ -894,13 +1232,11 @@ Business model.
 
 Purpose.
 
-## B. Business Model
+## B. Requirements & Principles
 
-Model.
+### B.1: Functional Requirements
 
-## C. Requirements
-
-### C.1 Functional Requirements
+#### FR-001: Requirement
 
 **ID**: `fdd-app-req-001`
 
@@ -908,11 +1244,39 @@ Model.
 
 **Capabilities**: `fdd-app-capability-test`
 
+#### FR-002: Requirement
+
 **ID**: `fdd-app-req-002`
 
 **Actors**: `fdd-app-actor-admin`
 
 **Capabilities**: `fdd-app-capability-admin`
+
+### B.2: Design Principles
+
+Content.
+
+### B.3: Constraints
+
+Content.
+
+## C. Technical Architecture
+
+### C.1: Component Model
+
+Content.
+
+### C.2: Domain Model
+
+Content.
+
+### C.3: API Contracts
+
+Content.
+
+### C.4: Non-Functional Requirements
+
+Content.
 """
         report = validate_overall_design(text, skip_fs_checks=True)
         
@@ -923,45 +1287,67 @@ class TestSectionCSubsections(unittest.TestCase):
     """Test Section C subsection validation."""
 
     def test_section_c_all_subsections(self):
-        """Test Section C with all C.1-C.5 subsections."""
+        """Test Section C with all C.1-C.4 subsections."""
         text = """# DESIGN.md
 
 ## A. Purpose
 
 Purpose.
 
-## B. Business Model
+## B. Requirements & Principles
 
-Model.
+### B.1: Functional Requirements
 
-## C. Requirements
+#### FR-001: Requirement
 
-### C.1 Functional Requirements
+**ID**: `fdd-app-req-001`
+
+**Actors**: `fdd-app-actor-user`
+
+**Capabilities**: `fdd-app-capability-test`
 
 Functional.
 
-### C.2 Non-Functional Requirements
+### B.2: Design Principles
 
-NFR.
+#### Principle: Simple
 
-### C.3 Principles
+**ID**: `fdd-app-principle-simple`
 
 Principles.
 
-### C.4 Constraints
+### B.3: Constraints
+
+#### Constraint: Limits
+
+**ID**: `fdd-app-constraint-limits`
 
 Constraints.
 
-### C.5 Assumptions
+## C. Technical Architecture
 
-Assumptions.
+### C.1: Component Model
+
+Component.
+
+### C.2: Domain Model
+
+Domain.
+
+### C.3: API Contracts
+
+API.
+
+### C.4: Non-Functional Requirements
+
+NFR.
 """
         report = validate_overall_design(text, skip_fs_checks=True)
         
         # Should pass structure check
         structure_errors = [e for e in report["errors"] if e.get("type") == "structure"]
-        # No error about C.1-C.5 order
-        c_order_errors = [e for e in structure_errors if "C.1..C.5" in e.get("message", "")]
+        # No error about C.1-C.4 order
+        c_order_errors = [e for e in structure_errors if "C.1..C.4" in e.get("message", "")]
         self.assertEqual(len(c_order_errors), 0)
 
 

@@ -93,6 +93,8 @@
   - `fdd-fdd-req-deterministic-validation`
   - `fdd-fdd-req-proposal-validation`
   - `fdd-fdd-nfr-performance`
+  - `fdd-fdd-nfr-security`
+  - `fdd-fdd-nfr-portability`
 - **Principles Covered**:
   - `fdd-fdd-principle-deterministic-gate`
   - `fdd-fdd-principle-machine-readable`
@@ -124,6 +126,7 @@
   - `ph-2`: ⏳ NOT_STARTED — Repository scanning and traceability queries
 - **Requirements Covered**:
   - `fdd-fdd-req-traceability`
+  - `fdd-fdd-nfr-auditability`
 - **Principles Covered**:
   - `fdd-fdd-principle-traceability`
 - **Scope**:
@@ -537,3 +540,12 @@
 
 **Extensibility (`fdd-fdd-nfr-extensibility`)**:
 - Covered by: [feature-adapter-system](feature-adapter-system/), [feature-workflow-engine](feature-workflow-engine/)
+
+**Security (`fdd-fdd-nfr-security`)**:
+- Covered by: [feature-validation-engine](feature-validation-engine/)
+
+**Auditability (`fdd-fdd-nfr-auditability`)**:
+- Covered by: [feature-id-management](feature-id-management/)
+
+**Portability (`fdd-fdd-nfr-portability`)**:
+- Covered by: [feature-validation-engine](feature-validation-engine/)

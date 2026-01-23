@@ -2,6 +2,12 @@
 
 ## ADD
 
-**ID**: `fdd-demo-actor-architect`
+**ID**: fdd-taskflow-actor-admin
 
-This is intentionally invalid because it is missing the required **Artifacts** list.
+**Role**: System administrator.
+
+This is intentionally invalid:
+- Missing **Artifacts** list declaring which files will be modified
+- Missing `---` separator before operation section
+- ID not backticked (should be `fdd-taskflow-actor-admin`)
+- Content missing `<!-- fdd-id-content -->` markers around payload

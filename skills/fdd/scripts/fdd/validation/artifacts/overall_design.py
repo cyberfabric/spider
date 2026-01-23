@@ -47,11 +47,19 @@ def validate_overall_design(
     if missing:
         errors.append({"type": "structure", "message": "Missing required top-level sections", "missing": missing})
 
+    b_subs = [m.group(1) for m in re.finditer(r"^###\s+B\.(\d+)\s*[:.]", artifact_text, re.MULTILINE)]
+    expected_b = ["1", "2", "3"]
+    if not b_subs:
+        errors.append({"type": "structure", "message": "Section B must include subsections B.1..B.3", "expected": expected_b})
+    elif b_subs != expected_b:
+        errors.append({"type": "structure", "message": "Section B must have exactly B.1..B.3 in order", "found": b_subs, "expected": expected_b})
+
     c_subs = [m.group(1) for m in re.finditer(r"^###\s+C\.(\d+)\s*[:.]", artifact_text, re.MULTILINE)]
-    if c_subs:
-        expected = ["1", "2", "3", "4", "5"]
-        if c_subs != expected:
-            errors.append({"type": "structure", "message": "Section C must have exactly C.1..C.5 in order", "found": c_subs})
+    expected_c = ["1", "2", "3", "4"]
+    if not c_subs:
+        errors.append({"type": "structure", "message": "Section C must include subsections C.1..C.4", "expected": expected_c})
+    elif c_subs != expected_c:
+        errors.append({"type": "structure", "message": "Section C must have exactly C.1..C.4 in order", "found": c_subs, "expected": expected_c})
 
     business_actors: set = set()
     business_caps_to_actors: Dict[str, set] = {}
