@@ -58,6 +58,19 @@ purpose: Define validation rules for BUSINESS.md files
 
 ---
 
+## Content Boundaries
+
+**Should contain**:
+- Vision, actors, capabilities (and optionally use cases) with stable IDs.
+- Business vocabulary that downstream artifacts can reference without reinterpretation.
+
+**Should not contain**:
+- Technical architecture (use `architecture/DESIGN.md`).
+- Implementation steps or tasks (use feature `CHANGES.md`).
+- API endpoint specs or schemas.
+
+---
+
 ## Validation Criteria
 
 ### File Validation
@@ -86,6 +99,13 @@ purpose: Define validation rules for BUSINESS.md files
 4. **Headers use proper levels**
    - `##` for sections A-E
    - `####` for actors/capabilities/use cases
+
+### Content Boundaries Validation
+
+**Check**:
+- [ ] No technical architecture sections or architecture-level decisions are described here
+- [ ] No implementation plans, tasks, or code-level details are described here
+- [ ] No API endpoint specs or schemas are authored here (links are allowed)
 
 ### Content Validation
 

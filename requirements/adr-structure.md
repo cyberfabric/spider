@@ -58,6 +58,21 @@ purpose: Define validation rules for ADR directory and per-record ADR files
 
 ---
 
+## Content Boundaries
+
+**Should contain**:
+- Context/problem statement.
+- Considered options (short, comparable).
+- Decision outcome and consequences.
+- Links to related design elements (IDs).
+
+**Should not contain**:
+- Full architecture description (keep that in `architecture/DESIGN.md`).
+- Detailed implementation steps.
+- Broad product requirements.
+
+---
+
 ## Validation Criteria
 
 ### File Validation
@@ -111,6 +126,13 @@ purpose: Define validation rules for ADR directory and per-record ADR files
 5. **Date format**
    - YYYY-MM-DD format
    - Date is valid
+
+### Content Boundaries Validation
+
+**Check**:
+- [ ] ADR does not restate the entire architecture (keep that in `architecture/DESIGN.md`)
+- [ ] ADR does not contain detailed implementation plans or task lists
+- [ ] ADR does not contain broad product requirement catalogs
 
 ### Content Validation
 

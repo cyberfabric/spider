@@ -48,6 +48,24 @@ purpose: Define validation rules for feature DESIGN.md files
 
 ---
 
+## Content Boundaries
+
+**Should contain**:
+- Feature context, references, and boundaries.
+- FDL content:
+  - Actor flows
+  - Algorithms
+  - States
+- Feature requirements, phases, acceptance criteria.
+- Test scenarios and edge cases.
+
+**Should not contain**:
+- Sprint/task breakdowns (use `CHANGES.md`).
+- System-level type redefinitions (use `architecture/DESIGN.md`).
+- Code diffs or code snippets.
+
+---
+
 ## Required Sections
 
 | Section | Purpose | Required |
@@ -77,6 +95,13 @@ purpose: Define validation rules for feature DESIGN.md files
 - All required sections A-G present
 - Correct section order
 - No duplicate sections
+
+### Content Boundaries Validation
+
+**Check**:
+- [ ] No sprint/task breakdowns are authored here (those belong in `CHANGES.md`)
+- [ ] No system-level type redefinitions are authored here (reference `architecture/DESIGN.md` instead)
+- [ ] No code diffs or code snippets are authored here
 
 ### Section Requirements
 

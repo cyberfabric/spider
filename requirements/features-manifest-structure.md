@@ -47,6 +47,20 @@ purpose: Define validation rules for FEATURES.md files
 
 ---
 
+## Content Boundaries
+
+**Should contain**:
+- Feature list with stable IDs, status, priority.
+- Dependencies/blocks and coverage of requirement IDs.
+- High-level scope bullets (not detailed design).
+
+**Should not contain**:
+- Feature flows/algorithms/states.
+- Task breakdowns.
+- Code-level details.
+
+---
+
 ## Validation Criteria
 
 ### File Validation
@@ -65,6 +79,13 @@ purpose: Define validation rules for FEATURES.md files
    - Status emoji valid (⏳📝📘🔄✅)
    - Slug is kebab-case
    - Sequential numbering (1, 2, 3, ...)
+
+### Content Boundaries Validation
+
+**Check**:
+- [ ] No feature flows/algorithms/states are authored here (keep behavior in feature `DESIGN.md`)
+- [ ] No task breakdowns are authored here (keep implementation detail in `CHANGES.md`)
+- [ ] No code-level details are authored here
 
 ### Required Fields Per Feature
 

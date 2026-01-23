@@ -61,6 +61,20 @@ purpose: Define validation rules for DESIGN.md files
 
 ---
 
+## Content Boundaries
+
+**Should contain**:
+- System-level constraints and principles.
+- Shared concepts/types/contracts that features must not redefine.
+- References to domain model and API contract sources.
+
+**Should not contain**:
+- Feature-level flows/algorithms/states (use feature `DESIGN.md`).
+- Implementation tasks (use feature `CHANGES.md`).
+- Decision rationale debates (use ADRs).
+
+---
+
 ## Validation Criteria
 
 ### File Validation
@@ -86,6 +100,13 @@ purpose: Define validation rules for DESIGN.md files
 4. **Headers use proper levels**
    - `##` for sections A-D
    - `###` for subsections B.1-B.4, C.1-C.5
+
+### Content Boundaries Validation
+
+**Check**:
+- [ ] No feature-level flows/algorithms/states are authored here (those belong in feature `DESIGN.md`)
+- [ ] No implementation tasks or task breakdowns are authored here (those belong in feature `CHANGES.md`)
+- [ ] No ADR-style decision rationale debates are authored here (use ADR files for decision records)
 
 ### Section B Subsections
 

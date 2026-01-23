@@ -53,6 +53,23 @@ purpose: Define validation rules for FDD adapter files
 
 ---
 
+## Content Boundaries
+
+**Should contain**:
+- `**Extends**: ...` back to core `AGENTS.md`.
+- Project-specific conventions and pointers:
+  - Tech stack/tooling constraints.
+  - Domain model format and location.
+  - API contract format and location.
+  - Validation/CI expectations.
+
+**Should not contain**:
+- Business context (use `architecture/BUSINESS.md`).
+- Architecture decisions rationale (use ADRs).
+- Feature specs or implementation plans.
+
+---
+
 ## Required Files
 
 ### .fdd-config.json
@@ -130,6 +147,11 @@ ALWAYS open and follow {spec-file} WHEN executing workflows: {workflow1.md}, {wo
 | AGENTS.md exists | YES |
 | Contains project name heading | YES |
 | Contains `**Extends**:` declaration | YES |
+
+**Content boundaries checks**:
+- [ ] No business context content included
+- [ ] No architecture decision rationale included
+- [ ] No feature specs or implementation plans included
 
 **Pass threshold**: 100/100 (all checks)
 

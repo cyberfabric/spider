@@ -705,7 +705,7 @@ This interactive workflow will:
 
 **Result**: Adapter created/updated at `{adapter-directory}/` with status COMPLETE or INCOMPLETE
 
-For manual setup, see: **`guides/ADAPTER.md`**
+For manual setup, see: [**`guides/ADAPTER.md`**](guides/ADAPTER.md)
 
 ### 4. Configure AI Agent (2 minutes, optional) 
 

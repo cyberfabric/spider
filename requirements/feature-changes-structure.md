@@ -47,6 +47,20 @@ purpose: Define validation rules for feature CHANGES.md files
 
 ---
 
+## Content Boundaries
+
+**Should contain**:
+- Small, atomic changes that implement subsets of feature requirements.
+- Per-change tasks with explicit validation criteria.
+- Expected code traceability tags and testing expectations.
+
+**Should not contain**:
+- New requirements or new feature behavior (put those in feature `DESIGN.md`).
+- Large design narratives.
+- Raw code dumps.
+
+---
+
 ## Validation Criteria
 
 ### File Structure Validation
@@ -86,6 +100,13 @@ purpose: Define validation rules for feature CHANGES.md files
 | Dependencies | Depends on + Blocks |
 | Testing | Unit/Integration/E2E tests |
 | Validation Criteria | All completion checks |
+
+### Content Boundaries Validation
+
+**Check**:
+- [ ] CHANGES.md does not introduce new requirements or new feature behavior (that belongs in feature `DESIGN.md`)
+- [ ] CHANGES.md does not contain large design narratives (keep it actionable and reviewable)
+- [ ] CHANGES.md does not contain raw code dumps
 
 ### Content Validation
 
