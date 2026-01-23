@@ -107,6 +107,11 @@ Context:
   - docs/db-schema.md
 ```
 
+If you need to create a new ADR or edit an existing ADR explicitly, use the dedicated ADR workflow:
+```text
+/fdd-adr
+```
+
 ### 4. `/fdd-design-validate`
 
 **What it does**:
