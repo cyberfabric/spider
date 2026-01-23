@@ -28,18 +28,18 @@ This workflow guides the execution of the specified task.
 
 ---
 
-
-
 ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing this workflow
 
 ## Requirements
 
 **ALWAYS open and follow**: 
 - `../requirements/feature-changes-structure.md` (change structure)
+- `../requirements/feature-design-structure.md` (feature design structure: flows/algos/states/tests with checkboxes)
 - `{adapter-directory}/AGENTS.md` (code conventions)
 
 Extract:
 - Task format and execution model
+- Feature design checkbox semantics (FDL steps, requirement statuses, phases)
 - Code conventions from adapter
 - Testing requirements from adapter
 
@@ -48,6 +48,7 @@ Extract:
 ## Prerequisites
 
 **MUST validate**:
+- [ ] Feature DESIGN.md exists and validated - validate: Score 100/100 + 100% completeness
 - [ ] CHANGES.md validated - validate: Score ≥90/100
 - [ ] Adapter exists - validate: Check adapter AGENTS.md (REQUIRED for development)
 
@@ -74,6 +75,19 @@ Extract for selected change:
 - Requirements implemented
 - Task list with files and validation
 
+### 2.1 Read Feature Design (Traceability Source)
+
+Open feature `DESIGN.md` for this change.
+
+Extract the authoritative IDs you must keep in sync while coding:
+- Flow IDs (Section B)
+- Algorithm IDs (Section C)
+- State IDs (Section D)
+- Requirement IDs + Status/Phases (Section F)
+- Test scenario IDs (Section G)
+
+**Rule**: You MUST update these checkboxes and statuses iteratively during implementation (not only during `feature-code-validate`).
+
 ### 3. Read Adapter Conventions
 
 Open `{adapter-directory}/AGENTS.md`
@@ -83,10 +97,7 @@ Follow MUST WHEN instructions for:
 - Testing requirements
 - Build requirements
 
-### 3.1 Code Tagging
-Tag code with required @fdd-* markers.
-
-## Step 4: Add FDD Tags
+### 3.1 Add FDD Tags (Code Traceability)
 
 **Action**: Tag code with @fdd-* markers
 
@@ -218,46 +229,61 @@ def convert_gts_to_json_schema(gts_schema):
 - `@fdd-change:` to list change-tagged files
 - `@fdd-flow:`, `@fdd-algo:`, `@fdd-state:`, `@fdd-req:`, `@fdd-test:` to confirm DESIGN coverage
 
-Run the project test suite.
-
-## Step 5: Run Tests
-
-**Action**: Execute test suite
-
-Implement code changes for the selected task.
-
-### 4. Implement Tasks
+### 4. Implement Tasks (Iterative)
 
 **For each task in change**:
 1. Read task specification from CHANGES.md (hierarchical format: `1.1.1`, `1.2.1`, etc.)
 2. Implement according to adapter conventions
-3. Run task validation
-
-4.
-
-Mark the task as complete in CHANGES.md.
-
-## Step 6: Update CHANGES.md
-
-**Action**: Mark task as completed
-
-ckbox from `- [ ]` to `- [x]`
-   - Example: `- [ ] 1.1.1 Task description` → `- [x] 1.1.1 Task description`
-
-5. Proceed to next task
+3. Add / update **instruction-level** tags (`...:ph-{N}:inst-...`) while implementing the exact step
+4. Run task validation
+5. Update traceability state (MANDATORY mini-gate):
+    - Update task checkbox in CHANGES.md (`- [ ]` → `- [x]`)
+    - Update feature DESIGN.md (see Step 5) so design checkboxes and statuses reflect the work just done
+6. Proceed to next task
 
 **After each task**:
 - Show progress: Task {X}/{total} complete
 - Ask: Continue to next task? [yes/pause]
 
-### 5. Mark Change Complete
+### 5. Sync Feature DESIGN.md (MANDATORY After Each Task)
+
+**Goal**: Keep design checkboxes and requirement statuses aligned with code as you implement.
+
+**Input**:
+- The design IDs you implemented in code (flows/algos/states/req/tests)
+- The instruction-level tags you added (`...:ph-{N}:inst-{local}`)
+
+**Procedure**:
+1. For each `...:ph-{N}:inst-{local}` you implemented:
+    - Locate the owning scope entry in feature DESIGN.md by its base ID (flow/algo/state/test).
+    - Within that scope entry, find the matching FDL step line containing `ph-{N}` and `inst-{local}`.
+    - Mark its checkbox `- [ ]` → `- [x]`.
+2. For each requirement ID implemented by this change:
+    - If this is the first completed task for the requirement: set requirement `**Status**` to `🔄 IN_PROGRESS`.
+    - Mark the corresponding `**Phases**` checkbox(es) as implemented when their instruction steps are complete.
+    - When all phases (and required instruction steps) are complete: set requirement `**Status**` to `✅ IMPLEMENTED`.
+3. For each test scenario ID affected:
+    - Do NOT mark as implemented until the test exists and passes (Step 6).
+
+**Consistency rule**:
+- Only mark a design checkbox as `[x]` if the corresponding code exists and is tagged.
+- If code is tagged but design is not checked, you MUST update the design immediately (do not defer).
+
+### 6. Run Tests
+
+Run the project test suite.
+
+After tests pass:
+- Mark affected test scenario IDs in feature DESIGN.md as completed (`- [ ]` → `- [x]`) when their tests exist and pass.
+
+### 7. Mark Change Complete
 
 After all tasks done:
 1. **Update change status in CHANGES.md**:
-   - Change header: `**Status**: IN_PROGRESS` → `**Status**: COMPLETED`
+    - Change header: `**Status**: IN_PROGRESS` → `**Status**: COMPLETED`
 2. **Update summary section**:
-   - Increment "Completed" count
-   - Decrement "In Progress" or "Not Started" count
+    - Increment "Completed" count
+    - Decrement "In Progress" or "Not Started" count
 3. Verify all task checkboxes marked `- [x]`
 
 ---
