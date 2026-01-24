@@ -123,7 +123,7 @@ purpose: Define validation rules for DESIGN.md files
 |------------|---------|------------------|
 | C.1 | Component Model | High-level decomposition of the system into components/services/modules with responsibilities, boundaries, and key interactions. Include at least one diagram (image, Mermaid, or ASCII) and describe major data/control flows between components. |
 | C.2 | Domain Model | The authoritative domain model: entities/aggregates/value objects and their relationships, core invariants, and how they map to schemas. MUST provide clickable links to machine-readable schema sources (e.g., JSON Schema, TypeScript types, OpenAPI schemas) and indicate where they live in the repo. |
-| C.3 | API Contracts | The authoritative API contract surface (external and/or internal). MUST provide clickable links to machine-readable contracts (OpenAPI/CLISPEC/proto/GraphQL). Describe key endpoints/operations, request/response shapes at a high level, error handling expectations, authn/authz entry points, and versioning strategy if applicable. |
+| C.3 | API Contracts | The authoritative API contract surface (external and/or internal). MUST provide clickable links to machine-readable contracts (OpenAPI/CLISPEC/proto/GraphQL). For CLI tools, CLISPEC is the canonical and authoritative interface specification format and MUST be treated as machine-readable by validators and agents. Describe key endpoints/operations, request/response shapes at a high level, error handling expectations, authn/authz entry points, and versioning strategy if applicable. |
 | C.4 | Non-Functional Requirements | A consolidated list of NFRs (including security and runtime/operations concerns). Each NFR should be stated as a measurable constraint/target (latency/throughput/SLO, availability, durability, auditability, access control, secrets handling, observability, rollout/rollback, cost). Use stable IDs like `**ID**: \`fdd-{project}-nfr-{name}\`` and link to supporting configs/docs where relevant. |
 
 ### Content Validation
@@ -136,6 +136,7 @@ purpose: Define validation rules for DESIGN.md files
 2. **API Contracts accessible**
    - Files at specified location exist
    - Files are in machine-readable format (OpenAPI, GraphQL, CLISPEC, proto)
+   - For CLI tools, CLISPEC is the canonical machine-readable format and MUST be accepted as authoritative
    - References are clickable Markdown links
 
 3. **Component diagram present**
