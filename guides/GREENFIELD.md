@@ -16,7 +16,7 @@ Create a validated baseline (business context + architecture) before writing cod
 - `architecture/ADR/**` ([taxonomy](TAXONOMY.md#adr))
 - `architecture/features/FEATURES.md` ([taxonomy](TAXONOMY.md#featuresmd))
 - `architecture/features/feature-{slug}/DESIGN.md` ([taxonomy](TAXONOMY.md#feature-designmd))
-- `architecture/features/feature-{slug}/CHANGES.md` ([taxonomy](TAXONOMY.md#feature-changesmd))
+- `architecture/features/feature-{slug}/CHANGES.md` ([taxonomy](TAXONOMY.md#feature-changesmd)) (optional)
 
 ## How to Provide Context in Prompts
 
@@ -201,7 +201,23 @@ Context:
 - Feature: task-crud
 ```
 
-### 9. `/fdd-feature-changes`
+### 9. `/fdd-feature-implement`
+
+**What it does**:
+- Implements the feature directly from `DESIGN.md` (default path).
+
+**Provide context**:
+- Feature slug
+- If code lives outside the default service/module, provide the relevant code paths
+
+Prompt example:
+```text
+/fdd-feature-implement
+Context:
+- Feature: task-crud
+```
+
+### 10. `/fdd-feature-changes` (optional)
 
 **What it does**:
 - Creates or updates feature implementation plan: `architecture/features/feature-{slug}/CHANGES.md` ([taxonomy](TAXONOMY.md#feature-changesmd)).
@@ -220,7 +236,7 @@ Context:
 - Use small atomic changes (<= 1 day each)
 ```
 
-### 10. `/fdd-feature-changes-validate`
+### 11. `/fdd-feature-changes-validate` (optional)
 
 **Provide context**:
 - Feature slug to validate (or the changes file path)
@@ -232,7 +248,7 @@ Context:
 - Feature: task-crud
 ```
 
-### 11. `/fdd-feature-change-implement`
+### 12. `/fdd-feature-change-implement` (optional)
 
 **What it does**:
 - Implements a selected change from `CHANGES.md` into code.
@@ -251,7 +267,7 @@ Context:
 - Change: 001
 ```
 
-### 12. `/fdd-feature-code-validate`
+### 13. `/fdd-feature-code-validate`
 
 **What it does**:
 - Validates implementation against the feature design and traceability expectations.

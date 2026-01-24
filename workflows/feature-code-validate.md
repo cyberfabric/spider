@@ -55,10 +55,10 @@ ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing th
 
 ## Overview
 
-**Purpose**: Validate complete feature implementation against feature design using changes for code identification
+**Purpose**: Validate complete feature implementation against feature design (CHANGES are optional)
 
 **Scope**: 
-- All code implementing requirements marked as implemented in CHANGES.md
+- All code implementing requirements marked as implemented in feature DESIGN.md
 - All test scenarios from feature DESIGN.md Section F
 - Complete feature codebase quality
 
@@ -76,7 +76,7 @@ ALWAYS open and follow `../requirements/workflow-execution.md` WHEN executing th
 
 Extract:
 - Testing scenario requirements from feature DESIGN.md
-- Requirements marked as implemented in CHANGES.md
+- Requirements marked as implemented in feature DESIGN.md
 - Adapter build and test commands
 - Code quality requirements
 
@@ -86,7 +86,7 @@ Extract:
 
 **MUST validate**:
 - [ ] Feature DESIGN.md exists and validated (100/100 + 100%)
-- [ ] CHANGES source available **OR** explicitly recorded as “CHANGES not provided / skipped by author”
+- [ ] CHANGES source is optional; proceed without it when absent
 - [ ] Adapter exists - validate: Required for validation
 
 **CHANGES source selection (when available)**:
@@ -94,7 +94,7 @@ Extract:
 - **Fallback**: If active `CHANGES.md` does not exist, use the most recent archived changes file in `archive/`.
   - Choose the newest `YYYY-MM-DD-CHANGES.md` (lexicographically latest date).
 **If no CHANGES are provided**:
-- Document “CHANGES unavailable; change-based checks skipped” and proceed with design-only validation.
+- Proceed with design-only validation (skip change-based checks).
 
 ---
 
@@ -120,7 +120,9 @@ Extract:
 3. Build list of files implementing feature requirements
 
 **Locate feature code by tags**:
-- Search for `@fdd-change:fdd-{project}-{feature}-change-` across the codebase scope defined by the adapter.
+- Search for all `@fdd-` tags corresponding to the feature DESIGN.md scope across the codebase scope defined by the adapter:
+  - `@fdd-flow:`, `@fdd-algo:`, `@fdd-state:`, `@fdd-req:`, `@fdd-test:`
+- If CHANGES exist, also search for `@fdd-change:` to discover additional touched files.
 - Collect all files containing these tags.
 
 **Result**: Complete list of files implementing this feature (or “change map skipped” if no CHANGES provided)
@@ -237,7 +239,7 @@ Extract:
 ### 9. Code Quality Validation
 
 **Check for incomplete work**:
-- Search the feature code set (identified via `@fdd-change` tags) for incomplete work markers: `TODO`, `FIXME`, `XXX`, `HACK`.
+- Search the feature code set (identified via feature DESIGN.md IDs and `@fdd-*` tags; optionally `@fdd-change` tags) for incomplete work markers: `TODO`, `FIXME`, `XXX`, `HACK`.
 - Search feature business logic code (domain/service layers per adapter) for incomplete implementation markers: `unimplemented!`, `todo!`.
 - Search test code for ignored tests (e.g. `#[ignore]`) and validate justification per adapter rules.
 
@@ -259,7 +261,7 @@ Extract:
 
 **For each requirement in DESIGN.md Section F marked IMPLEMENTED**:
 1. Read requirement specification carefully
-2. Locate implementing code via @fdd-req or @fdd-change tags
+2. Locate implementing code via @fdd-req tags (or @fdd-flow/@fdd-algo/@fdd-state tags when relevant). If CHANGES exist, @fdd-change tags may be used as supplemental hints.
 3. Analyze code logic and compare with requirement description
 4. Check for contradictions:
    - ❌ Code does opposite of what design specifies
@@ -322,7 +324,7 @@ Extract:
 - Test Pass (30 pts): All tests pass, coverage meets threshold
 - Code Quality (15 pts): No TODO/FIXME/unimplemented in business logic
 - Code Logic Consistency (20 pts): Code logic does not contradict design specifications
-- Code Tagging (10 pts): All feature code tagged with @fdd-change
+- Code Tagging (10 pts): Feature code tagged with relevant feature DESIGN.md IDs (`@fdd-flow`, `@fdd-algo`, `@fdd-state`, `@fdd-req`, `@fdd-test`)
 
 **Total**: 150 points
 **Pass threshold**: ≥128/150 (≈85%)
@@ -378,10 +380,9 @@ Extract:
   - List of divergences: {CRITICAL: [...] | MINOR: [...]}
 
 **Code Tagging** ({X}/10):
-✅ | ❌ All feature code tagged with (phase is always a postfix, no standalone phase tags):
-   - @fdd-change:{change-id}:ph-{N} (from CHANGES source)
-   - @fdd-flow:{flow-id}:ph-{N}, @fdd-algo:{algo-id}:ph-{N}, @fdd-state:{state-id}:ph-{N}, @fdd-req:{req-id}:ph-{N}, @fdd-test:{test-id}:ph-{N} (from feature DESIGN.md)
-✅ | ❌ Validator searched code for ALL IDs from DESIGN.md (Sections B/C/D/F) and CHANGES source
+✅ | ❌ All feature code tagged with relevant feature DESIGN.md IDs (phase is always a postfix, no standalone phase tags):
+   - @fdd-flow:{flow-id}:ph-{N}, @fdd-algo:{algo-id}:ph-{N}, @fdd-state:{state-id}:ph-{N}, @fdd-req:{req-id}:ph-{N}, @fdd-test:{test-id}:ph-{N}
+✅ | ❌ If CHANGES exist: validator also searched for @fdd-change tags as supplemental file discovery
 
 ---
 
@@ -455,7 +456,7 @@ Self-validating workflow
 1. **Scope**: Entire feature vs single change
 2. **Test scenarios**: ALL scenarios from DESIGN.md must be implemented
 3. **Requirements**: ALL requirements marked IMPLEMENTED must be coded
-4. **Code identification**: Uses CHANGES.md to find feature code
+4. **Code identification**: Uses feature DESIGN.md IDs and @fdd-* tags (CHANGES.md is optional)
 5. **Quality**: Complete feature quality checks (build, lint, tests, TODO/FIXME)
 
 **Why better**:
@@ -486,8 +487,9 @@ Self-validating workflow
 ## References
 
 - ALWAYS execute `feature-validate.md` WHEN validating a feature DESIGN.md before code work
-- ALWAYS execute `feature-changes-validate.md` WHEN validating a feature CHANGES.md before implementation
-- ALWAYS execute `feature-change-implement.md` WHEN implementing a specific change from CHANGES.md
+- ALWAYS execute `feature-implement.md` WHEN implementing directly from feature DESIGN.md
+- ALWAYS execute `feature-changes-validate.md` WHEN validating a feature CHANGES.md before implementation (optional)
+- ALWAYS execute `feature-change-implement.md` WHEN implementing a specific change from CHANGES.md (optional)
 
 - ALWAYS open and follow `feature-design-structure.md` WHEN interpreting feature DESIGN.md IDs and sections
 - ALWAYS open and follow `feature-changes-structure.md` WHEN interpreting change entry structure and tagging rules

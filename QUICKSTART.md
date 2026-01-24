@@ -29,7 +29,7 @@ FDD = **Design First, Code Second**
    ↓ (validated)
 4. Feature Design
    ↓ (validated)
-5. Changes/Tasks
+5. Implementation plan (optional)
    ↓ (validated)
 6. Implementation
    ↓ (validated)
@@ -164,6 +164,7 @@ Examples:
 /fdd-design
 /fdd-features
 /fdd-feature
+/fdd-feature-implement
 /fdd-feature-changes
 ```
 

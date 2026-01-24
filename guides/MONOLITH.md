@@ -24,7 +24,7 @@ A practical convention is:
   - `src/modules/{module}/architecture/ADR/**`
   - `src/modules/{module}/architecture/features/FEATURES.md`
   - `src/modules/{module}/architecture/features/feature-{slug}/DESIGN.md`
-  - `src/modules/{module}/architecture/features/feature-{slug}/CHANGES.md`
+  - `src/modules/{module}/architecture/features/feature-{slug}/CHANGES.md` (optional)
 
 ## Recommended Structure (Example)
 
@@ -39,7 +39,7 @@ FDD artifacts:
 - `architecture/ADR/**`
 - `architecture/features/FEATURES.md` (project-level features)
 - `architecture/features/feature-{slug}/DESIGN.md`
-- `architecture/features/feature-{slug}/CHANGES.md`
+- `architecture/features/feature-{slug}/CHANGES.md` (optional)
 - `src/modules/auth/architecture/BUSINESS.md`
 - `src/modules/auth/architecture/DESIGN.md`
 - `src/modules/auth/architecture/ADR/**`
@@ -289,7 +289,23 @@ Context:
 - Feature: sessions
 ```
 
-### 12. `/fdd-feature-changes`
+### 12. `/fdd-feature-implement`
+
+**What it does**:
+- Implements the feature directly from `DESIGN.md` (default path).
+
+Prompt example:
+```text
+/fdd-feature-implement
+Context:
+- Scope: module
+- Module: auth
+- Feature: sessions
+- Module code path: src/modules/auth/
+- Module architecture root: src/modules/auth/architecture/
+```
+
+### 13. `/fdd-feature-changes` (optional)
 
 **What it does**:
 - Creates or updates module feature implementation plan:
@@ -313,7 +329,7 @@ Context:
   - Any schema change must be backward compatible
 ```
 
-### 13. `/fdd-feature-changes-validate`
+### 14. `/fdd-feature-changes-validate` (optional)
 
 ```text
 /fdd-feature-changes-validate
@@ -323,7 +339,7 @@ Context:
 - Feature: sessions
 ```
 
-### 14. `/fdd-feature-change-implement`
+### 15. `/fdd-feature-change-implement` (optional)
 
 **What it does**:
 - Implements a selected change from `CHANGES.md`.
@@ -345,7 +361,7 @@ Context:
   - src/modules/auth/
 ```
 
-### 15. `/fdd-feature-code-validate`
+### 16. `/fdd-feature-code-validate`
 
 ```text
 /fdd-feature-code-validate

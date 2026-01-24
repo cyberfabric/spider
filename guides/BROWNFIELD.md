@@ -27,8 +27,9 @@ Use this when baseline exists and you want to implement a new capability.
 
 - Update `architecture/features/FEATURES.md` ([taxonomy](TAXONOMY.md#featuresmd)).
 - Create/update feature `DESIGN.md` ([taxonomy](TAXONOMY.md#feature-designmd)).
-- Create/update feature `CHANGES.md` ([taxonomy](TAXONOMY.md#feature-changesmd)).
-- Implement with `feature-change-implement`.
+- Implement with `feature-implement`.
+- Create/update feature `CHANGES.md` ([taxonomy](TAXONOMY.md#feature-changesmd)) (optional).
+- Implement with `feature-change-implement` (optional).
 
 ## How to Provide Context in Prompts
 
@@ -179,7 +180,16 @@ Context:
 - Feature: notifications
 ```
 
-#### 4. `/fdd-feature-changes`
+#### 4. `/fdd-feature-implement`
+```text
+/fdd-feature-implement
+Context:
+- Feature: notifications
+- Where to implement:
+  - src/notifications/
+```
+
+#### 5. `/fdd-feature-changes` (optional)
 ```text
 /fdd-feature-changes
 Context:
@@ -190,14 +200,14 @@ Context:
   - Prefer feature flag rollout
 ```
 
-#### 5. `/fdd-feature-changes-validate`
+#### 6. `/fdd-feature-changes-validate` (optional)
 ```text
 /fdd-feature-changes-validate
 Context:
 - Feature: notifications
 ```
 
-#### 6. `/fdd-feature-change-implement`
+#### 7. `/fdd-feature-change-implement` (optional)
 ```text
 /fdd-feature-change-implement
 Context:
@@ -208,7 +218,7 @@ Context:
 - Test strategy: integration tests for provider outage + retries
 ```
 
-#### 7. `/fdd-feature-code-validate`
+#### 8. `/fdd-feature-code-validate`
 ```text
 /fdd-feature-code-validate
 Context:
@@ -246,8 +256,8 @@ When feature behavior changes:
 ```text
 /fdd-feature
 /fdd-feature-validate
-/fdd-feature-changes
-/fdd-feature-changes-validate
+/fdd-feature-implement
+# Optional: /fdd-feature-changes, /fdd-feature-changes-validate
 ```
 
 ## Quick Reference
@@ -259,9 +269,8 @@ When feature behavior changes:
 /fdd-features-validate
 /fdd-feature
 /fdd-feature-validate
-/fdd-feature-changes
-/fdd-feature-changes-validate
-/fdd-feature-change-implement
+/fdd-feature-implement
+# Optional: /fdd-feature-changes, /fdd-feature-changes-validate, /fdd-feature-change-implement
 /fdd-feature-code-validate
 ```
 
@@ -269,5 +278,4 @@ When feature behavior changes:
 
 - If code changes affect a feature behavior, update the feature `DESIGN.md` first.
 - Re-validate the feature design.
-- Update `CHANGES.md` if tasks or scope changed.
 - Run `feature-code-validate` to ensure design and code remain consistent.

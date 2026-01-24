@@ -153,14 +153,20 @@ This guide helps you select the correct FDD workflow based on:
 - **Use when**: Feature DESIGN.md created or updated
 - **Validates**: All sections, actor flows, FDL, no type redefinitions
 - **Score**: 100/100 + 100% completeness
-- **Next**: `feature-changes`
+- **Next**: `feature-implement` (default) or `feature-changes` (optional)
 
 ---
 
 ### Phase 3: Implementation
 
+**feature-implement.md** - Implement feature directly from design
+- **Use when**: Feature validated, ready to implement without CHANGES.md
+- **Implements**: Feature requirements directly from `DESIGN.md`
+- **Updates**: Feature DESIGN.md checkboxes/statuses iteratively during coding
+- **Next**: `feature-code-validate`
+
 **feature-changes.md** - Create or update implementation plan
-- **Use when**: Feature validated, need implementation plan
+- **Use when**: Want an explicit task plan before implementation (optional)
 - **Creates**: `architecture/features/feature-{slug}/CHANGES.md`
 - **Content**: Atomic changes (1-5 requirements each), task breakdown
 - **Modes**: CREATE or UPDATE
@@ -175,11 +181,11 @@ This guide helps you select the correct FDD workflow based on:
 **feature-change-implement.md** - Implement specific change
 - **Use when**: Ready to code a change from CHANGES.md
 - **Implements**: Tasks for one change, updates checkboxes
-- **Updates**: Change status (→ → )
+- **Updates**: Change status (NOT_STARTED → 🔄 IN_PROGRESS → ✅ COMPLETED)
 - **Next**: `feature-code-validate`
 
 **feature-code-validate.md** - Validate feature code
-- **Use when**: At least one change is IN_PROGRESS
+- **Use when**: Feature implementation is in progress or complete
 - **Validates**: Code compiles, tests pass, requirements and test scenarios implemented
 - **Next**: Update FEATURES.md: Mark feature status as COMPLETE
 
@@ -208,7 +214,10 @@ START
 ├─ FEATURES.md exists, need feature design?
 │  └─> feature.md → feature-validate.md
 │
-├─ Feature validated, no CHANGES.md?
+├─ Feature validated, ready to code?
+│  └─> feature-implement.md
+│
+├─ Want a CHANGES.md implementation plan (optional)?
 │  └─> feature-changes.md → feature-changes-validate.md
 │
 ├─ CHANGES.md validated, ready to code?
@@ -242,11 +251,9 @@ features → features-validate
   ↓
 feature → feature-validate (for each feature)
   ↓
-feature-changes → feature-changes-validate
+feature-implement
   ↓
- feature-change-implement (for each change)
-   ↓
- feature-code-validate
+feature-code-validate
 ```
 
 ### Legacy project integration
@@ -268,11 +275,9 @@ features → features-validate (update manifest)
   ↓
 feature → feature-validate
   ↓
-feature-changes → feature-changes-validate
+feature-implement
   ↓
- feature-change-implement (repeat)
-   ↓
- feature-code-validate
+feature-code-validate
 ```
 
 ### Update existing design
@@ -283,71 +288,6 @@ design (UPDATE mode) → design-validate
   ↓
 feature (UPDATE mode) → feature-validate
 ```
-
----
-
-## Critical Rules
-
-**Before executing any workflow**:
-1. Read the workflow `.md` file completely
-2. Check prerequisites in workflow file
-3. Read `requirements/{requirement}.md` files referenced in workflow
-4. Read adapter AGENTS.md if workflow requires it
-
-**During execution**:
-- Follow steps in sequence
-- Validate after creation/update
-- One workflow at a time
-- Run from project root
-
-**Validation**:
-- Always run validation workflow after creation/update
-- Meet score thresholds before proceeding
-- Re-validate after fixes
-
-**Modes**:
-- Most workflows support CREATE or UPDATE modes
-- CREATE: Generate new file from scratch
-- UPDATE: Modify existing file
-
----
-
-## Workflow Categories
-
-### By Artifact
-
-**Adapter**:
-- adapter.md, adapter-from-sources.md, adapter-agents.md, adapter-validate.md
-
-**Business Context**:
-- business-context.md, business-validate.md
-
-**Architecture Design**:
-- design.md, design-validate.md, adr.md, adr-validate.md
-
-**Features**:
-- features.md, features-validate.md, feature.md, feature-validate.md
-
-**Implementation**:
-- feature-changes.md, feature-changes-validate.md
-- feature-change-implement.md, feature-code-validate.md
-
-### By Type
-
-**Creation/Update** (Operation workflows):
-- adapter.md, business-context.md, design.md, adr.md
-- features.md, feature.md, feature-changes.md
-- feature-change-implement.md
-
-**Validation** (Check workflows):
-- adapter-validate.md, business-validate.md, design-validate.md
-- adr-validate.md, features-validate.md, feature-validate.md
-- feature-changes-validate.md, feature-code-validate.md
-
-**Special Purpose**:
-- adapter-from-sources.md (legacy integration)
-- adapter-agents.md (IDE configuration)
-- feature-code-validate.md (feature completion validation)
 
 ---
 
@@ -373,8 +313,11 @@ feature (UPDATE mode) → feature-validate
 **Design a feature**
 → `feature.md` → `feature-validate.md`
 
+**Implement feature directly from design**
+→ `feature-implement.md`
+
 **Plan feature implementation**
-→ `feature-changes.md` → `feature-changes-validate.md`
+→ `feature-changes.md` → `feature-changes-validate.md` (optional)
 
 **Implement a change**
 → `feature-change-implement.md` (repeat for each change)
