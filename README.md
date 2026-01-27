@@ -1,11 +1,11 @@
-# Feature-Driven Design (FDD)
+# Flow-Driven Development (FDD)
 FDD project overview.
 
 **Version**: 1.0  
 **Status**: Active  
 **Audience**: Development teams, technical leads, architects
 
-Feature-Driven Design is a **universal methodology** for building software systems with clear traceability from requirements to implementation.
+Flow-Driven Development is a **universal methodology** for building software systems with clear traceability from requirements to implementation.
 
 **Built for modern development**: FDD works with AI coding assistants, supports any tech stack, and provides structured workflows that teams can follow manually or automate.
 
