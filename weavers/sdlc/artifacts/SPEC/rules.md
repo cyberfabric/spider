@@ -1,7 +1,7 @@
-# FEATURE Rules
+# SPEC Rules
 
-**Artifact**: FEATURE (Feature Design Document)
-**Purpose**: Rules for FEATURE design generation and validation
+**Artifact**: SPEC (Spec Design Document)
+**Purpose**: Rules for SPEC design generation and validation
 
 ---
 
@@ -12,7 +12,7 @@
    - [Versioning Requirements](#versioning-requirements)
    - [Semantic Requirements](#semantic-requirements)
    - [Traceability Requirements](#traceability-requirements)
-   - [FEATURE Scope Guidelines](#feature-scope-guidelines)
+   - [SPEC Scope Guidelines](#spec-scope-guidelines)
    - [Upstream Traceability](#upstream-traceability)
    - [Checkbox Management](#checkbox-management-to_code-attribute)
 2. [Tasks](#tasks)
@@ -29,7 +29,7 @@
 - `template.md` — required structure
 - `checklist.md` — semantic quality criteria
 - `examples/example.md` — reference implementation
-- `{Spider}/requirements/template.md` — Spider template marker syntax specification
+- `{spider_path}/requirements/template.md` — Spider template marker syntax specification
 
 ---
 
@@ -39,12 +39,12 @@ Agent confirms understanding of requirements:
 
 ### Structural Requirements
 
-- [ ] FEATURE follows `template.md` structure
+- [ ] SPEC follows `template.md` structure
 - [ ] **DO NOT copy `spider-template:` frontmatter** — that is template metadata only
 - [ ] Artifact frontmatter (optional): use `spd:` format for document metadata
-- [ ] References parent feature from DECOMPOSITION manifest
+- [ ] References parent spec from DECOMPOSITION manifest
 - [ ] All flows, algorithms, states, requirements have unique IDs
-- [ ] All IDs follow `spd-{system}-feature-{feature}-{kind}-{slug}` pattern
+- [ ] All IDs follow `spd-{hierarchy-prefix}-{kind}-{slug}` pattern (see artifacts.json for hierarchy)
 - [ ] All IDs have priority markers (`p1`-`p9`)
 - [ ] SDSL instructions follow format: `N. [ ] - \`ph-N\` - Description - \`inst-slug\``
 - [ ] No placeholder content (TODO, TBD, FIXME)
@@ -52,11 +52,11 @@ Agent confirms understanding of requirements:
 
 ### Versioning Requirements
 
-- [ ] When editing existing FEATURE: increment version in frontmatter
+- [ ] When editing existing SPEC: increment version in frontmatter
 - [ ] When flow/algorithm/requirement significantly changes: add `-v{N}` suffix to ID
-- [ ] Format: `spd-{system}-feature-{feature}-flow-{slug}-v2`
+- [ ] Format: `spd-{hierarchy-prefix}-flow-{slug}-v2`
 - [ ] Keep changelog of significant changes
-- [ ] Versioning code markers must match: `@spider-flow:{spd-id}-v2:p{N}`
+- [ ] Versioning code markers must match: `@spider-flow:spd-{hierarchy-prefix}-flow-{slug}-v2:p{N}`
 
 ### Semantic Requirements
 
@@ -75,42 +75,42 @@ Agent confirms understanding of requirements:
 - [ ] Code must contain markers: `@spider-{kind}:{spd-id}:p{N}`
 - [ ] Each SDSL instruction maps to code marker
 
-### FEATURE Scope Guidelines
+### SPEC Scope Guidelines
 
-**One FEATURE per feature from DECOMPOSITION manifest**. Match scope to implementation unit.
+**One SPEC per spec from DECOMPOSITION manifest**. Match scope to implementation unit.
 
 | Scope | Examples | Guideline |
 |-------|----------|-----------|
-| **Too broad** | "User management feature" covering auth, profiles, roles | Split into separate FEATUREs |
+| **Too broad** | "User management spec" covering auth, profiles, roles | Split into separate SPECs |
 | **Right size** | "User login flow" covering single capability | Clear boundary, implementable unit |
 | **Too narrow** | "Validate email format" | Implementation detail, belongs in flow/algorithm |
 
-**FEATURE-worthy content**:
+**SPEC-worthy content**:
 - Actor flows (complete user journeys)
 - Algorithms (processing logic)
 - State machines (entity lifecycle)
-- Feature-specific requirements
+- Spec-specific requirements
 - Test scenarios
 
-**NOT FEATURE-worthy** (use other artifacts):
+**NOT SPEC-worthy** (use other artifacts):
 - System architecture → DESIGN
 - Technology decisions → ADR
 - Business requirements → PRD
-- Multiple unrelated capabilities → Split into FEATUREs
+- Multiple unrelated capabilities → Split into SPECs
 
 **Relationship to other artifacts**:
-- **FEATURES** → FEATURE: DECOMPOSITION lists what to build, FEATURE details how
-- **DESIGN** → FEATURE: DESIGN provides architecture context, FEATURE details implementation
-- **FEATURE** → CODE: FEATURE defines behavior, CODE implements with traceability markers
+- **DECOMPOSITION** → SPEC: DECOMPOSITION lists what to build, SPEC details how
+- **DESIGN** → SPEC: DESIGN provides architecture context, SPEC details implementation
+- **SPEC** → CODE: SPEC defines behavior, CODE implements with traceability markers
 
 ### Upstream Traceability
 
-- [ ] When all flows/algorithms/requirements `[x]` → mark feature as `[x]` in DECOMPOSITION
-- [ ] When feature complete → update status in DECOMPOSITION (→ IMPLEMENTED)
+- [ ] When all flows/algorithms/requirements `[x]` → mark spec as `[x]` in DECOMPOSITION
+- [ ] When spec complete → update status in DECOMPOSITION (→ IMPLEMENTED)
 
 ### Checkbox Management (`to_code` Attribute)
 
-**Quick Reference**: Check FEATURE element when ALL code markers for that element exist and implementation verified.
+**Quick Reference**: Check SPEC element when ALL code markers for that element exist and implementation verified.
 
 | Element | Check when... |
 |---------|---------------|
@@ -121,7 +121,7 @@ Agent confirms understanding of requirements:
 
 **Detailed Rules**:
 
-FEATURE defines IDs with `to_code="true"` attribute that track code implementation:
+SPEC defines IDs with `to_code="true"` attribute that track code implementation:
 
 | ID Type | `to_code` | Meaning |
 |---------|-----------|---------|
@@ -133,28 +133,28 @@ FEATURE defines IDs with `to_code="true"` attribute that track code implementati
 **Checkbox States**:
 
 1. **Flow Checkbox** (`id:flow`):
-   - `[ ] - spd-{system}-feature-{feature}-flow-{slug}` — unchecked until implemented
-   - `[x] - spd-{system}-feature-{feature}-flow-{slug}` — checked when ALL code markers `@spider-flow:{spd-id}:p{N}` exist
+   - `[ ] - spd-{hierarchy-prefix}-flow-{slug}` — unchecked until implemented
+   - `[x] - spd-{hierarchy-prefix}-flow-{slug}` — checked when ALL code markers `@spider-flow:spd-{hierarchy-prefix}-flow-{slug}:p{N}` exist
 
 2. **Algorithm Checkbox** (`id:algo`):
-   - `[ ] - spd-{system}-feature-{feature}-algo-{slug}` — unchecked until implemented
-   - `[x] - spd-{system}-feature-{feature}-algo-{slug}` — checked when ALL code markers `@spider-algo:{spd-id}:p{N}` exist
+   - `[ ] - spd-{hierarchy-prefix}-algo-{slug}` — unchecked until implemented
+   - `[x] - spd-{hierarchy-prefix}-algo-{slug}` — checked when ALL code markers `@spider-algo:spd-{hierarchy-prefix}-algo-{slug}:p{N}` exist
 
 3. **State Machine Checkbox** (`id:state`):
-   - `[ ] - spd-{system}-feature-{feature}-state-{slug}` — unchecked until implemented
-   - `[x] - spd-{system}-feature-{feature}-state-{slug}` — checked when ALL code markers `@spider-state:{spd-id}:p{N}` exist
+   - `[ ] - spd-{hierarchy-prefix}-state-{slug}` — unchecked until implemented
+   - `[x] - spd-{hierarchy-prefix}-state-{slug}` — checked when ALL code markers `@spider-state:spd-{hierarchy-prefix}-state-{slug}:p{N}` exist
 
 4. **Requirement Checkbox** (`id:req`):
-   - `[ ] p1 - spd-{system}-feature-{feature}-req-{slug}` — unchecked until satisfied
-   - `[x] p1 - spd-{system}-feature-{feature}-req-{slug}` — checked when implementation complete and tests pass
+   - `[ ] p1 - spd-{hierarchy-prefix}-req-{slug}` — unchecked until satisfied
+   - `[x] p1 - spd-{hierarchy-prefix}-req-{slug}` — checked when implementation complete and tests pass
 
 **Cross-Artifact References (`id-ref`)**:
 
-FEATURE references elements from PRD and DESIGN:
+SPEC references elements from PRD and DESIGN:
 
 | Reference Type | Source Artifact | Purpose |
 |----------------|-----------------|---------|
-| `id-ref:feature` | DECOMPOSITION | Links to parent feature in manifest |
+| `id-ref:spec` | DECOMPOSITION | Links to parent spec in manifest |
 | `id-ref:actor` | PRD | Identifies actors involved in flows |
 | `id-ref:fr` | PRD | Covers functional requirement |
 | `id-ref:nfr` | PRD | Covers non-functional requirement |
@@ -170,8 +170,8 @@ FEATURE references elements from PRD and DESIGN:
 - [ ] When `id:algo` is checked → verify algorithm logic is implemented
 - [ ] When `id:state` is checked → verify all transitions are implemented
 - [ ] When `id:req` is checked → verify requirement is satisfied and tested
-- [ ] When ALL `id:*` in FEATURE are `[x]` → mark `id-ref:feature` as `[x]` in DECOMPOSITION
-- [ ] When feature is `[x]` → update upstream `id-ref` checkboxes in DECOMPOSITION (which cascades to PRD/DESIGN)
+- [ ] When ALL `id:*` in SPEC are `[x]` → mark `id-ref:spec` as `[x]` in DECOMPOSITION
+- [ ] When spec is `[x]` → update upstream `id-ref` checkboxes in DECOMPOSITION (which cascades to PRD/DESIGN)
 
 **Validation Checks**:
 - `spider validate` will warn if `to_code="true"` ID has no code markers
@@ -189,16 +189,26 @@ Agent executes tasks during generation:
 - [ ] Load `template.md` for structure
 - [ ] Load `checklist.md` for semantic guidance
 - [ ] Load `examples/example.md` for reference style
-- [ ] Read DECOMPOSITION to get feature ID and context
+- [ ] Read DECOMPOSITION to get spec ID and context
 - [ ] Read DESIGN to understand domain types and components
+- [ ] Read adapter `artifacts.json` to determine SPEC artifact path
+- [ ] Read adapter `specs/project-structure.md` (if exists) for directory conventions
+
+**SPEC path resolution**:
+1. Check if SPEC with matching slug already registered in `artifacts` array
+2. If found, use registered path (it's a FULL path relative to `project_root`)
+3. If not found, derive default path:
+   - Read system's `artifacts_dir` from `artifacts.json` (default: `architecture`)
+   - Use weaver's default subdirectory for SPECs: `specs/`
+   - Create at: `{artifacts_dir}/specs/{slug}.md`
 
 **If DECOMPOSITION not found**:
 ```
 ⚠ DECOMPOSITION not found
 → Option 1: Run /spider-generate DECOMPOSITION first (recommended)
-→ Option 2: Continue without manifest (FEATURE will lack traceability)
-   - Document "DECOMPOSITION pending" in FEATURE frontmatter
-   - Skip parent feature reference validation
+→ Option 2: Continue without manifest (SPEC will lack traceability)
+   - Document "DECOMPOSITION pending" in SPEC frontmatter
+   - Skip parent spec reference validation
    - Plan to update when DECOMPOSITION available
 ```
 
@@ -207,16 +217,16 @@ Agent executes tasks during generation:
 ⚠ DESIGN not found or incomplete
 → Option 1: Run /spider-generate DESIGN first (recommended for architectural context)
 → Option 2: Continue without DESIGN (reduced domain model context)
-   - Document "DESIGN pending" in FEATURE frontmatter
+   - Document "DESIGN pending" in SPEC frontmatter
    - Skip component/type references validation
    - Plan to update when DESIGN available
 ```
 
-**If parent feature not in DECOMPOSITION**:
+**If parent spec not in DECOMPOSITION**:
 ```
-⚠ Parent feature ID not found in DECOMPOSITION
-→ Verify feature ID: spd-{system}-feature-{slug}
-→ If new feature: add to DECOMPOSITION first
+⚠ Parent spec ID not found in DECOMPOSITION
+→ Verify spec ID: spd-{hierarchy-prefix}-spec-{slug}
+→ If new spec: add to DECOMPOSITION first
 → If typo: correct the ID reference
 ```
 
@@ -226,10 +236,10 @@ Agent executes tasks during generation:
 
 | Section | Example Reference | Checklist Guidance |
 |---------|-------------------|-------------------|
-| Actor Flows | How example structures flows | FEATURE-001: Flow Completeness |
-| Algorithms | How example defines algorithms | FEATURE-002: Algorithm Clarity |
-| State Machines | How example documents states | FEATURE-003: State Coverage |
-| Requirements | How example links requirements | FEATURE-004: Requirement Traceability |
+| Actor Flows | How example structures flows | SPEC-001: Flow Completeness |
+| Algorithms | How example defines algorithms | SPEC-002: Algorithm Clarity |
+| State Machines | How example documents states | SPEC-003: State Coverage |
+| Requirements | How example links requirements | SPEC-004: Requirement Traceability |
 
 **SDSL instruction generation:**
 - [ ] Each instruction has phase marker: `\`ph-N\``
@@ -240,7 +250,7 @@ Agent executes tasks during generation:
 
 **Partial Completion Handling**:
 
-If FEATURE cannot be completed in a single session:
+If SPEC cannot be completed in a single session:
 
 1. **Checkpoint progress**:
    - Note completed sections (Flows, Algorithms, States, Requirements, Tests)
@@ -252,9 +262,9 @@ If FEATURE cannot be completed in a single session:
    - Mark incomplete sections with `<!-- INCOMPLETE: {reason} -->`
 3. **Document resumption point**:
    ```
-   FEATURE checkpoint:
+   SPEC checkpoint:
    - Completed: Actor Flows (3/3), Algorithms (2/4)
-   - In progress: Algorithm spd-{system}-feature-{feature}-algo-{slug}
+   - In progress: Algorithm spd-{hierarchy-prefix}-algo-{slug}
    - Remaining: State Machines, Requirements, Test Scenarios
    - Resume: Continue with algorithm definition
    ```
@@ -266,11 +276,11 @@ If FEATURE cannot be completed in a single session:
 
 ### Phase 3: IDs and Structure
 
-- [ ] Generate flow IDs: `spd-{system}-feature-{feature}-flow-{slug}`
-- [ ] Generate algorithm IDs: `spd-{system}-feature-{feature}-algo-{slug}`
-- [ ] Generate state IDs: `spd-{system}-feature-{feature}-state-{slug}`
-- [ ] Generate requirement IDs: `spd-{system}-feature-{feature}-req-{slug}`
-- [ ] Assign priorities (`p1`-`p9`) based on feature priority
+- [ ] Generate flow IDs: `spd-{hierarchy-prefix}-flow-{slug}` (e.g., `spd-myapp-auth-flow-login`)
+- [ ] Generate algorithm IDs: `spd-{hierarchy-prefix}-algo-{slug}` (e.g., `spd-myapp-auth-algo-password-hash`)
+- [ ] Generate state IDs: `spd-{hierarchy-prefix}-state-{slug}` (e.g., `spd-myapp-auth-state-session-lifecycle`)
+- [ ] Generate requirement IDs: `spd-{hierarchy-prefix}-req-{slug}` (e.g., `spd-myapp-auth-req-must-validate-token`)
+- [ ] Assign priorities (`p1`-`p9`) based on spec priority
 - [ ] Verify ID uniqueness with `spider list-ids`
 
 ### Phase 4: Quality Check
@@ -278,7 +288,7 @@ If FEATURE cannot be completed in a single session:
 - [ ] Compare SDSL style to `examples/example.md`
 - [ ] Self-review against `checklist.md` MUST HAVE items
 - [ ] Ensure no MUST NOT HAVE violations
-- [ ] Verify parent feature reference exists
+- [ ] Verify parent spec reference exists
 
 ---
 
@@ -294,7 +304,7 @@ Run `spider validate` for:
 - [ ] Priority markers present
 - [ ] SDSL instruction format
 - [ ] No placeholders
-- [ ] Parent feature reference validity
+- [ ] Parent spec reference validity
 
 ### Phase 2: Semantic Validation (Checklist-based)
 
@@ -324,7 +334,7 @@ For IDs with `to_code="true"`:
 
 Output format:
 ```
-FEATURE Validation Report
+SPEC Validation Report
 ═════════════════════════
 
 Structural: PASS/FAIL
@@ -339,13 +349,13 @@ Issues:
 
 ## Next Steps
 
-After FEATURE generation/validation, offer these options:
+After SPEC generation/validation, offer these options:
 
 | Condition | Suggested Next Step |
 |-----------|---------------------|
-| FEATURE design complete | `/spider-generate CODE` — implement feature |
-| Code implementation done | `/spider-validate CODE` — validate implementation |
-| Feature IMPLEMENTED | Update status in DECOMPOSITION |
-| Another feature to design | `/spider-generate FEATURE` — design next feature |
-| FEATURE needs revision | Continue editing FEATURE design |
-| Want checklist review only | `/spider-validate semantic` — semantic validation (skip deterministic) |
+| SPEC design complete | `/spider-generate CODE` — implement spec |
+| Code implementation done | `/spider-analyze CODE` — validate implementation |
+| Spec IMPLEMENTED | Update status in DECOMPOSITION |
+| Another spec to design | `/spider-generate SPEC` — design next spec |
+| SPEC needs revision | Continue editing SPEC design |
+| Want checklist review only | `/spider-analyze semantic` — semantic validation (skip deterministic) |

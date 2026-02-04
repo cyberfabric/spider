@@ -136,7 +136,7 @@ Select applicable domains based on ADR subject:
 | Database/storage | ARCH, DATA, PERF |
 | API/integration | ARCH, INT, SEC |
 | Infrastructure | ARCH, OPS, REL, PERF |
-| User-facing feature | ARCH, UX, BIZ |
+| User-facing spec | ARCH, UX, BIZ |
 
 ### Full Review
 
@@ -222,7 +222,7 @@ For architectural decisions with broad impact, check ALL applicable domains.
 
 - [ ] Links to related requirements, risks, or constraints are provided
 - [ ] Links to impacted architecture and design documents are provided (when applicable)
-- [ ] Links to impacted feature specifications are provided (when applicable)
+- [ ] Links to impacted spec specifications are provided (when applicable)
 - [ ] Each link has a short explanation of relevance
 - [ ] Scope of impact is explicitly stated (what changes, what does not)
 
@@ -253,7 +253,7 @@ For architectural decisions with broad impact, check ALL applicable domains.
 - [ ] Superseding ADR referenced
 - [ ] Reason for supersession explained
 - [ ] Migration guidance provided
-- [ ] Deprecated features identified
+- [ ] Deprecated specs identified
 - [ ] Timeline for transition documented
 
 ### ARCH-ADR-009: Review Cadence
@@ -429,7 +429,7 @@ For architectural decisions with broad impact, check ALL applicable domains.
 **Severity**: MEDIUM
 
 - [ ] Rollout strategy documented
-- [ ] Feature flag requirements documented
+- [ ] Spec flag requirements documented
 - [ ] Canary/gradual rollout requirements documented
 - [ ] Rollback triggers documented
 - [ ] Success criteria documented
@@ -557,17 +557,17 @@ For architectural decisions with broad impact, check ALL applicable domains.
 
 ---
 
-## ❌ ARCH-ADR-NO-002: No Feature Implementation Details
+## ❌ ARCH-ADR-NO-002: No Spec Implementation Details
 **Severity**: HIGH
 
 **What to check**:
-- [ ] No feature user flows
-- [ ] No feature algorithms
-- [ ] No feature state machines
+- [ ] No spec user flows
+- [ ] No spec algorithms
+- [ ] No spec state machines
 - [ ] No step-by-step implementation guides
 - [ ] No low-level implementation pseudo-code
 
-**Where it belongs**: Feature specification / implementation design documentation
+**Where it belongs**: Spec specification / implementation design documentation
 
 ---
 

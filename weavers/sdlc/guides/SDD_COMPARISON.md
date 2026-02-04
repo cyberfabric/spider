@@ -9,8 +9,8 @@ This comparison focuses on how each framework/toolkit structures work for AI-ass
 
 ## One-paragraph summaries
 
-### Spider (Feature-Driven Design)
-A design-first methodology with a layered artifact hierarchy (adapter → PRD → overall design → features manifest → feature design → code), strict artifact structure requirements (sections, IDs, cross-links), and deterministic validation gates with scoring. It emphasizes plain-English behavioral specs (Spider DSL (SDSL)) and traceability from design to code.
+### Spider (Spec-Driven Design)
+A design-first methodology with a layered artifact hierarchy (adapter → PRD → overall design → specs manifest → spec design → code), strict artifact structure requirements (sections, IDs, cross-links), and deterministic validation gates with scoring. It emphasizes plain-English behavioral specs (Spider DSL (SDSL)) and traceability from design to code.
 
 ### OpenSpec
 A change-first, spec-driven workflow centered on explicit change folders and “delta specs” that patch a source-of-truth spec set. It is optimized for brownfield evolution and multi-spec updates by separating current truth (`{project-root}/openspec/specs/`) from proposals (`{project-root}/openspec/changes/`).
@@ -38,15 +38,15 @@ Legend:
 
 | Capability | Spider | OpenSpec | Spec Kit | MCAF | BMAD | Ralph |
 |---|---|---|---|---|---|---|
-| **🎯 Primary organizing unit** | Feature + artifact layers | Change folder | Feature spec folder (numbered) | Repo + docs + gates | Workflow phases + stories (epics/stories + sprint tracking) | Loop iterations + task list (PRD stories/tasks) |
+| **🎯 Primary organizing unit** | Spec + artifact layers | Change folder | Spec spec folder (numbered) | Repo + docs + gates | Workflow phases + stories (epics/stories + sprint tracking) | Loop iterations + task list (PRD stories/tasks) |
 | **🌱 Greenfield (0→1) fit** | ✅ Native | ⚠️ Supported (but optimized for evolution) | ✅ Native | ⚠️ Supported | ✅ Native | ⚠️ Supported |
 | **🏗️ Brownfield (1→n) fit** | ✅ Native | ✅ Native (explicitly emphasized) | ⚠️ Supported | ✅ Native | ✅ Native | ⚠️ Supported |
 | **💼 PRD artifact** | ✅ Native (`{project-root}/architecture/PRD.md`) | ❌ Out of scope | ⚠️ Supported (inside spec; no dedicated artifact) | ⚠️ Supported (docs; no dedicated artifact) | ⚠️ Supported (product brief / PRD outputs) | ⚠️ Supported (PRD/spec files; repo-defined) |
 | **🏛️ Overall architecture artifact** | ✅ Native (`{project-root}/architecture/DESIGN.md` + ADR) | ⚠️ Supported (optional `design.md` per change; not global) | ⚠️ Supported (plan + supporting docs) | ⚠️ Supported (recommended docs/Architecture overview) | ✅ Native (architecture workflow outputs) | ⚠️ Supported |
-| **📋 Feature catalog / roadmap artifact** | ✅ Native (`{project-root}/architecture/DECOMPOSITION.md`) | ❌ Out of scope | ⚠️ Supported (via multiple specs; not a single manifest) | ⚠️ Supported | ⚠️ Supported (epics/stories + sprint tracking) | ❌ Out of scope |
-| **🔄 Change management artifact** | ❌ Out of scope | ✅ Native (`{project-root}/openspec/changes/<id>/...`) | ⚠️ Supported (tasks + branch per feature) | ⚠️ Supported (plan recorded in issue/doc) | ✅ Native (story/sprint tracking) | ⚠️ Supported |
+| **📋 Spec catalog / roadmap artifact** | ✅ Native (`{project-root}/architecture/DECOMPOSITION.md`) | ❌ Out of scope | ⚠️ Supported (via multiple specs; not a single manifest) | ⚠️ Supported | ⚠️ Supported (epics/stories + sprint tracking) | ❌ Out of scope |
+| **🔄 Change management artifact** | ❌ Out of scope | ✅ Native (`{project-root}/openspec/changes/<id>/...`) | ⚠️ Supported (tasks + branch per spec) | ⚠️ Supported (plan recorded in issue/doc) | ✅ Native (story/sprint tracking) | ⚠️ Supported |
 | **📜 Spec-as-source-of-truth (regenerate mindset)** | ✅ Native (design artifacts are source of truth; code validated vs design) | ⚠️ Supported (specs are source of truth; changes archived into specs) | ✅ Native (spec drives plan/tasks/implementation) | ⚠️ Supported (docs + tests are truth gates) | ⚠️ Supported | ⚠️ Supported |
-| **🔁 Living specs update model** | Artifacts are updated directly; design remains the source of truth | Archive merges approved deltas back into `{project-root}/openspec/specs/` | Specs live in `specs/<nnn-feature>/...` and evolve via branch/PR lifecycle | Truth is proven by tests/analyzers; docs must reflect the system that exists | Workflow outputs evolve via re-runs (e.g., `_bmad-output/` artifacts + status files) | Specs/tasks evolve via git; loop re-reads disk state each iteration |
+| **🔁 Living specs update model** | Artifacts are updated directly; design remains the source of truth | Archive merges approved deltas back into `{project-root}/openspec/specs/` | Specs live in `specs/<nnn-spec>/...` and evolve via branch/PR lifecycle | Truth is proven by tests/analyzers; docs must reflect the system that exists | Workflow outputs evolve via re-runs (e.g., `_bmad-output/` artifacts + status files) | Specs/tasks evolve via git; loop re-reads disk state each iteration |
 | **🔀 Delta/patch spec format** | ❌ Out of scope | ✅ Native (ADDED/MODIFIED/REMOVED/RENAMED requirements) | ❌ Out of scope | ❌ Out of scope | ❌ Out of scope | ❌ Out of scope |
 | **📐 Formal requirement format constraints** | ✅ Native (Spider DSL (SDSL) for behaviors; no code in designs) | ✅ Native (requirements + scenarios; SHALL/MUST) | ⚠️ Supported (templates; constitution; process) | ⚠️ Supported (English docs; defined test flows) | ⚠️ Supported | ⚠️ Supported |
 | **🔒 Artifact schema strictness (required sections/IDs)** | ✅ Native (requirements define exact structure per artifact) | ✅ Native (change folder + delta format are prescribed) | ⚠️ Supported (templates; constitution) | ⚠️ Supported (recommended doc layout; repo conventions) | ✅ Native (standards + create/validate/edit modes) | ⚠️ Supported |
@@ -79,7 +79,7 @@ Legend:
 - ❌ **Out of scope = 0 points** (absence is not penalized)
 - 🚀 **Emerging = 0.5 points** (planned/in development)
 
-This is an industry-standard linear weighting system for feature comparison matrices. "Out of scope" receives 0 (not negative) because frameworks intentionally specialize—absence of a feature is not a deficiency if it's outside the framework's design goals.
+This is an industry-standard linear weighting system for spec comparison matrices. "Out of scope" receives 0 (not negative) because frameworks intentionally specialize—absence of a spec is not a deficiency if it's outside the framework's design goals.
 
 **Scoring results:**
 
@@ -95,18 +95,18 @@ This is an industry-standard linear weighting system for feature comparison matr
 **Breakdown by framework:**
 
 **Spider (55 points):**
-- Native: Greenfield fit, Brownfield fit, PRD artifact, Overall architecture artifact, Feature catalog / roadmap artifact, Spec-as-source-of-truth (regenerate mindset), Formal requirement format constraints, Artifact schema strictness (required sections/IDs), Workflow spec strictness (prereqs/steps/criteria/checklists), Cross-artifact integrity across a layered doc stack (IDs/refs/coverage), Deterministic doc/schema validator (format/placeholders/required fields), Deterministic cross-reference validator (doc↔doc), Deterministic code traceability validator (design/spec → code markers), Scoring / thresholds (beyond pass/fail), Strict phase gates, Agent instructions single source, Repeatable automation packages ("skills")
+- Native: Greenfield fit, Brownfield fit, PRD artifact, Overall architecture artifact, Spec catalog / roadmap artifact, Spec-as-source-of-truth (regenerate mindset), Formal requirement format constraints, Artifact schema strictness (required sections/IDs), Workflow spec strictness (prereqs/steps/criteria/checklists), Cross-artifact integrity across a layered doc stack (IDs/refs/coverage), Deterministic doc/schema validator (format/placeholders/required fields), Deterministic cross-reference validator (doc↔doc), Deterministic code traceability validator (design/spec → code markers), Scoring / thresholds (beyond pass/fail), Strict phase gates, Agent instructions single source, Repeatable automation packages ("skills")
 - Supported: Tri-modal workflows (Create / Validate / Edit modes), Executable gates (tests/analyzers) as decision makers, Integration/UI/API testing emphasis, Governance of instruction changes
 - Strengths: Strongest in **artifact structure**, **traceability**, and **deterministic validation**
 
 **BMAD (42 points):**
 - Native: Greenfield fit, Brownfield fit, Overall architecture artifact, Change management artifact, Artifact schema strictness (required sections/IDs), Workflow spec strictness (prereqs/steps/criteria/checklists), Progressive disclosure workflow execution (step isolation), Continuable workflows (pause/resume with persisted step state), Tri-modal workflows (Create / Validate / Edit modes), Strict phase gates, Agent instructions single source, Repeatable automation packages ("skills")
-- Supported: PRD artifact, Feature catalog / roadmap artifact, Spec-as-source-of-truth (regenerate mindset), Formal requirement format constraints, Executable gates (tests/analyzers) as decision makers, Integration/UI/API testing emphasis
+- Supported: PRD artifact, Spec catalog / roadmap artifact, Spec-as-source-of-truth (regenerate mindset), Formal requirement format constraints, Executable gates (tests/analyzers) as decision makers, Integration/UI/API testing emphasis
 - Strengths: Strongest in **guided workflow pipelines** and **workflow-driven artifact generation**
 
 **MCAF (34 points):**
 - Native: Brownfield fit, Strict phase gates, Agent instructions single source, Repeatable automation packages ("skills"), Executable gates (tests/analyzers) as decision makers, Integration/UI/API testing emphasis, Mocks/fakes policy, Governance of instruction changes
-- Supported: Greenfield fit, PRD artifact, Overall architecture artifact, Feature catalog / roadmap artifact, Change management artifact, Spec-as-source-of-truth (regenerate mindset), Formal requirement format constraints, Artifact schema strictness (required sections/IDs), Workflow spec strictness (prereqs/steps/criteria/checklists), Cross-artifact integrity across a layered doc stack (IDs/refs/coverage)
+- Supported: Greenfield fit, PRD artifact, Overall architecture artifact, Spec catalog / roadmap artifact, Change management artifact, Spec-as-source-of-truth (regenerate mindset), Formal requirement format constraints, Artifact schema strictness (required sections/IDs), Workflow spec strictness (prereqs/steps/criteria/checklists), Cross-artifact integrity across a layered doc stack (IDs/refs/coverage)
 - Strengths: Strongest in **verification gates** and **testing discipline**
 
 **OpenSpec (32.5 points):**
@@ -117,7 +117,7 @@ This is an industry-standard linear weighting system for feature comparison matr
 
 **Spec Kit (23 points):**
 - Native: Greenfield fit, Spec-as-source-of-truth (regenerate mindset), Strict phase gates
-- Supported: Brownfield fit, PRD artifact, Overall architecture artifact, Feature catalog / roadmap artifact, Change management artifact, Formal requirement format constraints, Artifact schema strictness (required sections/IDs), Workflow spec strictness (prereqs/steps/criteria/checklists), Deterministic doc/schema validator (format/placeholders/required fields), Agent instructions single source, Repeatable automation packages ("skills"), Executable gates (tests/analyzers) as decision makers, Integration/UI/API testing emphasis, Governance of instruction changes
+- Supported: Brownfield fit, PRD artifact, Overall architecture artifact, Spec catalog / roadmap artifact, Change management artifact, Formal requirement format constraints, Artifact schema strictness (required sections/IDs), Workflow spec strictness (prereqs/steps/criteria/checklists), Deterministic doc/schema validator (format/placeholders/required fields), Agent instructions single source, Repeatable automation packages ("skills"), Executable gates (tests/analyzers) as decision makers, Integration/UI/API testing emphasis, Governance of instruction changes
 - Strengths: Strongest in **bootstrap/setup** and **guided pipeline**
 
 **Ralph (21 points):**
@@ -135,9 +135,9 @@ This is an industry-standard linear weighting system for feature comparison matr
    - OpenSpec: Change management and delta tracking
    - MCAF: Verification gates and testing discipline
 
-4. **Spec Kit has broad "Supported" coverage** (14 capabilities) but fewer "Native" features (3), indicating a generalist approach with lighter enforcement.
+4. **Spec Kit has broad "Supported" coverage** (14 capabilities) but fewer "Native" specs (3), indicating a generalist approach with lighter enforcement.
 
-5. **Ralph scores lower on artifact/validator breadth** (21 points) because it is primarily an autonomy/loop technique; its strongest “native” features are verification gates, fresh-context loops, and iteration/stop conditions.
+5. **Ralph scores lower on artifact/validator breadth** (21 points) because it is primarily an autonomy/loop technique; its strongest “native” specs are verification gates, fresh-context loops, and iteration/stop conditions.
 
 6. **Specialization vs. breadth trade-off:**
    - Spider: Deep native support for design-first methodology
@@ -155,7 +155,7 @@ This is an industry-standard linear weighting system for feature comparison matr
 ## Deep comparison (dimensions)
 
 ### 1) “Center of gravity”
-- **Spider**: Design hierarchy + traceability (prd → architecture → feature decomposition → features manifest → feature designs → code).
+- **Spider**: Design hierarchy + traceability (prd → architecture → spec decomposition → specs manifest → spec designs → code).
 - **OpenSpec**: Change proposal + delta spec + archiving into living specs.
 - **Spec Kit**: Spec-driven pipeline with a constitution + artifacts generated via slash commands (constitution → spec → plan → tasks → implement).
 - **MCAF**: Predictability via shared repo context + tests/analyzers as gates + explicit agent instructions.
@@ -165,15 +165,15 @@ This is an industry-standard linear weighting system for feature comparison matr
 ### 2) Artifact model and where truth lives
 - **Spider**
   - Truth is captured in a layered architecture of Markdown artifacts.
-  - Strong separation of concerns: PRD vs architecture vs feature designs vs implementation plans.
-  - Living evolution: implementation planning and status live in feature `DESIGN.md` and are updated iteratively during implementation.
+  - Strong separation of concerns: PRD vs architecture vs spec designs vs implementation plans.
+  - Living evolution: implementation planning and status live in spec `DESIGN.md` and are updated iteratively during implementation.
 - **OpenSpec**
   - Truth lives in `openspec/specs/`.
   - Proposals and deltas live in `openspec/changes/<change-id>/` and are later archived/merged into specs.
   - Living evolution: `archive` is the explicit mechanism for folding approved deltas back into the source-of-truth specs.
 - **Spec Kit**
-  - Truth is in generated spec/plan/task documents under a feature spec directory; the constitution constrains downstream work.
-  - Living evolution: specs live in `specs/<nnn-feature>/...` and naturally evolve via a branch/PR lifecycle.
+  - Truth is in generated spec/plan/task documents under a spec spec directory; the constitution constrains downstream work.
+  - Living evolution: specs live in `specs/<nnn-spec>/...` and naturally evolve via a branch/PR lifecycle.
 - **MCAF**
   - Truth is in the repository as a whole: code + docs + tests + instructions; tests/analyzers arbitrate correctness.
   - Living evolution: documentation is updated to reflect actual behavior; “truth” is proven by tests and analyzers.
@@ -188,7 +188,7 @@ This is an industry-standard linear weighting system for feature comparison matr
 - **Spider**: Explicit validation chain per layer; dependent artifacts require validated parents.
 - **OpenSpec**: Validate change folder (strict) and do not code before proposal is approved; archive after deployment.
 - **Spec Kit**: Workflow emphasizes not moving to next phase until validated, but enforcement is primarily via process discipline + templates.
-- **MCAF**: Feature docs and ADR are updated when needed; failing tests (including integration/API/UI) and analyzers block completion.
+- **MCAF**: Spec docs and ADR are updated when needed; failing tests (including integration/API/UI) and analyzers block completion.
 - **BMAD**: Workflow prerequisites and phase sequencing act as gates; Quick Flow emphasizes auto-validation of readiness; failures typically route back to earlier planning/workflow steps.
 - **Ralph**: Gates are the loop stop condition: if tests/typecheck/build fail (or `verifyCompletion` returns false), the loop continues.
 
@@ -211,7 +211,7 @@ This is an industry-standard linear weighting system for feature comparison matr
 ### 5) Best-fit use cases
 - **Spider** fits best when you need:
   - Business-reviewable behavior specs (plain English), strong layered documentation, and design→code traceability.
-  - Multi-feature systems where cross-feature consistency matters.
+  - Multi-spec systems where cross-spec consistency matters.
 - **OpenSpec** fits best when you need:
   - Clear audit trail of changes, explicit deltas, and a workflow optimized for evolving existing behavior across multiple specs.
 - **Spec Kit** fits best when you want:
@@ -243,12 +243,12 @@ This is an industry-standard linear weighting system for feature comparison matr
 ## Practical interoperability patterns
 
 ### Pattern A: Spider + OpenSpec (layered design + delta change tracking)
-- Use **Spider** for layered artifacts and feature decomposition.
+- Use **Spider** for layered artifacts and spec decomposition.
 - Use **OpenSpec** for change proposals/deltas when you need an external-facing audit trail, or when multiple specs must be patched in a controlled way.
 
 ### Pattern B: Spec Kit for bootstrap, then migrate to Spider-style layering
 - Use Spec Kit templates and constitution to generate initial spec/plan/tasks.
-- When the system grows, adopt a layered approach (e.g., separate PRD, global design, and per-feature designs).
+- When the system grows, adopt a layered approach (e.g., separate PRD, global design, and per-spec designs).
 
 ### Pattern C: MCAF verification doctrine applied to any of the above
 - Regardless of spec system, apply MCAF’s “tests + analyzers are decision makers” and strict instructions governance.

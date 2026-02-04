@@ -66,7 +66,7 @@ Chosen option: **PostgreSQL**, because tasks have relational data (users, assign
 **Links**:
 <!-- spd:list:links -->
 - [`spd-taskflow-fr-task-management`](../PRD.md) — Primary requirement for task storage
-- [`spd-taskflow-feature-task-crud`](../features/task-crud/DESIGN.md) — Feature implementing task persistence
+- [`spd-taskflow-spec-task-crud`](../specs/task-crud/DESIGN.md) — Spec implementing task persistence
 <!-- spd:list:links -->
 <!-- spd:##:body -->
 

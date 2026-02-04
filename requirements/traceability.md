@@ -38,7 +38,7 @@ purpose: Define Spider code traceability markers and validation rules (weaver-ag
 
 **Validate markers**:
 ```bash
-python3 {Spider}/skills/spider/scripts/spider.py validate-code
+python3 {spider_path}/skills/spider/scripts/spider.py validate-code
 ```
 
 ---
@@ -91,7 +91,7 @@ Spider tools validate marker structure and referenced IDs; additional constraint
 
 **Example:**
 ```python
-# @spider-flow:spd-my-system-feature-core-auth-v2:p1
+# @spider-flow:spd-my-system-spec-core-auth-v2:p1
 def login_flow(request):
     ...
 ```
@@ -113,12 +113,12 @@ Wrap specific SDSL instruction implementations:
 
 **Example:**
 ```python
-# @spider-begin:spd-my-system-feature-core-auth-v2:p1:inst-fetch-tenant-from-db
+# @spider-begin:spd-my-system-spec-core-auth-v2:p1:inst-fetch-tenant-from-db
 def validate_credentials(username, password):
     if not username or not password:
         raise ValidationError("Missing credentials")
     return authenticate(username, password)
-# @spider-end:spd-my-system-feature-core-auth-v2:p1:inst-fetch-tenant-from-db
+# @spider-end:spd-my-system-spec-core-auth-v2:p1:inst-fetch-tenant-from-db
 ```
 
 ### Language-Specific Comment Syntax
@@ -182,8 +182,8 @@ When design ID is versioned:
 
 | Design ID | Code Marker |
 |-----------|-------------|
-| `spd-app-feature-auth-flow-login` | `@spider-flow:spd-app-feature-auth-flow-login:p1` |
-| `spd-app-feature-auth-flow-login-v2` | `@spider-flow:spd-app-feature-auth-flow-login-v2:p1` |
+| `spd-app-spec-auth-flow-login` | `@spider-flow:spd-app-spec-auth-flow-login:p1` |
+| `spd-app-spec-auth-flow-login-v2` | `@spider-flow:spd-app-spec-auth-flow-login-v2:p1` |
 
 **Migration:**
 - When design version increments, update all code markers
@@ -195,7 +195,7 @@ When design ID is versioned:
 
 Run:
 ```bash
-python3 {Spider}/skills/spider/scripts/spider.py validate-code
+python3 {spider_path}/skills/spider/scripts/spider.py validate-code
 ```
 
 ---
@@ -206,11 +206,11 @@ python3 {Spider}/skills/spider/scripts/spider.py validate-code
 
 ```python
 # WRONG - missing :pN
-# @spider-flow:spd-app-feature-auth-flow-login
+# @spider-flow:spd-app-spec-auth-flow-login
 def login(): ...
 
 # CORRECT
-# @spider-flow:spd-app-feature-auth-flow-login:p1
+# @spider-flow:spd-app-spec-auth-flow-login:p1
 def login(): ...
 ```
 
@@ -218,25 +218,25 @@ def login(): ...
 
 ```python
 # WRONG - IDs don't match
-# @spider-begin:spd-app-feature-auth-flow-login:p1:inst-validate
+# @spider-begin:spd-app-spec-auth-flow-login:p1:inst-validate
 def validate(): ...
-# @spider-end:spd-app-feature-auth-flow-login:p1:inst-check  # DIFFERENT!
+# @spider-end:spd-app-spec-auth-flow-login:p1:inst-check  # DIFFERENT!
 
 # CORRECT - IDs match exactly
-# @spider-begin:spd-app-feature-auth-flow-login:p1:inst-validate
+# @spider-begin:spd-app-spec-auth-flow-login:p1:inst-validate
 def validate(): ...
-# @spider-end:spd-app-feature-auth-flow-login:p1:inst-validate
+# @spider-end:spd-app-spec-auth-flow-login:p1:inst-validate
 ```
 
 ### ❌ Invented IDs
 
 ```python
 # WRONG - ID doesn't exist in design
-# @spider-flow:spd-app-feature-auth-flow-my-custom-thing:p1
+# @spider-flow:spd-app-spec-auth-flow-my-custom-thing:p1
 def my_function(): ...
 
 # CORRECT - Use only IDs from design document
-# @spider-flow:spd-app-feature-auth-flow-login:p1
+# @spider-flow:spd-app-spec-auth-flow-login:p1
 def login_flow(): ...
 ```
 
@@ -244,14 +244,14 @@ def login_flow(): ...
 
 ```python
 # WRONG - no code between markers
-# @spider-begin:spd-app-feature-auth-flow-login:p1:inst-validate
-# @spider-end:spd-app-feature-auth-flow-login:p1:inst-validate
+# @spider-begin:spd-app-spec-auth-flow-login:p1:inst-validate
+# @spider-end:spd-app-spec-auth-flow-login:p1:inst-validate
 
 # CORRECT - actual implementation between markers
-# @spider-begin:spd-app-feature-auth-flow-login:p1:inst-validate
+# @spider-begin:spd-app-spec-auth-flow-login:p1:inst-validate
 def validate_credentials(user, password):
     return authenticate(user, password)
-# @spider-end:spd-app-feature-auth-flow-login:p1:inst-validate
+# @spider-end:spd-app-spec-auth-flow-login:p1:inst-validate
 ```
 
 ### ❌ Nested Blocks
@@ -287,4 +287,4 @@ Validation performs:
 - Registry: `artifacts.json`
 - Weaver taxonomy: `weavers/<weaver>/guides/TAXONOMY.md`
 - Template markers: `requirements/template.md`
-- Validation command: `python3 {Spider}/skills/spider/scripts/spider.py validate-code`
+- Validation command: `python3 {spider_path}/skills/spider/scripts/spider.py validate-code`

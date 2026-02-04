@@ -13,8 +13,8 @@ weavers/sdlc/
 ├── artifacts/
 │   ├── PRD/          # Product Requirements Document
 │   ├── DESIGN/       # Technical Design
-│   ├── DECOMPOSITION/     # Features Manifest
-│   ├── FEATURE/      # Individual Feature Design
+│   ├── DECOMPOSITION/     # Specs Manifest
+│   ├── SPEC/      # Individual Spec Design
 │   └── ADR/          # Architecture Decision Record
 ├── codebase/
 │   ├── rules.md
@@ -29,7 +29,7 @@ A **project-specific adapter** in `.spider-adapter/` that configures Spider for 
 - `specs/*.md` - Project-specific specifications
 
 ### Artifact
-A **design document** tracked by Spider (PRD, DESIGN, DECOMPOSITION, FEATURE, ADR). Each artifact:
+A **design document** tracked by Spider (PRD, DESIGN, DECOMPOSITION, SPEC, ADR). Each artifact:
 - Has a `kind` matching a weaver template
 - Has a `path` in the project
 - Has `traceability` level (FULL or DOCS-ONLY)
@@ -103,7 +103,7 @@ Parsed source file with Spider markers:
 ### generate.md
 Creates/updates artifacts following template rules.
 
-### validate.md
+### analyze.md
 Validates artifacts against templates and traceability rules.
 
 ### adapter.md

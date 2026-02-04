@@ -1,23 +1,25 @@
 ---
 spider: true
 type: workflow
-name: spider-validate
-description: Validate Spider artifacts against templates or code against design requirements with traceability verification
+name: spider-analyze
+description: Analyze Spider artifacts against templates or code against design requirements with traceability verification (tool invocation is validate-only)
 version: 1.0
-purpose: Universal workflow for validating any Spider artifact or code
+purpose: Universal workflow for analysing any Spider artifact or code
 ---
 
-# Validate
+# Analyze
 
-**Type**: Validation
+Set `{spider_mode}` = `on` FIRST
 
-ALWAYS open and follow `../requirements/execution-protocol.md` FIRST
+**Type**: Analysis
 
-ALWAYS open and follow `../requirements/code-checklist.md` WHEN user requests validation of code, codebase changes, or implementation behavior (Code mode)
+ALWAYS open and follow `{spider_path}/requirements/execution-protocol.md` FIRST
 
-ALWAYS open and follow `../requirements/consistency-checklist.md` WHEN user requests validation of documentation/artifact consistency, contradiction detection, or cross-document alignment (Consistency mode)
+ALWAYS open and follow `{spider_path}/requirements/code-checklist.md` WHEN user requests analysis of code, codebase changes, or implementation behavior (Code mode)
 
-OPEN and follow `../requirements/prompt-engineering.md` WHEN user requests validation of:
+ALWAYS open and follow `{spider_path}/requirements/consistency-checklist.md` WHEN user requests analysis of documentation/artifact consistency, contradiction detection, or cross-document alignment (Consistency mode)
+
+OPEN and follow `{spider_path}/requirements/prompt-engineering.md` WHEN user requests analysis of:
 - System prompts, agent prompts, or LLM prompts
 - Agent instructions or agent guidelines
 - Skills, workflows, or methodologies
@@ -29,9 +31,9 @@ OPEN and follow `../requirements/prompt-engineering.md` WHEN user requests valid
 
 ## ⚠️ Maximum Attention to Detail
 
-**MUST** perform validation checking **ALL** applicable criteria from the loaded checklist:
+**MUST** perform analysis checking **ALL** applicable criteria from the loaded checklist:
 
-- ✅ Check **EVERY SINGLE** validation criterion
+- ✅ Check **EVERY SINGLE** applicable criterion
 - ✅ Verify **EACH ITEM** individually, not in groups
 - ✅ Read **COMPLETE** artifact from start to end
 - ✅ Validate **EVERY** ID format, reference, section
@@ -40,19 +42,19 @@ OPEN and follow `../requirements/prompt-engineering.md` WHEN user requests valid
 - ✅ Report **EVERY** issue found
 
 **MUST NOT**:
-- ❌ Skip any validation checks
+- ❌ Skip any checks
 - ❌ Assume sections are correct without verifying
 - ❌ Give benefit of doubt - verify everything
 
-**One missed issue = INVALID validation**
+**One missed issue = INVALID analysis**
 
 ---
 
 ## ⛔ Agent Anti-Patterns (STRICT mode)
 
-**Reference**: `../requirements/agent-compliance.md` for full list.
+**Reference**: `{spider_path}/requirements/agent-compliance.md` for full list.
 
-**Critical anti-patterns for validation**:
+**Critical anti-patterns for analysis**:
 
 | Anti-Pattern | What it looks like | Why it's wrong |
 |--------------|-------------------|----------------|
@@ -61,7 +63,7 @@ OPEN and follow `../requirements/prompt-engineering.md` WHEN user requests valid
 | ASSUMED_NA | "Security not applicable for this project" | Document must have explicit N/A statement, agent can't decide |
 | BULK_PASS | "All checklist items pass" | No evidence = no proof of actual verification |
 
-**Self-check before outputting validation**:
+**Self-check before outputting analysis**:
 - Am I reporting PASS without semantic review? → AP-001 SKIP_SEMANTIC
 - Did I use Read tool for the target artifact THIS turn? → AP-002 MEMORY_VALIDATION
 - Am I marking categories N/A without document quotes? → AP-003 ASSUMED_NA
@@ -73,24 +75,24 @@ OPEN and follow `../requirements/prompt-engineering.md` WHEN user requests valid
 
 ## Overview
 
-Universal validation workflow. Handles multiple modes:
+Universal analysis workflow. Handles multiple modes:
 - **Full mode** (default): Deterministic gate → Semantic review
-- **Semantic mode**: Semantic-only validation (skip deterministic gate)
-- **Artifact mode**: Validates against template + checklist
-- **Code mode**: Validates against checklist + design requirements
+- **Semantic mode**: Semantic-only analysis (skip deterministic gate)
+- **Artifact mode**: Analyzes against template + checklist
+- **Code mode**: Analyzes against checklist + design requirements
 
 ### Command Variants
 
 | Command | Mode | Description |
 |---------|------|-------------|
-| `/spider-validate` | Full | Deterministic gate → Semantic review |
-| `/spider-validate semantic` | Semantic only | Skip deterministic, checklist-based validation only |
-| `/spider-validate --artifact <path>` | Full | Validate specific artifact |
-| `/spider-validate semantic --artifact <path>` | Semantic only | Semantic validation for specific artifact |
-| `/spider-validate prompt <path>` | Prompt review | Prompt engineering methodology (9-layer analysis) |
+| `/spider-analyze` | Full | Deterministic gate → Semantic review |
+| `/spider-analyze semantic` | Semantic only | Skip deterministic, checklist-based semantic analysis only |
+| `/spider-analyze --artifact <path>` | Full | Analyze specific artifact |
+| `/spider-analyze semantic --artifact <path>` | Semantic only | Semantic analysis for specific artifact |
+| `/spider-analyze prompt <path>` | Prompt review | Prompt engineering methodology (9-layer analysis) |
 
 **Prompt review triggers** (auto-detected from context):
-- "validate this system prompt"
+- "analyze this system prompt"
 - "review agent instructions"
 - "check this workflow/skill"
 - "prompt engineering review"
@@ -104,7 +106,7 @@ After executing `execution-protocol.md`, you have: TARGET_TYPE, RULES, KIND, PAT
 This workflow can require loading multiple long checklists/specs. To prevent context overflow and "missed checks" failures:
 
 - **Budget first**: Before loading large docs, estimate size (e.g., `wc -l`) and state a rough budget for what you will load this turn.
-- **Load only what you will use**: Prefer rules.md "Validation" and the specific checklist categories needed; avoid loading entire registries/specs unless required.
+- **Load only what you will use**: Prefer rules.md "Validation" (analysis checks) and the specific checklist categories needed; avoid loading entire registries/specs unless required.
 - **Chunk reads**: Use `read_file` in ranges and summarize each chunk; do not keep raw full-text of multiple 500+ line documents in context at once.
 - **Summarize-and-drop**: After extracting the needed criteria, keep a short checklist summary and drop the raw text from working memory.
 - **Fail-safe**: If you cannot complete the required checks within context, output `PARTIAL` with a checkpoint (what was checked, what remains, where to resume). Do not claim overall PASS.
@@ -115,9 +117,9 @@ This workflow can require loading multiple long checklists/specs. To prevent con
 
 **Check invocation**:
 
-- If user invoked `/spider-validate semantic` or `/spider validate semantic` → Set `SEMANTIC_ONLY=true`
-- If user invoked `/spider-validate prompt` or context indicates prompt/instruction review → Set `PROMPT_REVIEW=true`
-- Otherwise → Set `SEMANTIC_ONLY=false`, `PROMPT_REVIEW=false` (full validation)
+- If user invoked `/spider-analyze semantic` or `spider analyze semantic` → Set `SEMANTIC_ONLY=true`
+- If user invoked `/spider-analyze prompt` or context indicates prompt/instruction review → Set `PROMPT_REVIEW=true`
+- Otherwise → Set `SEMANTIC_ONLY=false`, `PROMPT_REVIEW=false` (full analysis)
 
 **When `SEMANTIC_ONLY=true`**:
 - Skip Phase 2 (Deterministic Gate)
@@ -125,9 +127,9 @@ This workflow can require loading multiple long checklists/specs. To prevent con
 - Semantic review is MANDATORY regardless of STRICT/RELAXED mode
 
 **When `PROMPT_REVIEW=true`**:
-- Open and follow `../requirements/prompt-engineering.md`
+- Open and follow `{spider_path}/requirements/prompt-engineering.md`
 - Execute 9-layer prompt engineering analysis
-- Skip standard Spider validation (not applicable to prompts)
+- Skip standard Spider analysis (not applicable to prompts)
 - Output using prompt-engineering.md format
 - Traceability checks: N/A (prompts don't have code markers)
 - Registry checks: N/A (prompts may not be in artifacts.json)
@@ -142,20 +144,20 @@ This workflow can require loading multiple long checklists/specs. To prevent con
 - `CHECKLIST` — checklist content (from rules Dependencies)
 - `EXAMPLE` — example content (from rules Dependencies)
 - `REQUIREMENTS` — parsed requirements from rules
-- `VALIDATION_CHECKS` — validation checks from rules.md Validation section
+- `VALIDATION_CHECKS` — checks from rules.md Validation section
 
 ### Verify Rules Loaded
 
 **If rules.md was loaded** (execution-protocol found artifact type):
 - Dependencies already resolved from rules.md Dependencies section
-- Validation checks defined in rules.md Validation section
+- Checks defined in rules.md Validation section
 - Proceed silently
 
 **If rules.md NOT loaded** (manual mode):
 
 | Dependency | Purpose | If missing |
 |------------|---------|------------|
-| **Checklist** | Validation criteria to check | Ask user to provide or specify path |
+| **Checklist** | Criteria to check | Ask user to provide or specify path |
 | **Template** | Expected structure and sections | Ask user to provide or specify path |
 | **Example** | Reference for expected content quality | Ask user to provide or specify path |
 
@@ -163,29 +165,29 @@ This workflow can require loading multiple long checklists/specs. To prevent con
 
 | Dependency | Purpose | If missing |
 |------------|---------|------------|
-| **Code checklist** | Baseline validation criteria for all code work | Load `../requirements/code-checklist.md` |
+| **Code checklist** | Baseline criteria for all code work | Load `{spider_path}/requirements/code-checklist.md` |
 | **Design artifact** | Requirements that should be implemented | Ask user to specify source |
 
 **MUST NOT proceed** to Phase 1 until all dependencies are available.
 
 ---
 
-## Phase 0.5: Clarify Validation Scope
+## Phase 0.5: Clarify Analysis Scope
 
 ### Scope Determination
 
 **Ask user if unclear**:
 ```
-What is the validation scope?
-- Full validation (entire artifact/codebase)
-- Partial validation (specific sections/IDs)
+What is the analysis scope?
+- Full analysis (entire artifact/codebase)
+- Partial analysis (specific sections/IDs)
 - Quick check (structure only, skip semantic)
 ```
 
 ### Traceability Mode
 
 **Check artifact's traceability setting in artifacts.json**:
-- `FULL` → Validate code markers, cross-reference IDs in codebase
+- `FULL` → Check code markers, cross-reference IDs in codebase
 - `DOCS-ONLY` → Skip codebase traceability checks
 
 **If FULL traceability**:
@@ -201,8 +203,8 @@ What is the validation scope?
 - Verify system assignment is correct
 
 **If not registered**:
-- Warn user and suggest registering it in `{adapter_dir}/artifacts.json` (preferred for STRICT validation)
-- If user wants to proceed anyway, require `/spider-validate semantic` and clearly label output as semantic-only (no deterministic gate)
+- Warn user and suggest registering it in `{spider_adapter_path}/artifacts.json` (preferred for STRICT analysis)
+- If user wants to proceed anyway, require `/spider-analyze semantic` and clearly label output as semantic-only (no deterministic gate)
 
 ### Cross-Reference Scope
 
@@ -211,7 +213,7 @@ What is the validation scope?
 - Child artifacts (what references this)
 - Code directories (if FULL traceability)
 
-**Plan validation of**:
+**Plan checking of**:
 - All outgoing references exist
 - All incoming references are valid
 - No orphaned IDs
@@ -230,7 +232,7 @@ What is the validation scope?
 ✗ Target not found: {PATH}
 → Run /spider-generate {TARGET_TYPE} {KIND} to create
 ```
-STOP validation.
+STOP analysis.
 
 ---
 
@@ -241,24 +243,24 @@ STOP validation.
 **MUST run first when available** (when not semantic-only).
 
 Deterministic gate is considered **available** when:
-- Target is registered in `{adapter_dir}/artifacts.json` under a system with a `weaver` configured (registry schema uses `weavers`/`weaver`), AND
-- The weaver `format` supports Spider CLI validation (typically `format: "Spider"`), AND
-- You are validating an artifact or code path supported by the CLI.
+- Target is registered in `{spider_adapter_path}/artifacts.json` under a system with a `weaver` configured (registry schema uses `weavers`/`weaver`), AND
+- The weaver `format` supports Spider CLI checks (typically `format: "Spider"`), AND
+- You are analysing an artifact or code path supported by the CLI.
 
 If deterministic gate is **not available** (e.g., unregistered path, RELAXED mode without configured weaver/rules, or non-Spider weaver format):
 - Do **not** attempt to force `spider.py validate --artifact {PATH}`
-- Require semantic-only validation (`/spider-validate semantic`) or ask the user to register/provide rules first
+- Require semantic-only analysis (`/spider-analyze semantic`) or ask the user to register/provide rules first
 
 ### For Artifacts
 
 ```bash
-python3 {Spider}/skills/spider/scripts/spider.py validate --artifact {PATH}
+python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact {PATH}
 ```
 
 ### For Code
 
 ```bash
-python3 {Spider}/skills/spider/scripts/spider.py validate --code {PATH} --design {design-path}
+python3 {spider_path}/skills/spider/scripts/spider.py validate --code {PATH} --design {design-path}
 ```
 
 ### Evaluate
@@ -266,7 +268,7 @@ python3 {Spider}/skills/spider/scripts/spider.py validate --code {PATH} --design
 **If FAIL**:
 ```
 ═══════════════════════════════════════════════
-Validation: {TARGET_TYPE}
+Analysis: {TARGET_TYPE}
 ───────────────────────────────────────────────
 Status: FAIL
 ───────────────────────────────────────────────
@@ -274,7 +276,7 @@ Blocking issues:
 {list from validator}
 ═══════════════════════════════════════════════
 
-→ Fix issues and re-run validation
+→ Fix issues and re-run analysis
 ```
 **STOP** - do not proceed to semantic review.
 
@@ -292,22 +294,22 @@ Blocking issues:
 
 | Invocation | Rules Mode | Semantic Review | Evidence Required |
 |------------|------------|-----------------|-------------------|
-| `/spider-validate semantic` | Any | MANDATORY | Yes — per `agent-compliance.md` |
-| `/spider-validate` | **STRICT** | MANDATORY | Yes — per `agent-compliance.md` |
-| `/spider-validate` | **RELAXED** | Optional | No — best effort |
+| `/spider-analyze semantic` | Any | MANDATORY | Yes — per `agent-compliance.md` |
+| `/spider-analyze` | **STRICT** | MANDATORY | Yes — per `agent-compliance.md` |
+| `/spider-analyze` | **RELAXED** | Optional | No — best effort |
 
 **If STRICT mode**:
 - Semantic review is MANDATORY, not optional
-- Agent MUST follow `../requirements/agent-compliance.md`
+- Agent MUST follow `{spider_path}/requirements/agent-compliance.md`
 - Agent MUST provide evidence for each checklist category
 - Agent MUST NOT skip categories or report bulk "PASS"
-- Failure to complete semantic review → validation INVALID
+- Failure to complete semantic review → analysis INVALID
 
 **If semantic review cannot be completed** (context limits, missing info, interruption):
 1. Document which categories were checked with evidence
 2. Mark incomplete categories with reason (e.g., "INCOMPLETE: context limit reached")
 3. Output as `PARTIAL` — do NOT report overall PASS/FAIL
-4. Include checkpoint guidance: "Resume with `/spider-validate semantic` after addressing blockers"
+4. Include checkpoint guidance: "Resume with `/spider-analyze semantic` after addressing blockers"
 
 **If RELAXED mode**:
 - Semantic review is optional
@@ -320,12 +322,12 @@ Blocking issues:
 
 ### For Artifacts (rules.md Validation)
 
-Execute validation phases from rules.md:
+Execute phases from rules.md:
 - **Phase 1: Structural Validation** — already done by deterministic gate
 - **Phase 2: Semantic Validation** — checklist-based, from rules.md
 
 Use checklist from Phase 0 dependencies.
-Load adapter specs: `{adapter_dir}/AGENTS.md` → follow MANDATORY specs
+Load adapter specs: `{spider_adapter_path}/AGENTS.md` → follow MANDATORY specs
 
 Check (from rules.md + standard):
 - [ ] Content quality per checklist
@@ -338,7 +340,7 @@ Check (from rules.md + standard):
 
 ### For Code (rules.md Validation)
 
-Execute validation phases from codebase/rules.md:
+Execute phases from codebase/rules.md:
 - **Phase 1: Traceability Validation** — check code markers
 - **Phase 2: Quality Validation** — checklist-based
 
@@ -350,7 +352,7 @@ Check (from rules.md + standard):
 - [ ] Code follows conventions
 - [ ] Tests cover requirements
 - [ ] Spider markers present where required (to_code="true" IDs)
-- [ ] Implemented items marked `[x]` in FEATURE design
+- [ ] Implemented items marked `[x]` in SPEC design
 
 ### Completeness Checks
 
@@ -392,7 +394,7 @@ Check (from rules.md + standard):
 
 ### Checkpoint for Large Artifacts
 
-**For artifacts >500 lines or validation taking multiple turns**:
+**For artifacts >500 lines or analysis taking multiple turns**:
 - After completing each checklist category group, note progress in output
 - If context runs low, save checkpoint before continuing:
   - List completed categories with status
@@ -413,11 +415,11 @@ Categorize by priority:
 
 Print to chat (NO files created):
 
-### Full Validation Output (default)
+### Full Analysis Output (default)
 
 ```
 ═══════════════════════════════════════════════
-Validation: {TARGET_TYPE}
+Analysis: {TARGET_TYPE}
 ───────────────────────────────────────────────
 kind:   {KIND}
 name:   {name}
@@ -448,11 +450,11 @@ Status: PASS
 ═══════════════════════════════════════════════
 ```
 
-### Semantic-Only Validation Output (`/spider-validate semantic`)
+### Semantic-Only Output (`/spider-analyze semantic`)
 
 ```
 ═══════════════════════════════════════════════
-Semantic Validation: {TARGET_TYPE}
+Semantic Analysis: {TARGET_TYPE}
 ───────────────────────────────────────────────
 kind:   {KIND}
 name:   {name}
@@ -490,7 +492,7 @@ Status: PASS/FAIL
 
 **Read from rules.md** → `## Next Steps` section
 
-Present applicable options to user based on validation result:
+Present applicable options to user based on result:
 
 **If PASS**:
 ```
@@ -503,7 +505,7 @@ What would you like to do next?
 **If FAIL**:
 ```
 Fix the issues above, then:
-1. Re-run validation
+1. Re-run analysis
 2. {option from rules Next Steps for issues}
 3. Other
 ```
@@ -514,8 +516,8 @@ Fix the issues above, then:
 
 | State | TARGET_TYPE | Uses Template | Uses Checklist | Uses Design |
 |-------|-------------|---------------|----------------|-------------|
-| Validating artifact | artifact | ✓ | ✓ | parent only |
-| Validating code | code | ✗ | ✓ | ✓ |
+| Analysing artifact | artifact | ✓ | ✓ | parent only |
+| Analysing code | code | ✗ | ✓ | ✓ |
 
 ---
 
@@ -530,8 +532,8 @@ Fix the issues above, then:
 ### No Files Created
 
 - All output to chat
-- Never create VALIDATION_REPORT.md
-- Keep validation stateless
+- Never create ANALYSIS_REPORT.md
+- Keep analysis stateless
 
 ### Fail Fast
 
@@ -543,7 +545,7 @@ Fix the issues above, then:
 
 ## Agent Self-Test (STRICT mode — AFTER completing work)
 
-**CRITICAL**: Answer these questions AFTER doing the validation work, not before.
+**CRITICAL**: Answer these questions AFTER doing the work, not before.
 **CRITICAL**: Include answers with evidence in your output.
 
 ### Self-Test Questions
@@ -566,7 +568,7 @@ Fix the issues above, then:
 6. ⚠️ Am I reporting based on actual file content, not memory/summary?
    → Evidence: Fresh Read tool call visible in this conversation turn
 
-### Self-Test Output Format (include in validation report)
+### Self-Test Output Format (include in analysis report)
 
 ```markdown
 ### Agent Self-Test Results
@@ -581,7 +583,7 @@ Fix the issues above, then:
 | Based on fresh read? | YES | Read tool called this turn |
 ```
 
-**If ANY answer is NO or lacks evidence → Validation is INVALID, must restart**
+**If ANY answer is NO or lacks evidence → Analysis is INVALID, must restart**
 
 ### RELAXED Mode
 
@@ -594,9 +596,9 @@ In RELAXED mode, self-test is advisory only. Include disclaimer:
 
 ## Validation Criteria
 
-- [ ] ../requirements/execution-protocol.md executed
+- [ ] {spider_path}/requirements/execution-protocol.md executed
 - [ ] Dependencies loaded (checklist, template, example)
-- [ ] Validation scope clarified
+- [ ] Analysis scope clarified
 - [ ] Traceability mode determined
 - [ ] Registry consistency verified
 - [ ] Cross-reference scope identified

@@ -114,7 +114,7 @@ weavers/sdlc/
 │   ├── DESIGN/rules.md
 │   ├── ADR/rules.md
 │   ├── DECOMPOSITION/rules.md
-│   └── FEATURE/rules.md
+│   └── SPEC/rules.md
 └── codebase/rules.md
 ```
 
@@ -350,18 +350,18 @@ Workflow:
 
 ---
 
-## Example: Validate FEATURE
+## Example: Validate SPEC
 
 ```
-User: spider validate architecture/features/auth.md
+User: spider validate architecture/specs/auth.md
 
 Workflow:
-1. Artifact type: FEATURE (from path)
+1. Artifact type: SPEC (from path)
 2. Resolve weaver:
    - Find system containing artifact
    - System "Spider" uses weaver "spider-sdlc"
    - weavers["spider-sdlc"].path = "weavers/sdlc"
-3. Load: weavers/sdlc/artifacts/FEATURE/rules.md
+3. Load: weavers/sdlc/artifacts/SPEC/rules.md
 4. Parse Dependencies
 5. Load: template.md, checklist.md, examples/example.md
 6. Execute Validation:
@@ -501,7 +501,7 @@ Workflow:
 
 ## References
 
-- **Rules registry**: `{adapter_dir}/artifacts.json` → `rules` section
+- **Rules registry**: `{spider_adapter_path}/artifacts.json` → `rules` section
 - **Artifact rules**: `{rules_path}/artifacts/{KIND}/rules.md`
 - **Codebase rules**: `{rules_path}/codebase/rules.md`
 - **Template spec**: `requirements/template.md`

@@ -15,7 +15,7 @@ spider-template:
 <!-- spd:##:overview -->
 ## 1. Overview
 
-{ Description of how the DESIGN was decomposed into features, the decomposition strategy, and any relevant decomposition rationale. }
+{ Description of how the DESIGN was decomposed into specs, the decomposition strategy, and any relevant decomposition rationale. }
 
 
 <!-- spd:##:overview -->
@@ -27,31 +27,31 @@ spider-template:
 <!-- spd:id:status has="priority,task" -->
 - [ ] `p1` - **ID**: `spd-{system}-status-overall`
 
-<!-- spd:###:feature-title repeat="many" -->
-### 1. [{Feature Title}](feature-{slug}/) ⏳ MEDIUM
+<!-- spd:###:spec-title repeat="many" -->
+### 1. [{Spec Title}](spec-{slug}/) ⏳ MEDIUM
 
-<!-- spd:id:feature has="priority,task" -->
-- [ ] `p1` - **ID**: `spd-{system}-feature-{slug}`
+<!-- spd:id:spec has="priority,task" -->
+- [ ] `p1` - **ID**: `spd-{system}-spec-{slug}`
 
-<!-- spd:paragraph:feature-purpose required="true" -->
+<!-- spd:paragraph:spec-purpose required="true" -->
 - **Purpose**: {Few sentences}
-<!-- spd:paragraph:feature-purpose -->
+<!-- spd:paragraph:spec-purpose -->
 
-<!-- spd:paragraph:feature-depends -->
-- **Depends On**: {None or `spd-{system}-feature-{slug}`}
-<!-- spd:paragraph:feature-depends -->
+<!-- spd:paragraph:spec-depends -->
+- **Depends On**: {None or `spd-{system}-spec-{slug}`}
+<!-- spd:paragraph:spec-depends -->
 
-<!-- spd:list:feature-scope -->
+<!-- spd:list:spec-scope -->
 - **Scope**:
   - {in-scope item}
   - {in-scope item}
-<!-- spd:list:feature-scope -->
+<!-- spd:list:spec-scope -->
 
-<!-- spd:list:feature-out-scope -->
+<!-- spd:list:spec-out-scope -->
 - **Out of scope**:
   - {Out-of-scope item}
   - {Out-of-scope item}
-<!-- spd:list:feature-out-scope -->
+<!-- spd:list:spec-out-scope -->
 
 - **Requirements Covered**:
 <!-- spd:id-ref:fr has="priority,task" -->
@@ -69,21 +69,21 @@ spider-template:
   - [ ] `p1` - `spd-{system}-constraint-{slug}`
 <!-- spd:id-ref:constraint -->
 
-<!-- spd:list:feature-domain-entities -->
+<!-- spd:list:spec-domain-entities -->
 - **Domain Model Entities**:
   - {entity/type/object}
-<!-- spd:list:feature-domain-entities -->
+<!-- spd:list:spec-domain-entities -->
 
 - **Design Components**:
 <!-- spd:id-ref:component has="priority,task" -->
   - [ ] `p1` - `spd-{system}-component-{slug}`
 <!-- spd:id-ref:component -->
 
-<!-- spd:list:feature-api -->
+<!-- spd:list:spec-api -->
 - **API**:
   - /{resource-name}
   - {CLI command}
-<!-- spd:list:feature-api -->
+<!-- spd:list:spec-api -->
 
 - **Sequences**:
 <!-- spd:id-ref:seq has="priority,task" -->
@@ -95,9 +95,9 @@ spider-template:
   - [ ] `p1` - `spd-{system}-dbtable-{slug}`
 <!-- spd:id-ref:dbtable -->
 
-<!-- spd:id:feature -->
+<!-- spd:id:spec -->
 
-<!-- spd:###:feature-title repeat="many" -->
+<!-- spd:###:spec-title repeat="many" -->
 <!-- spd:id:status -->
 <!-- spd:##:entries -->
 <!-- spd:#:decomposition -->

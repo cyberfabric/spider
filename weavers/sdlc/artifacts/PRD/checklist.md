@@ -57,7 +57,7 @@ This checklist incorporates requirements and best practices from the following i
    - [No Technical Implementation](#-arch-prd-no-001-no-technical-implementation-details)
    - [No Architectural Decisions](#-arch-prd-no-002-no-architectural-decisions)
    - [No Implementation Tasks](#-biz-prd-no-001-no-implementation-tasks)
-   - [No Feature-Level Design](#-biz-prd-no-002-no-feature-level-design)
+   - [No Spec-Level Design](#-biz-prd-no-002-no-spec-level-design)
    - [No Data Schema](#-data-prd-no-001-no-data-schema-definitions)
    - [No API Specs](#-int-prd-no-001-no-api-specifications)
    - [No Test Cases](#-test-prd-no-001-no-test-cases)
@@ -270,7 +270,7 @@ Mark review as "PARTIAL" if not all domains completed.
 **Severity**: MEDIUM
 **Ref**: ISO/IEC 25010:2023 §4.2.7.2 (Modularity subcharacteristic)
 
-- [ ] Requirements are decomposable into features
+- [ ] Requirements are decomposable into specs
 - [ ] No monolithic "do everything" requirements
 - [ ] Clear separation of concerns in requirement grouping
 - [ ] Requirements support incremental delivery
@@ -754,11 +754,11 @@ Mark review as "PARTIAL" if not all domains completed.
 - [ ] No developer assignments
 - [ ] No implementation timelines
 
-**Where it belongs**: Project management tools (Jira, Linear, etc.) or Feature DESIGN
+**Where it belongs**: Project management tools (Jira, Linear, etc.) or Spec DESIGN
 
 ---
 
-## ❌ BIZ-PRD-NO-002: No Feature-Level Design
+## ❌ BIZ-PRD-NO-002: No Spec-Level Design
 **Severity**: HIGH
 
 **What to check**:
@@ -768,7 +768,7 @@ Mark review as "PARTIAL" if not all domains completed.
 - [ ] No state machine definitions
 - [ ] No detailed error handling logic
 
-**Where it belongs**: `Feature DESIGN` (Feature Design)
+**Where it belongs**: `Spec DESIGN` (Spec Design)
 
 ---
 

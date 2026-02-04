@@ -233,9 +233,9 @@ Layer 9: Knowledge Synthesis        → What have we learned?
 
 - [ ] Identify grouping strategy:
   - By layer (controllers/, services/, repositories/, models/)
-  - By feature (users/, orders/, payments/)
+  - By spec (users/, orders/, payments/)
   - By domain (bounded contexts)
-  - Hybrid (layers within features or features within layers)
+  - Hybrid (layers within specs or specs within layers)
 
 ### 3.2.2 File Organization
 

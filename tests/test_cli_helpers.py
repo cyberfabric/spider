@@ -15,37 +15,9 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spider" / "scripts"))
 
-from spider.utils.document import detect_artifact_kind, iter_text_files, read_text_safe, to_relative_posix
+from spider.utils.document import iter_text_files, read_text_safe, to_relative_posix
 
 from spider import cli as spider_cli
-
-
-class TestDetectKind(unittest.TestCase):
-    """Test detect_artifact_kind function."""
-
-    def test_detect_features_manifest(self):
-        """Test detecting DECOMPOSITION.md."""
-        path = Path("/test/DECOMPOSITION.md")
-        kind = detect_artifact_kind(path)
-        self.assertEqual(kind, "features-manifest")
-
-    def test_detect_design(self):
-        """Test detecting DESIGN.md."""
-        path = Path("/test/DESIGN.md")
-        kind = detect_artifact_kind(path)
-        self.assertEqual(kind, "overall-design")
-
-    def test_detect_feature_design(self):
-        """Test detecting feature DESIGN.md."""
-        path = Path("/test/architecture/features/feature-x/DESIGN.md")
-        kind = detect_artifact_kind(path)
-        self.assertEqual(kind, "feature-design")
-
-    def test_detect_generic(self):
-        """Test detecting generic file."""
-        path = Path("/test/README.md")
-        kind = detect_artifact_kind(path)
-        self.assertEqual(kind, "generic")
 
 
 class TestRelativePosix(unittest.TestCase):

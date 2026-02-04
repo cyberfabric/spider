@@ -374,5 +374,171 @@ class TestGenerateDefaultRegistry(unittest.TestCase):
         self.assertEqual(_join_path("base/", "/tail"), "base/tail")
 
 
+class TestSystemNodeHierarchy(unittest.TestCase):
+    """Test SystemNode hierarchy methods."""
+
+    def test_get_hierarchy_prefix(self):
+        """Cover get_hierarchy_prefix method."""
+        data = {
+            "version": "1.0",
+            "project_root": "..",
+            "weavers": {},
+            "systems": [
+                {
+                    "name": "Platform",
+                    "slug": "platform",
+                    "weaver": "spider-sdlc",
+                    "children": [
+                        {
+                            "name": "Core",
+                            "slug": "core",
+                            "weaver": "spider-sdlc",
+                            "children": [
+                                {
+                                    "name": "Auth",
+                                    "slug": "auth",
+                                    "weaver": "spider-sdlc",
+                                }
+                            ],
+                        }
+                    ],
+                }
+            ],
+        }
+        meta = ArtifactsMeta.from_dict(data)
+        # Find the auth node
+        auth_node = None
+        for node in meta.iter_all_systems():
+            if node.slug == "auth":
+                auth_node = node
+                break
+        self.assertIsNotNone(auth_node)
+        self.assertEqual(auth_node.get_hierarchy_prefix(), "platform-core-auth")
+
+    def test_validate_slug_valid(self):
+        """Cover validate_slug method with valid slug."""
+        node = SystemNode(name="Test", slug="valid-slug", weaver="test")
+        result = node.validate_slug()
+        self.assertIsNone(result)
+
+    def test_validate_slug_missing(self):
+        """Cover validate_slug method with missing slug."""
+        node = SystemNode(name="Test", slug="", weaver="test")
+        result = node.validate_slug()
+        self.assertIsNotNone(result)
+        self.assertIn("Missing slug", result)
+
+    def test_validate_slug_invalid_format(self):
+        """Cover validate_slug method with invalid slug format."""
+        node = SystemNode(name="Test", slug="Invalid_Slug!", weaver="test")
+        result = node.validate_slug()
+        self.assertIsNotNone(result)
+        self.assertIn("Invalid slug", result)
+
+
+class TestArtifactsMetaIterators(unittest.TestCase):
+    """Test ArtifactsMeta iterator methods with nested children."""
+
+    def test_iter_all_codebase_with_children(self):
+        """Cover iter_all_codebase with nested system children."""
+        data = {
+            "version": "1.0",
+            "project_root": "..",
+            "weavers": {},
+            "systems": [
+                {
+                    "name": "Parent",
+                    "slug": "parent",
+                    "weaver": "spider-sdlc",
+                    "codebase": [{"name": "Parent Code", "path": "src/parent"}],
+                    "children": [
+                        {
+                            "name": "Child",
+                            "slug": "child",
+                            "weaver": "spider-sdlc",
+                            "codebase": [{"name": "Child Code", "path": "src/child"}],
+                        }
+                    ],
+                }
+            ],
+        }
+        meta = ArtifactsMeta.from_dict(data)
+        codebase_entries = list(meta.iter_all_codebase())
+        self.assertEqual(len(codebase_entries), 2)
+        paths = [cb.path for cb, _ in codebase_entries]
+        self.assertIn("src/parent", paths)
+        self.assertIn("src/child", paths)
+
+    def test_iter_all_systems_with_children(self):
+        """Cover iter_all_systems with nested children."""
+        data = {
+            "version": "1.0",
+            "project_root": "..",
+            "weavers": {},
+            "systems": [
+                {
+                    "name": "Root",
+                    "slug": "root",
+                    "weaver": "spider-sdlc",
+                    "children": [
+                        {
+                            "name": "Child1",
+                            "slug": "child1",
+                            "weaver": "spider-sdlc",
+                            "children": [
+                                {"name": "Grandchild", "slug": "grandchild", "weaver": "spider-sdlc"}
+                            ],
+                        }
+                    ],
+                }
+            ],
+        }
+        meta = ArtifactsMeta.from_dict(data)
+        systems = list(meta.iter_all_systems())
+        self.assertEqual(len(systems), 3)
+        slugs = [s.slug for s in systems]
+        self.assertIn("root", slugs)
+        self.assertIn("child1", slugs)
+        self.assertIn("grandchild", slugs)
+
+    def test_get_system_by_slug(self):
+        """Cover get_system_by_slug method."""
+        data = {
+            "version": "1.0",
+            "project_root": "..",
+            "weavers": {},
+            "systems": [
+                {
+                    "name": "MyApp",
+                    "slug": "myapp",
+                    "weaver": "spider-sdlc",
+                    "children": [{"name": "Module", "slug": "module", "weaver": "spider-sdlc"}],
+                }
+            ],
+        }
+        meta = ArtifactsMeta.from_dict(data)
+        node = meta.get_system_by_slug("module")
+        self.assertIsNotNone(node)
+        self.assertEqual(node.name, "Module")
+        # Test not found
+        self.assertIsNone(meta.get_system_by_slug("nonexistent"))
+
+    def test_validate_all_slugs(self):
+        """Cover validate_all_slugs method."""
+        data = {
+            "version": "1.0",
+            "project_root": "..",
+            "weavers": {},
+            "systems": [
+                {"name": "Valid", "slug": "valid", "weaver": "spider-sdlc"},
+                {"name": "Invalid", "slug": "Invalid_Slug!", "weaver": "spider-sdlc"},
+            ],
+        }
+        meta = ArtifactsMeta.from_dict(data)
+        errors = meta.validate_all_slugs()
+        self.assertEqual(len(errors), 1)
+        self.assertIn("Invalid slug", errors[0])
+
+
 if __name__ == "__main__":
     unittest.main()

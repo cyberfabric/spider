@@ -27,7 +27,7 @@
 **Context**:
 Spider should behave as a set of loosely coupled workflows and tools where a user can start from any point (design, implementation, or validation) and still make progress. In brownfield projects, required artifacts may be missing, partially present, or exist only as informal context (docs, READMEs, tickets, prompts).
 
-In this ADR, "Feature-Driven Design" terminology is considered deprecated and is not used.
+In this ADR, "Spec-Driven Design" terminology is considered deprecated and is not used.
 
 In this ADR, "Spider" may be interpreted as:
 - **Framework for Documentation and Development**: the methodology centered around flows/workflows, where artifacts and tooling are assembled into end-to-end user-driven pipelines.
@@ -72,7 +72,7 @@ Chosen option: **Adapter-owned `artifacts.json` registry + Framework for Documen
    - If an expected dependency is not found, `spider` MUST continue validation using only discovered artifacts and MUST report missing dependencies as diagnostics (not as a crash condition).
    - Interactive workflows and agents SHOULD ask the user to provide a path, confirm a scope root, or accept "context-only" inputs to proceed.
 
-3. Code traceability MUST be configurable per artifact (especially feature designs), because in brownfield adoption some features may be implemented before their feature design exists or before traceability tagging is introduced.
+3. Code traceability MUST be configurable per artifact (especially spec designs), because in brownfield adoption some specs may be implemented before their spec design exists or before traceability tagging is introduced.
 
 ### Hierarchical Scopes (3 levels)
 
@@ -81,7 +81,7 @@ Chosen option: **Adapter-owned `artifacts.json` registry + Framework for Documen
 - **Level 1: System scope**
   - the overall repository context (global conventions, shared core artifacts, shared ADRs).
 - **Level 2: Sub-system scope**
-  - a large subsystem inside the system (may have its own architecture folder, its own features).
+  - a large subsystem inside the system (may have its own architecture folder, its own specs).
 - **Level 3: Module scope**
   - a smaller unit within a sub-system (may have localized artifacts or be context-only).
 
@@ -93,7 +93,7 @@ Examples:
 - **Example B (monorepo with shared + per-sub-system architecture)**:
   - System: `platform` (shared `architecture/` for org-wide decisions)
   - Sub-system: `auth` (has its own `modules/auth/architecture/`)
-  - Module: `token-issuer` (may keep only context docs, or a local feature folder)
+  - Module: `token-issuer` (may keep only context docs, or a local spec folder)
 - **Example C (single-repo, single sub-system)**:
   - System: `platform`
   - Sub-system: `app` (the main runnable app)

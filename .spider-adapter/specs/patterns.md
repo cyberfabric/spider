@@ -17,7 +17,7 @@ weavers/sdlc/artifacts/{KIND}/
 
 **Key Decisions**:
 - Templates are self-contained units with their own generation and validation logic
-- Consolidated workflows: `generate.md`, `validate.md`, `adapter.md`
+- Consolidated workflows: `generate.md`, `analyze.md`, `adapter.md`
 - Weaver packages contain all rules, templates, checklists, and examples
 
 ### 2. Adaptive Workflow Model (ADR-0002)

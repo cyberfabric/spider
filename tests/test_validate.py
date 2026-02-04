@@ -88,29 +88,17 @@ class TestParsingUtils(unittest.TestCase):
             self.assertEqual(result, {"A": "Intro", "B": "Body"})
 
     def test_split_by_section_letter_with_offsets(self):
+        import re
         from spider.utils.parsing import split_by_section_letter_with_offsets
-        from spider.constants import SECTION_PRD_RE
+        section_re = re.compile(r"^##\s+([A-Z])\.\s+(.+)?$", re.IGNORECASE)
         text = "# Header\n\n## A. First\n\nContent A.\n\n## B. Second\n\nContent B.\n"
-        order, sections, offsets = split_by_section_letter_with_offsets(text, SECTION_PRD_RE)
+        order, sections, offsets = split_by_section_letter_with_offsets(text, section_re)
         self.assertEqual(order, ["A", "B"])
         self.assertIn("A", sections)
         self.assertIn("B", sections)
         self.assertIn("A", offsets)
         self.assertIn("B", offsets)
 
-    def test_split_by_feature_section_letter_with_offsets(self):
-        from spider.utils.parsing import split_by_feature_section_letter_with_offsets
-        text = "# Header\n\n## A. Requirements\n\nReqs here.\n"
-        order, sections, offsets = split_by_feature_section_letter_with_offsets(text)
-        self.assertEqual(order, ["A"])
-        self.assertIn("A", sections)
-
-    def test_split_by_prd_section_letter_with_offsets(self):
-        from spider.utils.parsing import split_by_prd_section_letter_with_offsets
-        text = "# PRD\n\n## A. Vision\n\nVision content.\n"
-        order, sections, offsets = split_by_prd_section_letter_with_offsets(text)
-        self.assertEqual(order, ["A"])
-        self.assertIn("A", sections)
 
 
 class TestFilesUtilsCoverage(unittest.TestCase):

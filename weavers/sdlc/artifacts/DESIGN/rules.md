@@ -28,7 +28,7 @@
 - `template.md` — required structure
 - `checklist.md` — semantic quality criteria
 - `examples/example.md` — reference implementation
-- `{Spider}/requirements/template.md` — Spider template marker syntax specification
+- `{spider_path}/requirements/template.md` — Spider template marker syntax specification
 
 ---
 
@@ -42,7 +42,7 @@ Agent confirms understanding of requirements:
 - [ ] **DO NOT copy `spider-template:` frontmatter** — that is template metadata only
 - [ ] Artifact frontmatter (optional): use `spd:` format for document metadata
 - [ ] All required sections present and non-empty
-- [ ] All IDs follow `spd-{system}-{kind}-{slug}` convention
+- [ ] All IDs follow `spd-{hierarchy-prefix}-{kind}-{slug}` convention (see artifacts.json for hierarchy)
 - [ ] References to PRD are valid
 - [ ] No placeholder content (TODO, TBD, FIXME)
 - [ ] No duplicate IDs within document
@@ -51,7 +51,7 @@ Agent confirms understanding of requirements:
 
 - [ ] When editing existing DESIGN: increment version in frontmatter
 - [ ] When changing type/component definition: add `-v{N}` suffix to ID or increment existing version
-- [ ] Format: `spd-{system}-type-{slug}-v2`, `spd-{system}-comp-{slug}-v3`, etc.
+- [ ] Format: `spd-{hierarchy-prefix}-type-{slug}-v2`, `spd-{hierarchy-prefix}-comp-{slug}-v3`, etc.
 - [ ] Keep changelog of significant changes
 
 ### Semantic Requirements
@@ -73,7 +73,7 @@ Agent confirms understanding of requirements:
 |-------|----------|-----------|
 | **Too broad** | "Entire platform design" for 50+ components | Split into subsystem DESIGNs |
 | **Right size** | "Auth subsystem design" covering auth components | Clear boundary, manageable size |
-| **Too narrow** | "Login button component design" | Implementation detail, use FEATURE |
+| **Too narrow** | "Login button component design" | Implementation detail, use SPEC |
 
 **DESIGN-worthy content**:
 - System/subsystem architecture overview
@@ -82,16 +82,16 @@ Agent confirms understanding of requirements:
 - Integration points and contracts
 - Key architectural decisions (reference ADRs)
 
-**NOT DESIGN-worthy** (use FEATURE instead):
-- Individual feature implementation details
+**NOT DESIGN-worthy** (use SPEC instead):
+- Individual spec implementation details
 - UI flows and interactions
 - Algorithm pseudo-code
 - Test scenarios
 
 **Relationship to other artifacts**:
 - **PRD** → DESIGN: PRD defines WHAT, DESIGN defines HOW (high-level)
-- **DESIGN** → DECOMPOSITION: DESIGN defines architecture, FEATURES lists implementations
-- **DESIGN** → FEATURE: DESIGN provides context, FEATURE details implementation
+- **DESIGN** → DECOMPOSITION: DESIGN defines architecture, DECOMPOSITION lists implementations
+- **DESIGN** → SPEC: DESIGN provides context, SPEC details implementation
 
 ### Upstream Traceability
 
@@ -101,15 +101,15 @@ Agent confirms understanding of requirements:
 
 ### Checkbox Management (`covered_by` Attribute)
 
-**Quick Reference**: Check DESIGN element when ALL features referencing it are `[x]`.
+**Quick Reference**: Check DESIGN element when ALL specs referencing it are `[x]`.
 
 | Element | Check when... |
 |---------|---------------|
-| `id:principle` | All features applying principle are `[x]` |
-| `id:constraint` | All features satisfying constraint are `[x]` |
-| `id:component` | All features using component are `[x]` |
-| `id:seq` | All features implementing sequence are `[x]` |
-| `id:dbtable` | All features using table are `[x]` |
+| `id:principle` | All specs applying principle are `[x]` |
+| `id:constraint` | All specs satisfying constraint are `[x]` |
+| `id:component` | All specs using component are `[x]` |
+| `id:seq` | All specs implementing sequence are `[x]` |
+| `id:dbtable` | All specs using table are `[x]` |
 
 **Detailed Rules**:
 
@@ -117,39 +117,39 @@ DESIGN defines IDs with `covered_by` attributes that track downstream implementa
 
 | ID Type | `covered_by` | Meaning |
 |---------|--------------|---------|
-| `id:principle` | `DECOMPOSITION,FEATURE` | Principle is covered when applied in feature designs |
-| `id:constraint` | `DECOMPOSITION,FEATURE` | Constraint is covered when satisfied by features |
-| `id:component` | `DECOMPOSITION,FEATURE` | Component is covered when integrated in features |
-| `id:seq` | `DECOMPOSITION,FEATURE` | Sequence is covered when implemented in features |
-| `id:dbtable` | `DECOMPOSITION,FEATURE` | Table is covered when used in features |
+| `id:principle` | `DECOMPOSITION,SPEC` | Principle is covered when applied in spec designs |
+| `id:constraint` | `DECOMPOSITION,SPEC` | Constraint is covered when satisfied by specs |
+| `id:component` | `DECOMPOSITION,SPEC` | Component is covered when integrated in specs |
+| `id:seq` | `DECOMPOSITION,SPEC` | Sequence is covered when implemented in specs |
+| `id:dbtable` | `DECOMPOSITION,SPEC` | Table is covered when used in specs |
 
 **Checkbox States**:
 
 1. **Principle Checkbox** (`id:principle`):
-   - `[ ] p1 - spd-{system}-principle-{slug}` — unchecked until principle is applied
-   - `[x] p1 - spd-{system}-principle-{slug}` — checked when ALL features applying this principle are `[x]`
+   - `[ ] p1 - spd-{hierarchy-prefix}-principle-{slug}` — unchecked until principle is applied
+   - `[x] p1 - spd-{hierarchy-prefix}-principle-{slug}` — checked when ALL specs applying this principle are `[x]`
 
 2. **Constraint Checkbox** (`id:constraint`):
-   - `[ ] p1 - spd-{system}-constraint-{slug}` — unchecked until constraint is satisfied
-   - `[x] p1 - spd-{system}-constraint-{slug}` — checked when ALL features satisfying this constraint are `[x]`
+   - `[ ] p1 - spd-{hierarchy-prefix}-constraint-{slug}` — unchecked until constraint is satisfied
+   - `[x] p1 - spd-{hierarchy-prefix}-constraint-{slug}` — checked when ALL specs satisfying this constraint are `[x]`
 
 3. **Component Checkbox** (`id:component`):
-   - `[ ] p1 - spd-{system}-component-{slug}` — unchecked until component is implemented
-   - `[x] p1 - spd-{system}-component-{slug}` — checked when ALL features using this component are `[x]`
+   - `[ ] p1 - spd-{hierarchy-prefix}-comp-{slug}` — unchecked until component is implemented
+   - `[x] p1 - spd-{hierarchy-prefix}-comp-{slug}` — checked when ALL specs using this component are `[x]`
 
 4. **Sequence Checkbox** (`id:seq`):
-   - `[ ] p1 - spd-{system}-seq-{slug}` — unchecked until sequence is implemented
-   - `[x] p1 - spd-{system}-seq-{slug}` — checked when ALL features implementing this sequence are `[x]`
+   - `[ ] p1 - spd-{hierarchy-prefix}-seq-{slug}` — unchecked until sequence is implemented
+   - `[x] p1 - spd-{hierarchy-prefix}-seq-{slug}` — checked when ALL specs implementing this sequence are `[x]`
 
 5. **Database Table Checkbox** (`id:dbtable`):
-   - `[ ] p1 - spd-{system}-dbtable-{slug}` — unchecked until table is created
-   - `[x] p1 - spd-{system}-dbtable-{slug}` — checked when ALL features using this table are `[x]`
+   - `[ ] p1 - spd-{hierarchy-prefix}-dbtable-{slug}` — unchecked until table is created
+   - `[x] p1 - spd-{hierarchy-prefix}-dbtable-{slug}` — checked when ALL specs using this table are `[x]`
 
 **When to Check DESIGN Checkboxes**:
 
 - [ ] A design element (principle, constraint, component, etc.) can be checked when:
   - All `id-ref` references in DECOMPOSITION manifest are `[x]`
-  - All `id-ref` references in individual FEATURE designs are `[x]`
+  - All `id-ref` references in individual SPEC designs are `[x]`
   - Implementation is verified and tested
 
 **Validation Checks**:
@@ -216,7 +216,7 @@ If DESIGN cannot be completed in a single session:
    - Completed: Architecture Overview, Domain Model
    - In progress: Component Design (3/7 components)
    - Remaining: Sequences, Data Model
-   - Resume: Continue with component spd-{system}-comp-{slug}
+   - Resume: Continue with component spd-{hierarchy-prefix}-comp-{slug}
    ```
 4. **On resume**:
    - Verify PRD unchanged since last session
@@ -225,7 +225,7 @@ If DESIGN cannot be completed in a single session:
 
 ### Phase 3: IDs and References
 
-- [ ] Generate type IDs: `spd-{system}-type-{slug}`
+- [ ] Generate type IDs: `spd-{hierarchy-prefix}-type-{slug}` (e.g., `spd-myapp-type-user-entity`)
 - [ ] Generate component IDs (if needed)
 - [ ] Link to PRD actors/capabilities
 - [ ] Reference relevant ADRs
@@ -286,8 +286,8 @@ After DESIGN generation/validation, offer these options:
 
 | Condition | Suggested Next Step |
 |-----------|---------------------|
-| DESIGN complete | `/spider-generate DECOMPOSITION` — create features manifest |
+| DESIGN complete | `/spider-generate DECOMPOSITION` — create specs manifest |
 | Need architecture decision | `/spider-generate ADR` — document key decision |
 | PRD missing/incomplete | `/spider-generate PRD` — create/update PRD first |
 | DESIGN needs revision | Continue editing DESIGN |
-| Want checklist review only | `/spider-validate semantic` — semantic validation (skip deterministic) |
+| Want checklist review only | `/spider-analyze semantic` — semantic validation (skip deterministic) |

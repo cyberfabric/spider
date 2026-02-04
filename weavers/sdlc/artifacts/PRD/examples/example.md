@@ -87,7 +87,7 @@ The system focuses on simplicity and speed, allowing teams to manage their daily
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-001 Task Management
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-taskflow-fr-task-management`
 
 <!-- spd:free:fr-summary -->
@@ -104,7 +104,7 @@ The system MUST allow creating, editing, and deleting tasks. The system MUST all
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-002 Notifications
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-taskflow-fr-notifications`
 
 <!-- spd:free:fr-summary -->
@@ -167,7 +167,7 @@ The system MUST send push notifications for task assignments. The system MUST se
 <!-- spd:###:nfr-title repeat="many" -->
 ### Security
 
-<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-taskflow-nfr-security`
 
 <!-- spd:list:nfr-statements -->
@@ -181,7 +181,7 @@ The system MUST send push notifications for task assignments. The system MUST se
 <!-- spd:###:nfr-title repeat="many" -->
 ### Performance
 
-<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [ ] `p2` - **ID**: `spd-taskflow-nfr-performance`
 
 <!-- spd:list:nfr-statements -->
@@ -210,7 +210,7 @@ The system MUST send push notifications for task assignments. The system MUST se
 
 <!-- spd:list:nongoals -->
 - TaskFlow does NOT replace full project management suites (Jira, Asana)
-- TaskFlow does NOT include time tracking or billing features
+- TaskFlow does NOT include time tracking or billing specs
 - TaskFlow does NOT support cross-organization collaboration in v1.0
 <!-- spd:list:nongoals -->
 <!-- spd:###:nongoals-title -->
@@ -220,7 +220,7 @@ The system MUST send push notifications for task assignments. The system MUST se
 
 <!-- spd:list:risks -->
 - **Adoption risk**: Teams may resist switching from existing tools. Mitigation: focus on migration path and quick wins.
-- **Scale risk**: Real-time features may not scale beyond 50 concurrent users. Mitigation: load testing before launch.
+- **Scale risk**: Real-time specs may not scale beyond 50 concurrent users. Mitigation: load testing before launch.
 <!-- spd:list:risks -->
 <!-- spd:###:risks-title -->
 <!-- spd:##:nongoals -->
@@ -232,7 +232,7 @@ The system MUST send push notifications for task assignments. The system MUST se
 ### Assumptions
 
 <!-- spd:list:assumptions -->
-- Teams have reliable internet connectivity for real-time features
+- Teams have reliable internet connectivity for real-time specs
 - Users have modern browsers (Chrome, Firefox, Safari, Edge)
 - Initial deployment will be cloud-hosted (no on-premise requirement)
 <!-- spd:list:assumptions -->

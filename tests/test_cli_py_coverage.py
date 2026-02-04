@@ -183,7 +183,8 @@ class TestCLIPyCoverageSelfCheck(unittest.TestCase):
 
 
 class TestCLIPyCoverageValidateCode(unittest.TestCase):
-    def test_validate_code_pass_and_output_file(self):
+    def test_validate_with_code_and_output_file(self):
+        """Test validate command with code validation and output file."""
         from spider.cli import main
 
         with TemporaryDirectory() as tmpdir:
@@ -237,7 +238,10 @@ class TestCLIPyCoverageValidateCode(unittest.TestCase):
                             "name": "S",
                             "weaver": "spider-sdlc",
                             "artifacts": [
-                                {"path": "artifacts/reqs.md", "kind": "req"},
+                                {"path": "artifacts/reqs.md", "kind": "req", "traceability": "FULL"},
+                            ],
+                            "codebase": [
+                                {"path": "src", "extensions": [".py"]},
                             ],
                         }
                     ],
@@ -251,7 +255,8 @@ class TestCLIPyCoverageValidateCode(unittest.TestCase):
                 os.chdir(root)
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    exit_code = main(["validate-code", str(code_file), "--output", str(out_path)])
+                    # validate now includes code validation by default
+                    exit_code = main(["validate", "--output", str(out_path)])
                 self.assertEqual(exit_code, 0)
                 self.assertTrue(out_path.is_file())
                 report = json.loads(out_path.read_text(encoding="utf-8"))
@@ -503,3 +508,195 @@ class TestCLIPyCoverageValidateRules(unittest.TestCase):
                 self.assertGreaterEqual(out.get("templates_validated", 0), 1)
             finally:
                 os.chdir(cwd)
+
+
+class TestCLIPyCoverageTopLevelHelp(unittest.TestCase):
+    """Tests for spider --help (lines 2379-2392)."""
+
+    def test_top_level_help_flag(self):
+        """spider --help shows usage and commands."""
+        from spider.cli import main
+
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            exit_code = main(["--help"])
+        self.assertEqual(exit_code, 0)
+        output = stdout.getvalue()
+        self.assertIn("usage: spider <command>", output)
+        self.assertIn("Validation commands:", output)
+        self.assertIn("Search and utility commands:", output)
+        self.assertIn("validate", output)
+
+    def test_top_level_help_short_flag(self):
+        """spider -h also shows usage."""
+        from spider.cli import main
+
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            exit_code = main(["-h"])
+        self.assertEqual(exit_code, 0)
+        output = stdout.getvalue()
+        self.assertIn("usage: spider <command>", output)
+
+
+class TestCLIPyCoverageSlugValidation(unittest.TestCase):
+    """Tests for slug validation errors in self-check (lines 301-306)."""
+
+    def test_self_check_invalid_slugs(self):
+        """self-check reports invalid slugs in artifacts.json."""
+        from spider.cli import main
+
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            adapter = _bootstrap_project_root(root)
+
+            # Create weavers structure with template
+            weavers_base = root / "weavers" / "spider-sdlc" / "artifacts" / "req"
+            weavers_base.mkdir(parents=True, exist_ok=True)
+            (weavers_base / "template.md").write_text(
+                "---\nspider-template:\n  kind: req\n  version:\n    major: 1\n    minor: 0\n---\n"
+                "<!-- spd:id:item -->\n<!-- spd:id:item -->\n",
+                encoding="utf-8",
+            )
+
+            # Create artifacts.json with invalid slug
+            _write_json(
+                adapter / "artifacts.json",
+                {
+                    "project_root": "..",
+                    "weavers": {"spider-sdlc": {"format": "Spider", "path": "weavers/spider-sdlc"}},
+                    "systems": [
+                        {
+                            "name": "S",
+                            "slug": "Invalid Slug With Spaces",  # Invalid: contains spaces
+                            "weaver": "spider-sdlc",
+                            "artifacts": [],
+                        }
+                    ],
+                },
+            )
+
+            cwd = os.getcwd()
+            try:
+                os.chdir(root)
+                stdout = io.StringIO()
+                with redirect_stdout(stdout):
+                    exit_code = main(["self-check"])
+                self.assertEqual(exit_code, 1)
+                out = json.loads(stdout.getvalue())
+                self.assertEqual(out.get("status"), "ERROR")
+                self.assertIn("slug_errors", out)
+            finally:
+                os.chdir(cwd)
+
+
+class TestCLIPyCoverageAgentsCommand(unittest.TestCase):
+    """Tests for agents command edge cases."""
+
+    def test_agents_dry_run_default_config(self):
+        """agents command creates default config for recognized agent."""
+        from spider.cli import main
+
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            adapter = _bootstrap_project_root(root)
+
+            # Create artifacts.json
+            _write_json(
+                adapter / "artifacts.json",
+                {
+                    "project_root": "..",
+                    "weavers": {},
+                    "systems": [],
+                },
+            )
+
+            cwd = os.getcwd()
+            try:
+                os.chdir(root)
+                stdout = io.StringIO()
+                with redirect_stdout(stdout):
+                    exit_code = main(["agents", "--agent", "windsurf", "--dry-run"])
+                self.assertEqual(exit_code, 0)
+                out = json.loads(stdout.getvalue())
+                self.assertIn(out.get("status"), ["OK", "PASS"])
+            finally:
+                os.chdir(cwd)
+
+
+class TestCLIPyCoverageListIdsWithCode(unittest.TestCase):
+    """Tests for list-ids --include-code (lines 1326-1338)."""
+
+    def test_list_ids_include_code_with_refs(self):
+        """list-ids --include-code shows ID references from artifacts."""
+        from spider.cli import main
+
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            adapter = _bootstrap_project_root(root)
+
+            # Create weavers structure with id-ref block
+            weavers_base = root / "weavers" / "spider-sdlc" / "artifacts" / "req"
+            weavers_base.mkdir(parents=True, exist_ok=True)
+            (weavers_base / "template.md").write_text(
+                "---\nspider-template:\n  kind: req\n  version:\n    major: 1\n    minor: 0\n---\n"
+                "<!-- spd:id:item -->\n<!-- spd:id:item -->\n"
+                "<!-- spd:id-ref:other -->\n<!-- spd:id-ref:other -->\n",
+                encoding="utf-8",
+            )
+
+            # Create artifact with ID definition and reference
+            art_dir = root / "artifacts"
+            art_dir.mkdir(parents=True, exist_ok=True)
+            (art_dir / "reqs.md").write_text(
+                "<!-- spd:id:item -->\n"
+                "- [x] `p1` - **ID**: `spd-test-item-1`\n"
+                "<!-- spd:id:item -->\n"
+                "<!-- spd:id-ref:other -->\n"
+                "- [ ] `p2` - `spd-external-ref-abc`\n"
+                "<!-- spd:id-ref:other -->\n",
+                encoding="utf-8",
+            )
+
+            # Create code file
+            src = root / "src"
+            src.mkdir(parents=True, exist_ok=True)
+            (src / "code.py").write_text(
+                "# @spider-req:spd-test-item-1:p1\nprint('ok')\n",
+                encoding="utf-8",
+            )
+
+            _write_json(
+                adapter / "artifacts.json",
+                {
+                    "project_root": "..",
+                    "weavers": {"spider-sdlc": {"format": "Spider", "path": "weavers/spider-sdlc"}},
+                    "systems": [
+                        {
+                            "name": "test",
+                            "weaver": "spider-sdlc",
+                            "artifacts": [{"path": "artifacts/reqs.md", "kind": "req"}],
+                            "codebase": [{"path": "src", "extensions": [".py"]}],
+                        }
+                    ],
+                },
+            )
+
+            cwd = os.getcwd()
+            try:
+                os.chdir(root)
+                stdout = io.StringIO()
+                with redirect_stdout(stdout):
+                    exit_code = main(["list-ids", "--include-code"])
+                # Just verify it runs - the output format may vary
+                self.assertIn(exit_code, [0, 2])  # OK or validation failure
+                output = stdout.getvalue()
+                # Should produce valid JSON
+                out = json.loads(output)
+                self.assertIn("ids", out)
+            finally:
+                os.chdir(cwd)
+
+
+if __name__ == "__main__":
+    unittest.main()

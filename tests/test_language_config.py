@@ -155,12 +155,12 @@ class TestRegexPatternBuilding(unittest.TestCase):
         regex = build_spider_begin_regex(config)
         
         # Should match Python comment
-        self.assertIsNotNone(regex.match("# spider-begin spd-test-feature-x-flow-y:ph-1:inst-step"))
-        self.assertIsNotNone(regex.match("  # spider-begin spd-test-feature-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(regex.match("# spider-begin spd-test-spec-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(regex.match("  # spider-begin spd-test-spec-x-flow-y:ph-1:inst-step"))
         
         # Should extract tag
-        match = regex.match("# spider-begin spd-test-feature-x-flow-y:ph-1:inst-step")
-        self.assertEqual(match.group(1), "spd-test-feature-x-flow-y:ph-1:inst-step")
+        match = regex.match("# spider-begin spd-test-spec-x-flow-y:ph-1:inst-step")
+        self.assertEqual(match.group(1), "spd-test-spec-x-flow-y:ph-1:inst-step")
 
     def test_spider_begin_regex_matches_javascript_style(self):
         """Verify spider-begin regex matches JavaScript // comments."""
@@ -174,8 +174,8 @@ class TestRegexPatternBuilding(unittest.TestCase):
         regex = build_spider_begin_regex(config)
         
         # Should match JS comment
-        self.assertIsNotNone(regex.match("// spider-begin spd-test-feature-x-flow-y:ph-1:inst-step"))
-        self.assertIsNotNone(regex.match("  // spider-begin spd-test-feature-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(regex.match("// spider-begin spd-test-spec-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(regex.match("  // spider-begin spd-test-spec-x-flow-y:ph-1:inst-step"))
 
     def test_spider_begin_regex_matches_sql_style(self):
         """Verify spider-begin regex matches SQL -- comments."""
@@ -189,7 +189,7 @@ class TestRegexPatternBuilding(unittest.TestCase):
         regex = build_spider_begin_regex(config)
         
         # Should match SQL comment
-        self.assertIsNotNone(regex.match("-- spider-begin spd-test-feature-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(regex.match("-- spider-begin spd-test-spec-x-flow-y:ph-1:inst-step"))
 
     def test_spider_begin_regex_matches_html_comment(self):
         """Verify spider-begin regex matches HTML <!-- comments."""
@@ -203,7 +203,7 @@ class TestRegexPatternBuilding(unittest.TestCase):
         regex = build_spider_begin_regex(config)
         
         # Should match HTML comment
-        self.assertIsNotNone(regex.match("<!-- spider-begin spd-test-feature-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(regex.match("<!-- spider-begin spd-test-spec-x-flow-y:ph-1:inst-step"))
 
     def test_spider_begin_regex_matches_multiple_styles(self):
         """Verify spider-begin regex matches multiple comment styles."""
@@ -217,11 +217,11 @@ class TestRegexPatternBuilding(unittest.TestCase):
         regex = build_spider_begin_regex(config)
         
         # Should match all styles
-        self.assertIsNotNone(regex.match("# spider-begin spd-test-feature-x-flow-y:ph-1:inst-step"))
-        self.assertIsNotNone(regex.match("// spider-begin spd-test-feature-x-flow-y:ph-1:inst-step"))
-        self.assertIsNotNone(regex.match("-- spider-begin spd-test-feature-x-flow-y:ph-1:inst-step"))
-        self.assertIsNotNone(regex.match("/* spider-begin spd-test-feature-x-flow-y:ph-1:inst-step"))
-        self.assertIsNotNone(regex.match("* spider-begin spd-test-feature-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(regex.match("# spider-begin spd-test-spec-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(regex.match("// spider-begin spd-test-spec-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(regex.match("-- spider-begin spd-test-spec-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(regex.match("/* spider-begin spd-test-spec-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(regex.match("* spider-begin spd-test-spec-x-flow-y:ph-1:inst-step"))
 
     def test_spider_end_regex_matches_same_styles_as_begin(self):
         """Verify spider-end regex matches same styles as spider-begin."""
@@ -235,8 +235,8 @@ class TestRegexPatternBuilding(unittest.TestCase):
         end_regex = build_spider_end_regex(config)
         
         # Should match both styles
-        self.assertIsNotNone(end_regex.match("# spider-end spd-test-feature-x-flow-y:ph-1:inst-step"))
-        self.assertIsNotNone(end_regex.match("// spider-end spd-test-feature-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(end_regex.match("# spider-end spd-test-spec-x-flow-y:ph-1:inst-step"))
+        self.assertIsNotNone(end_regex.match("// spider-end spd-test-spec-x-flow-y:ph-1:inst-step"))
 
     def test_no_spider_begin_regex_matches_exclusion_marker(self):
         """Verify !no-spider-begin regex matches exclusion markers."""

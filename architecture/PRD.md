@@ -84,7 +84,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 **ID**: `spd-spider-actor-developer`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Implements features according to validated designs, adds traceability tags to code
+**Role**: Implements specs according to validated designs, adds traceability tags to code
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
@@ -120,7 +120,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 **ID**: `spd-spider-actor-project-manager`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Monitors development progress, ensures workflows are followed, tracks feature completion
+**Role**: Monitors development progress, ensures workflows are followed, tracks spec completion
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
@@ -180,7 +180,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 **ID**: `spd-spider-actor-ux-designer`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Designs user interfaces based on actor flows from feature design
+**Role**: Designs user interfaces based on actor flows from spec design
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
@@ -216,7 +216,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 **ID**: `spd-spider-actor-release-manager`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Manages releases and tracks feature readiness using Spider artifacts (for example via a Feature Manifest when used)
+**Role**: Manages releases and tracks spec readiness using Spider artifacts (for example via a Spec Manifest when used)
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
@@ -278,11 +278,11 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-001 Workflow-Driven Development
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-fr-workflow-execution`
 
 <!-- spd:free:fr-summary -->
-The system MUST provide a clear, documented workflow catalog that users and AI agents can execute. Artifact locations MUST be adapter-defined; workflows MUST NOT hardcode repository paths. The core workflow set MUST cover at least: Adapter bootstrap and configuration, PRD creation/update, Overall design creation/update, ADR creation/update, Feature design creation/update, Feature implementation (`implement` as the primary implementation workflow), and Deterministic validation workflows for the above artifacts and for code traceability (when enabled). The system MUST provide a unified agent entrypoint workflow (`/spider`) that selects and executes the appropriate workflow (create/update/validate) based on context, or runs `spider` tool commands when requested. This includes interactive question-answer flow with AI agents, automated validation after artifact creation, step-by-step guidance for complex operations, and independent workflows (no forced sequence).
+The system MUST provide a clear, documented workflow catalog that users and AI agents can execute. Artifact locations MUST be adapter-defined; workflows MUST NOT hardcode repository paths. The core workflow set MUST cover at least: Adapter bootstrap and configuration, PRD creation/update, Overall design creation/update, ADR creation/update, Spec design creation/update, Spec implementation (`implement` as the primary implementation workflow), and Deterministic validation workflows for the above artifacts and for code traceability (when enabled). The system MUST provide a unified agent entrypoint workflow (`/spider`) that selects and executes the appropriate workflow (create/update/validate) based on context, or runs `spider` tool commands when requested. This includes interactive question-answer flow with AI agents, automated validation after artifact creation, step-by-step guidance for complex operations, and independent workflows (no forced sequence).
 <!-- spd:free:fr-summary -->
 
 **Actors**:
@@ -295,7 +295,7 @@ The system MUST provide a clear, documented workflow catalog that users and AI a
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-002 Artifact Structure Validation
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-fr-validation`
 
 <!-- spd:free:fr-summary -->
@@ -312,7 +312,7 @@ Deterministic validators for structural checks (sections, IDs, format). Determin
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-003 Adapter Configuration System
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-fr-adapter-config`
 
 <!-- spd:free:fr-summary -->
@@ -329,11 +329,11 @@ Technology-agnostic core methodology. Project-specific adapter specifications. A
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-004 Adaptive Design Bootstrapping
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-fr-design-first`
 
 <!-- spd:free:fr-summary -->
-Users MAY start implementation without having pre-existing design artifacts. When a workflow needs a traceability source and design artifacts are missing, the workflow MUST bootstrap the minimum viable design interactively and then continue. Once created, design artifacts become the single source of truth (code follows design). Design iteration MUST be workflow-driven and MUST be followed by deterministic validation. Clear separation between PRD, overall design, ADRs, and feature designs. Behavioral specifications MUST use Spider DSL (SDSL) (plain-English algorithms).
+Users MAY start implementation without having pre-existing design artifacts. When a workflow needs a traceability source and design artifacts are missing, the workflow MUST bootstrap the minimum viable design interactively and then continue. Once created, design artifacts become the single source of truth (code follows design). Design iteration MUST be workflow-driven and MUST be followed by deterministic validation. Clear separation between PRD, overall design, ADRs, and spec designs. Behavioral specifications MUST use Spider DSL (SDSL) (plain-English algorithms).
 <!-- spd:free:fr-summary -->
 
 **Actors**:
@@ -346,7 +346,7 @@ Users MAY start implementation without having pre-existing design artifacts. Whe
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-005 Traceability Management
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-fr-traceability`
 
 <!-- spd:free:fr-summary -->
@@ -363,7 +363,7 @@ Unique ID system for all design elements using structured format. Code tags (@sp
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-006 Quickstart Guides
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p2` - **ID**: `spd-spider-fr-interactive-docs`
 
 <!-- spd:free:fr-summary -->
@@ -380,11 +380,11 @@ QUICKSTART guides with copy-paste prompts. Progressive disclosure (human-facing 
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-007 Artifact Templates
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-fr-artifact-templates`
 
 <!-- spd:free:fr-summary -->
-The system MUST provide an artifact template catalog for core Spider artifacts (PRD, Overall Design, ADRs, Feature Manifest, Feature Designs). Agents MUST be able to use these templates during workflow execution.
+The system MUST provide an artifact template catalog for core Spider artifacts (PRD, Overall Design, ADRs, Spec Manifest, Spec Designs). Agents MUST be able to use these templates during workflow execution.
 <!-- spd:free:fr-summary -->
 
 **Actors**:
@@ -397,11 +397,11 @@ The system MUST provide an artifact template catalog for core Spider artifacts (
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-008 Artifact Examples
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p2` - **ID**: `spd-spider-fr-artifact-examples`
 
 <!-- spd:free:fr-summary -->
-The system MUST provide an artifact example catalog for core Spider artifacts (PRD, Overall Design, ADRs, Feature Manifest, Feature Designs). Agents MUST be able to use these examples during workflow execution.
+The system MUST provide an artifact example catalog for core Spider artifacts (PRD, Overall Design, ADRs, Spec Manifest, Spec Designs). Agents MUST be able to use these examples during workflow execution.
 <!-- spd:free:fr-summary -->
 
 **Actors**:
@@ -414,11 +414,11 @@ The system MUST provide an artifact example catalog for core Spider artifacts (P
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-009 ADR Management
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p2` - **ID**: `spd-spider-fr-arch-decision-mgmt`
 
 <!-- spd:free:fr-summary -->
-Create and track architecture decisions with structured format. Link ADRs to affected design sections and feature IDs. Decision status tracking (PROPOSED, ACCEPTED, DEPRECATED, SUPERSEDED). Impact analysis when ADR changes affect multiple features. Search ADRs by status, date, or affected components. Version history for decision evolution.
+Create and track architecture decisions with structured format. Link ADRs to affected design sections and spec IDs. Decision status tracking (PROPOSED, ACCEPTED, DEPRECATED, SUPERSEDED). Impact analysis when ADR changes affect multiple specs. Search ADRs by status, date, or affected components. Version history for decision evolution.
 <!-- spd:free:fr-summary -->
 
 **Actors**:
@@ -431,7 +431,7 @@ Create and track architecture decisions with structured format. Link ADRs to aff
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-010 PRD Management
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-fr-prd-mgmt`
 
 <!-- spd:free:fr-summary -->
@@ -448,7 +448,7 @@ Create and update PRD content through workflows. Enforce stable IDs for actors a
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-011 Overall Design Management
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-fr-overall-design-mgmt`
 
 <!-- spd:free:fr-summary -->
@@ -463,13 +463,13 @@ Create and update Overall Design through workflows. Link requirements to PRD act
 <!-- spd:###:fr-title repeat="many" -->
 
 <!-- spd:###:fr-title repeat="many" -->
-### FR-012 Feature Manifest Management
+### FR-012 Spec Manifest Management
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
-- [x] `p2` - **ID**: `spd-spider-fr-feature-manifest-mgmt`
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
+- [x] `p2` - **ID**: `spd-spider-fr-spec-manifest-mgmt`
 
 <!-- spd:free:fr-summary -->
-Create and update Feature Manifest through workflows. Maintain stable IDs for features and tracking fields. Deterministic validation integration for Feature Manifest.
+Create and update Spec Manifest (DECOMPOSITION) through workflows. Maintain stable IDs for specs and tracking fields. Deterministic validation integration for Spec Manifest.
 <!-- spd:free:fr-summary -->
 
 **Actors**:
@@ -480,13 +480,13 @@ Create and update Feature Manifest through workflows. Maintain stable IDs for fe
 <!-- spd:###:fr-title repeat="many" -->
 
 <!-- spd:###:fr-title repeat="many" -->
-### FR-013 Feature Design Management
+### FR-013 Spec Design Management
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
-- [x] `p1` - **ID**: `spd-spider-fr-feature-design-mgmt`
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
+- [x] `p1` - **ID**: `spd-spider-fr-spec-design-mgmt`
 
 <!-- spd:free:fr-summary -->
-Create and update Feature Design through workflows. Maintain stable IDs for flows, algorithms, and requirements. Deterministic validation integration for Feature Design.
+Create and update Spec Design through workflows. Maintain stable IDs for flows, algorithms, and requirements. Deterministic validation integration for Spec Design.
 <!-- spd:free:fr-summary -->
 
 **Actors**:
@@ -497,13 +497,13 @@ Create and update Feature Design through workflows. Maintain stable IDs for flow
 <!-- spd:###:fr-title repeat="many" -->
 
 <!-- spd:###:fr-title repeat="many" -->
-### FR-014 Feature Lifecycle Management
+### FR-014 Spec Lifecycle Management
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
-- [x] `p2` - **ID**: `spd-spider-fr-feature-lifecycle`
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
+- [x] `p2` - **ID**: `spd-spider-fr-spec-lifecycle`
 
 <!-- spd:free:fr-summary -->
-Track feature status from NOT_STARTED through IN_DESIGN, DESIGNED, READY, IN_PROGRESS to DONE. Track progress using the project's selected feature tracking approach (for example a feature manifest when used). Feature dependency management and blocking detection. Milestone tracking and release planning integration. Historical feature completion metrics and velocity tracking. Status transition validation (cannot skip states).
+Track spec status from NOT_STARTED through IN_DESIGN, DESIGNED, READY, IN_PROGRESS to DONE. Track progress using the project's selected spec tracking approach (for example a spec manifest when used). Spec dependency management and blocking detection. Milestone tracking and release planning integration. Historical spec completion metrics and velocity tracking. Status transition validation (cannot skip states).
 <!-- spd:free:fr-summary -->
 
 **Actors**:
@@ -516,7 +516,7 @@ Track feature status from NOT_STARTED through IN_DESIGN, DESIGNED, READY, IN_PRO
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-015 Code Generation from Design
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p2` - **ID**: `spd-spider-fr-code-generation`
 
 <!-- spd:free:fr-summary -->
@@ -533,7 +533,7 @@ Provide an implementation process that is adapter-aware and works with any progr
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-016 Brownfield Support
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p2` - **ID**: `spd-spider-fr-brownfield-support`
 
 <!-- spd:free:fr-summary -->
@@ -550,7 +550,7 @@ Add Spider to existing projects without disruption. Auto-detect existing archite
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-017 Spider DSL (SDSL)
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-fr-fdl`
 
 <!-- spd:free:fr-summary -->
@@ -567,7 +567,7 @@ Plain English algorithm description language for actor flows (Spider DSL, abbrev
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-018 IDE Integration and Tooling
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [ ] `p3` - **ID**: `spd-spider-fr-ide-integration`
 
 <!-- spd:free:fr-summary -->
@@ -584,7 +584,7 @@ VS Code extension for Spider artifact editing. Click-to-navigate for Spider IDs 
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-019 Multi-Agent IDE Integration
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p2` - **ID**: `spd-spider-fr-multi-agent-integration`
 
 <!-- spd:free:fr-summary -->
@@ -601,7 +601,7 @@ The system MUST provide a unified `agents` command to generate and maintain agen
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-020 Extensible Weaver Package System
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-fr-rules-packages`
 
 <!-- spd:free:fr-summary -->
@@ -618,7 +618,7 @@ The system MUST support extensible weaver packages that define templates, checkl
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-021 Template Quality Assurance
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p2` - **ID**: `spd-spider-fr-template-qa`
 
 <!-- spd:free:fr-summary -->
@@ -635,7 +635,7 @@ The system MUST provide a `self-check` command that validates example artifacts 
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-022 Cross-Artifact Validation
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-fr-cross-artifact-validation`
 
 <!-- spd:free:fr-summary -->
@@ -652,7 +652,7 @@ The system MUST validate cross-artifact relationships when multiple artifacts ar
 <!-- spd:###:fr-title repeat="many" -->
 ### FR-023 Hierarchical System Registry
 
-<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p2` - **ID**: `spd-spider-fr-hierarchical-registry`
 
 <!-- spd:free:fr-summary -->
@@ -743,10 +743,10 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-003 Design Feature with AI Assistance
+### UC-003 Design Spec with AI Assistance
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-design-feature`
+**ID**: `spd-spider-usecase-design-spec`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
@@ -754,7 +754,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: PRD and Overall Design validated, feature scope identified (from backlog, ticket, or code context)
+**Preconditions**: PRD and Overall Design validated, spec scope identified (from backlog, ticket, or code context)
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -762,15 +762,15 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Architect runs `/spider-feature` and specifies the feature scope and desired outcomes
+1. Architect runs `/spider-spec` and specifies the spec scope and desired outcomes
 2. AI Assistant helps define actor flows in Spider DSL (SDSL) (uses capability `spd-spider-fr-design-first`)
-3. Architect defines requirements, constraints, and interfaces at feature scope
-4. Architect runs `/spider-feature-validate`; the system validates the Feature Design deterministically (uses capability `spd-spider-fr-validation`)
-5. Validation reports 100/100 score (required for feature design)
+3. Architect defines requirements, constraints, and interfaces at spec scope
+4. Architect runs `/spider-spec-validate`; the system validates the Spec Design deterministically (uses capability `spd-spider-fr-validation`)
+5. Validation reports 100/100 score (required for spec design)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Feature Design validated at 100/100, ready for implementation
+**Postconditions**: Spec Design validated at 100/100, ready for implementation
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -823,7 +823,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Feature Design exists; implementation exists (partial or complete); traceability tags are present when traceability is enabled
+**Preconditions**: Spec Design exists; implementation exists (partial or complete); traceability tags are present when traceability is enabled
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -845,10 +845,10 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-006 Update Existing Feature Design
+### UC-006 Update Existing Spec Design
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-update-feature-design`
+**ID**: `spd-spider-usecase-update-spec-design`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
@@ -856,7 +856,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Feature Design exists and previously validated at 100/100 (triggers `spd-spider-usecase-design-feature`)
+**Preconditions**: Spec Design exists and previously validated at 100/100 (triggers `spd-spider-usecase-design-spec`)
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -864,19 +864,19 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Architect identifies need to add new algorithm to existing feature
-2. AI Assistant runs `/spider-feature` in update mode, loads existing feature design, and presents current content
+1. Architect identifies need to add new algorithm to existing spec
+2. AI Assistant runs `/spider-spec` in update mode, loads existing spec design, and presents current content
 3. AI Assistant asks: "What to update?" with options (Add actor flow, Edit algorithm, Add requirement, etc.)
 4. Architect selects "Add new algorithm" option
 5. Architect specifies new algorithm details in Spider DSL (SDSL) (uses capability `spd-spider-fr-design-first`)
-6. AI Assistant updates Feature Design while preserving unchanged sections
-7. AI Assistant generates new algorithm ID following format `spd-<project>-feature-<feature>-algo-<name>` (uses capability `spd-spider-fr-traceability`)
-8. Spider Validation Tool re-validates the updated design by running `/spider-feature-validate` (uses capability `spd-spider-fr-validation`)
+6. AI Assistant updates Spec Design while preserving unchanged sections
+7. AI Assistant generates new algorithm ID following format `spd-<project>-spec-<spec>-algo-<name>` (uses capability `spd-spider-fr-traceability`)
+8. Spider Validation Tool re-validates the updated design by running `/spider-spec-validate` (uses capability `spd-spider-fr-validation`)
 9. Validation confirms 100/100 score maintained
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Feature Design updated with new algorithm, fully validated, ready for implementation
+**Postconditions**: Spec Design updated with new algorithm, fully validated, ready for implementation
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -884,7 +884,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-007 Implement Feature
+### UC-007 Implement Spec
 
 <!-- spd:id:usecase -->
 **ID**: `spd-spider-usecase-plan-implementation`
@@ -895,7 +895,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Feature Design exists with a sufficiently clear traceability source (validated when possible)
+**Preconditions**: Spec Design exists with a sufficiently clear traceability source (validated when possible)
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -903,16 +903,16 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Developer requests to code the feature
+1. Developer requests to code the spec
 2. AI Assistant executes `/spider-code` workflow (uses capability `spd-spider-fr-workflow-execution`)
-3. The system uses Feature Design to extract the minimal implementation scope
+3. The system uses Spec Design to extract the minimal implementation scope
 4. AI Assistant and Developer code iteratively, keeping design and code aligned
 5. Developer adds code traceability tags where used (uses capability `spd-spider-fr-traceability`)
 6. Spider Validation Tool validates implementation and traceability by running `/spider-code-validate` (uses capability `spd-spider-fr-validation`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Feature implemented with traceability where used, and validation indicates completeness
+**Postconditions**: Spec implemented with traceability where used, and validation indicates completeness
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -920,7 +920,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-009 Validate Feature Implementation
+### UC-009 Validate Spec Implementation
 
 <!-- spd:id:usecase -->
 **ID**: `spd-spider-usecase-validate-implementation`
@@ -931,7 +931,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Feature implementation exists (partial or complete)
+**Preconditions**: Spec implementation exists (partial or complete)
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -939,7 +939,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. QA Engineer runs `/spider-code-validate` to request validation of feature implementation
+1. QA Engineer runs `/spider-code-validate` to request validation of spec implementation
 2. Spider Validation Tool validates codebase traceability when enabled (uses capability `spd-spider-fr-validation`)
 3. Tool validates prerequisite design artifacts first
 4. For each `[x]` marked scope in design, tool expects matching tags in code when traceability is enabled (uses capability `spd-spider-fr-traceability`)
@@ -1021,7 +1021,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 1. DevOps Engineer wants to automate Spider artifact validation in CI/CD
 2. DevOps Engineer reads the adapter build/deploy specification for test and build commands (uses capability `spd-spider-fr-adapter-config`)
 3. DevOps Engineer creates GitHub Actions workflow or GitLab CI config
-4. Workflow configured to run `/spider validate` on changed artifacts in pull requests
+4. Workflow configured to run `/spider analyze` on changed artifacts in pull requests
 5. CI/CD Pipeline executes validation automatically on every commit (uses capability `spd-spider-fr-validation`)
 6. Pipeline reports validation results as PR status checks
 7. Pipeline blocks merge if any artifact validation fails (uses capability `spd-spider-fr-validation`)
@@ -1037,7 +1037,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-012 Security Review of Feature Design
+### UC-012 Security Review of Spec Design
 
 <!-- spd:id:usecase -->
 **ID**: `spd-spider-usecase-security-review`
@@ -1048,7 +1048,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Feature Design exists and validated (triggers `spd-spider-usecase-design-feature`)
+**Preconditions**: Spec Design exists and validated (triggers `spd-spider-usecase-design-spec`)
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1056,17 +1056,17 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Security Engineer receives notification that new feature design ready for review
-2. Security Engineer reviews feature design content to identify data flows, trust boundaries, and sensitive data handling (uses capability `spd-spider-fr-design-first`)
+1. Security Engineer receives notification that new spec design ready for review
+2. Security Engineer reviews spec design content to identify data flows, trust boundaries, and sensitive data handling (uses capability `spd-spider-fr-design-first`)
 3. Security Engineer reviews authentication and authorization expectations
 4. Security Engineer identifies missing security controls or vulnerabilities (uses capability `spd-spider-fr-validation`)
-5. Security Engineer adds security requirements with stable IDs `spd-<project>-feature-<feature>-req-security-*`
-6. Architect updates the feature design based on security feedback (triggers `spd-spider-usecase-update-feature-design`)
+5. Security Engineer adds security requirements with stable IDs `spd-<project>-spec-<spec>-req-security-*`
+6. Architect updates the spec design based on security feedback (triggers `spd-spider-usecase-update-spec-design`)
 7. Security Engineer approves design after security requirements are added
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Feature design includes comprehensive security requirements, ready for secure implementation
+**Postconditions**: Spec design includes comprehensive security requirements, ready for secure implementation
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -1124,7 +1124,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Feature design exists with documented actor flows (triggers `spd-spider-usecase-design-feature`)
+**Preconditions**: Spec design exists with documented actor flows (triggers `spd-spider-usecase-design-spec`)
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1132,19 +1132,19 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. UX Designer reviews the feature design actor flows to understand user journeys (uses capability `spd-spider-fr-design-first`)
+1. UX Designer reviews the spec design actor flows to understand user journeys (uses capability `spd-spider-fr-design-first`)
 2. UX Designer identifies UI screens needed for each flow step
 3. UX Designer creates wireframes mapping each Spider DSL (SDSL) instruction to UI element
 4. For each flow phase (ph-1, ph-2, etc.), UX Designer designs corresponding screen state
 5. UX Designer validates that UI covers all actor interactions from flows (uses capability `spd-spider-fr-traceability`)
-6. UX Designer creates UI mockups with annotations linking to flow IDs (e.g., "Implements `spd-<project>-feature-<feature>-flow-<name>:ph-1`")
-7. Architect reviews UI mockups against the feature design to ensure completeness
+6. UX Designer creates UI mockups with annotations linking to flow IDs (e.g., "Implements `spd-<project>-spec-<spec>-flow-<name>:ph-1`")
+7. Architect reviews UI mockups against the spec design to ensure completeness
 8. UX Designer updates UI based on feedback if flows were unclear
-9. Architect may update the feature design actor flows if UI reveals missing flow steps (triggers `spd-spider-usecase-update-feature-design`)
+9. Architect may update the spec design actor flows if UI reveals missing flow steps (triggers `spd-spider-usecase-update-spec-design`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: UI mockups fully aligned with feature flows, developers can code UI following both mockups and feature design
+**Postconditions**: UI mockups fully aligned with spec flows, developers can code UI following both mockups and spec design
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -1152,7 +1152,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-015 Plan Release with Feature Tracking
+### UC-015 Plan Release with Spec Tracking
 
 <!-- spd:id:usecase -->
 **ID**: `spd-spider-usecase-plan-release`
@@ -1163,7 +1163,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Overall Design exists and needs to be decomposed into feature-level scope
+**Preconditions**: Overall Design exists and needs to be decomposed into spec-level scope
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1171,15 +1171,15 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Architect and Project Manager review Overall Design to identify feature boundaries
-2. Team defines feature list and assigns initial statuses (NOT_STARTED, IN_DESIGN)
-3. Architect designs features iteratively (IN_DESIGN → DESIGNED → READY)
-4. Developers code features (IN_PROGRESS → DONE)
+1. Architect and Project Manager review Overall Design to identify spec boundaries
+2. Team defines spec list and assigns initial statuses (NOT_STARTED, IN_DESIGN)
+3. Architect designs specs iteratively (IN_DESIGN → DESIGNED → READY)
+4. Developers code specs (IN_PROGRESS → DONE)
 5. Validation is run after each meaningful update (uses capability `spd-spider-fr-validation`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Clear visibility into feature progress, automated status tracking, dependency validation, historical metrics for planning
+**Postconditions**: Clear visibility into spec progress, automated status tracking, dependency validation, historical metrics for planning
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -1223,7 +1223,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-017 Generate Code from Feature Design
+### UC-017 Generate Code from Spec Design
 
 <!-- spd:id:usecase -->
 **ID**: `spd-spider-usecase-generate-code`
@@ -1234,7 +1234,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Feature scope is known (feature design may or may not exist)
+**Preconditions**: Spec scope is known (spec design may or may not exist)
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1243,12 +1243,12 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- spd:numbered-list:flow-steps -->
 1. Developer wants to generate initial code scaffolding
-2. If feature design is missing, AI Assistant bootstraps the minimal feature design (uses capability `spd-spider-fr-design-first`)
+2. If spec design is missing, AI Assistant bootstraps the minimal spec design (uses capability `spd-spider-fr-design-first`)
 3. AI Assistant reads adapter specs for language-specific patterns and project conventions (uses capability `spd-spider-fr-adapter-config`)
 4. AI Assistant uses adapter-defined domain model and API contract sources when present (uses capability `spd-spider-fr-code-generation`)
 5. AI Assistant generates code scaffolding and test scaffolding following best practices (uses capability `spd-spider-fr-code-generation`)
 6. AI Assistant adds traceability tags when enabled (uses capability `spd-spider-fr-traceability`)
-7. Developer runs `/spider-code` to continue implementation from the validated feature design
+7. Developer runs `/spider-code` to continue implementation from the validated spec design
 8. Developer reviews generated code and adjusts as needed
 <!-- spd:numbered-list:flow-steps -->
 
@@ -1280,7 +1280,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Developer opens Feature Design in VS Code
+1. Developer opens Spec Design in VS Code
 2. Developer sees Spider ID `spd-spider-seq-intent-to-workflow` highlighted with syntax coloring (uses capability `spd-spider-fr-ide-integration`)
 3. Developer Cmd+Click (or Ctrl+Click) on flow ID to jump to definition in same file
 4. Developer right-clicks on flow ID and selects "Find where-used" from context menu
@@ -1326,13 +1326,13 @@ The system MUST support hierarchical organization of systems in the artifacts re
 5. Technical Lead reviews and refines proposed PRD content
 6. AI Assistant analyzes code structure to extract architectural patterns
 7. AI Assistant proposes Overall Design content from implementation patterns
-8. Technical Lead identifies which features to document first (incremental adoption)
-9. AI Assistant creates or updates Feature Design for priority features using the adapter-defined locations
+8. Technical Lead identifies which specs to document first (incremental adoption)
+9. AI Assistant creates or updates Spec Design for priority specs using the adapter-defined locations
 10. Developer adds traceability tags to existing code incrementally (uses capability `spd-spider-fr-traceability`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Legacy project has Spider artifacts documenting current state, team can use Spider workflows for new features while preserving existing code
+**Postconditions**: Legacy project has Spider artifacts documenting current state, team can use Spider workflows for new specs while preserving existing code
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -1340,10 +1340,10 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-020 Track Feature Progress Through Lifecycle
+### UC-020 Track Spec Progress Through Lifecycle
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-track-feature-lifecycle`
+**ID**: `spd-spider-usecase-track-spec-lifecycle`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
@@ -1351,7 +1351,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: A Feature Manifest exists (when used) with multiple features at various stages
+**Preconditions**: A Spec Manifest exists (when used) with multiple specs at various stages
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1359,20 +1359,20 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Project Manager opens a feature manifest to review current status (uses capability `spd-spider-fr-feature-lifecycle`)
-2. Project Manager sees feature statuses: ⏳ NOT_STARTED, 🔄 IN_PROGRESS, ✅ DONE
-3. Developer marks feature as 🔄 IN_PROGRESS when starting implementation work
-4. System validates feature has Feature Design at 100/100 before allowing IN_PROGRESS status
+1. Project Manager opens a spec manifest to review current status (uses capability `spd-spider-fr-spec-lifecycle`)
+2. Project Manager sees spec statuses: ⏳ NOT_STARTED, 🔄 IN_PROGRESS, ✅ DONE
+3. Developer marks spec as 🔄 IN_PROGRESS when starting implementation work
+4. System validates spec has Spec Design at 100/100 before allowing IN_PROGRESS status
 5. As developer completes implementation work, system suggests status update
-6. Developer runs final validation before marking feature ✅ DONE (uses capability `spd-spider-fr-validation`)
-7. Project Manager tracks velocity by counting completed features per sprint
-8. Project Manager identifies blocking dependencies (Feature B depends on Feature A)
-9. System alerts if Feature B IN_PROGRESS but Feature A still NOT_STARTED
-10. Project Manager generates progress report showing feature completion timeline
+6. Developer runs final validation before marking spec ✅ DONE (uses capability `spd-spider-fr-validation`)
+7. Project Manager tracks velocity by counting completed specs per sprint
+8. Project Manager identifies blocking dependencies (Spec B depends on Spec A)
+9. System alerts if Spec B IN_PROGRESS but Spec A still NOT_STARTED
+10. Project Manager generates progress report showing spec completion timeline
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Clear visibility into feature progress, automated status tracking, dependency validation, historical metrics for planning
+**Postconditions**: Clear visibility into spec progress, automated status tracking, dependency validation, historical metrics for planning
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -1391,7 +1391,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Feature Design exists, architect needs to document actor flow
+**Preconditions**: Spec Design exists, architect needs to document actor flow
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1399,7 +1399,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Architect opens the feature design and navigates to the actor flows
+1. Architect opens the spec design and navigates to the actor flows
 2. Architect creates new flow: "Login Flow" with ID `spd-spider-seq-intent-to-workflow` (uses capability `spd-spider-fr-design-first`)
 3. Architect writes flow in Spider DSL (SDSL) using plain English with bold keywords (uses capability `spd-spider-fr-fdl`)
 4. Business Analyst reviews the Spider DSL (SDSL) flow and confirms it matches product requirements
@@ -1558,10 +1558,10 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-028 Create Feature Manifest
+### UC-028 Create Spec Manifest
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-create-feature-manifest`
+**ID**: `spd-spider-usecase-create-spec-manifest`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
@@ -1577,14 +1577,14 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Project Manager runs `/spider-features` and defines the initial feature list and statuses
+1. Project Manager runs `/spider-specs` and defines the initial spec list and statuses
 2. Release Manager defines readiness expectations for releases
-3. AI Assistant creates the Feature Manifest with stable IDs and deterministic status values (uses capability `spd-spider-fr-feature-lifecycle`)
-4. Spider Validation Tool validates the Feature Manifest structure and references by running `/spider-features-validate` (uses capability `spd-spider-fr-validation`)
+3. AI Assistant creates the Spec Manifest with stable IDs and deterministic status values (uses capability `spd-spider-fr-spec-lifecycle`)
+4. Spider Validation Tool validates the Spec Manifest structure and references by running `/spider-specs-validate` (uses capability `spd-spider-fr-validation`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Feature Manifest exists and is deterministically validated
+**Postconditions**: Spec Manifest exists and is deterministically validated
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -1598,7 +1598,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:###:nfr-title repeat="many" -->
 ### Validation performance
 
-<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p2` - **ID**: `spd-spider-nfr-validation-performance`
 
 <!-- spd:list:nfr-statements -->
@@ -1611,7 +1611,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:###:nfr-title repeat="many" -->
 ### Security and integrity
 
-<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-nfr-security-integrity`
 
 <!-- spd:list:nfr-statements -->
@@ -1624,7 +1624,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:###:nfr-title repeat="many" -->
 ### Reliability and recoverability
 
-<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p2` - **ID**: `spd-spider-nfr-reliability-recoverability`
 
 <!-- spd:list:nfr-statements -->
@@ -1637,7 +1637,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:###:nfr-title repeat="many" -->
 ### Adoption and usability
 
-<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,FEATURE" -->
+<!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
 - [x] `p2` - **ID**: `spd-spider-nfr-adoption-usability`
 
 <!-- spd:list:nfr-statements -->

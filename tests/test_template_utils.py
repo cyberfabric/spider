@@ -56,7 +56,7 @@ print('hi')
 <!-- spd:fdl:flow -->
 
 <!-- spd:id-ref:item-ref has="priority,task" -->
-[x] `p1` - `spd-demo-item-1`
+- [x] `p1` - `spd-demo-item-1`
 <!-- spd:id-ref:item-ref -->
 """
 
@@ -93,7 +93,7 @@ print('hi')
 <!-- spd:fdl:flow -->
 
 <!-- spd:id-ref:item-ref -->
-[x] `p1` - `spd-demo-item-1`
+- [x] `p1` - `spd-demo-item-1`
 <!-- spd:id-ref:item-ref -->
 """
 
@@ -796,8 +796,8 @@ spider-template:
     assert any("Invalid image" in str(e.get("message", "")) for e in report["errors"])
 
 
-def test_block_validation_fdl_empty(tmp_path: Path):
-    """Cover empty FDL block."""
+def test_block_validation_sdsl_empty(tmp_path: Path):
+    """Cover empty SDSL block."""
     text = """---
 spider-template:
   version:
@@ -806,18 +806,18 @@ spider-template:
   kind: TEST
 ---
 <!-- spd:fdl:flow -->
-1. [ ] - `ph-1` - Step - `inst-1`
+1. [ ] - `p1` - Step - `inst-1`
 <!-- spd:fdl:flow -->
 """
     tmpl_path = _write(tmp_path / "tmpl.template.md", text)
     tmpl, _ = load_template(tmpl_path)
     art_path = _write(tmp_path / "art.md", "<!-- spd:fdl:flow -->\n\n<!-- spd:fdl:flow -->")
     report = tmpl.validate(art_path)
-    assert any("FDL block empty" in str(e.get("message", "")) for e in report["errors"])
+    assert any("SDSL block empty" in str(e.get("message", "")) for e in report["errors"])
 
 
-def test_block_validation_fdl_invalid_line(tmp_path: Path):
-    """Cover FDL block with invalid line."""
+def test_block_validation_sdsl_invalid_line(tmp_path: Path):
+    """Cover SDSL block with invalid line."""
     text = """---
 spider-template:
   version:
@@ -826,14 +826,14 @@ spider-template:
   kind: TEST
 ---
 <!-- spd:fdl:flow -->
-1. [ ] - `ph-1` - Step - `inst-1`
+1. [ ] - `p1` - Step - `inst-1`
 <!-- spd:fdl:flow -->
 """
     tmpl_path = _write(tmp_path / "tmpl.template.md", text)
     tmpl, _ = load_template(tmpl_path)
-    art_path = _write(tmp_path / "art.md", "<!-- spd:fdl:flow -->\ninvalid fdl line\n<!-- spd:fdl:flow -->")
+    art_path = _write(tmp_path / "art.md", "<!-- spd:fdl:flow -->\ninvalid sdsl line\n<!-- spd:fdl:flow -->")
     report = tmpl.validate(art_path)
-    assert any("Invalid FDL line" in str(e.get("message", "")) for e in report["errors"])
+    assert any("Invalid SDSL line" in str(e.get("message", "")) for e in report["errors"])
 
 
 def test_validate_artifact_file_against_template_success(tmp_path: Path):
@@ -1138,7 +1138,7 @@ spider-template:
 **ID**: `spd-myapp-item-1`
 <!-- spd:id:item -->
 <!-- spd:id-ref:ref -->
-`spd-other-system-feature-auth`
+`spd-other-system-spec-auth`
 <!-- spd:id-ref:ref -->
 """
     tmpl_path = _write(tmp_path / "tmpl.template.md", text)
@@ -1147,7 +1147,7 @@ spider-template:
 **ID**: `spd-myapp-item-1`
 <!-- spd:id:item -->
 <!-- spd:id-ref:ref -->
-`spd-other-system-feature-auth`
+`spd-other-system-spec-auth`
 <!-- spd:id-ref:ref -->
 """)
     art = tmpl.parse(art_path)
@@ -1198,22 +1198,22 @@ spider-template:
   version:
     major: 1
     minor: 0
-  kind: FEATURE
+  kind: SPEC
 ---
 <!-- spd:id:item -->
-**ID**: `spd-account-server-feature-billing`
+**ID**: `spd-account-server-spec-billing`
 <!-- spd:id:item -->
 <!-- spd:id-ref:ref -->
-`spd-other-app-feature-auth`
+`spd-other-app-spec-auth`
 <!-- spd:id-ref:ref -->
 """
     tmpl_path = _write(tmp_path / "tmpl.template.md", text)
     tmpl, _ = load_template(tmpl_path)
     art_path = _write(tmp_path / "art.md", """<!-- spd:id:item -->
-**ID**: `spd-account-server-feature-billing`
+**ID**: `spd-account-server-spec-billing`
 <!-- spd:id:item -->
 <!-- spd:id-ref:ref -->
-`spd-other-app-feature-auth`
+`spd-other-app-spec-auth`
 <!-- spd:id-ref:ref -->
 """)
     art = tmpl.parse(art_path)

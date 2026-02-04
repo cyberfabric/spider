@@ -16,8 +16,6 @@ ARTIFACTS_REGISTRY_FILENAME = "artifacts.json"
 
 SECTION_RE = re.compile(r"^###\s+Section\s+([A-Z0-9]+):\s+(.+?)\s*$")
 HEADING_ID_RE = re.compile(r"^#{1,6}\s+([A-Z])\.\s+.*$")
-SECTION_FEATURE_RE = re.compile(r"^##\s+([A-H])\.\s+(.+?)\s*$")
-SECTION_PRD_RE = re.compile(r"^##\s+(?:Section\s+)?([A-Z])\s*[:.]\s*(.+)?$", re.IGNORECASE)
 
 # Field header pattern
 FIELD_HEADER_RE = re.compile(r"^\s*[-*]?\s*\*\*([^*]+)\*\*:\s*(.*)$")

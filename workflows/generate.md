@@ -9,22 +9,24 @@ purpose: Universal workflow for creating or updating any artifact or code
 
 # Generate
 
+Set `{spider_mode}` = `on` FIRST
+
 **Type**: Operation
 
-ALWAYS open and follow `../requirements/execution-protocol.md` FIRST
+ALWAYS open and follow `{spider_path}/requirements/execution-protocol.md` FIRST
 
-ALWAYS open and follow `../requirements/reverse-engineering.md` WHEN user requests to analyze codebase, search in code, search in project documentation, or generate artifacts or code based on existing project structure
+ALWAYS open and follow `{spider_path}/requirements/reverse-engineering.md` WHEN user requests to analyze codebase, search in code, search in project documentation, or generate artifacts or code based on existing project structure
 
-ALWAYS open and follow `../requirements/code-checklist.md` WHEN user requests implementing, generating, or editing code (Code mode)
+ALWAYS open and follow `{spider_path}/requirements/code-checklist.md` WHEN user requests implementing, generating, or editing code (Code mode)
 
-OPEN and follow `../requirements/prompt-engineering.md` WHEN user requests generation or updates of:
+OPEN and follow `{spider_path}/requirements/prompt-engineering.md` WHEN user requests generation or updates of:
 - System prompts, agent prompts, or LLM prompts
 - Agent instructions or agent guidelines
 - Skills, workflows, or methodologies
 - AGENTS.md or navigation rules
 - Any document containing instructions for AI agents
 
-For context compaction recovery during multi-phase workflows, follow `../requirements/execution-protocol.md` Section "Compaction Recovery".
+For context compaction recovery during multi-phase workflows, follow `{spider_path}/requirements/execution-protocol.md` Section "Compaction Recovery".
 
 ---
 
@@ -59,7 +61,7 @@ For context compaction recovery during multi-phase workflows, follow `../require
   - [Phase 2.5: Checkpoint (for long artifacts)](#phase-25-checkpoint-for-long-artifacts)
   - [Phase 3: Summary](#phase-3-summary)
   - [Phase 4: Write](#phase-4-write)
-  - [Phase 5: Validate](#phase-5-validate)
+  - [Phase 5: Analyze](#phase-5-analyze)
   - [Phase 6: Offer Next Steps](#phase-6-offer-next-steps)
   - [Error Handling](#error-handling)
     - [Tool Failures](#tool-failures)
@@ -103,16 +105,19 @@ For context compaction recovery during multi-phase workflows, follow `../require
 
 ## Overview
 
-Universal generation workflow. Handles two modes:
-- **Artifact mode**: Uses template + checklist + example
-- **Code mode**: Uses checklist only
+Universal generation workflow. Handles three modes:
+- **Artifact mode**: Uses template + checklist + example (PRD, DESIGN, DECOMPOSITION, ADR, SPEC)
+- **Code mode**: Uses checklist only (implementation, fixes, refactoring)
+- **Adapter mode**: Uses adapter.md workflow (create/update adapter, specs, artifacts.json)
+
+**Adapter mode trigger**: When target is adapter files (AGENTS.md, artifacts.json, specs/), delegate to `{spider_path}/workflows/adapter.md`.
 
 After executing `execution-protocol.md`, you have: TARGET_TYPE, RULES, KIND, PATH, MODE, and resolved dependencies.
 
 ### Resolved Variables (from `execution-protocol.md` + adapter-info)
 
-- `{adapter_dir}` — adapter directory from `spider.py adapter-info` (contains `artifacts.json`)
-- `{ARTIFACTS_REGISTRY}` — `{adapter_dir}/artifacts.json`
+- `{spider_adapter_path}` — adapter directory from `spider.py adapter-info` (contains `artifacts.json`)
+- `{ARTIFACTS_REGISTRY}` — `{spider_adapter_path}/artifacts.json`
 - `{WEAVERS_PATH}` — weaver package base directory resolved from registry (registry schema uses `weavers`/`weaver`)
 - `{PATH}` — target artifact/code path for the current operation
 
@@ -134,7 +139,7 @@ This workflow can require loading multiple long templates/checklists/examples an
 
 ## ⛔ Agent Anti-Patterns (STRICT mode)
 
-**Reference**: `../requirements/agent-compliance.md` for full list.
+**Reference**: `{spider_path}/requirements/agent-compliance.md` for full list.
 
 **Critical anti-patterns for generation**:
 
@@ -206,7 +211,7 @@ This workflow can require loading multiple long templates/checklists/examples an
 
 | Dependency | Purpose | If missing |
 |------------|---------|------------|
-| **Code checklist** | Baseline quality criteria for all code work | Load `../requirements/code-checklist.md` |
+| **Code checklist** | Baseline quality criteria for all code work | Load `{spider_path}/requirements/code-checklist.md` |
 | **Design artifact** | Requirements to implement | Ask user to specify source |
 
 **MUST NOT proceed** to Phase 1 until all dependencies are available.
@@ -287,7 +292,7 @@ Where should the result go?
 
 ### For Code (checklist-based)
 
-1. Parse related artifact (FEATURE design, etc.)
+1. Parse related artifact (SPEC design, etc.)
 2. Extract requirements to implement
 3. Present implementation plan
 
@@ -353,7 +358,7 @@ Standard checks (subset of [Validation Criteria](#validation-criteria)):
 ### For Code (rules.md Tasks)
 
 Execute phases from codebase/rules.md:
-- **Phase 1: Setup** — load feature design, checklist
+- **Phase 1: Setup** — load spec design, checklist
 - **Phase 2: Implementation** — implement with Spider markers
 - **Phase 3: Marker Format** — use correct marker syntax
 - **Phase 4: Quality Check** — verify traceability
@@ -403,7 +408,7 @@ Standard checks (subset of [Validation Criteria](#validation-criteria)):
 - ...
 
 **Content generated**: {line count} lines
-**Pending**: Summary → Confirmation → Write → Validate
+**Pending**: Summary → Confirmation → Write → Analyze
 
 Resume: Re-read this checkpoint, verify no file changes, continue to Phase 3.
 ```
@@ -438,7 +443,7 @@ Resume: Re-read this checkpoint, verify no file changes, continue to Phase 3.
 {additional files if any}
 
 ### Artifacts registry:
-- `{adapter_dir}/artifacts.json`: {entry additions/updates, if any}
+- `{spider_adapter_path}/artifacts.json`: {entry additions/updates, if any}
 
 **Proceed?** [yes/no/modify]
 ```
@@ -454,7 +459,7 @@ Resume: Re-read this checkpoint, verify no file changes, continue to Phase 3.
 
 **Only after confirmation**:
 
-1. Update `{adapter_dir}/artifacts.json` if new artifact path introduced
+1. Update `{spider_adapter_path}/artifacts.json` if new artifact path introduced
 2. Create directories if needed
 3. Write file(s)
 4. Verify content
@@ -471,16 +476,16 @@ Output:
 
 ---
 
-## Phase 5: Validate
+## Phase 5: Analyze
 
 **Automatic**: Run validation after generation (do not list in Next Steps):
 ```
-/spider-validate --artifact {PATH}
+/spider-analyze --artifact {PATH}
 ```
 
 For code generation, use:
 ```
-/spider-validate --code {PATH} --design {design-path}
+/spider-analyze --code {PATH} --design {design-path}
 ```
 
 **If PASS**:
@@ -556,7 +561,7 @@ What would you like to do next?
 
 ## Validation Criteria
 
-- [ ] ../requirements/execution-protocol.md executed
+- [ ] {spider_path}/requirements/execution-protocol.md executed
 - [ ] Dependencies loaded (checklist, template, example)
 - [ ] System context clarified (if using rules)
 - [ ] Output destination clarified

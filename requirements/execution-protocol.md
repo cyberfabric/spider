@@ -3,7 +3,7 @@ spider: true
 type: requirement
 name: Execution Protocol
 version: 2.0
-purpose: Common protocol executed by generate.md and validate.md workflows
+purpose: Common protocol executed by generate.md and analyze.md workflows
 ---
 
 # Execution Protocol
@@ -32,7 +32,7 @@ purpose: Common protocol executed by generate.md and validate.md workflows
 
 ## Overview
 
-Common steps shared by `generate.md` and `validate.md`. Both workflows MUST execute this protocol before their specific logic.
+Common steps shared by `generate.md` and `analyze.md`. Both workflows MUST execute this protocol before their specific logic.
 
 ---
 ## ⚠️ Execution Protocol Violations
@@ -42,7 +42,7 @@ Common steps shared by `generate.md` and `validate.md`. Both workflows MUST exec
 **Common violations**:
 1. ❌ Not reading this protocol first
 2. ❌ Not running `spider adapter-info`
-3. ❌ Not following invoked workflow rules (`generate.md` / `validate.md`)
+3. ❌ Not following invoked workflow rules (`generate.md` / `analyze.md`)
 
 **Recovery**:
 1. Acknowledge violation + what was skipped
@@ -60,13 +60,13 @@ Common steps shared by `generate.md` and `validate.md`. Both workflows MUST exec
 
 **Detection signals** (agent should suspect compaction occurred):
 - Conversation starts with "This session is being continued from a previous conversation"
-- Summary mentions `/spider-generate`, `/spider-validate`, or other Spider commands
+- Summary mentions `/spider-generate`, `/spider-analyze`, or other Spider commands
 - Todo list contains Spider-related tasks in progress
 
 **Recovery protocol**:
 
 1. Detect compaction from conversation summary signals
-2. Re-run: `spider adapter-info` + load required specs from `{adapter_dir}/AGENTS.md`
+2. Re-run: `spider adapter-info` + load required specs from `{spider_adapter_path}/AGENTS.md`
 3. Announce restored context (workflow, target, loaded specs), then continue
 
 **Agent MUST NOT**:
@@ -152,12 +152,12 @@ Choose one:
 ## Discover Adapter
 
 ```bash
-python3 {Spider}/skills/spider/scripts/spider.py adapter-info --root {PROJECT_ROOT} --spider-root {Spider}
+python3 {spider_path}/skills/spider/scripts/spider.py adapter-info --root {PROJECT_ROOT} --spider-root {spider_path}
 ```
 
 **Parse output**: `status`, `adapter_dir`, `project_root`, `specs`, `rules`
 
-**If FOUND**: Load `{adapter_dir}/AGENTS.md` for navigation rules
+**If FOUND**: Load `{spider_adapter_path}/AGENTS.md` for navigation rules
 
 **If NOT_FOUND**: Suggest running `/spider-adapter` to bootstrap
 
@@ -165,7 +165,7 @@ python3 {Spider}/skills/spider/scripts/spider.py adapter-info --root {PROJECT_RO
 
 ## Understand Registry
 
-**MUST read** `{adapter_dir}/artifacts.json`:
+**MUST read** `{spider_adapter_path}/artifacts.json`:
 
 1. **Rules**: What rule packages exist (`spider-sdlc`, `spd-core`, etc.)
 2. **Systems**: What systems are registered and their hierarchy
@@ -233,7 +233,7 @@ From explicit parameter or artifacts.json lookup:
 | Source | Resolution |
 |--------|------------|
 | `spider generate PRD` | Explicit: PRD |
-| `spider validate {path}` | Lookup: `artifacts.json.systems[].artifacts[path].kind` |
+| `spider analyze {path}` | Lookup: `artifacts.json.systems[].artifacts[path].kind` |
 | Path in `codebase[]` | CODE |
 
 ### 3. Load Rules.md
@@ -291,7 +291,7 @@ I understand the following requirements for {ARTIFACT_TYPE}:
 
 **After rules loaded and target type determined**, load applicable adapter specs:
 
-**Read adapter AGENTS.md** at `{adapter_dir}/AGENTS.md`
+**Read adapter AGENTS.md** at `{spider_adapter_path}/AGENTS.md`
 
 **Parse WHEN clauses** matching current context:
 
@@ -312,7 +312,7 @@ For each line matching: ALWAYS open and follow `{spec}` WHEN Spider follows rule
 - Open matched specs (e.g. `specs/tech-stack.md`, `specs/domain-model.md`)
 
 **Store loaded adapter specs**:
-- `ADAPTER_SPECS` — list of loaded spec paths
+- `ADAPTER_DECOMPOSITION` — list of loaded spec paths
 - Specs content available for workflow guidance
 
 **Backward compatibility**: If adapter uses legacy format (`WHEN executing workflows: ...`), map workflow names to artifact kinds internally.
@@ -361,7 +361,7 @@ For each line matching: ALWAYS open and follow `{spec}` WHEN Spider follows rule
 **If artifacts.json is malformed**:
 ```
 ⚠️ Cannot parse artifacts.json: {parse error}
-→ Fix JSON syntax errors in {adapter_dir}/artifacts.json
+→ Fix JSON syntax errors in {spider_adapter_path}/artifacts.json
 → Validate with: python3 -m json.tool artifacts.json
 ```
 **Action**: STOP.

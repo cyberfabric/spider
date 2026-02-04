@@ -13,61 +13,41 @@ Spider is a workflow-centered methodology framework for AI-assisted software dev
 
 ---
 
+## Variables
+
+**While Spider is enabled**, remember these variables:
+
+| Variable | Value | Description |
+|----------|-------|-------------|
+| `{spider_adapter_path}` | Directory containing this AGENTS.md | Root path for Spider Adapter navigation |
+
+Use `{spider_adapter_path}` as the base path for all relative Spider Adapter file references.
+
+---
+
 ## Navigation Rules
 
 ### Schema & Registry
 
-ALWAYS open and follow `../schemas/artifacts.schema.json` WHEN working with artifacts.json
+ALWAYS open and follow `{spider_path}/schemas/artifacts.schema.json` WHEN working with artifacts.json
 
-ALWAYS open and follow `../requirements/artifacts-registry.md` WHEN working with artifacts.json
+ALWAYS open and follow `{spider_path}/requirements/artifacts-registry.md` WHEN working with artifacts.json
 
-ALWAYS open and follow `artifacts.json` WHEN Spider uses weaver `spider-sdlc` for artifact kinds: PRD, DESIGN, DECOMPOSITION, ADR, FEATURE OR codebase
+### Project Specs
 
-### Tech Stack & Conventions
+ALWAYS open and follow `specs/tech-stack.md` WHEN writing code, choosing technologies, or adding dependencies
 
-ALWAYS open and follow `specs/tech-stack.md` WHEN Spider uses weaver `spider-sdlc` for artifact kinds: DESIGN, ADR OR codebase
+ALWAYS open and follow `specs/conventions.md` WHEN writing code, naming files/functions/variables, or reviewing code
 
-ALWAYS open and follow `specs/conventions.md` WHEN Spider uses weaver `spider-sdlc` for codebase
+ALWAYS open and follow `specs/project-structure.md` WHEN creating files, adding modules, or navigating codebase
 
-### Domain Model
+ALWAYS open and follow `specs/domain-model.md` WHEN working with entities, data structures, or business logic
 
-ALWAYS open and follow `specs/domain-model.md` WHEN Spider uses weaver `spider-sdlc` for artifact kinds: DESIGN, DECOMPOSITION, FEATURE OR codebase
+ALWAYS open and follow `specs/testing.md` WHEN writing tests, reviewing test coverage, or debugging
 
-### Project Structure
+ALWAYS open and follow `specs/build-deploy.md` WHEN building, deploying, or configuring CI/CD
 
-ALWAYS open and follow `specs/project-structure.md` WHEN Spider uses weaver `spider-sdlc` for artifact kinds: DESIGN, ADR OR codebase
-
-### Testing
-
-ALWAYS open and follow `specs/testing.md` WHEN Spider uses weaver `spider-sdlc` for codebase
-
-### Build & Deploy
-
-ALWAYS open and follow `specs/build-deploy.md` WHEN Spider uses weaver `spider-sdlc` for codebase
-
-### Patterns
-
-ALWAYS open and follow `specs/patterns.md` WHEN Spider uses weaver `spider-sdlc` for artifact kinds: DESIGN, ADR, FEATURE OR codebase
-
----
-
-## Artifact Locations
-
-| Kind | Path | Traceability |
-|------|------|--------------|
-| PRD | `architecture/PRD.md` | FULL |
-| DESIGN | `architecture/DESIGN.md` | FULL |
-| DECOMPOSITION | `architecture/DECOMPOSITION.md` | FULL |
-| ADR | `architecture/ADR/general/*.md` | FULL |
-
-## Codebase Locations
-
-| Name | Path | Extensions |
-|------|------|------------|
-| Spider CLI | `skills/spider/scripts/spider/` | `.py` |
-| Tests | `tests/` | `.py` |
-
----
+ALWAYS open and follow `specs/patterns.md` WHEN implementing features, designing components, or refactoring
 
 ## Quick Reference
 

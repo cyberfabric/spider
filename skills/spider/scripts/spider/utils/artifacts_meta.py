@@ -5,11 +5,15 @@ Parses and provides access to artifacts.json with the hierarchical system struct
 """
 
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Tuple
 
 from ..constants import ARTIFACTS_REGISTRY_FILENAME
+
+# Slug validation pattern: lowercase letters, numbers, hyphens (no leading/trailing hyphens)
+SLUG_PATTERN = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 
 @dataclass
@@ -91,17 +95,50 @@ class SystemNode:
     """A node in the system hierarchy (system, subsystem, component, module, etc.)."""
 
     name: str
+    slug: str  # Machine-readable identifier (lowercase, no spaces)
     weaver: str  # Reference to weaver ID
     artifacts: List[Artifact] = field(default_factory=list)
     codebase: List[CodebaseEntry] = field(default_factory=list)
     children: List["SystemNode"] = field(default_factory=list)
     parent: Optional["SystemNode"] = field(default=None, repr=False)
 
+    def get_hierarchy_prefix(self) -> str:
+        """Get the hierarchical ID prefix by concatenating slugs from root to this node.
+
+        Example: For a component 'auth' under subsystem 'core' under system 'saas-platform',
+        returns 'saas-platform-core-auth'.
+        """
+        parts = []
+        node: Optional[SystemNode] = self
+        while node is not None:
+            parts.append(node.slug)
+            node = node.parent
+        return "-".join(reversed(parts))
+
+    def validate_slug(self) -> Optional[str]:
+        """Validate the slug format. Returns error message if invalid, None if valid."""
+        if not self.slug:
+            return f"Missing slug for system '{self.name}'"
+        if not SLUG_PATTERN.match(self.slug):
+            return (
+                f"Invalid slug '{self.slug}' for system '{self.name}'. "
+                "Slug must be lowercase letters, numbers, and hyphens only "
+                "(no leading/trailing hyphens, no spaces)."
+            )
+        return None
+
     @classmethod
     def from_dict(cls, data: dict, parent: Optional["SystemNode"] = None) -> "SystemNode":
         weaver = str(data.get("weaver", data.get("weavers", "")))
+        # For backward compatibility, generate slug from name if not provided
+        name = str(data.get("name", ""))
+        slug = str(data.get("slug", ""))
+        if not slug and name:
+            # Auto-generate slug from name: lowercase, replace spaces with hyphens
+            slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
         node = cls(
-            name=str(data.get("name", "")),
+            name=name,
+            slug=slug,
             weaver=weaver,
             parent=parent,
         )
@@ -260,6 +297,32 @@ class ArtifactsMeta:
         """Get a set of all system names (normalized to lowercase)."""
         return {name.lower() for name in self.iter_all_system_names()}
 
+    def iter_all_systems(self) -> Iterator[SystemNode]:
+        """Iterate over all system nodes in the registry (including nested children)."""
+        def _iter_system(node: SystemNode) -> Iterator[SystemNode]:
+            yield node
+            for child in node.children:
+                yield from _iter_system(child)
+
+        for system in self.systems:
+            yield from _iter_system(system)
+
+    def get_system_by_slug(self, slug: str) -> Optional[SystemNode]:
+        """Find a system node by its slug."""
+        for node in self.iter_all_systems():
+            if node.slug == slug:
+                return node
+        return None
+
+    def validate_all_slugs(self) -> List[str]:
+        """Validate all slugs in the registry. Returns list of error messages."""
+        errors = []
+        for node in self.iter_all_systems():
+            error = node.validate_slug()
+            if error:
+                errors.append(error)
+        return errors
+
 
 def load_artifacts_meta(adapter_dir: Path) -> Tuple[Optional[ArtifactsMeta], Optional[str]]:
     """
@@ -321,6 +384,24 @@ def _join_path(base: str, tail: str) -> str:
     return f"{b.rstrip('/')}/{t.lstrip('/')}"
 
 
+def generate_slug(name: str) -> str:
+    """Generate a valid slug from a name.
+
+    Converts to lowercase, replaces non-alphanumeric chars with hyphens,
+    removes leading/trailing hyphens.
+
+    Args:
+        name: Human-readable name
+
+    Returns:
+        Valid slug string
+    """
+    slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+    # Collapse multiple hyphens
+    slug = re.sub(r"-+", "-", slug)
+    return slug if slug else "unnamed"
+
+
 def generate_default_registry(
     project_name: str,
     spider_core_rel_path: str,
@@ -346,6 +427,7 @@ def generate_default_registry(
         "systems": [
             {
                 "name": project_name,
+                "slug": generate_slug(project_name),
                 "weaver": "spider-sdlc",
                 "artifacts": [],
                 "codebase": [],
@@ -361,7 +443,9 @@ __all__ = [
     "Artifact",
     "CodebaseEntry",
     "Weaver",
+    "SLUG_PATTERN",
     "load_artifacts_meta",
     "create_backup",
     "generate_default_registry",
+    "generate_slug",
 ]

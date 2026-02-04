@@ -3,23 +3,23 @@ spider-template:
   version:
     major: 1
     minor: 0
-  kind: FEATURE
+  kind: SPEC
   unknown_sections: warn
 ---
 
-<!-- spd:#:feature-design -->
-# Feature: {Feature Name}
+<!-- spd:#:spec -->
+# Spec: {Spec Name}
 
-<!-- spd:id-ref:feature has="task" -->
-[ ] - `spd-{system}-feature-{feature-slug}`
-<!-- spd:id-ref:feature -->
+<!-- spd:id-ref:spec has="task" -->
+- [ ] - `spd-{system}-spec-{spec-slug}`
+<!-- spd:id-ref:spec -->
 
 <!-- spd:##:context -->
-## 1. Feature Context
+## 1. Spec Context
 
 <!-- spd:overview -->
 ### 1. Overview
-{1-2 paragraphs summarizing what this feature does and why it exists.}
+{1-2 paragraphs summarizing what this spec does and why it exists.}
 
 {Include:
 - Problem statement
@@ -29,7 +29,7 @@ spider-template:
 
 <!-- spd:paragraph:purpose -->
 ### 2. Purpose
-{1-3 sentences describing the intended outcome of this feature.}
+{1-3 sentences describing the intended outcome of this spec.}
 
 {Optionally include measurable success criteria.}
 <!-- spd:paragraph:purpose -->
@@ -44,7 +44,7 @@ spider-template:
 ### 4. References
 - Overall Design: [DESIGN.md](../../DESIGN.md)
 - ADRs: `spd-{system}-adr-{slug}`
-- Related feature: `spd-{system}-feature-{slug}`
+- Related spec: `spd-{system}-spec-{slug}`
 <!-- spd:list:references -->
 <!-- spd:##:context -->
 
@@ -55,7 +55,7 @@ spider-template:
 ### {Flow Name}
 
 <!-- spd:id:flow has="task" to_code="true" -->
-- [ ] **ID**: `spd-{system}-feature-{feature}-flow-{slug}`
+- [ ] **ID**: `spd-{system}-spec-{spec}-flow-{slug}`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
@@ -65,12 +65,12 @@ spider-template:
 <!-- spd:fdl:flow-steps -->
 1. [ ] - `p1` - Actor fills form (field1, field2) - `inst-fill-form`
 2. [ ] - `p1` - API: POST /api/{resource} (body: field1, field2) - `inst-api-call`
-3. [ ] - `p2` - Algorithm: validate input using <!-- spd:id-ref:algo has="task" required="false" -->[ ] - `spd-{system}-feature-{feature}-algo-{slug}`<!-- spd:id-ref:algo --> - `inst-run-algo`
+3. [ ] - `p2` - Algorithm: validate input using <!-- spd:id-ref:algo has="task" required="false" -->[ ] - `spd-{system}-spec-{spec}-algo-{slug}`<!-- spd:id-ref:algo --> - `inst-run-algo`
 4. [ ] - `p1` - DB: INSERT {table}(field1, field2, status) - `inst-db-insert`
 5. [ ] - `p1` - DB: SELECT * FROM {table} WHERE condition - `inst-db-query`
 6. [ ] - `p1` - File: READ config from {path} - `inst-file-read`
 7. [ ] - `p1` - CLI: run `command --flag value` - `inst-cli-exec`
-8. [ ] - `p1` - State: transition using <!-- spd:id-ref:state has="task" required="false" --> [ ] - `spd-{system}-feature-{feature}-state-{slug}`<!-- spd:id-ref:state --> - `inst-state-ref`
+8. [ ] - `p1` - State: transition using <!-- spd:id-ref:state has="task" required="false" --> [ ] - `spd-{system}-spec-{spec}-state-{slug}`<!-- spd:id-ref:state --> - `inst-state-ref`
 9. [ ] - `p2` - **IF** {condition}: - `inst-if`
    1. [ ] - `p2` - {nested step} - `inst-if-nested`
 10. [ ] - `p1` - API: RETURN 201 Created (id, status) - `inst-return`
@@ -86,7 +86,7 @@ spider-template:
 ### {Algorithm Name}
 
 <!-- spd:id:algo has="task" to_code="true" -->
-- [ ] **ID**: `spd-{system}-feature-{feature}-algo-{slug}`
+- [ ] **ID**: `spd-{system}-spec-{spec}-algo-{slug}`
 
 <!-- spd:fdl:algo-steps -->
 1. [ ] - `p1` - **IF** {field} is empty **RETURN** error "{validation message}" - `inst-validate`
@@ -109,7 +109,7 @@ spider-template:
 ### {State Machine Name}
 
 <!-- spd:id:state has="task" to_code="true" -->
-- [ ] **ID**: `spd-{system}-feature-{feature}-state-{slug}`
+- [ ] **ID**: `spd-{system}-spec-{spec}-state-{slug}`
 
 <!-- spd:fdl:state-transitions -->
 1. [ ] - `p1` - **FROM** {STATE} **TO** {STATE} **WHEN** {trigger} - `inst-transition-1`
@@ -126,7 +126,7 @@ spider-template:
 ### {Requirement Name}
 
 <!-- spd:id:req has="priority,task" to_code="true" -->
-- [ ] `p1` - **ID**: `spd-{system}-feature-{feature}-req-{slug}`
+- [ ] `p1` - **ID**: `spd-{system}-spec-{spec}-req-{slug}`
 
 <!-- spd:paragraph:req-body -->
 {Describe what must be true when this requirement is satisfied.}
@@ -141,11 +141,11 @@ spider-template:
 
 **Implements**:
 <!-- spd:id-ref:flow has="priority" -->
-- `p1` - `spd-{system}-feature-{feature}-flow-{slug}`
+- `p1` - `spd-{system}-spec-{spec}-flow-{slug}`
 <!-- spd:id-ref:flow -->
 
 <!-- spd:id-ref:algo has="priority" -->
-- `p1` - `spd-{system}-feature-{feature}-algo-{slug}`
+- `p1` - `spd-{system}-spec-{spec}-algo-{slug}`
 <!-- spd:id-ref:algo -->
 
 **Covers (PRD)**:
@@ -190,4 +190,4 @@ spider-template:
 <!-- spd:free:context-notes -->
 <!-- spd:##:additional-context -->
 
-<!-- spd:#:feature-design -->
+<!-- spd:#:spec -->

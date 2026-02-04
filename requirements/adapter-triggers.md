@@ -19,7 +19,7 @@ purpose: Define when AI agent proposes running adapter workflow
   - [Mandatory Adapter Initialization](#mandatory-adapter-initialization)
   - [Trigger Rules](#trigger-rules)
     - [1. Design Decisions Made](#1-design-decisions-made)
-    - [2. Feature Patterns Detected](#2-feature-patterns-detected)
+    - [2. Spec Patterns Detected](#2-spec-patterns-detected)
     - [3. Implementation Code](#3-implementation-code)
     - [4. User Decisions](#4-user-decisions)
     - [5. Existing Project Discovery](#5-existing-project-discovery)
@@ -116,17 +116,17 @@ Run adapter workflow to capture these? [Yes] [No] [Review]
 
 ---
 
-### 2. Feature Patterns Detected
+### 2. Spec Patterns Detected
 
-**Trigger**: Feature DESIGN.md created or validated
+**Trigger**: Spec DESIGN.md created or validated
 
 **Check**:
-- Feature DESIGN.md Section B (Actor Flows) completed
-- Feature DESIGN.md Section C (Algorithms) completed
-- Feature DESIGN.md Section E (Technical Details) completed
+- Spec DESIGN.md Section B (Actor Flows) completed
+- Spec DESIGN.md Section C (Algorithms) completed
+- Spec DESIGN.md Section E (Technical Details) completed
 
 **Scan for**:
-- Repeated patterns (same algorithm name/structure appears in ≥2 FEATURE artifacts within this project)
+- Repeated patterns (same algorithm name/structure appears in ≥2 SPEC artifacts within this project)
 - Architecture patterns (Repository, Factory, Strategy, etc.)
 - Code examples or pseudocode
 - Technical implementation details
@@ -138,7 +138,7 @@ Run adapter workflow to capture these? [Yes] [No] [Review]
 
 **Action**:
 ```
-Feature pattern detected:
+Spec pattern detected:
   - LRU caching strategy in spider-context-provider
   
 Add to adapter specs/patterns.md? [Yes] [No]
@@ -233,7 +233,7 @@ Run adapter discovery to capture existing decisions? [Yes] [No]
 At ANY workflow step:
 
 1. Monitor for triggers:
-   - Artifact created/updated (kinds: PRD, DESIGN, DECOMPOSITION, ADR, FEATURE)
+   - Artifact created/updated (kinds: PRD, DESIGN, DECOMPOSITION, ADR, SPEC)
    - Artifact validated (any kind)
    - Codebase changes (code committed, tests passed)
    - User stated technical decision
@@ -430,7 +430,7 @@ Execute: Monitor triggers during workflow
 
 | # | Check | Required |
 |---|-------|----------|
-| S.1 | All 5 trigger types defined (Design, Feature Patterns, Implementation, User Decisions, Discovery) | YES |
+| S.1 | All 5 trigger types defined (Design, Spec Patterns, Implementation, User Decisions, Discovery) | YES |
 | S.2 | Detection algorithm present | YES |
 | S.3 | User response handling defined ([Yes], [No], [Review]) | YES |
 | S.4 | Error handling section present | YES |

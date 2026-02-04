@@ -72,14 +72,14 @@ class TestCLIValidateCommand(unittest.TestCase):
                     # Also acceptable - file doesn't exist
                     pass
 
-    def test_validate_dir_with_design_and_features_flag_fails(self):
-        """When --artifact is a feature dir containing DESIGN.md, --features must error."""
+    def test_validate_dir_with_design_and_specs_flag_fails(self):
+        """When --artifact is a spec dir containing DESIGN.md, --specs must error."""
         with TemporaryDirectory() as tmpdir:
             feat = Path(tmpdir)
-            (feat / "DESIGN.md").write_text("# Feature: X\n", encoding="utf-8")
+            (feat / "DESIGN.md").write_text("# Spec: X\n", encoding="utf-8")
 
             with self.assertRaises(SystemExit):
-                main(["validate", "--artifact", str(feat), "--features", "feature-x"]) 
+                main(["validate", "--artifact", str(feat), "--specs", "spec-x"]) 
 
     def test_validate_dir_without_design_uses_code_root_traceability(self):
         """Cover validate branch when --artifact is a directory without DESIGN.md."""
@@ -95,24 +95,24 @@ class TestCLIValidateCommand(unittest.TestCase):
             out = json.loads(stdout.getvalue())
             self.assertIn("status", out)
 
-    def test_validate_code_root_with_feature_artifacts(self):
-        """Cover validation when --artifact is a code root directory with features."""
+    def test_validate_code_root_with_spec_artifacts(self):
+        """Cover validation when --artifact is a code root directory with specs."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
             (root / "src").mkdir(parents=True, exist_ok=True)
-            (root / "architecture" / "features" / "feature-a").mkdir(parents=True)
-            (root / "architecture" / "features" / "feature-b").mkdir(parents=True)
+            (root / "architecture" / "specs" / "spec-a").mkdir(parents=True)
+            (root / "architecture" / "specs" / "spec-b").mkdir(parents=True)
 
-            # Minimal artifacts for feature-a/feature-b so traceability runs.
-            (root / "architecture" / "features" / "feature-a" / "DESIGN.md").write_text("# Feature: A\n", encoding="utf-8")
-            (root / "architecture" / "features" / "feature-b" / "DESIGN.md").write_text("# Feature: B\n", encoding="utf-8")
+            # Minimal artifacts for spec-a/spec-b so traceability runs.
+            (root / "architecture" / "specs" / "spec-a" / "DESIGN.md").write_text("# Spec: A\n", encoding="utf-8")
+            (root / "architecture" / "specs" / "spec-b" / "DESIGN.md").write_text("# Spec: B\n", encoding="utf-8")
 
             _bootstrap_registry(
                 root,
                 entries=[
-                    {"kind": "FEATURE", "system": "Test", "path": "architecture/features/feature-a/DESIGN.md", "format": "Spider"},
-                    {"kind": "FEATURE", "system": "Test", "path": "architecture/features/feature-b/DESIGN.md", "format": "Spider"},
+                    {"kind": "SPEC", "system": "Test", "path": "architecture/specs/spec-a/DESIGN.md", "format": "Spider"},
+                    {"kind": "SPEC", "system": "Test", "path": "architecture/specs/spec-b/DESIGN.md", "format": "Spider"},
                     {"kind": "SRC", "system": "Test", "path": "src", "format": "CONTEXT", "traceability_enabled": True, "extensions": [".py"]},
                 ],
             )
@@ -125,19 +125,19 @@ class TestCLIValidateCommand(unittest.TestCase):
             out = json.loads(stdout.getvalue())
             self.assertIn("status", out)
 
-    def test_validate_feature_dir_with_design_md_runs_codebase_traceability(self):
-        """Cover validate branch when --artifact is a feature directory containing DESIGN.md."""
+    def test_validate_spec_dir_with_design_md_runs_codebase_traceability(self):
+        """Cover validate branch when --artifact is a spec directory containing DESIGN.md."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir(exist_ok=True)
-            feat = root / "architecture" / "features" / "feature-x"
+            feat = root / "architecture" / "specs" / "spec-x"
             feat.mkdir(parents=True)
-            (feat / "DESIGN.md").write_text("# Feature: X\n", encoding="utf-8")
+            (feat / "DESIGN.md").write_text("# Spec: X\n", encoding="utf-8")
 
             _bootstrap_registry(
                 root,
                 entries=[
-                    {"kind": "FEATURE", "system": "Test", "path": "architecture/features/feature-x/DESIGN.md", "format": "Spider"},
+                    {"kind": "SPEC", "system": "Test", "path": "architecture/specs/spec-x/DESIGN.md", "format": "Spider"},
                 ],
             )
 
@@ -241,8 +241,8 @@ class TestCLIAgentsCommand(unittest.TestCase):
             "---\nspider: true\ntype: workflow\nname: spider-generate\ndescription: Generate Spider artifacts\n---\n# Generate\n",
             encoding="utf-8",
         )
-        (root / "workflows" / "validate.md").write_text(
-            "---\nspider: true\ntype: workflow\nname: spider-validate\ndescription: Validate Spider artifacts\n---\n# Validate\n",
+        (root / "workflows" / "analyze.md").write_text(
+            "---\nspider: true\ntype: workflow\nname: spider-analyze\ndescription: Analyze Spider artifacts\n---\n# Analyze\n",
             encoding="utf-8",
         )
 
@@ -1273,7 +1273,7 @@ class TestCLIErrorHandling(unittest.TestCase):
 
 
 class TestCLIBackwardCompatibility(unittest.TestCase):
-    """Test CLI backward compatibility features."""
+    """Test CLI backward compatibility specs."""
 
     def test_validate_without_subcommand(self):
         """Test that --artifact without subcommand defaults to validate."""
@@ -3291,8 +3291,8 @@ spider-template:
         weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
         systems=[{
             "name": "Test",
-            "weavers": "spider",
-            "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
+            "weaver": "spider",
+            "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD", "traceability": "FULL"}],
             "codebase": [{"path": "src", "extensions": [".py"]}],
         }],
     )
@@ -3332,22 +3332,19 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
             finally:
                 os.chdir(cwd)
 
-    def test_validate_code_with_path(self):
-        """Test validate-code with explicit path to code file."""
+    def test_validate_code_integrated(self):
+        """Test validate-code is integrated into validate command."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             _setup_spider_project_with_codebase(root)
-
-            # Create a code file with Spider markers
-            code_file = root / "test_code.py"
-            code_file.write_text("# @spider-flow:spd-test-1:p1\ndef foo(): pass\n", encoding="utf-8")
 
             cwd = os.getcwd()
             try:
                 os.chdir(str(root))
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    exit_code = main(["validate-code", str(code_file)])
+                    # validate-code now redirects to validate (includes code validation by default)
+                    exit_code = main(["validate-code"])
                 # Should succeed or fail validation
                 self.assertIn(exit_code, [0, 2])
                 out = json.loads(stdout.getvalue())
@@ -3413,24 +3410,8 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
             finally:
                 os.chdir(cwd)
 
-    def test_validate_code_with_system_filter(self):
-        """Test validate-code with --system filter."""
-        with TemporaryDirectory() as tmpdir:
-            root = Path(tmpdir)
-            _setup_spider_project_with_codebase(root)
-
-            cwd = os.getcwd()
-            try:
-                os.chdir(str(root))
-                stdout = io.StringIO()
-                with redirect_stdout(stdout):
-                    exit_code = main(["validate-code", "--system", "Test"])
-                self.assertIn(exit_code, [0, 2])
-            finally:
-                os.chdir(cwd)
-
     def test_validate_code_orphaned_marker(self):
-        """Test validate-code detects orphaned markers (ID not in artifacts)."""
+        """Test validate detects orphaned markers (ID not in artifacts)."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             _setup_spider_project_with_codebase(root)
@@ -3447,7 +3428,7 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
                 os.chdir(str(root))
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    exit_code = main(["validate-code", "--verbose"])
+                    exit_code = main(["validate", "--verbose"])
                 # Should fail due to orphaned marker
                 self.assertEqual(exit_code, 2)
                 out = json.loads(stdout.getvalue())
@@ -3483,8 +3464,8 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
             finally:
                 os.chdir(cwd)
 
-    def test_validate_code_nonexistent_system(self):
-        """Test validate-code with --system filter for non-existent system."""
+    def test_validate_with_skip_code(self):
+        """Test validate with --skip-code flag."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             _setup_spider_project_with_codebase(root)
@@ -3494,9 +3475,12 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
                 os.chdir(str(root))
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    exit_code = main(["validate-code", "--system", "NonExistent"])
-                # Should still succeed (just scan nothing)
+                    exit_code = main(["validate", "--skip-code"])
+                # Should succeed (no code validation)
                 self.assertIn(exit_code, [0, 2])
+                out = json.loads(stdout.getvalue())
+                # Should not have code_files_scanned key when skipped
+                self.assertNotIn("code_files_scanned", out)
             finally:
                 os.chdir(cwd)
 

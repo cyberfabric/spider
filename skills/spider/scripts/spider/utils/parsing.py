@@ -11,8 +11,6 @@ from typing import Dict, List, Optional, Tuple
 from ..constants import (
     SECTION_RE,
     HEADING_ID_RE,
-    SECTION_FEATURE_RE,
-    SECTION_PRD_RE,
     FIELD_HEADER_RE,
 )
 
@@ -102,24 +100,6 @@ def split_by_section_letter_with_offsets(
     return found_order, sections, offsets
 
 
-def split_by_feature_section_letter(text: str) -> Tuple[List[str], Dict[str, List[str]]]:
-    """Split feature DESIGN.md by section letters (A-F)."""
-    return split_by_section_letter(text, SECTION_FEATURE_RE)
-
-
-def split_by_feature_section_letter_with_offsets(text: str) -> Tuple[List[str], Dict[str, List[str]], Dict[str, int]]:
-    return split_by_section_letter_with_offsets(text, SECTION_FEATURE_RE)
-
-
-def split_by_prd_section_letter(text: str) -> Tuple[List[str], Dict[str, List[str]]]:
-    """Split PRD.md by section letters (A-E)."""
-    return split_by_section_letter(text, SECTION_PRD_RE)
-
-
-def split_by_prd_section_letter_with_offsets(text: str) -> Tuple[List[str], Dict[str, List[str]], Dict[str, int]]:
-    return split_by_section_letter_with_offsets(text, SECTION_PRD_RE)
-
-
 def _is_field_header_terminator(line: str) -> bool:
     """Check if line should terminate a field block.
     
@@ -191,7 +171,7 @@ def extract_backticked_ids(line: str, pattern: re.Pattern) -> List[str]:
     """
     Extract IDs from backticked tokens that match pattern.
     
-    Example: "`spd-system-feature-x-flow-y`" -> ["spd-system-feature-x-flow-y"]
+    Example: "`spd-system-spec-x-flow-y`" -> ["spd-system-spec-x-flow-y"]
     """
     ids: List[str] = []
     for tok in re.findall(r"`([^`]+)`", line):

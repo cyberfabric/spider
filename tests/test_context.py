@@ -53,7 +53,7 @@ class TestSpiderContextMethods:
             _make_mock_block("id", "component"),
             _make_mock_block("id", "seq"),
         ])
-        feature_tmpl = _make_mock_template("FEATURE", [
+        spec_tmpl = _make_mock_template("SPEC", [
             _make_mock_block("id", "flow"),
             _make_mock_block("id", "algo"),
         ])
@@ -68,7 +68,7 @@ class TestSpiderContextMethods:
         )
         loaded_weaver2 = LoadedWeaver(
             weaver=weaver2,
-            templates={"FEATURE": feature_tmpl},
+            templates={"SPEC": spec_tmpl},
         )
 
         # Create mock meta
@@ -106,10 +106,10 @@ class TestSpiderContextMethods:
     def test_get_template_for_kind_found(self):
         """get_template_for_kind finds template from any weaver."""
         ctx = self._make_context()
-        # FEATURE is in 'custom' weaver
-        tmpl = ctx.get_template_for_kind("FEATURE")
+        # SPEC is in 'custom' weaver
+        tmpl = ctx.get_template_for_kind("SPEC")
         assert tmpl is not None
-        assert tmpl.kind == "FEATURE"
+        assert tmpl.kind == "SPEC"
 
     def test_get_template_for_kind_not_found(self):
         """get_template_for_kind returns None when kind not in any weaver."""
@@ -121,7 +121,7 @@ class TestSpiderContextMethods:
         """get_known_id_kinds extracts id kinds from template markers."""
         ctx = self._make_context()
         id_kinds = ctx.get_known_id_kinds()
-        # PRD has fr, actor; DESIGN has component, seq; FEATURE has flow, algo
+        # PRD has fr, actor; DESIGN has component, seq; SPEC has flow, algo
         assert id_kinds == {"fr", "actor", "component", "seq", "flow", "algo"}
 
 

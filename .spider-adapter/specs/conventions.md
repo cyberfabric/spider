@@ -35,7 +35,7 @@ skills/spider/scripts/spider/    # Main CLI package
 ## Testing Conventions
 
 - Test files mirror source structure in `tests/`
-- Test classes named `Test{ClassName}` or `Test{FeatureName}`
+- Test classes named `Test{ClassName}` or `Test{SpecName}`
 - Test methods named `test_{behavior_being_tested}`
 - Use `TemporaryDirectory` for file system tests
 

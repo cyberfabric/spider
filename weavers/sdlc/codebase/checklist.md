@@ -1,10 +1,10 @@
 # Spider SDLC Code Checklist (Weaver-Specific)
 
-ALWAYS open and follow `../../../requirements/code-checklist.md` FIRST
+ALWAYS open and follow `{spider_path}/requirements/code-checklist.md` FIRST
 
 **Artifact**: Code Implementation (Spider SDLC)
 **Version**: 1.0
-**Purpose**: Weaver-specific checks that require Spider SDLC artifacts (PRD/DESIGN/DECOMPOSITION/FEATURE/ADR) and/or Spider traceability.
+**Purpose**: Weaver-specific checks that require Spider SDLC artifacts (PRD/DESIGN/DECOMPOSITION/SPEC/ADR) and/or Spider traceability.
 
 ---
 
@@ -20,31 +20,31 @@ ALWAYS open and follow `../../../requirements/code-checklist.md` FIRST
 Before running the SDLC-specific checks:
 
 - [ ] Determine traceability mode from `artifacts.json` for the relevant system/artifact: `FULL` vs `DOCS-ONLY`
-- [ ] If `FULL`: identify the design source(s) to trace (Feature DESIGN is preferred)
+- [ ] If `FULL`: identify the design source(s) to trace (Spec DESIGN is preferred)
 - [ ] If `DOCS-ONLY`: skip marker-based requirements and validate semantics against provided design sources
 
 ---
 
 ## Semantic Alignment (SEM)
 
-These checks are **Spider SDLC-specific** because they require Spider artifacts (Feature Design, Overall Design, ADRs, PRD/DESIGN coverage) and/or Spider markers.
+These checks are **Spider SDLC-specific** because they require Spider artifacts (Spec Design, Overall Design, ADRs, PRD/DESIGN coverage) and/or Spider markers.
 
 ### SEM-CODE-001: Resolve Design Sources
 **Severity**: HIGH
 
-- [ ] Resolve Feature Design via `@spider-*` markers using the `spider where-defined` or `spider where-used` skill
-- [ ] If no `@spider-*` markers exist, ask the user to provide the Feature Design location before proceeding
-- [ ] If the user is unsure, search the repository for candidate feature designs and present options for user selection
-- [ ] Resolve Overall Design by following references from the Feature Design (or ask the user for the design path)
+- [ ] Resolve Spec Design via `@spider-*` markers using the `spider where-defined` or `spider where-used` skill
+- [ ] If no `@spider-*` markers exist, ask the user to provide the Spec Design location before proceeding
+- [ ] If the user is unsure, search the repository for candidate spec designs and present options for user selection
+- [ ] Resolve Overall Design by following references from the Spec Design (or ask the user for the design path)
 
-### SEM-CODE-002: Feature Context Semantics
+### SEM-CODE-002: Spec Context Semantics
 **Severity**: HIGH
 
-- [ ] Confirm code behavior aligns with the Feature Overview, Purpose, and key assumptions
+- [ ] Confirm code behavior aligns with the Spec Overview, Purpose, and key assumptions
 - [ ] Verify all referenced actors are represented by actual interfaces, entrypoints, or roles in code
-- [ ] Ensure referenced ADRs and related features do not conflict with current implementation choices
+- [ ] Ensure referenced ADRs and related specs do not conflict with current implementation choices
 
-### SEM-CODE-003: Feature Flows Semantics
+### SEM-CODE-003: Spec Flows Semantics
 **Severity**: HIGH
 
 - [ ] Verify each implemented flow follows the ordered steps, triggers, and outcomes in Actor Flows
@@ -54,14 +54,14 @@ These checks are **Spider SDLC-specific** because they require Spider artifacts 
 ### SEM-CODE-004: Algorithms Semantics
 **Severity**: HIGH
 
-- [ ] Validate algorithm steps match the Feature Design algorithms (inputs, rules, outputs)
+- [ ] Validate algorithm steps match the Spec Design algorithms (inputs, rules, outputs)
 - [ ] Ensure data transformations and calculations match the described business rules
 - [ ] Confirm loop/iteration behavior and validation rules align with algorithm steps
 
 ### SEM-CODE-005: State Semantics
 **Severity**: HIGH
 
-- [ ] Confirm state transitions match the Feature Design state machine
+- [ ] Confirm state transitions match the Spec Design state machine
 - [ ] Verify triggers and guards for transitions match defined conditions
 - [ ] Ensure invalid transitions are prevented or handled explicitly
 
@@ -91,4 +91,4 @@ These checks are **Spider SDLC-specific** because they require Spider artifacts 
 
 ---
 
-Use `../../../requirements/code-checklist.md` for all generic code quality checks.
+Use `{spider_path}/requirements/code-checklist.md` for all generic code quality checks.

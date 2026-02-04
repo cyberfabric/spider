@@ -35,7 +35,7 @@ purpose: Define syntax and grammar for behavior description language
 
 **ALWAYS open and follow**: `overall-design-content.md` WHEN specifying behavioral sections in root DESIGN.md
 
-**ALWAYS open and follow**: `feature-design-content.md` WHEN specifying behavioral sections in feature DESIGN.md
+**ALWAYS open and follow**: `spec-design-content.md` WHEN specifying behavioral sections in spec DESIGN.md
 
 **Prerequisite**: Agent confirms understanding before proceeding:
 - [ ] Agent has read and understood this requirement
@@ -230,7 +230,7 @@ Goal: Create new dashboard
 - Each step line includes `[ ]` or `[x]`, `ph-{N}`, and an instruction ID token `inst-{short-id}`
 - For codebase traceability, every implemented instruction marker maps to code via paired Spider block markers wrapping non-empty code.
    - Format: `@spider-begin:{spd-id}:p{N}:inst-{id}` ... code ... `@spider-end:{spd-id}:p{N}:inst-{id}`
-   - Example: `# @spider-begin:spd-system-feature-x-algo-validate:p1:inst-check-input`
+   - Example: `# @spider-begin:spd-system-spec-x-algo-validate:p1:inst-check-input`
 
 ### ❌ Prohibited
 
@@ -315,16 +315,16 @@ Goal: Create new dashboard
 
 ```markdown
 Real implementation:
-<!-- spider-begin spd-myproject-feature-x-flow-y:p1:inst-real -->
+<!-- spider-begin spd-myproject-spec-x-flow-y:p1:inst-real -->
 Actual workflow step
-<!-- spider-end   spd-myproject-feature-x-flow-y:p1:inst-real -->
+<!-- spider-end   spd-myproject-spec-x-flow-y:p1:inst-real -->
 
 Documentation example (excluded from validation):
 <!-- !no-spider-begin -->
 ```rust
-// spider-begin spd-example-feature-z-algo-w:p1:inst-example
+// spider-begin spd-example-spec-z-algo-w:p1:inst-example
 example_code();
-// spider-end   spd-example-feature-z-algo-w:p1:inst-example
+// spider-end   spd-example-spec-z-algo-w:p1:inst-example
 ```
 <!-- !no-spider-end -->
 ```
@@ -466,10 +466,10 @@ example_code();
 
 **This file is referenced by**:
 - DESIGN artifacts (behavioral sections)
-- FEATURE artifacts (algorithms, flows)
+- SPEC artifacts (algorithms, flows)
 - Code files (via Spider markers)
 
 **References**:
 - `overall-design-content.md` — Root DESIGN behavioral sections
-- `feature-design-content.md` — Feature DESIGN behavioral sections
+- `spec-design-content.md` — Spec DESIGN behavioral sections
 - `{adapter-directory}/AGENTS.md` — Project-specific SDSL overrides (if any)

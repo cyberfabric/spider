@@ -16,7 +16,7 @@ purpose: Define structure and usage of artifacts.json for agent operations
 - [Overview](#overview)
 - [Schema Version](#schema-version)
 - [Root Structure](#root-structure)
-- [Rules](#rules)
+- [Weavers](#weavers)
 - [Systems](#systems)
 - [Artifacts](#artifacts)
 - [Codebase](#codebase)
@@ -35,11 +35,11 @@ purpose: Define structure and usage of artifacts.json for agent operations
 
 **Add to adapter AGENTS.md** (path relative to adapter directory):
 ```
-ALWAYS open and follow `{Spider}/requirements/artifacts-registry.md` WHEN working with artifacts.json
+ALWAYS open and follow `{spider_path}/requirements/artifacts-registry.md` WHEN working with artifacts.json
 ```
-Where `{Spider}` is resolved from the adapter's `**Extends**:` declaration.
+Where `{spider_path}` is resolved from the adapter's `**Extends**:` declaration.
 
-**ALWAYS use**: `python3 {Spider}/skills/spider/scripts/spider.py adapter-info` to discover adapter location
+**ALWAYS use**: `python3 {spider_path}/skills/spider/scripts/spider.py adapter-info` to discover adapter location
 
 **ALWAYS use**: `spider.py` CLI commands for artifact operations (list-ids, where-defined, where-used, validate)
 
@@ -78,7 +78,7 @@ Schema file: `../schemas/artifacts.schema.json`
 {
   "version": "1.0",
   "project_root": "..",
-  "rules": { ... },
+  "weavers": { ... },
   "systems": [ ... ]
 }
 ```
@@ -149,7 +149,9 @@ Template file path is resolved as: `{weaver.path}/artifacts/{KIND}/template.md`
   "systems": [
     {
       "name": "SystemName",
+      "slug": "system-name",
       "weaver": "weaver-id",
+      "artifacts_dir": "architecture",
       "artifacts": [ ... ],
       "codebase": [ ... ],
       "children": [ ... ]
@@ -162,39 +164,59 @@ Template file path is resolved as: `{weaver.path}/artifacts/{KIND}/template.md`
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `name` | string | YES | System/subsystem/component name |
+| `name` | string | YES | Human-readable system/subsystem/component name |
+| `slug` | string | YES | Machine-readable identifier (lowercase, no spaces, hyphen-separated). Used for hierarchical ID generation. Pattern: `^[a-z0-9]+(-[a-z0-9]+)*$` |
 | `weaver` | string | YES | Reference to weaver ID from `weavers` section |
-| `artifacts` | array | NO | Artifacts belonging to this node |
+| `artifacts_dir` | string | NO | Default base directory for NEW artifacts (default: `architecture`). Subdirectories defined by weaver. |
+| `artifacts` | array | NO | Artifacts belonging to this node. Paths are FULL paths relative to `project_root`. |
 | `codebase` | array | NO | Source code directories for this node |
 | `children` | array | NO | Nested child systems (subsystems, components) |
+
+### Slug Convention
+
+Slugs are machine-readable identifiers used for:
+- Hierarchical ID generation: `{parent-slug}-{child-slug}-{TYPE}-{N}`
+- System lookup and validation
+- Cross-reference tracing
+
+**Rules:**
+- Lowercase letters, numbers, and hyphens only
+- No spaces, no leading/trailing hyphens
+- Must be unique within sibling systems
+
+**Examples:**
+- `"name": "Core Banking"` → `"slug": "core"`
+- `"name": "Auth Service"` → `"slug": "auth"`
+- `"name": "E-Commerce Platform"` → `"slug": "ecommerce"`
 
 ### Hierarchy Usage
 
 ```
 System (root)
-├── artifacts (system-level PRD, DESIGN, etc.)
-├── codebase (system-level source directories)
+├── artifacts_dir: "architecture"     (default for NEW artifacts)
+├── artifacts: [...]                  (FULL paths, can be anywhere)
+│   ├── "architecture/PRD.md"
+│   ├── "architecture/specs/auth.md"   (subdir defined by weaver)
+│   └── "docs/custom/DESIGN.md"           (user can place anywhere!)
+├── codebase (source directories)
 └── children
     └── Subsystem
-        ├── artifacts (subsystem-level docs)
-        ├── codebase (subsystem source)
-        └── children
-            └── Component
-                └── ...
+        └── ...
 ```
 
 **Agent behavior**:
 - Iterate systems recursively to find all artifacts
-- Use system name for context in reports
+- Resolve artifact paths: `{project_root}/{artifact.path}` (paths are FULL)
+- For NEW artifacts: use `artifacts_dir` as base, subdirectories defined by weaver
 - Respect system boundaries for traceability
 
 ---
 
 ## Artifacts
 
-**Purpose**: Declare documentation artifacts (PRD, DESIGN, ADR, DECOMPOSITION, FEATURE).
+**Purpose**: Declare documentation artifacts (PRD, DESIGN, ADR, DECOMPOSITION, SPEC).
 
-**Structure**:
+**Structure** (paths are FULL paths relative to `project_root`):
 ```json
 {
   "artifacts": [
@@ -203,19 +225,49 @@ System (root)
       "path": "architecture/PRD.md",
       "kind": "PRD",
       "traceability": "FULL"
+    },
+    {
+      "path": "architecture/specs/auth.md",
+      "kind": "SPEC",
+      "traceability": "FULL"
+    },
+    {
+      "path": "docs/custom-location/DESIGN.md",
+      "kind": "DESIGN",
+      "traceability": "FULL"
     }
   ]
 }
 ```
+
+**Note**: Users can place artifacts anywhere — `artifacts_dir` only affects where NEW artifacts are created by default.
 
 ### Artifact Fields
 
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `name` | string | NO | - | Human-readable name (for display) |
-| `path` | string | YES | - | Path to artifact file (relative to project_root) |
-| `kind` | string | YES | - | Artifact kind (PRD, DESIGN, ADR, DECOMPOSITION, FEATURE) |
+| `path` | string | YES | - | FULL path to artifact file (relative to `project_root`) |
+| `kind` | string | YES | - | Artifact kind (PRD, DESIGN, ADR, DECOMPOSITION, SPEC) |
 | `traceability` | string | NO | `"FULL"` | Traceability level |
+
+### Path Resolution
+
+Artifact paths are resolved as: `{project_root}/{artifact.path}`
+
+**Example**:
+```
+project_root: ".."
+artifact path: "architecture/PRD.md"
+→ Resolved: ../architecture/PRD.md
+
+artifact path: "docs/custom/DESIGN.md"
+→ Resolved: ../docs/custom/DESIGN.md
+```
+
+**Default directory for NEW artifacts**:
+- `artifacts_dir` — base directory (default: `architecture`)
+- Subdirectories for specific artifact kinds (`specs/`, `ADR/`) are defined by the weaver
 
 ### Path Requirements
 
@@ -224,15 +276,16 @@ System (root)
 **Valid**:
 
 ```text
-architecture/PRD.md
-architecture/ADR/0001-initial-architecture.md
+PRD.md
+ADR/0001-initial-architecture.md
+specs/auth.md
 ```
 
 **Invalid**:
 
 ```text
-architecture/ADR/    # directory
-architecture/ADR     # no extension = likely directory
+ADR/        # directory
+specs    # no extension = likely directory
 ```
 
 ### Traceability Values
@@ -251,8 +304,8 @@ architecture/ADR     # no extension = likely directory
 | `PRD` | `{weaver.path}/artifacts/PRD/template.md` | Product Requirements Document |
 | `DESIGN` | `{weaver.path}/artifacts/DESIGN/template.md` | Overall Design (system-level) |
 | `ADR` | `{weaver.path}/artifacts/ADR/template.md` | Architecture Decision Record |
-| `FEATURES` | `{weaver.path}/artifacts/DECOMPOSITION/template.md` | Features Manifest |
-| `FEATURE` | `{weaver.path}/artifacts/FEATURE/template.md` | Feature Design (feature-level) |
+| `DECOMPOSITION` | `{weaver.path}/artifacts/DECOMPOSITION/template.md` | Spec breakdown and dependencies |
+| `SPEC` | `{weaver.path}/artifacts/SPEC/template.md` | Spec Design (spec-level) |
 
 ---
 
@@ -325,25 +378,44 @@ Comment syntax can be explicitly configured per codebase entry, or left to defau
 
 ## Path Resolution
 
-All paths in artifacts and codebase are resolved relative to `project_root`.
+### Artifact Paths (Existing)
 
-**Resolution formula**: `{adapter_dir}/{project_root}/{path}`
+Artifact paths in `artifacts` array are FULL paths, resolved directly: `{project_root}/{artifact.path}`
 
 **Example**:
 ```
-artifacts.json location: /project/.spider-adapter/artifacts.json
 project_root: ".."
 artifact path: "architecture/PRD.md"
+→ Resolved: ../architecture/PRD.md
 
-Resolved: /project/.spider-adapter/../architecture/PRD.md
-       → /project/architecture/PRD.md
+artifact path: "docs/custom/DESIGN.md"
+→ Resolved: ../docs/custom/DESIGN.md
 ```
+
+### Default Paths (New Artifacts)
+
+When creating NEW artifacts:
+- Base directory: `artifacts_dir` (default: `architecture`)
+- Subdirectories for specific artifact kinds are defined by the weaver
+
+**Example** (spider-sdlc weaver):
+```
+artifacts_dir: "architecture"
+spec slug: "auth"
+
+→ New SPEC created at: architecture/specs/auth.md (subdir defined by weaver)
+→ Registered in artifacts array with FULL path: "architecture/specs/auth.md"
+```
+
+### Codebase Paths
+
+Codebase paths are resolved directly: `{project_root}/{codebase.path}`
 
 ---
 
 ## CLI Commands
 
-**Note**: All commands use `python3 {Spider}/skills/spider/scripts/spider.py` where `{Spider}` is the Spider installation path. Examples below use `spider.py` as shorthand.
+**Note**: All commands use `python3 {spider_path}/skills/spider/scripts/spider.py` where `{spider_path}` is the Spider installation path. Examples below use `spider.py` as shorthand.
 
 ### Discovery
 
@@ -384,7 +456,7 @@ spider.py validate-weavers
 ### Finding the Registry
 
 1. Run `adapter-info` to discover adapter location
-2. Registry is at `{adapter_dir}/artifacts.json`
+2. Registry is at `{spider_adapter_path}/artifacts.json`
 3. Parse JSON to get registry data
 
 ### Iterating Artifacts
@@ -427,7 +499,7 @@ else:
 
 **If artifacts.json doesn't exist at adapter location**:
 ```
-⚠️ Registry not found: {adapter_dir}/artifacts.json
+⚠️ Registry not found: {spider_adapter_path}/artifacts.json
 → Adapter exists but registry not initialized
 → Fix: Run /spider-adapter to create registry
 ```
@@ -480,7 +552,7 @@ else:
 {
   "version": "1.0",
   "project_root": "..",
-  "rules": {
+  "weavers": {
     "spider-sdlc": {
       "format": "Spider",
       "path": "weavers/sdlc"
@@ -489,12 +561,15 @@ else:
   "systems": [
     {
       "name": "MyApp",
-      "rules": "spider-sdlc",
+      "slug": "myapp",
+      "weaver": "spider-sdlc",
+      "artifacts_dir": "architecture",
       "artifacts": [
         { "name": "Product Requirements", "path": "architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
         { "name": "Overall Design", "path": "architecture/DESIGN.md", "kind": "DESIGN", "traceability": "FULL" },
         { "name": "Initial Architecture", "path": "architecture/ADR/0001-initial-architecture.md", "kind": "ADR", "traceability": "DOCS-ONLY" },
-        { "name": "Design Decomposition", "path": "architecture/DECOMPOSITION.md", "kind": "DECOMPOSITION", "traceability": "DOCS-ONLY" }
+        { "name": "Design Decomposition", "path": "architecture/DECOMPOSITION.md", "kind": "DECOMPOSITION", "traceability": "DOCS-ONLY" },
+        { "name": "Custom Location Example", "path": "docs/specs/custom-spec.md", "kind": "SPEC", "traceability": "FULL" }
       ],
       "codebase": [
         {
@@ -508,10 +583,15 @@ else:
       "children": [
         {
           "name": "Auth",
-          "rules": "spider-sdlc",
+          "slug": "auth",
+          "weaver": "spider-sdlc",
+          "artifacts_dir": "modules/auth/architecture",
           "artifacts": [
             { "path": "modules/auth/architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
-            { "path": "modules/auth/architecture/features/feature-sso/DESIGN.md", "kind": "FEATURE", "traceability": "FULL" }
+            { "path": "modules/auth/architecture/specs/sso.md", "kind": "SPEC", "traceability": "FULL" }
+          ],
+          "codebase": [
+            { "name": "Auth Module", "path": "src/modules/auth", "extensions": [".ts"] }
           ],
           "children": []
         }
@@ -521,15 +601,17 @@ else:
 }
 ```
 
+**Note**: Artifact paths are FULL paths relative to `project_root`. The `artifacts_dir` defines the default base directory for NEW artifacts — subdirectories for specific kinds (`specs/`, `ADR/`) are defined by the weaver.
+
 ---
 
 ## Common Issues
 
 | Issue | Cause | Fix |
 |-------|-------|-----|
-| "Artifact not in Spider registry" | Path not registered | Add artifact to system's artifacts array |
-| "Could not find template" | Missing template file | Create template at `{rules.path}/artifacts/{KIND}/template.md` |
-| "Invalid rule reference" | System references non-existent rule | Add rule to `rules` section |
+| "Artifact not in Spider registry" | Path not registered | Add artifact to system's `artifacts` array |
+| "Could not find template" | Missing template file | Create template at `{weaver.path}/artifacts/{KIND}/template.md` |
+| "Invalid weaver reference" | System references non-existent weaver | Add weaver to `weavers` section or fix `weaver` field |
 | "Path is a directory" | Artifact path ends with `/` or has no extension | Change to specific file path |
 
 ---
@@ -554,14 +636,17 @@ else:
 
 | # | Check | Required | How to Verify |
 |---|-------|----------|---------------|
-| R.1 | artifacts.json exists at adapter location | YES | File exists at `{adapter_dir}/artifacts.json` |
+| R.1 | artifacts.json exists at adapter location | YES | File exists at `{spider_adapter_path}/artifacts.json` |
 | R.2 | JSON parses without errors | YES | `json.loads()` succeeds |
 | R.3 | `version` field present and non-empty | YES | Field exists and is string |
-| R.4 | `rules` object present with ≥1 rule | YES | Object with at least one key |
+| R.4 | `weavers` object present with ≥1 weaver | YES | Object with at least one key |
 | R.5 | `systems` array present | YES | Array (may be empty) |
-| R.6 | Each rule has `format` and `path` fields | YES | Both fields exist per rule |
-| R.7 | Each system has `name` and `rules` fields | YES | Both fields exist per system |
-| R.8 | System `rules` references exist in rules section | YES | Lookup succeeds |
+| R.6 | Each weaver has `format` and `path` fields | YES | Both fields exist per weaver |
+| R.7 | Each system has `name`, `slug`, and `weaver` fields | YES | All three fields exist per system |
+| R.8 | System `weaver` references exist in `weavers` section | YES | Lookup succeeds |
+| R.9 | `artifacts_dir` is valid path (if specified) | CONDITIONAL | Non-empty string |
+| R.10 | `slug` matches pattern `^[a-z0-9]+(-[a-z0-9]+)*$` | YES | Lowercase, no spaces, hyphen-separated |
+| R.11 | `slug` is unique among siblings | YES | No duplicate slugs at same level |
 
 ### Artifact Entries (A)
 
@@ -569,7 +654,7 @@ else:
 |---|-------|----------|---------------|
 | A.1 | Each artifact has `path` and `kind` fields | YES | Both fields exist |
 | A.2 | Artifact paths are files, not directories | YES | Path has extension, doesn't end with `/` |
-| A.3 | Artifact kinds are valid | YES | One of: PRD, DESIGN, ADR, DECOMPOSITION, FEATURE |
+| A.3 | Artifact kinds are valid | YES | One of: PRD, DESIGN, ADR, DECOMPOSITION, SPEC |
 | A.4 | Artifact files exist (if validating content) | CONDITIONAL | File exists at resolved path |
 
 ### Codebase Entries (C)
@@ -585,6 +670,6 @@ else:
 
 | # | Check | Required | How to Verify |
 |---|-------|----------|---------------|
-| F.1 | All Registry Structure checks pass | YES | R.1-R.8 verified |
+| F.1 | All Registry Structure checks pass | YES | R.1-R.11 verified |
 | F.2 | All Artifact Entries checks pass | YES | A.1-A.4 verified |
 | F.3 | All Codebase Entries checks pass | YES | C.1-C.4 verified |

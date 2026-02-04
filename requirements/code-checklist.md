@@ -185,7 +185,7 @@ When time-constrained during full review, prioritize in this order:
 - [ ] Behavior extended via composition/configuration, not modification
 - [ ] New functionality doesn't require changing existing code
 - [ ] Extension points are clear and intentional
-- [ ] No modification of working code to add unrelated features
+- [ ] No modification of working code to add unrelated specs
 
 ### ENG-CODE-004: Liskov Substitution Principle (LSP)
 **Severity**: HIGH
@@ -234,20 +234,20 @@ When time-constrained during full review, prioritize in this order:
 ### ENG-CODE-009: You Aren't Gonna Need It (YAGNI)
 **Severity**: HIGH
 
-- [ ] No speculative features
+- [ ] No speculative specs
 - [ ] No unused abstractions
 - [ ] No configuration for hypothetical scenarios
 - [ ] No extension points without current use cases
-- [ ] Features added only when needed, not "just in case"
+- [ ] Specs added only when needed, not "just in case"
 
 ### ENG-CODE-010: Refactoring Discipline
 **Severity**: MEDIUM
 
 - [ ] Refactoring done only after tests pass
 - [ ] Behavior unchanged during refactoring
-- [ ] Structure improved without adding features
+- [ ] Structure improved without adding specs
 - [ ] Small, incremental refactoring steps
-- [ ] No mixing refactoring with feature work in same commit
+- [ ] No mixing refactoring with spec work in same commit
 
 ---
 

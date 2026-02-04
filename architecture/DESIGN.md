@@ -30,7 +30,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-001 Workflow-Driven Development
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-workflow-execution`
+- [x] `p1` - `spd-spider-fr-workflow-execution`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Implement operation/validation workflows as Markdown files in `workflows/*.md`, executed under [`requirements/execution-protocol.md`](../requirements/execution-protocol.md); drive deterministic tool entrypoint via `python3 skills/spider/scripts/spider.py <subcommand>`.
@@ -40,7 +40,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-002 Artifact Structure Validation
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-validation`
+- [x] `p1` - `spd-spider-fr-validation`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Implement validators in `skills/spider/scripts/spider/validation/**`; expose via `python3 skills/spider/scripts/spider.py validate` with JSON output.
@@ -50,7 +50,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-003 Adapter Configuration System
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-adapter-config`
+- [x] `p1` - `spd-spider-fr-adapter-config`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Implement adapter discovery via `adapter-info`; apply adapter rules from `{project-root}/.spider-adapter/AGENTS.md` + `{project-root}/.spider-adapter/specs/*.md`.
@@ -60,7 +60,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-004 Adaptive Design Bootstrapping
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-design-first`
+- [x] `p1` - `spd-spider-fr-design-first`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Enforce prerequisites-first in workflow specs + execution protocol.
@@ -70,7 +70,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-005 Traceability Management
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-traceability`
+- [x] `p1` - `spd-spider-fr-traceability`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Implement ID scanning via `scan-ids`, `where-defined`, `where-used` subcommands; code traceability via `@spider-*` tags.
@@ -80,7 +80,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-006 Quickstart Guides
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p2` - `spd-spider-fr-interactive-docs`
+- [x] `p2` - `spd-spider-fr-interactive-docs`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Provide CLI/agent-facing onboarding via `QUICKSTART.md` + [`workflows/README.md`](../workflows/README.md).
@@ -90,7 +90,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-007 Artifact Templates
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-artifact-templates`
+- [x] `p1` - `spd-spider-fr-artifact-templates`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Provide templates in `weavers/sdlc/artifacts/{KIND}/template.md`; workflows load weaver packages via `weaver` attribute in the artifacts registry.
@@ -100,7 +100,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-008 Artifact Examples
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p2` - `spd-spider-fr-artifact-examples`
+- [x] `p2` - `spd-spider-fr-artifact-examples`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Provide canonical examples in `weavers/sdlc/artifacts/{KIND}/examples/example.md`.
@@ -110,7 +110,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-009 ADR Management
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p2` - `spd-spider-fr-arch-decision-mgmt`
+- [x] `p2` - `spd-spider-fr-arch-decision-mgmt`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Store ADRs in adapter-defined location; validate via `weavers/sdlc/artifacts/ADR/` weaver package.
@@ -120,7 +120,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-010 PRD Management
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-prd-mgmt`
+- [x] `p1` - `spd-spider-fr-prd-mgmt`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Create/update PRD artifact (path defined by adapter registry) via [`workflows/generate.md`](../workflows/generate.md) using weaver guidance from `weavers/sdlc/artifacts/PRD/`; enforce stable IDs.
@@ -130,37 +130,37 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-011 Overall Design Management
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-overall-design-mgmt`
+- [x] `p1` - `spd-spider-fr-overall-design-mgmt`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Create/update Overall Design artifact (path defined by adapter registry) via [`workflows/generate.md`](../workflows/generate.md) using rules from `weavers/sdlc/artifacts/DESIGN/`.
 <!-- spd:fr-title repeat="many" -->
 
 <!-- spd:fr-title repeat="many" -->
-##### FR-012 Feature Manifest Management
+##### FR-012 Spec Manifest Management
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p2` - `spd-spider-fr-feature-manifest-mgmt`
+- [x] `p2` - `spd-spider-fr-spec-manifest-mgmt`
 <!-- spd:id-ref:fr -->
 
-**Solution**: Create/update Feature Manifest artifact (path defined by adapter registry) via [`workflows/generate.md`](../workflows/generate.md) using rules from `weavers/sdlc/artifacts/DECOMPOSITION/`.
+**Solution**: Create/update Spec Manifest artifact (path defined by adapter registry) via [`workflows/generate.md`](../workflows/generate.md) using rules from `weavers/sdlc/artifacts/DECOMPOSITION/`.
 <!-- spd:fr-title repeat="many" -->
 
 <!-- spd:fr-title repeat="many" -->
-##### FR-013 Feature Design Management
+##### FR-013 Spec Design Management
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-feature-design-mgmt`
+- [x] `p1` - `spd-spider-fr-spec-design-mgmt`
 <!-- spd:id-ref:fr -->
 
-**Solution**: Create/update Feature Design artifact (path defined by adapter registry) via [`workflows/generate.md`](../workflows/generate.md) using rules from `weavers/sdlc/artifacts/FEATURE/`.
+**Solution**: Create/update Spec Design artifact (path defined by adapter registry) via [`workflows/generate.md`](../workflows/generate.md) using rules from `weavers/sdlc/artifacts/SPEC/`.
 <!-- spd:fr-title repeat="many" -->
 
 <!-- spd:fr-title repeat="many" -->
-##### FR-014 Feature Lifecycle Management
+##### FR-014 Spec Lifecycle Management
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p2` - `spd-spider-fr-feature-lifecycle`
+- [x] `p2` - `spd-spider-fr-spec-lifecycle`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Encode lifecycle via manifest status fields + validation gates.
@@ -170,7 +170,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-015 Code Generation from Design
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p2` - `spd-spider-fr-code-generation`
+- [x] `p2` - `spd-spider-fr-code-generation`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Implement "design-to-code" workflow via [`workflows/generate.md`](../workflows/generate.md) with adapter-defined code generation rules.
@@ -180,7 +180,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-016 Brownfield Support
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p2` - `spd-spider-fr-brownfield-support`
+- [x] `p2` - `spd-spider-fr-brownfield-support`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Support legacy projects via adapter discovery and auto-detection.
@@ -190,17 +190,17 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-017 Spider DSL (SDSL)
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-fdl`
+- [x] `p1` - `spd-spider-fr-fdl`
 <!-- spd:id-ref:fr -->
 
-**Solution**: Use Spider DSL (SDSL) instruction markers in feature design with `ph-N`/`inst-*` tokens.
+**Solution**: Use Spider DSL (SDSL) instruction markers in spec design with `ph-N`/`inst-*` tokens.
 <!-- spd:fr-title repeat="many" -->
 
 <!-- spd:fr-title repeat="many" -->
 ##### FR-018 IDE Integration and Tooling
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[ ] `p3` - `spd-spider-fr-ide-integration`
+- [ ] `p3` - `spd-spider-fr-ide-integration`
 <!-- spd:id-ref:fr -->
 
 **Solution**: (Planned) VS Code extension with click-to-navigate for Spider IDs, inline validation, and autocomplete. Currently not implemented.
@@ -210,7 +210,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-019 Multi-Agent IDE Integration
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p2` - `spd-spider-fr-multi-agent-integration`
+- [x] `p2` - `spd-spider-fr-multi-agent-integration`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Generate agent-specific workflow proxies for Claude, Cursor, Windsurf, Copilot.
@@ -220,7 +220,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-020 Extensible Weaver Package System
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-rules-packages`
+- [x] `p1` - `spd-spider-fr-rules-packages`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Support weaver packages under `weavers/` with `template.md`, `checklist.md`, `rules.md`.
@@ -230,7 +230,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-021 Template Quality Assurance
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p2` - `spd-spider-fr-template-qa`
+- [x] `p2` - `spd-spider-fr-template-qa`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Provide `self-check` command for template/example validation.
@@ -240,7 +240,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-022 Cross-Artifact Validation
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p1` - `spd-spider-fr-cross-artifact-validation`
+- [x] `p1` - `spd-spider-fr-cross-artifact-validation`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Validate `covered_by` references, ID definitions, and checked consistency.
@@ -250,7 +250,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### FR-023 Hierarchical System Registry
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[x] `p2` - `spd-spider-fr-hierarchical-registry`
+- [x] `p2` - `spd-spider-fr-hierarchical-registry`
 <!-- spd:id-ref:fr -->
 
 **Solution**: Support `system`, `parent`, `artifacts`, `codebase` in registry; expose via `adapter-info`.
@@ -260,7 +260,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### NFR-001 Validation Performance
 
 <!-- spd:id-ref:nfr has="priority,task" -->
-[x] `p1` - `spd-spider-nfr-validation-performance`
+- [x] `p1` - `spd-spider-nfr-validation-performance`
 <!-- spd:id-ref:nfr -->
 
 **Solution**: Use regex-based parsing, scoped filesystem scanning, registry-driven control.
@@ -270,7 +270,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### NFR-002 Security Integrity
 
 <!-- spd:id-ref:nfr has="priority,task" -->
-[x] `p1` - `spd-spider-nfr-security-integrity`
+- [x] `p1` - `spd-spider-nfr-security-integrity`
 <!-- spd:id-ref:nfr -->
 
 **Solution**: Enforce strict parsing and treat unsafe behavior as hard failure.
@@ -280,7 +280,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### NFR-003 Reliability Recoverability
 
 <!-- spd:id-ref:nfr has="priority,task" -->
-[x] `p1` - `spd-spider-nfr-reliability-recoverability`
+- [x] `p1` - `spd-spider-nfr-reliability-recoverability`
 <!-- spd:id-ref:nfr -->
 
 **Solution**: Include paths/lines and deterministic remediation guidance.
@@ -290,7 +290,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### NFR-004 Adoption Usability
 
 <!-- spd:id-ref:nfr has="priority,task" -->
-[x] `p2` - `spd-spider-nfr-adoption-usability`
+- [x] `p2` - `spd-spider-nfr-adoption-usability`
 <!-- spd:id-ref:nfr -->
 
 **Solution**: Templates and validation messages minimize required context.
@@ -304,7 +304,7 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 ##### ADR-001 Initial Architecture
 
 <!-- spd:id-ref:adr has="priority,task" -->
-[x] `p1` - `spd-spider-adr-initial-architecture-v1`
+- [x] `p1` - `spd-spider-adr-initial-architecture-v1`
 <!-- spd:id-ref:adr -->
 
 Establishes the initial layered architecture and repository structure for Spider, including the separation between methodology core, adapter-owned specs, workflows, and deterministic validation.
@@ -314,7 +314,7 @@ Establishes the initial layered architecture and repository structure for Spider
 ##### ADR-002 Adaptive Framework for Documentation and Development
 
 <!-- spd:id-ref:adr has="priority,task" -->
-[x] `p1` - `spd-spider-adr-adaptive-spider-flow-driven-development-v1`
+- [x] `p1` - `spd-spider-adr-adaptive-spider-flow-driven-development-v1`
 <!-- spd:id-ref:adr -->
 
 Formalizes the "adaptive"/flow-driven execution model where workflows validate prerequisites, bootstrap missing artifacts, and then continue, rather than failing early.
@@ -324,7 +324,7 @@ Formalizes the "adaptive"/flow-driven execution model where workflows validate p
 ##### ADR-003 Template-Centric Architecture
 
 <!-- spd:id-ref:adr has="priority,task" -->
-[x] `p1` - `spd-spider-adr-template-centric-architecture-v1`
+- [x] `p1` - `spd-spider-adr-template-centric-architecture-v1`
 <!-- spd:id-ref:adr -->
 
 Introduces template-centric architecture where templates become self-contained packages with workflows, checklists, and requirements.
@@ -358,7 +358,7 @@ Introduces template-centric architecture where templates become self-contained p
 <!-- spd:####:principle-title repeat="many" -->
 #### Technology-agnostic core
 
-<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-principle-tech-agnostic`
 
 <!-- spd:paragraph:principle-body -->
@@ -370,7 +370,7 @@ Keep the Spider core methodology and tooling independent of any particular progr
 <!-- spd:####:principle-title repeat="many" -->
 #### Design before code
 
-<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-principle-design-first`
 
 <!-- spd:paragraph:principle-body -->
@@ -382,7 +382,7 @@ Treat validated design artifacts as the single source of truth. Workflows must v
 <!-- spd:####:principle-title repeat="many" -->
 #### Machine-readable specifications
 
-<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-principle-machine-readable`
 
 <!-- spd:paragraph:principle-body -->
@@ -394,7 +394,7 @@ Prefer formats and conventions that can be parsed deterministically (stable IDs,
 <!-- spd:####:principle-title repeat="many" -->
 #### Deterministic gate
 
-<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-principle-deterministic-gate`
 
 <!-- spd:paragraph:principle-body -->
@@ -406,7 +406,7 @@ Always run deterministic validation before manual review or implementation steps
 <!-- spd:####:principle-title repeat="many" -->
 #### Traceability by design
 
-<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-principle-traceability`
 
 <!-- spd:paragraph:principle-body -->
@@ -418,7 +418,7 @@ Use stable IDs and cross-references across artifacts (and optional code tags) to
 <!-- spd:####:principle-title repeat="many" -->
 #### Prefer stable, machine-readable, text-based artifacts
 
-<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-principle-machine-readable-artifacts`
 
 <!-- spd:paragraph:principle-body -->
@@ -430,7 +430,7 @@ Keep normative artifacts as stable, plain-text sources of truth that can be pars
 <!-- spd:####:principle-title repeat="many" -->
 #### Prefer variability isolation via adapters over core changes
 
-<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-principle-adapter-variability-boundary`
 
 <!-- spd:paragraph:principle-body -->
@@ -442,7 +442,7 @@ Keep project-specific variability (tech stack, domain model format, API contract
 <!-- spd:####:principle-title repeat="many" -->
 #### Prefer composable CLI+JSON interfaces
 
-<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-principle-cli-json-composability`
 
 <!-- spd:paragraph:principle-body -->
@@ -458,7 +458,7 @@ Expose deterministic tooling via a CLI with stable JSON output for composition i
 <!-- spd:####:constraint-title repeat="many" -->
 #### Constraint 1: Python Standard Library Only
 
-<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-constraint-stdlib-only`
 
 <!-- spd:paragraph:constraint-body -->
@@ -470,11 +470,11 @@ The `spider` validation tool MUST use only Python 3.6+ standard library. No exte
 <!-- spd:####:constraint-title repeat="many" -->
 #### Constraint 2: Markdown-Only Artifacts
 
-<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-constraint-markdown`
 
 <!-- spd:paragraph:constraint-body -->
-All Spider artifacts (PRD, Overall Design, ADRs, Feature Manifest, etc.) MUST be plain Markdown. No binary formats, proprietary tools, or custom file formats permitted. This constraint ensures artifacts are version-controllable, diffable, and editable in any text editor. Domain models and API contracts referenced by artifacts may be in any format (specified by adapter).
+All Spider artifacts (PRD, Overall Design, ADRs, Spec Manifest, etc.) MUST be plain Markdown. No binary formats, proprietary tools, or custom file formats permitted. This constraint ensures artifacts are version-controllable, diffable, and editable in any text editor. Domain models and API contracts referenced by artifacts may be in any format (specified by adapter).
 <!-- spd:paragraph:constraint-body -->
 <!-- spd:id:constraint -->
 <!-- spd:####:constraint-title -->
@@ -482,11 +482,11 @@ All Spider artifacts (PRD, Overall Design, ADRs, Feature Manifest, etc.) MUST be
 <!-- spd:####:constraint-title repeat="many" -->
 #### Constraint 3: Git-Based Workflow
 
-<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-constraint-git`
 
 <!-- spd:paragraph:constraint-body -->
-Spider assumes Git version control for artifact history and collaboration. Change tracking relies on Git commits and diffs. Feature branches and pull requests are the collaboration model. This constraint aligns Spider with modern development practices but requires Git knowledge from users.
+Spider assumes Git version control for artifact history and collaboration. Change tracking relies on Git commits and diffs. Spec branches and pull requests are the collaboration model. This constraint aligns Spider with modern development practices but requires Git knowledge from users.
 <!-- spd:paragraph:constraint-body -->
 <!-- spd:id:constraint -->
 <!-- spd:####:constraint-title -->
@@ -494,7 +494,7 @@ Spider assumes Git version control for artifact history and collaboration. Chang
 <!-- spd:####:constraint-title repeat="many" -->
 #### Constraint 4: No Forced Tool Dependencies
 
-<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-constraint-no-forced-tools`
 
 <!-- spd:paragraph:constraint-body -->
@@ -538,8 +538,8 @@ Spider core MUST NOT require specific IDEs, editors, or development tools. Valid
 - PRD: Vision, Actors, Capabilities, Use Cases
 - Overall Design: Architecture, Requirements, Technical Details
 - ADRs: MADR-formatted decision records
-- Feature Manifest: Feature list with status tracking
-- Feature Design: Feature specifications with flows, algorithms, states
+- Spec Manifest: Spec list with status tracking
+- Spec Design: Spec specifications with flows, algorithms, states
 
 **IDs** (format: `spd-{system}-{kind}-{slug}`):
 
@@ -561,14 +561,14 @@ Spider core MUST NOT require specific IDEs, editors, or development tools. Valid
 - ADR: `spd-{system}-adr-{slug}`
 
 *DECOMPOSITION Artifact*:
-- Feature: `spd-{system}-feature-{slug}`
+- Spec: `spd-{system}-spec-{slug}`
 
-*FEATURE Artifact* (nested under feature):
-- Flow: `spd-{system}-feature-{feature}-flow-{slug}`
-- Algorithm: `spd-{system}-feature-{feature}-algo-{slug}`
-- State: `spd-{system}-feature-{feature}-state-{slug}`
-- Feature Requirement: `spd-{system}-feature-{feature}-req-{slug}`
-- Feature Context: `spd-{system}-feature-{feature}-featurecontext-{slug}`
+*SPEC Artifact* (nested under spec):
+- Flow: `spd-{system}-spec-{spec}-flow-{slug}`
+- Algorithm: `spd-{system}-spec-{spec}-algo-{slug}`
+- State: `spd-{system}-spec-{spec}-state-{slug}`
+- Spec Requirement: `spd-{system}-spec-{spec}-req-{slug}`
+- Spec Context: `spd-{system}-spec-{spec}-speccontext-{slug}`
 
 All IDs MAY be versioned by appending a `-vN` suffix (e.g., `spd-{system}-adr-{slug}-v2`).
 
@@ -579,8 +579,8 @@ All IDs MAY be versioned by appending a `-vN` suffix (e.g., `spd-{system}-adr-{s
 **Relationships**:
 - PRD defines Actors, Use Cases, FRs, and NFRs
 - Overall Design references FRs/NFRs/ADRs and defines Principles, Constraints, Components, Sequences
-- Feature Manifest lists Features and references design elements
-- Feature Design defines Flows, Algorithms, States for a specific Feature
+- Spec Manifest lists Specs and references design elements
+- Spec Design defines Flows, Algorithms, States for a specific Spec
 - ADRs are referenced by DESIGN and document architectural decisions
 
 **CRITICAL**: Domain model is expressed in Markdown artifacts, not programming language types. Validation checks artifacts against requirements files, not type compilation.
@@ -645,7 +645,7 @@ flowchart TB
 <!-- spd:####:component-title repeat="many" -->
 #### 1. Methodology Core
 
-<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-component-methodology-core`
 
 <!-- spd:list:component-payload -->
@@ -661,7 +661,7 @@ flowchart TB
 <!-- spd:####:component-title repeat="many" -->
 #### 2. Adapter System
 
-<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-component-adapter-system`
 
 <!-- spd:list:component-payload -->
@@ -678,7 +678,7 @@ flowchart TB
 <!-- spd:####:component-title repeat="many" -->
 #### 3. Weaver Packages
 
-<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-component-rules-packages`
 
 <!-- spd:list:component-payload -->
@@ -695,7 +695,7 @@ flowchart TB
 <!-- spd:####:component-title repeat="many" -->
 #### 4. Spider Skill
 
-<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-component-spider-skill`
 
 <!-- spd:list:component-payload -->
@@ -712,7 +712,7 @@ flowchart TB
 <!-- spd:####:component-title repeat="many" -->
 #### 5. Workflows
 
-<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-component-workflows`
 
 <!-- spd:list:component-payload -->
@@ -728,7 +728,7 @@ flowchart TB
 <!-- spd:####:component-title repeat="many" -->
 #### 6. Agent
 
-<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-component-agent`
 
 <!-- spd:list:component-payload -->
@@ -744,7 +744,7 @@ flowchart TB
 #### 7. Project (External)
 
 - Target system where Spider is applied
-- Contains real artifacts (PRD, DESIGN, ADRs, DECOMPOSITION, FEATUREs)
+- Contains real artifacts (PRD, DESIGN, ADRs, DECOMPOSITION, SPECs)
 - Contains implementation code with optional `@spider-*` traceability tags
 - Contains `.spider-config` created by Spider Skill `init` command
 - Agent reads artifacts and code to understand context
@@ -832,7 +832,7 @@ Design contract:
 <!-- spd:####:sequence-title repeat="many" -->
 #### Resolve user intent to a workflow (operation + deterministic gate)
 
-<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-seq-intent-to-workflow`
 
 <!-- spd:code:sequences -->
@@ -878,7 +878,7 @@ sequenceDiagram
 <!-- spd:####:sequence-title repeat="many" -->
 #### Discover adapter configuration (before applying project-specific conventions)
 
-<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-seq-adapter-discovery`
 
 <!-- spd:code:sequences -->
@@ -916,7 +916,7 @@ sequenceDiagram
 <!-- spd:####:sequence-title repeat="many" -->
 #### Validate overall design against requirements (deterministic validation workflow)
 
-<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-seq-validate-overall-design`
 
 <!-- spd:code:sequences -->
@@ -954,7 +954,7 @@ sequenceDiagram
 <!-- spd:####:sequence-title repeat="many" -->
 #### Trace requirement/use case to implementation (repository-wide queries)
 
-<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p1` - **ID**: `spd-spider-seq-traceability-query`
 
 <!-- spd:code:sequences -->
@@ -998,7 +998,7 @@ sequenceDiagram
 <!-- spd:####:db-table-title repeat="many" -->
 #### N/A
 
-<!-- spd:id:dbtable has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:dbtable has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [x] `p3` - **ID**: `spd-spider-dbtable-na`
 
 Not applicable — Spider is a methodology framework that does not maintain its own database. Artifact data is stored in plain Markdown files and JSON configuration.
@@ -1087,7 +1087,7 @@ This DESIGN describes a local CLI tool / methodology framework. Domains that are
 
 **Incremental Adoption Path**:
 - Teams commonly start with a minimal adapter (`Extends: ...`) and then add PRD + DESIGN to establish shared intent and a deterministic validation target.
-- ADRs and DECOMPOSITION/FEATURE artifacts can be introduced later as decisions and traceability needs grow.
+- ADRs and DECOMPOSITION/SPEC artifacts can be introduced later as decisions and traceability needs grow.
 - Adapter conventions typically evolve over time as repeatable patterns emerge.
 
 **Migration from Existing Projects**:
@@ -1109,13 +1109,13 @@ The following table summarizes which weaver packages provide templates and valid
 
 | Artifact Kind | Weaver Package | Create/Update | Validate |
 |---|---|---|---|
-| PRD | `weavers/sdlc/artifacts/PRD/` | [`workflows/generate.md`](../workflows/generate.md) | [`workflows/validate.md`](../workflows/validate.md) |
-| DESIGN | `weavers/sdlc/artifacts/DESIGN/` | [`workflows/generate.md`](../workflows/generate.md) | [`workflows/validate.md`](../workflows/validate.md) |
-| ADR | `weavers/sdlc/artifacts/ADR/` | [`workflows/generate.md`](../workflows/generate.md) | [`workflows/validate.md`](../workflows/validate.md) |
-| FEATURES | `weavers/sdlc/artifacts/DECOMPOSITION/` | [`workflows/generate.md`](../workflows/generate.md) | [`workflows/validate.md`](../workflows/validate.md) |
-| FEATURE | `weavers/sdlc/artifacts/FEATURE/` | [`workflows/generate.md`](../workflows/generate.md) | [`workflows/validate.md`](../workflows/validate.md) |
+| PRD | `weavers/sdlc/artifacts/PRD/` | [`workflows/generate.md`](../workflows/generate.md) | [`workflows/analyze.md`](../workflows/analyze.md) |
+| DESIGN | `weavers/sdlc/artifacts/DESIGN/` | [`workflows/generate.md`](../workflows/generate.md) | [`workflows/analyze.md`](../workflows/analyze.md) |
+| ADR | `weavers/sdlc/artifacts/ADR/` | [`workflows/generate.md`](../workflows/generate.md) | [`workflows/analyze.md`](../workflows/analyze.md) |
+| DECOMPOSITION | `weavers/sdlc/artifacts/DECOMPOSITION/` | [`workflows/generate.md`](../workflows/generate.md) | [`workflows/analyze.md`](../workflows/analyze.md) |
+| SPEC | `weavers/sdlc/artifacts/SPEC/` | [`workflows/generate.md`](../workflows/generate.md) | [`workflows/analyze.md`](../workflows/analyze.md) |
 
-All artifact kinds use the same generic workflows (`generate.md` for creation/update, `validate.md` for validation). The artifact kind and path are determined by the adapter registry and selected via the `/spider` entrypoint.
+All artifact kinds use the same generic workflows (`generate.md` for creation/update, `analyze.md` for validation/analysis). The artifact kind and path are determined by the adapter registry and selected via the `/spider` entrypoint.
 
 ### Global Specification Contracts
 
@@ -1123,7 +1123,7 @@ Spider avoids duplicating requirements across artifacts. The following files are
 
  - Execution protocol: [requirements/execution-protocol.md](../requirements/execution-protocol.md)
  - Generate workflow: [workflows/generate.md](../workflows/generate.md)
- - Validate workflow: [workflows/validate.md](../workflows/validate.md)
+ - Validate workflow: [workflows/analyze.md](../workflows/analyze.md)
  - Rules format: [requirements/rules-format.md](../requirements/rules-format.md)
  - Template syntax specification: [requirements/template.md](../requirements/template.md)
  - Weaver packages (templates, checklists, rules, examples): [weavers/sdlc/artifacts/](../weavers/sdlc/artifacts/)

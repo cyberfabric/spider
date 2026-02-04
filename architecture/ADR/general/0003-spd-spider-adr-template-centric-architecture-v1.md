@@ -25,13 +25,13 @@
 
 <!-- spd:context -->
 **Context**:
-The current Spider architecture has grown organically with many separate workflow files (`prd.md`, `design.md`, `features.md`, `feature.md`, `adr.md`, `code.md` plus their `-validate` variants) and content requirements scattered across `requirements/*-content.md` files. This creates several problems:
+The current Spider architecture has grown organically with many separate workflow files (`prd.md`, `design.md`, `specs.md`, `spec.md`, `adr.md`, `code.md` plus their `-validate` variants) and content requirements scattered across `requirements/*-content.md` files. This creates several problems:
 
 1. **Maintenance burden**: Changes to common patterns require updates in multiple files
 2. **Customization difficulty**: Adding a new artifact type requires creating multiple files (workflow, validate workflow, requirements, checklist)
 3. **Scattered documentation**: Requirements, checklists, and workflows for one artifact type live in different directories
 4. **No content versioning**: When an Spider ID's content changes, references to that ID cannot detect the change, leading to stale cross-references
-5. **Naming confusion**: "Spider" has evolved beyond "Feature-Driven Design" and needs a name that reflects its broader scope as a documentation and development framework
+5. **Naming confusion**: "Spider" has evolved beyond "Spec-Driven Design" and needs a name that reflects its broader scope as a documentation and development framework
 
 In this ADR, "Spider" is interpreted as **Framework for Documentation and Development** (working title).
 <!-- spd:context -->
@@ -68,7 +68,7 @@ Make templates the foundation of everything. Each template type becomes a self-c
 Consolidate main workflows to just 5:
 - `spider.md` - Entrypoint and orchestrator
 - `generate.md` - Universal artifact/code generation (dispatches to template-specific generate)
-- `validate.md` - Universal validation (dispatches to template-specific validate)
+- `analyze.md` - Universal analysis/validation (dispatches to template-specific validate)
 - `adapter.md` - Adapter management
 - `rules.md` - Rules management (templates, checklists, examples)
 
@@ -96,7 +96,7 @@ templates/
 │   ├── template.md              # The template itself
 │   ├── workflows/
 │   │   ├── generate.md          # Type-specific generation workflow
-│   │   └── validate.md          # Type-specific validation workflow
+│   │   └── analyze.md          # Universal analysis/validation workflow
 │   ├── checklists/
 │   │   └── checklist.md         # Pre/post-generation checklists
 │   └── examples/
@@ -107,7 +107,7 @@ templates/
 │   └── ...
 ├── DECOMPOSITION/
 │   └── ...
-└── FEATURE/
+└── SPEC/
     └── ...
 ```
 
@@ -119,11 +119,11 @@ Only 5 main workflows remain in `workflows/`:
 |----------|---------|
 | `spider.md` | Entrypoint - determines intent and dispatches to appropriate workflow |
 | `generate.md` | Universal generation - asks for artifact type, system, format; dispatches to template-specific generate workflow |
-| `validate.md` | Universal validation - determines artifact type from path/registry; dispatches to template-specific validate workflow |
+| `analyze.md` | Universal analysis/validation - determines artifact type from path/registry; dispatches to template-specific validate workflow |
 | `adapter.md` | Adapter management - initialization, bootstrap, manual/auto configuration |
 | `rules.md` | Rules management - create rules, add templates, validate rule configuration |
 
-**`generate.md` and `validate.md`** are orchestrators that:
+**`generate.md` and `analyze.md`** are orchestrators that:
 1. Resolve artifact type from user input or `artifacts.json`
 2. Load the appropriate template package
 3. Execute the template-specific workflow
@@ -168,7 +168,7 @@ Content requirements (what goes into each artifact type) move to the template pa
 #### 5. Rebranding
 
 Spider is rebranded to **Framework for Documentation and Development**:
-- Reflects broader scope beyond "features"
+- Reflects broader scope beyond "specs"
 - Maintains the "Spider" acronym for continuity
 - Better describes the platform's purpose
 <!-- spd:decision-outcome -->

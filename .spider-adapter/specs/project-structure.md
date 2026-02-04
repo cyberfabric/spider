@@ -14,8 +14,8 @@ FDD/
 ├── architecture/             # Design artifacts
 │   ├── PRD.md               # Product Requirements Document
 │   ├── DESIGN.md            # Technical Design
-│   ├── features/
-│   │   └── DECOMPOSITION.md      # Features Manifest
+│   ├── specs/
+│   │   └── DECOMPOSITION.md      # Specs Manifest
 │   └── ADR/
 │       └── general/         # Architecture Decision Records
 │
@@ -27,7 +27,7 @@ FDD/
 │
 ├── workflows/                # Spider workflows
 │   ├── generate.md          # Generation workflow
-│   ├── validate.md          # Validation workflow
+│   ├── analyze.md          # Analysis/validation workflow
 │   └── adapter.md           # Adapter workflow
 │
 ├── requirements/             # Spider requirements specs
@@ -121,7 +121,7 @@ weavers/sdlc/
 │   │       └── example.md   # Canonical example
 │   ├── DESIGN/              # Same structure
 │   ├── DECOMPOSITION/            # Same structure
-│   ├── FEATURE/             # Same structure
+│   ├── SPEC/             # Same structure
 │   └── ADR/                 # Same structure
 ├── codebase/
 │   ├── rules.md             # Code implementation rules
@@ -143,7 +143,7 @@ weavers/sdlc/
 │   ├── spider.md
 │   ├── spider-adapter.md
 │   ├── spider-generate.md
-│   └── spider-validate.md
+│   └── spider-analyze.md
 └── rules/                    # Cursor rules
 
 .claude/

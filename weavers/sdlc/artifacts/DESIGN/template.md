@@ -36,7 +36,7 @@ spider-template:
 ##### {FR Name}
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[ ] `p1` - `spd-{system}-fr-{slug}`
+- [ ] `p1` - `spd-{system}-fr-{slug}`
 <!-- spd:id-ref:fr -->
 
 **Solution**: {How the design addresses this requirement}
@@ -46,7 +46,7 @@ spider-template:
 ##### {NFR Name}
 
 <!-- spd:id-ref:nfr has="priority,task" -->
-[ ] `p1` - `spd-{system}-nfr-{slug}`
+- [ ] `p1` - `spd-{system}-nfr-{slug}`
 <!-- spd:id-ref:nfr -->
 
 **Solution**: {How the design addresses this NFR}
@@ -60,7 +60,7 @@ spider-template:
 ##### {ADR Title}
 
 <!-- spd:id-ref:adr has="priority,task" -->
-[ ] `p1` - `spd-{system}-adr-{slug}`
+- [ ] `p1` - `spd-{system}-adr-{slug}`
 <!-- spd:id-ref:adr -->
 
 {2-4 sentences describing what decision was taken and why. Include key tradeoffs if relevant.}
@@ -90,7 +90,7 @@ spider-template:
 <!-- spd:####:principle-title repeat="many" -->
 #### {Principle Name}
 
-<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-{system}-principle-{slug}`
 
 <!-- spd:paragraph:principle-body -->
@@ -106,7 +106,7 @@ spider-template:
 <!-- spd:####:constraint-title repeat="many" -->
 #### {Constraint Name}
 
-<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-{system}-constraint-{slug}`
 
 <!-- spd:paragraph:constraint-body -->
@@ -140,7 +140,7 @@ spider-template:
 <!-- spd:####:component-title repeat="many" -->
 #### {Component Name}
 
-<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-{system}-component-{component-slug}`
 
 <!-- spd:list:component-payload -->
@@ -167,7 +167,7 @@ spider-template:
 <!-- spd:####:sequence-title repeat="many" -->
 #### {Sequence Name}
 
-<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-{system}-seq-{slug}`
 
 <!-- spd:code:sequences -->
@@ -189,7 +189,7 @@ spider-template:
 <!-- spd:####:db-table-title repeat="many" -->
 #### Table {name}
 
-<!-- spd:id:dbtable has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:dbtable has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-{system}-dbtable-{slug}`
 
 **Schema**

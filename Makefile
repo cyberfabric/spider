@@ -1,5 +1,5 @@
-# @spider-algo:spd-spider-feature-init-structure-change-infrastructure:p1
-.PHONY: test test-verbose test-quick test-coverage validate validate-examples validate-feature validate-code validate-code-feature self-check vulture vulture-ci install install-pipx clean help check-pytest check-pytest-cov check-pipx check-vulture
+# @spider-algo:spd-spider-spec-init-structure-change-infrastructure:p1
+.PHONY: test test-verbose test-quick test-coverage validate validate-examples validate-spec validate-code validate-code-spec self-check vulture vulture-ci install install-pipx clean help check-pytest check-pytest-cov check-pipx check-vulture
 
 PYTHON ?= python3
 PIPX ?= pipx
@@ -18,10 +18,10 @@ help:
 	@echo "  make test-quick                    - Run fast tests only (skip slow integration tests)"
 	@echo "  make test-coverage                 - Run tests with coverage report"
 	@echo "  make validate-examples             - Validate requirements examples under examples/requirements"
-	@echo "  make validate                      - Validate core methodology feature"
-	@echo "  make validate-feature FEATURE=name - Validate specific feature"
+	@echo "  make validate                      - Validate core methodology spec"
+	@echo "  make validate-spec SPEC=name - Validate specific spec"
 	@echo "  make validate-code                 - Validate codebase traceability (entire project)"
-	@echo "  make validate-code-feature FEATURE=name - Validate code traceability for specific feature"
+	@echo "  make validate-code-spec SPEC=name - Validate code traceability for specific spec"
 	@echo "  make self-check                    - Validate SDLC examples against their templates"
 	@echo "  make vulture                       - Scan python code for dead code (report only, does not fail)"
 	@echo "  make vulture-ci                    - Scan python code for dead code (fails if findings)"
@@ -118,20 +118,20 @@ validate-examples: check-pytest
 	@echo "Validating requirements examples..."
 	$(PYTEST_PIPX) tests/test_validate.py -k TestRequirementExamples -v --tb=short
 
-# Validate core methodology feature
+# Validate core methodology spec
 validate:
 	$(PYTHON) -m skills.spider.scripts.spider.cli validate
 
-# Validate specific feature
-validate-feature:
-	@if [ -z "$(FEATURE)" ]; then \
-		echo "Error: FEATURE parameter required"; \
-		echo "Usage: make validate-feature FEATURE=feature-name"; \
+# Validate specific spec
+validate-spec:
+	@if [ -z "$(SPEC)" ]; then \
+		echo "Error: SPEC parameter required"; \
+		echo "Usage: make validate-spec SPEC=spec-name"; \
 		exit 1; \
 	fi
-	@echo "Validating feature: $(FEATURE)..."
+	@echo "Validating spec: $(SPEC)..."
 	@$(PYTHON) -m skills.spider.scripts.spider.cli validate \
-		--artifact architecture/features/$(FEATURE)/DESIGN.md
+		--artifact architecture/specs/$(SPEC)/DESIGN.md
 
 
 # Validate SDLC examples against templates
@@ -139,15 +139,15 @@ self-check:
 	@echo "Running self-check: validating SDLC examples against templates..."
 	$(PYTHON) -m skills.spider.scripts.spider.cli self-check
 
-# Validate code traceability for specific feature
-validate-code-feature:
-	@if [ -z "$(FEATURE)" ]; then \
-		echo "Error: FEATURE parameter required"; \
-		echo "Usage: make validate-code-feature FEATURE=feature-name"; \
+# Validate code traceability for specific spec
+validate-code-spec:
+	@if [ -z "$(SPEC)" ]; then \
+		echo "Error: SPEC parameter required"; \
+		echo "Usage: make validate-code-spec SPEC=spec-name"; \
 		exit 1; \
 	fi
-	@echo "Validating code traceability for feature: $(FEATURE)..."
-	@$(PYTHON) -m skills.spider.scripts.spider.cli validate --artifact architecture/features/$(FEATURE)
+	@echo "Validating code traceability for spec: $(SPEC)..."
+	@$(PYTHON) -m skills.spider.scripts.spider.cli validate --artifact architecture/specs/$(SPEC)
 
 # Install Python dependencies
 install-pipx: check-pipx

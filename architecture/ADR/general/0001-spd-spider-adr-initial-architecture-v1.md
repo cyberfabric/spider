@@ -25,7 +25,7 @@
 
 <!-- spd:context -->
 **Context**:
-Spider (Feature-Driven Design) is a universal methodology framework for building software systems with complete traceability from product requirements to implementation. The methodology must be technology-agnostic to support any tech stack, while providing structured workflows that can be executed by both human teams and AI coding assistants.
+Spider (Spec-Driven Design) is a universal methodology framework for building software systems with complete traceability from product requirements to implementation. The methodology must be technology-agnostic to support any tech stack, while providing structured workflows that can be executed by both human teams and AI coding assistants.
 
 The architecture must enable incremental adoption, support design-first development, and maintain design-code coherence through systematic traceability.
 
@@ -166,7 +166,7 @@ Spider uses **Layered Architecture with Plugin-Based Adapter System** with the f
 * **Extends Mechanism**: Adapter AGENTS.md extends core without duplication
 * **Deterministic Gate**: Automated validators run before expensive manual review
 * **Layered Validation**: Deterministic → Manual → Peer review (sequential)
-* **Incremental Adoption**: Adapter → PRD → Design → Features → Implementation
+* **Incremental Adoption**: Adapter → PRD → Design → Specs → Implementation
 
 **Technology Choices for Spider Implementation**:
 * **Core Tooling**: Python 3.6+ standard library only (no external dependencies)

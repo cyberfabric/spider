@@ -3,7 +3,7 @@
 This module provides a deterministic, stdlib-only parser that can be reused by
 CLI, cascade validation, and search utilities. It parses templates (paired spider
 markers), produces an object model, parses artifacts against templates, and
-validates structure/content including FDL blocks.
+validates structure/content including SDSL blocks.
 """
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ _BACKTICK_ID_RE = re.compile(r"`(spd-[a-z0-9][a-z0-9-]+)`")
 _HEADING_RE = re.compile(r"^\s*(#{1,6})\s+(.+?)\s*$")
 _ORDERED_NUMERIC_RE = re.compile(r"^\s*\d+[\.)]\s+")
 _CODE_FENCE_RE = re.compile(r"^\s*```")
-_FDL_LINE_RE = re.compile(r"^\s*(?:\d+\.\s+|-\s+)\[\s*[xX ]\s*\]\s*-\s*`p[a-z0-9-]+`\s*-\s*.+\s*-\s*`inst-[a-z0-9-]+`\s*$")
+_SDSL_LINE_RE = re.compile(r"^\s*(?:\d+\.\s+|-\s+)\[\s*[xX ]\s*\]\s*-\s*`p[a-z0-9-]+`\s*-\s*.+\s*-\s*`inst-[a-z0-9-]+`\s*$")
 
 # Valid marker types (must match validate_block_content handlers)
 VALID_MARKER_TYPES = frozenset({
@@ -73,7 +73,7 @@ class ParsedSpiderId:
     system: str
     kind: str
     slug: str
-    prefix_id: Optional[str] = None  # noqa: for composite IDs like spd-sys-feature-x-algo-y
+    prefix_id: Optional[str] = None  # noqa: for composite IDs like spd-sys-spec-x-algo-y
 
 
 @dataclass(frozen=True)
@@ -351,6 +351,14 @@ class Template:
                 if require_priority and "`p" not in line:
                     errors.append(Template.error("structure", "ID definition missing priority", path=artifact_path, line=inst.start_line, id=tpl.name))
                     return
+                # If line has a checkbox, it must be a list item
+                stripped = line.lstrip()
+                has_checkbox = stripped.startswith("[") or "[ ]" in stripped or "[x]" in stripped.lower()
+                if has_checkbox:
+                    is_list_item = stripped.startswith("- ") or stripped.startswith("* ") or _ORDERED_NUMERIC_RE.match(stripped)
+                    if not is_list_item:
+                        errors.append(Template.error("structure", "Task checkbox must be in a list item", path=artifact_path, line=inst.start_line, id=tpl.name))
+                        return
             return
         if tpl.type == "id-ref":
             if not content:
@@ -362,6 +370,12 @@ class Template:
             for line in content:
                 # Strip list markers (- or *) before processing
                 stripped = line.lstrip()
+                is_list_item = stripped.startswith("- ") or stripped.startswith("* ") or _ORDERED_NUMERIC_RE.match(stripped)
+                # If line has a checkbox, it must be a list item
+                has_checkbox = "[ ]" in stripped or "[x]" in stripped.lower()
+                if has_checkbox and not is_list_item:
+                    errors.append(Template.error("structure", "Task checkbox must be in a list item", path=artifact_path, line=inst.start_line, id=tpl.name))
+                    return
                 if stripped.startswith("- "):
                     stripped = stripped[2:]
                 elif stripped.startswith("* "):
@@ -461,13 +475,13 @@ class Template:
             return
         if tpl.type == "fdl":
             if not content or not first:
-                errors.append(Template.error("structure", "FDL block empty", path=artifact_path, line=inst.start_line, id=tpl.name))
+                errors.append(Template.error("structure", "SDSL block empty", path=artifact_path, line=inst.start_line, id=tpl.name))
                 return
             for line in content:
                 if not line.strip():
                     continue
-                if not _FDL_LINE_RE.match(line):
-                    errors.append(Template.error("structure", "Invalid FDL line", path=artifact_path, line=inst.start_line, id=tpl.name, value=line.strip()))
+                if not _SDSL_LINE_RE.match(line):
+                    errors.append(Template.error("structure", "Invalid SDSL line", path=artifact_path, line=inst.start_line, id=tpl.name, value=line.strip()))
                     return
             return
 
@@ -743,6 +757,7 @@ class Artifact:
         # Extract IDs/refs/tasks for status cross-checks inside artifact
         self._extract_ids_and_refs()
         self._validate_id_task_statuses(errors)
+        self._validate_spec_filename(errors)
 
         # Unknown markers are always errors (markers in artifact not defined in template)
         for key, inst_list in art_by_key.items():
@@ -825,7 +840,7 @@ class Artifact:
                 for rel_idx, line in enumerate(blk.content, start=0):
                     if not line.strip():
                         continue
-                    if _FDL_LINE_RE.match(line):
+                    if _SDSL_LINE_RE.match(line):
                         checked = "[x" in line.lower()
                         self.task_statuses.append((checked, blk))
 
@@ -835,7 +850,7 @@ class Artifact:
         For each ID definition with has="task", find all tasks within that ID block's
         line range and validate that their completion status is consistent with the ID's status.
 
-        Also enforces cascade logic for nested ID definitions (e.g., id:status → id:feature in DECOMPOSITION).
+        Also enforces cascade logic for nested ID definitions (e.g., id:status → id:spec in DECOMPOSITION).
         """
         if not self.id_definitions:
             return
@@ -856,7 +871,7 @@ class Artifact:
                     tasks_in_block.append(checked)
 
             # Also find nested ID definitions within this ID block's range (cascade validation)
-            # E.g., id:status contains id:feature blocks in DECOMPOSITION artifact
+            # E.g., id:status contains id:spec blocks in DECOMPOSITION artifact
             nested_ids: List[bool] = []
             for other_d in self.id_definitions:
                 if other_d is d:
@@ -880,6 +895,57 @@ class Artifact:
             if not all_done and d.checked:
                 errors.append(Template.error("structure", "ID marked done but tasks not all done", path=self.path, line=d.line, id=d.id))
 
+    def _validate_spec_filename(self, errors: List[Dict[str, object]]):
+        """Validate that SPEC artifact filename matches the spec ID slug.
+
+        For SPEC kind artifacts, the filename (without .md) should match the
+        spec slug in the main spec ID. E.g., file `template-system.md` should have
+        ID `spd-{system}-spec-template-system`.
+
+        Checks both id definitions and id-ref:spec references (the top-level spec ref).
+        Skips nested IDs like flow, algo, state, req.
+        """
+        if self.template.kind != "SPEC":
+            return
+
+        filename = self.path.stem  # filename without extension
+
+        # Sub-ID suffixes that indicate nested IDs within a spec
+        nested_suffixes = ("-flow-", "-algo-", "-state-", "-req-")
+
+        def check_spec_id(id_value: str, line: int):
+            # Check if this is a spec ID (contains "-spec-")
+            if "-spec-" not in id_value:
+                return
+            # Skip nested IDs (flows, algos, states, requirements)
+            if any(suffix in id_value for suffix in nested_suffixes):
+                return
+            # Extract the slug after "-spec-"
+            parts = id_value.split("-spec-", 1)
+            if len(parts) != 2:
+                return
+            spec_slug = parts[1]
+            if spec_slug != filename:
+                errors.append(Template.error(
+                    "structure",
+                    "Spec filename does not match ID slug",
+                    path=self.path,
+                    line=line,
+                    id=id_value,
+                    expected_filename=f"{spec_slug}.md",
+                    actual_filename=f"{filename}.md",
+                ))
+
+        # Check id definitions
+        for d in self.id_definitions:
+            check_spec_id(d.id, d.line)
+
+        # Check id-ref:spec references (the main spec reference at top of file)
+        for r in self.id_references:
+            # Only check references in id-ref:spec blocks
+            if r.block.template_block.name == "spec":
+                check_spec_id(r.id, r.line)
+
 
 def cross_validate_artifacts(
     artifacts: Sequence[Artifact],
@@ -893,7 +959,7 @@ def cross_validate_artifacts(
         registered_systems: Set of known system names from artifacts.json.
             If provided, references to unknown systems are treated as external
             and not flagged as errors.
-        known_kinds: Set of known kind identifiers from templates (e.g., {"feature", "algo", "fr"}).
+        known_kinds: Set of known kind identifiers from templates (e.g., {"spec", "algo", "fr"}).
             Used for validating ID structure and kind existence.
 
     Validates:
@@ -1063,25 +1129,25 @@ def parse_spd(
     7. For composite IDs, validate that parent (left part) exists via where_defined
 
     Args:
-        spd: The Spider ID string to parse (e.g., "spd-myapp-feature-auth-algo-hash")
+        spd: The Spider ID string to parse (e.g., "spd-myapp-spec-auth-algo-hash")
         expected_kind: The kind we're looking for (e.g., "algo")
         registered_systems: Set/list of known system names (e.g., {"myapp", "account-server"})
         where_defined: Optional callable(id) -> bool to check if parent ID exists
-        known_kinds: Optional set/list of known kind identifiers (e.g., {"feature", "algo", "fr"}).
+        known_kinds: Optional set/list of known kind identifiers (e.g., {"spec", "algo", "fr"}).
             If provided, the kind in the ID is validated against this set.
 
     Returns:
         ParsedSpiderId with system, kind, slug, and optional prefix_id; or None if not parseable
 
     Examples:
-        >>> parse_spd("spd-myapp-feature-auth", "feature", {"myapp"})
-        ParsedSpiderId(system="myapp", kind="feature", slug="auth", prefix_id=None)
+        >>> parse_spd("spd-myapp-spec-auth", "spec", {"myapp"})
+        ParsedSpiderId(system="myapp", kind="spec", slug="auth", prefix_id=None)
 
-        >>> parse_spd("spd-myapp-feature-auth-algo-hash", "algo", {"myapp"}, lambda x: x == "spd-myapp-feature-auth")
-        ParsedSpiderId(system="myapp", kind="algo", slug="hash", prefix_id="spd-myapp-feature-auth")
+        >>> parse_spd("spd-myapp-spec-auth-algo-hash", "algo", {"myapp"}, lambda x: x == "spd-myapp-spec-auth")
+        ParsedSpiderId(system="myapp", kind="algo", slug="hash", prefix_id="spd-myapp-spec-auth")
 
-        >>> parse_spd("spd-myapp-feature-auth", "feature", {"myapp"}, known_kinds={"feature", "algo"})
-        ParsedSpiderId(system="myapp", kind="feature", slug="auth", prefix_id=None)
+        >>> parse_spd("spd-myapp-spec-auth", "spec", {"myapp"}, known_kinds={"spec", "algo"})
+        ParsedSpiderId(system="myapp", kind="spec", slug="auth", prefix_id=None)
     """
     if not spd or not spd.lower().startswith("spd-"):
         return None

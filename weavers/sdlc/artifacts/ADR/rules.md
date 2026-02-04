@@ -33,7 +33,7 @@
 - `template.md` — required structure
 - `checklist.md` — semantic quality criteria
 - `examples/example.md` — reference implementation
-- `{Spider}/requirements/template.md` — Spider template marker syntax specification
+- `{spider_path}/requirements/template.md` — Spider template marker syntax specification
 
 ---
 
@@ -46,7 +46,7 @@ Agent confirms understanding of requirements:
 - [ ] ADR follows `template.md` structure
 - [ ] **DO NOT copy `spider-template:` frontmatter** — that is template metadata only
 - [ ] Artifact frontmatter (optional): use `spd:` format for document metadata
-- [ ] ADR has unique ID: `spd-{system}-adr-{slug}`
+- [ ] ADR has unique ID: `spd-{hierarchy-prefix}-adr-{slug}` (e.g., `spd-myapp-adr-use-postgresql`)
 - [ ] ID has priority marker (`p1`-`p9`)
 - [ ] No placeholder content (TODO, TBD, FIXME)
 - [ ] No duplicate IDs
@@ -57,7 +57,7 @@ Agent confirms understanding of requirements:
 - [ ] When PROPOSED: minor edits allowed without version change
 - [ ] When ACCEPTED: **immutable** — do NOT edit decision/rationale
 - [ ] To change accepted decision: create NEW ADR with SUPERSEDES reference
-- [ ] Superseding ADR: `spd-{system}-adr-{slug}-v2` with status SUPERSEDED on original
+- [ ] Superseding ADR: `spd-{hierarchy-prefix}-adr-{new-slug}` with status SUPERSEDED on original
 
 ### Semantic Requirements
 
@@ -110,7 +110,7 @@ Agent confirms understanding of requirements:
 1. **Locate ADR file**: `architecture/ADR/NNNN-{slug}.md`
 2. **Update frontmatter status**: Change `status: {OLD}` → `status: {NEW}`
 3. **Add status history** (if present): Append `{date}: {OLD} → {NEW} ({reason})`
-4. **For SUPERSEDED**: Add `superseded_by: spd-{system}-adr-{new-slug}`
+4. **For SUPERSEDED**: Add `superseded_by: spd-{hierarchy-prefix}-adr-{new-slug}`
 5. **For REJECTED**: Add `rejection_reason: {brief explanation}`
 
 **REJECTED Status**:
@@ -133,8 +133,8 @@ ADR defines IDs with `covered_by` attributes that track downstream incorporation
 **Checkbox States**:
 
 1. **ADR Checkbox** (`id:adr`):
-   - `[ ] p1 - spd-{system}-adr-{slug}` — unchecked until decision incorporated into design
-   - `[x] p1 - spd-{system}-adr-{slug}` — checked when DESIGN references this ADR and components are implemented
+   - `[ ] p1 - spd-{hierarchy-prefix}-adr-{slug}` — unchecked until decision incorporated into design
+   - `[x] p1 - spd-{hierarchy-prefix}-adr-{slug}` — checked when DESIGN references this ADR and components are implemented
 
 **When to Check ADR Checkboxes**:
 
@@ -169,11 +169,20 @@ Agent executes tasks during generation:
 - [ ] Load `template.md` for structure
 - [ ] Load `checklist.md` for semantic guidance
 - [ ] Load `examples/example.md` for reference style
+- [ ] Read adapter `artifacts.json` to determine ADR directory
 - [ ] Determine next ADR number (ADR-NNNN)
+
+**ADR path resolution**:
+1. List existing ADRs from `artifacts` array where `kind: "ADR"`
+2. For new ADR, derive default path:
+   - Read system's `artifacts_dir` from `artifacts.json` (default: `architecture`)
+   - Use weaver's default subdirectory for ADRs: `ADR/`
+   - Create at: `{artifacts_dir}/ADR/{NNNN}-{slug}.md`
+3. Register new ADR in `artifacts.json` with FULL path
 
 **ADR Number Assignment**:
 
-1. List existing ADRs: `ls architecture/ADR/*.md | sort`
+1. List existing ADRs from `artifacts` array where `kind: "ADR"`
 2. Extract highest number: parse `NNNN` from filenames
 3. Assign next sequential: `NNNN + 1`
 
@@ -205,7 +214,7 @@ Agent executes tasks during generation:
 
 ### Phase 3: IDs and Structure
 
-- [ ] Generate ID: `spd-{system}-adr-{slug}`
+- [ ] Generate ID: `spd-{hierarchy-prefix}-adr-{slug}` (e.g., `spd-myapp-adr-use-postgresql`)
 - [ ] Assign priority based on impact
 - [ ] Link to DESIGN if applicable
 - [ ] Verify uniqueness with `spider list-ids`
@@ -264,4 +273,4 @@ After ADR generation/validation, offer these options:
 | ADR ACCEPTED | `/spider-generate DESIGN` — incorporate decision into design |
 | Related ADR needed | `/spider-generate ADR` — create related decision record |
 | ADR supersedes another | Update original ADR status to SUPERSEDED |
-| Want checklist review only | `/spider-validate semantic` — semantic validation (skip deterministic) |
+| Want checklist review only | `/spider-analyze semantic` — semantic validation (skip deterministic) |

@@ -56,11 +56,11 @@ content
 
 **Common marker types**: `free`, `id`, `id-ref`, `list`, `table`, `paragraph`, `fdl`, `#`-`######`
 
-**ID format**: `` `spd-{system}-{kind}-{slug}` ``
+**ID format**: `` `spd-{hierarchy-prefix}-{kind}-{slug}` `` (see [ID Naming Convention](#id-naming-convention))
 
 **Validate template**:
 ```bash
-python3 {Spider}/skills/spider/scripts/spider.py validate --artifact <path>
+python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact <path>
 ```
 
 ---
@@ -104,7 +104,7 @@ spider-template:
 |-------|------|----------|-------------|
 | `version.major` | integer | YES | Major version (breaking changes) |
 | `version.minor` | integer | YES | Minor version (compatible changes) |
-| `kind` | string | YES | Artifact kind (PRD, DESIGN, ADR, DECOMPOSITION, FEATURE) |
+| `kind` | string | YES | Artifact kind (PRD, DESIGN, ADR, DECOMPOSITION, SPEC) |
 | `unknown_sections` | string | NO | How to handle markers not in template: `error`, `warn`, `allow`. Default: `warn` |
 
 ---
@@ -163,10 +163,10 @@ content goes here
 ### ID Definition (`id` block)
 
 ```
-**ID**: `spd-system-kind-slug`
-- [ ] **ID**: `spd-system-kind-slug`
-- [x] `p1` - **ID**: `spd-system-kind-slug`
-`p2` - **ID**: `spd-system-kind-slug`
+**ID**: `spd-myapp-fr-must-authenticate`
+- [ ] **ID**: `spd-myapp-actor-admin-user`
+- [x] `p1` - **ID**: `spd-myapp-core-comp-api-gateway`
+`p2` - **ID**: `spd-myapp-core-auth-flow-login`
 ```
 
 **Pattern**:
@@ -179,14 +179,14 @@ Components:
 - `**ID**:` — literal prefix (required)
 - `- [ ]` or `- [x]` — optional task checkbox (task list item)
 - `` `p1` `` - `` `p9` `` — optional priority
-- `` `spd-xxx` `` — the ID in backticks (required)
+- `` `spd-{hierarchy-prefix}-{kind}-{slug}` `` — the ID in backticks (required)
 
 ### ID Reference (`id-ref` block)
 
 ```
-`spd-system-kind-slug`
-[ ] `spd-system-kind-slug`
-[x] `p1` - `spd-system-kind-slug`
+`spd-myapp-fr-must-authenticate`
+[ ] `spd-myapp-core-comp-api-gateway`
+[x] `p1` - `spd-myapp-core-auth-flow-login`
 ```
 
 **Pattern**:
@@ -207,20 +207,45 @@ Any `` `spd-xxx` `` in content is treated as a reference.
 
 ### ID Naming Convention
 
+IDs are built by concatenating **slugs** through the hierarchy chain (from `artifacts.json`), followed by the element kind and a descriptive slug.
+
 ```
-spd-{system}-{kind}-{slug}
+spd-{hierarchy-prefix}-{kind}-{slug}
 ```
 
+Where:
 - `spd-` — literal prefix (required)
-- `{project}` — project/system identifier (lowercase, alphanumeric, hyphens)
-- `{kind}` — ID kind (actor, cap, req, flow, algo, state, test, etc.)
+- `{hierarchy-prefix}` — concatenated slugs from system → subsystem → component (e.g., `myapp-core-auth`)
+- `{kind}` — element kind in lowercase (actor, cap, fr, nfr, comp, flow, algo, state, req, etc.)
 - `{slug}` — descriptive slug (lowercase, alphanumeric, hyphens)
 
-**Examples**:
-- `spd-myapp-actor-admin-user`
-- `spd-myapp-cap-user-management`
-- `spd-myapp-req-must-authenticate`
-- `spd-myapp-flow-login-process`
+**What is a slug?**
+
+A **slug** is a machine-readable identifier derived from a human name. Slugs are URL-safe, lowercase strings used for stable references.
+
+| Human Name | Slug |
+|------------|------|
+| "My Cool App" | `my-cool-app` |
+| "User Authentication" | `user-auth` |
+| "API Gateway v2" | `api-gateway-v2` |
+
+**Slug rules**: lowercase letters, numbers, hyphens only. No spaces, no leading/trailing hyphens. Pattern: `^[a-z0-9]+(-[a-z0-9]+)*$`
+
+**Hierarchy Examples** (from `artifacts.json`):
+
+| Hierarchy Level | ID Pattern | Example |
+|-----------------|------------|---------|
+| System | `spd-{system}-{kind}-{slug}` | `spd-saas-fr-user-auth` |
+| Subsystem | `spd-{system}-{subsystem}-{kind}-{slug}` | `spd-saas-core-comp-api-gateway` |
+| Component | `spd-{system}-{subsystem}-{component}-{kind}-{slug}` | `spd-saas-core-auth-flow-login` |
+
+**Element Kind Examples**:
+- `spd-myapp-actor-admin-user` — Actor at system level
+- `spd-myapp-cap-user-management` — Capability at system level
+- `spd-myapp-fr-must-authenticate` — Functional requirement
+- `spd-myapp-core-comp-api-gateway` — Component at subsystem level
+- `spd-myapp-core-auth-flow-login` — Flow at component level
+- `spd-myapp-core-auth-algo-password-hash` — Algorithm at component level
 
 ---
 
@@ -265,18 +290,18 @@ spider-template:
   version:
     major: 1
     minor: 0
-  kind: FEATURE
+  kind: SPEC
   unknown_sections: error
 ---
 
-# Feature: {Name}
+# Spec: {Name}
 
 <!-- spd:##:overview -->
 ## Overview
 <!-- spd:##:overview -->
 
 <!-- spd:paragraph:description required="true" -->
-Brief description of the feature.
+Brief description of the spec.
 <!-- spd:paragraph:description -->
 
 <!-- spd:id:requirements required="true" repeat="many" covered_by="CODE" has="task" -->
@@ -375,9 +400,9 @@ Brief description of the feature.
 
 | Task | Command |
 |------|---------|
-| Validate artifact | `python3 {Spider}/skills/spider/scripts/spider.py validate --artifact <path>` |
-| List IDs | `python3 {Spider}/skills/spider/scripts/spider.py list-ids` |
-| Check references | `python3 {Spider}/skills/spider/scripts/spider.py check-refs` |
+| Validate artifact | `python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact <path>` |
+| List IDs | `python3 {spider_path}/skills/spider/scripts/spider.py list-ids` |
+| Check references | `python3 {spider_path}/skills/spider/scripts/spider.py check-refs` |
 
 ---
 
@@ -398,4 +423,4 @@ Brief description of the feature.
 
 - **Schema**: `schemas/spider-template-frontmatter.schema.json`
 - **Implementation**: `skills/spider/scripts/spider/utils/template.py`
-- **CLI**: `python3 {Spider}/skills/spider/scripts/spider.py validate --artifact <path>`
+- **CLI**: `python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact <path>`

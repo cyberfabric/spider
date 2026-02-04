@@ -24,7 +24,7 @@ The architecture prioritizes simplicity and developer productivity while support
 ##### Task Management
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[ ] `p1` - `spd-taskflow-fr-task-management`
+- [ ] `p1` - `spd-taskflow-fr-task-management`
 <!-- spd:id-ref:fr -->
 
 **Solution**: REST API with idempotent endpoints and PostgreSQL persistence for task CRUD.
@@ -34,7 +34,7 @@ The architecture prioritizes simplicity and developer productivity while support
 ##### Notifications
 
 <!-- spd:id-ref:fr has="priority,task" -->
-[ ] `p1` - `spd-taskflow-fr-notifications`
+- [ ] `p1` - `spd-taskflow-fr-notifications`
 <!-- spd:id-ref:fr -->
 
 **Solution**: WebSocket push with Redis PubSub for real-time notification delivery.
@@ -44,7 +44,7 @@ The architecture prioritizes simplicity and developer productivity while support
 ##### Security
 
 <!-- spd:id-ref:nfr has="priority,task" -->
-[ ] `p1` - `spd-taskflow-nfr-security`
+- [ ] `p1` - `spd-taskflow-nfr-security`
 <!-- spd:id-ref:nfr -->
 
 **Solution**: JWT authentication with role-based authorization middleware.
@@ -54,7 +54,7 @@ The architecture prioritizes simplicity and developer productivity while support
 ##### Performance
 
 <!-- spd:id-ref:nfr has="priority,task" -->
-[ ] `p2` - `spd-taskflow-nfr-performance`
+- [ ] `p2` - `spd-taskflow-nfr-performance`
 <!-- spd:id-ref:nfr -->
 
 **Solution**: Connection pooling and query optimization for sub-500ms responses.
@@ -68,7 +68,7 @@ The architecture prioritizes simplicity and developer productivity while support
 ##### PostgreSQL for Storage
 
 <!-- spd:id-ref:adr has="priority,task" -->
-[ ] `p1` - `spd-taskflow-adr-postgres-storage`
+- [ ] `p1` - `spd-taskflow-adr-postgres-storage`
 <!-- spd:id-ref:adr -->
 
 Use PostgreSQL for durable task storage. Chosen for strong ACID guarantees, relational query support, and team expertise. Trade-off: requires separate DB server vs embedded SQLite.
@@ -99,7 +99,7 @@ Use PostgreSQL for durable task storage. Chosen for strong ACID guarantees, rela
 <!-- spd:####:principle-title repeat="many" -->
 #### Real-time First
 
-<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-taskflow-principle-realtime-first`
 
 <!-- spd:paragraph:principle-body -->
@@ -109,13 +109,13 @@ Prefer architectures that keep task state and notifications consistent and obser
 <!-- spd:####:principle-title repeat="many" -->
 
 <!-- spd:####:principle-title repeat="many" -->
-#### Simplicity over Features
+#### Simplicity over Specs
 
-<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:principle has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [ ] `p2` - **ID**: `spd-taskflow-principle-simplicity`
 
 <!-- spd:paragraph:principle-body -->
-Choose simpler solutions over feature-rich ones. Avoid premature optimization and unnecessary abstractions. Code should be readable by junior developers.
+Choose simpler solutions over spec-rich ones. Avoid premature optimization and unnecessary abstractions. Code should be readable by junior developers.
 <!-- spd:paragraph:principle-body -->
 <!-- spd:id:principle -->
 <!-- spd:####:principle-title repeat="many" -->
@@ -127,7 +127,7 @@ Choose simpler solutions over feature-rich ones. Avoid premature optimization an
 <!-- spd:####:constraint-title repeat="many" -->
 #### Supported Platforms
 
-<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:constraint has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-taskflow-constraint-platforms`
 
 <!-- spd:paragraph:constraint-body -->
@@ -165,7 +165,7 @@ graph LR
 <!-- spd:####:component-title repeat="many" -->
 #### API Server
 
-<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:component has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-taskflow-component-api-server`
 
 <!-- spd:list:component-payload -->
@@ -192,7 +192,7 @@ REST API at `/api/v1/` with JSON request/response. Authentication via Bearer JWT
 <!-- spd:####:sequence-title repeat="many" -->
 #### Create Task Flow
 
-<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:seq has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-taskflow-seq-create-task`
 
 <!-- spd:code:sequences -->
@@ -219,7 +219,7 @@ Lead or member creates task via REST API. Server validates input, inserts into d
 <!-- spd:####:db-table-title repeat="many" -->
 #### Table tasks
 
-<!-- spd:id:dbtable has="priority,task" covered_by="DECOMPOSITION,FEATURE" -->
+<!-- spd:id:dbtable has="priority,task" covered_by="DECOMPOSITION,SPEC" -->
 - [ ] `p1` - **ID**: `spd-taskflow-dbtable-tasks`
 
 Schema

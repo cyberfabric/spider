@@ -1,16 +1,16 @@
-<!-- spd:#:feature-design -->
-# Feature: Task CRUD
+<!-- spd:#:spec -->
+# Spec: Task CRUD
 
-<!-- spd:id-ref:feature has="task" -->
-[ ] - `spd-taskflow-feature-task-crud`
-<!-- spd:id-ref:feature -->
+<!-- spd:id-ref:spec has="task" -->
+- [ ] - `spd-taskflow-spec-task-crud`
+<!-- spd:id-ref:spec -->
 
 <!-- spd:##:context -->
-## A. Feature Context
+## A. Spec Context
 
 <!-- spd:overview -->
 ### 1. Overview
-Core task management functionality for creating, viewing, updating, and deleting tasks. This feature provides the foundation for team collaboration by enabling users to track work items through their lifecycle.
+Core task management functionality for creating, viewing, updating, and deleting tasks. This spec provides the foundation for team collaboration by enabling users to track work items through their lifecycle.
 
 Problem: Teams need a central place to track tasks with status, priority, and assignments.
 Primary value: Enables organized task tracking with clear ownership.
@@ -34,7 +34,7 @@ Success criteria: Users can create, view, update, and delete tasks within 500ms 
 <!-- spd:list:references -->
 - Overall Design: [DESIGN.md](../../DESIGN.md)
 - ADRs: `spd-taskflow-adr-postgres-storage`
-- Related feature: `spd-taskflow-feature-notifications`
+- Related spec: [Notifications](../notifications.md)
 <!-- spd:list:references -->
 <!-- spd:##:context -->
 
@@ -45,7 +45,7 @@ Success criteria: Users can create, view, update, and delete tasks within 500ms 
 ### Create Task
 
 <!-- spd:id:flow has="priority,task" to_code="true" -->
-- [ ] `p1` - **ID**: `spd-taskflow-feature-task-crud-flow-create`
+- [ ] `p1` - **ID**: `spd-taskflow-spec-task-crud-flow-create`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
@@ -56,7 +56,7 @@ Success criteria: Users can create, view, update, and delete tasks within 500ms 
 <!-- spd:fdl:flow-steps -->
 1. [x] - `ph-1` - User fills task form (title, description, priority) - `inst-fill-form`
 2. [x] - `ph-1` - API: POST /api/tasks (body: title, description, priority, due_date) - `inst-api-create`
-3. [x] - `ph-1` - Algorithm: validate task input using `spd-taskflow-feature-task-crud-algo-validate` - `inst-run-validate`
+3. [x] - `ph-1` - Algorithm: validate task input using `spd-taskflow-spec-task-crud-algo-validate` - `inst-run-validate`
 4. [x] - `ph-1` - DB: INSERT tasks(title, description, priority, due_date, status=BACKLOG) - `inst-db-insert`
 5. [ ] - `ph-2` - User optionally assigns task to team member - `inst-assign`
 6. [ ] - `ph-2` - API: POST /api/tasks/{task_id}/assignees (body: assignee_id) - `inst-api-assign`
@@ -74,7 +74,7 @@ Success criteria: Users can create, view, update, and delete tasks within 500ms 
 ### Validate Task
 
 <!-- spd:id:algo has="priority,task" to_code="true" -->
-- [ ] `p1` - **ID**: `spd-taskflow-feature-task-crud-algo-validate`
+- [ ] `p1` - **ID**: `spd-taskflow-spec-task-crud-algo-validate`
 
 <!-- spd:fdl:algo-steps -->
 1. [x] - `ph-1` - **IF** title is empty **RETURN** error "Title required" - `inst-check-title`
@@ -95,7 +95,7 @@ Success criteria: Users can create, view, update, and delete tasks within 500ms 
 ### Task Status
 
 <!-- spd:id:state has="priority,task" to_code="true" -->
-- [ ] `p1` - **ID**: `spd-taskflow-feature-task-crud-state-status`
+- [ ] `p1` - **ID**: `spd-taskflow-spec-task-crud-state-status`
 
 <!-- spd:fdl:state-transitions -->
 1. [x] - `ph-1` - **FROM** BACKLOG **TO** IN_PROGRESS **WHEN** user starts work - `inst-start`
@@ -113,7 +113,7 @@ Success criteria: Users can create, view, update, and delete tasks within 500ms 
 ### Task Creation
 
 <!-- spd:id:req has="priority,task" to_code="true" -->
-- [ ] `p1` - **ID**: `spd-taskflow-feature-task-crud-req-create`
+- [ ] `p1` - **ID**: `spd-taskflow-spec-task-crud-req-create`
 
 <!-- spd:paragraph:req-body -->
 Users can create tasks with title, description, priority, and due date. The system validates input and stores the task with BACKLOG status.
@@ -128,11 +128,11 @@ Users can create tasks with title, description, priority, and due date. The syst
 
 **Implements**:
 <!-- spd:id-ref:flow has="priority" -->
-- `p1` - `spd-taskflow-feature-task-crud-flow-create`
+- `p1` - `spd-taskflow-spec-task-crud-flow-create`
 <!-- spd:id-ref:flow -->
 
 <!-- spd:id-ref:algo has="priority" -->
-- `p1` - `spd-taskflow-feature-task-crud-algo-validate`
+- `p1` - `spd-taskflow-spec-task-crud-algo-validate`
 <!-- spd:id-ref:algo -->
 
 **Covers (PRD)**:
@@ -173,8 +173,8 @@ Users can create tasks with title, description, priority, and due date. The syst
 ## F. Additional Context (optional)
 
 <!-- spd:free:context-notes -->
-The feature must keep task status transitions consistent with the Task Status state machine in Section D. All state changes should emit events for the notification system.
+The spec must keep task status transitions consistent with the Task Status state machine in Section D. All state changes should emit events for the notification system.
 <!-- spd:free:context-notes -->
 <!-- spd:##:additional-context -->
 
-<!-- spd:#:feature-design -->
+<!-- spd:#:spec -->

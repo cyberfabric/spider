@@ -19,7 +19,7 @@ class TestScopeMarkerParsing:
 
     def test_parse_flow_marker(self, tmp_path: Path):
         code = dedent("""
-            # @spider-flow:spd-myapp-feature-auth-flow-login:p1
+            # @spider-flow:spd-myapp-spec-auth-flow-login:p1
             def login_flow(request):
                 pass
         """)
@@ -31,12 +31,12 @@ class TestScopeMarkerParsing:
         assert cf is not None
         assert len(cf.scope_markers) == 1
         assert cf.scope_markers[0].kind == "flow"
-        assert cf.scope_markers[0].id == "spd-myapp-feature-auth-flow-login"
+        assert cf.scope_markers[0].id == "spd-myapp-spec-auth-flow-login"
         assert cf.scope_markers[0].phase == 1
 
     def test_parse_algo_marker(self, tmp_path: Path):
         code = dedent("""
-            // @spider-algo:spd-myapp-feature-search-algo-rank:p2
+            // @spider-algo:spd-myapp-spec-search-algo-rank:p2
             function rankResults(items) {
                 return items;
             }
@@ -48,20 +48,20 @@ class TestScopeMarkerParsing:
         assert not errs
         assert len(cf.scope_markers) == 1
         assert cf.scope_markers[0].kind == "algo"
-        assert cf.scope_markers[0].id == "spd-myapp-feature-search-algo-rank"
+        assert cf.scope_markers[0].id == "spd-myapp-spec-search-algo-rank"
         assert cf.scope_markers[0].phase == 2
 
     def test_parse_multiple_markers(self, tmp_path: Path):
         code = dedent("""
-            # @spider-req:spd-myapp-feature-auth-req-validate:p1
+            # @spider-req:spd-myapp-spec-auth-req-validate:p1
             def validate_input(data):
                 pass
 
-            # @spider-flow:spd-myapp-feature-auth-flow-login:p1
+            # @spider-flow:spd-myapp-spec-auth-flow-login:p1
             def login(request):
                 pass
 
-            # @spider-test:spd-myapp-feature-auth-test-login:p3
+            # @spider-test:spd-myapp-spec-auth-test-login:p3
             def test_login():
                 pass
         """)
@@ -82,12 +82,12 @@ class TestBlockMarkerParsing:
 
     def test_parse_block_marker(self, tmp_path: Path):
         code = dedent("""
-            # @spider-begin:spd-myapp-feature-auth-flow-login:p1:inst-validate-creds
+            # @spider-begin:spd-myapp-spec-auth-flow-login:p1:inst-validate-creds
             def validate_credentials(username, password):
                 if not username or not password:
                     raise ValidationError("Missing credentials")
                 return authenticate(username, password)
-            # @spider-end:spd-myapp-feature-auth-flow-login:p1:inst-validate-creds
+            # @spider-end:spd-myapp-spec-auth-flow-login:p1:inst-validate-creds
         """)
         code_file = tmp_path / "auth.py"
         code_file.write_text(code)
@@ -95,14 +95,14 @@ class TestBlockMarkerParsing:
         cf, errs = CodeFile.from_path(code_file)
         assert not errs
         assert len(cf.block_markers) == 1
-        assert cf.block_markers[0].id == "spd-myapp-feature-auth-flow-login"
+        assert cf.block_markers[0].id == "spd-myapp-spec-auth-flow-login"
         assert cf.block_markers[0].phase == 1
         assert cf.block_markers[0].inst == "validate-creds"
         assert len(cf.block_markers[0].content) > 0
 
     def test_unclosed_block_error(self, tmp_path: Path):
         code = dedent("""
-            # @spider-begin:spd-myapp-feature-auth-flow-login:p1:inst-validate
+            # @spider-begin:spd-myapp-spec-auth-flow-login:p1:inst-validate
             def validate():
                 pass
             # missing @spider-end
@@ -118,7 +118,7 @@ class TestBlockMarkerParsing:
         code = dedent("""
             def validate():
                 pass
-            # @spider-end:spd-myapp-feature-auth-flow-login:p1:inst-validate
+            # @spider-end:spd-myapp-spec-auth-flow-login:p1:inst-validate
         """)
         code_file = tmp_path / "auth.py"
         code_file.write_text(code)
@@ -129,8 +129,8 @@ class TestBlockMarkerParsing:
 
     def test_empty_block_error(self, tmp_path: Path):
         code = dedent("""
-            # @spider-begin:spd-myapp-feature-auth-flow-login:p1:inst-validate
-            # @spider-end:spd-myapp-feature-auth-flow-login:p1:inst-validate
+            # @spider-begin:spd-myapp-spec-auth-flow-login:p1:inst-validate
+            # @spider-end:spd-myapp-spec-auth-flow-login:p1:inst-validate
         """)
         code_file = tmp_path / "auth.py"
         code_file.write_text(code)
@@ -145,25 +145,25 @@ class TestCodeFileInterface:
 
     def test_list_ids(self, tmp_path: Path):
         code = dedent("""
-            # @spider-flow:spd-myapp-feature-auth-flow-login:p1
+            # @spider-flow:spd-myapp-spec-auth-flow-login:p1
             def login():
                 pass
 
-            # @spider-begin:spd-myapp-feature-auth-flow-login:p1:inst-validate
+            # @spider-begin:spd-myapp-spec-auth-flow-login:p1:inst-validate
             def validate():
                 pass
-            # @spider-end:spd-myapp-feature-auth-flow-login:p1:inst-validate
+            # @spider-end:spd-myapp-spec-auth-flow-login:p1:inst-validate
         """)
         code_file = tmp_path / "auth.py"
         code_file.write_text(code)
 
         cf, _ = CodeFile.from_path(code_file)
         ids = cf.list_ids()
-        assert "spd-myapp-feature-auth-flow-login" in ids
+        assert "spd-myapp-spec-auth-flow-login" in ids
 
     def test_list_refs_same_as_list_ids(self, tmp_path: Path):
         code = dedent("""
-            # @spider-flow:spd-myapp-feature-auth-flow-login:p1
+            # @spider-flow:spd-myapp-spec-auth-flow-login:p1
             def login():
                 pass
         """)
@@ -176,7 +176,7 @@ class TestCodeFileInterface:
     def test_list_defined_empty(self, tmp_path: Path):
         """Code files don't define IDs, only reference them."""
         code = dedent("""
-            # @spider-flow:spd-myapp-feature-auth-flow-login:p1
+            # @spider-flow:spd-myapp-spec-auth-flow-login:p1
             def login():
                 pass
         """)
@@ -188,30 +188,30 @@ class TestCodeFileInterface:
 
     def test_get_content(self, tmp_path: Path):
         code = dedent("""
-            # @spider-begin:spd-myapp-feature-auth-flow-login:p1:inst-validate
+            # @spider-begin:spd-myapp-spec-auth-flow-login:p1:inst-validate
             def validate():
                 return True
-            # @spider-end:spd-myapp-feature-auth-flow-login:p1:inst-validate
+            # @spider-end:spd-myapp-spec-auth-flow-login:p1:inst-validate
         """)
         code_file = tmp_path / "auth.py"
         code_file.write_text(code)
 
         cf, _ = CodeFile.from_path(code_file)
-        content = cf.get("spd-myapp-feature-auth-flow-login")
+        content = cf.get("spd-myapp-spec-auth-flow-login")
         assert content is not None
         assert "def validate" in content
 
     def test_get_by_inst(self, tmp_path: Path):
         code = dedent("""
-            # @spider-begin:spd-myapp-feature-auth-flow-login:p1:inst-validate
+            # @spider-begin:spd-myapp-spec-auth-flow-login:p1:inst-validate
             def validate():
                 return True
-            # @spider-end:spd-myapp-feature-auth-flow-login:p1:inst-validate
+            # @spider-end:spd-myapp-spec-auth-flow-login:p1:inst-validate
 
-            # @spider-begin:spd-myapp-feature-auth-flow-login:p1:inst-authenticate
+            # @spider-begin:spd-myapp-spec-auth-flow-login:p1:inst-authenticate
             def authenticate():
                 return True
-            # @spider-end:spd-myapp-feature-auth-flow-login:p1:inst-authenticate
+            # @spider-end:spd-myapp-spec-auth-flow-login:p1:inst-authenticate
         """)
         code_file = tmp_path / "auth.py"
         code_file.write_text(code)
@@ -231,7 +231,7 @@ class TestCrossValidation:
 
     def test_orphaned_marker_error(self, tmp_path: Path):
         code = dedent("""
-            # @spider-flow:spd-myapp-feature-unknown-flow-missing:p1
+            # @spider-flow:spd-myapp-spec-unknown-flow-missing:p1
             def unknown():
                 pass
         """)
@@ -239,7 +239,7 @@ class TestCrossValidation:
         code_file.write_text(code)
 
         cf, _ = CodeFile.from_path(code_file)
-        artifact_ids = {"spd-myapp-feature-auth-flow-login"}  # different ID
+        artifact_ids = {"spd-myapp-spec-auth-flow-login"}  # different ID
         to_code_ids = set()
 
         result = cross_validate_code([cf], artifact_ids, to_code_ids, "FULL")
@@ -248,7 +248,7 @@ class TestCrossValidation:
 
     def test_missing_coverage_error(self, tmp_path: Path):
         code = dedent("""
-            # @spider-flow:spd-myapp-feature-auth-flow-login:p1
+            # @spider-flow:spd-myapp-spec-auth-flow-login:p1
             def login():
                 pass
         """)
@@ -256,18 +256,18 @@ class TestCrossValidation:
         code_file.write_text(code)
 
         cf, _ = CodeFile.from_path(code_file)
-        artifact_ids = {"spd-myapp-feature-auth-flow-login", "spd-myapp-feature-auth-flow-logout"}
-        to_code_ids = {"spd-myapp-feature-auth-flow-login", "spd-myapp-feature-auth-flow-logout"}
+        artifact_ids = {"spd-myapp-spec-auth-flow-login", "spd-myapp-spec-auth-flow-logout"}
+        to_code_ids = {"spd-myapp-spec-auth-flow-login", "spd-myapp-spec-auth-flow-logout"}
 
         result = cross_validate_code([cf], artifact_ids, to_code_ids, "FULL")
         # Should have error for missing logout marker
         coverage_errors = [e for e in result["errors"] if e["type"] == "coverage"]
         assert len(coverage_errors) == 1
-        assert "spd-myapp-feature-auth-flow-logout" in coverage_errors[0]["id"]
+        assert "spd-myapp-spec-auth-flow-logout" in coverage_errors[0]["id"]
 
     def test_docs_only_prohibits_markers(self, tmp_path: Path):
         code = dedent("""
-            # @spider-flow:spd-myapp-feature-auth-flow-login:p1
+            # @spider-flow:spd-myapp-spec-auth-flow-login:p1
             def login():
                 pass
         """)
@@ -281,7 +281,7 @@ class TestCrossValidation:
 
     def test_full_traceability_pass(self, tmp_path: Path):
         code = dedent("""
-            # @spider-flow:spd-myapp-feature-auth-flow-login:p1
+            # @spider-flow:spd-myapp-spec-auth-flow-login:p1
             def login():
                 pass
         """)
@@ -289,8 +289,8 @@ class TestCrossValidation:
         code_file.write_text(code)
 
         cf, _ = CodeFile.from_path(code_file)
-        artifact_ids = {"spd-myapp-feature-auth-flow-login"}
-        to_code_ids = {"spd-myapp-feature-auth-flow-login"}
+        artifact_ids = {"spd-myapp-spec-auth-flow-login"}
+        to_code_ids = {"spd-myapp-spec-auth-flow-login"}
 
         result = cross_validate_code([cf], artifact_ids, to_code_ids, "FULL")
         assert len(result["errors"]) == 0

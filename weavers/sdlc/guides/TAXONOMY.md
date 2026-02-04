@@ -4,17 +4,13 @@ Canonical taxonomy for the SDLC weaver.
 
 This guide defines what each SDLC artifact/code kind is, how it transforms into the next layer, how it traces to upstream IDs, and which files define templates/rules/examples.
 
-## Pipeline (dependency chain)
+## Dependency chain
 
 In the SDLC weaver, artifacts form a strict chain:
 
-```
-PRD
-  -> ADR
-    -> DESIGN
-      -> DECOMPOSITION
-        -> FEATURE
-          -> CODE
+```mermaid
+graph LR
+  PRD --> ADR --> DESIGN --> DECOMPOSITION --> SPEC --> CODE
 ```
 
 ## Kinds
@@ -31,7 +27,7 @@ PRD
 
 **Transforms into**:
 - **DESIGN**: design drivers reference PRD FR/NFR IDs and describe architectural responses.
-- **DECOMPOSITION**/**FEATURE**: downstream layers must keep referencing the same PRD IDs they cover.
+- **DECOMPOSITION**/**SPEC**: downstream layers must keep referencing the same PRD IDs they cover.
 
 **Traceability**:
 - PRD is the root of many downstream references (FR/NFR coverage).
@@ -57,7 +53,7 @@ PRD
 - **DESIGN**: design drivers reference ADR IDs and incorporate decisions.
 
 **Traceability**:
-- ADR IDs are referenced from DESIGN (and optionally from FEATURE context).
+- ADR IDs are referenced from DESIGN (and optionally from SPEC context).
 
 **Validation**:
 - Template structure + ID format + required Meta fields
@@ -84,11 +80,11 @@ PRD
 - DB tables (optional): `spd-{system}-dbtable-{slug}`
 
 **Transforms into**:
-- **DECOMPOSITION**: features are defined as work units that cover specific design elements (principles/constraints/components/etc.).
+- **DECOMPOSITION**: specs are defined as work units that cover specific design elements (principles/constraints/components/etc.).
 
 **Traceability**:
 - DESIGN references PRD/ADR.
-- DECOMPOSITION/FEATURE must keep referencing the DESIGN IDs they implement/cover.
+- DECOMPOSITION/SPEC must keep referencing the DESIGN IDs they implement/cover.
 
 **Validation**:
 - Template structure + ID formats
@@ -102,24 +98,24 @@ PRD
 
 ### DECOMPOSITION
 
-**Purpose**: turn DESIGN into a set of implementable features with explicit coverage links.
+**Purpose**: turn DESIGN into a set of implementable specs with explicit coverage links.
 
 **Defines IDs**:
 - Overall status tracker: `spd-{system}-status-overall`
-- Features: `spd-{system}-feature-{slug}`
+- Specs: `spd-{system}-spec-{slug}`
 
 **References upstream IDs**:
 - PRD FR/NFR IDs (requirements covered)
 - DESIGN IDs (principles/constraints/components/sequences/data)
 
 **Transforms into**:
-- **FEATURE**: each decomposition entry links to a feature folder (`feature-{slug}/`) containing a feature design.
+- **SPEC**: each decomposition entry links to a spec folder (`specs/`) containing a spec design.
 
 **Traceability**:
-- A feature entry is the upstream anchor for a FEATURE design (`FEATURE` references the `feature` ID).
+- A spec entry is the upstream anchor for a SPEC design (`SPEC` references the `spec` ID).
 
 **Validation**:
-- Template structure + feature link format
+- Template structure + spec link format
 - Cross-reference validity for all coverage references
 
 **Files**:
@@ -128,21 +124,21 @@ PRD
 - Checklist: [weavers/sdlc/artifacts/DECOMPOSITION/checklist.md](../artifacts/DECOMPOSITION/checklist.md)
 - Examples: [weavers/sdlc/artifacts/DECOMPOSITION/examples/](../artifacts/DECOMPOSITION/examples/)
 
-### FEATURE
+### SPEC
 
-**Purpose**: the executable(ish) behavior spec for a single feature, with definition-of-done and implementable steps.
+**Purpose**: the executable(ish) behavior spec for a single spec, with definition-of-done and implementable steps.
 
 **References upstream IDs**:
-- The decomposition feature ID: `spd-{system}-feature-{slug}`
+- The decomposition spec ID: `spd-{system}-spec-{slug}`
 - PRD actor IDs (actors)
 - PRD FR/NFR IDs (coverage)
 - DESIGN IDs (principles/constraints/components/sequences/data)
 
 **Defines IDs** (SDLC code-traceable kinds):
-- Flow: `spd-{system}-feature-{feature}-flow-{slug}`
-- Algorithm: `spd-{system}-feature-{feature}-algo-{slug}`
-- State machine: `spd-{system}-feature-{feature}-state-{slug}`
-- Requirement (definition-of-done): `spd-{system}-feature-{feature}-req-{slug}`
+- Flow: `spd-{system}-spec-{spec}-flow-{slug}`
+- Algorithm: `spd-{system}-spec-{spec}-algo-{slug}`
+- State machine: `spd-{system}-spec-{spec}-state-{slug}`
+- Requirement (definition-of-done): `spd-{system}-spec-{spec}-req-{slug}`
 
 These IDs are typically marked `to_code="true"` in the template, which makes them subject to code coverage checks.
 
@@ -150,12 +146,12 @@ These IDs are typically marked `to_code="true"` in the template, which makes the
 - **CODE**: implement flows/algorithms/states/requirements in source code and tag implementation with Spider markers.
 
 **Traceability**:
-- FEATURE IDs are referenced from code using scope markers: `@spider-{kind}:{spd-id}:p{N}`.
+- SPEC IDs are referenced from code using scope markers: `@spider-{kind}:{spd-id}:p{N}`.
 - Instruction-level implementations can be wrapped with block markers:
   - `@spider-begin:{spd-id}:p{N}:inst-{local}` / `@spider-end:...`
 
 Phase tokens:
-- FEATURE step lines use `ph-{N}` (as part of the step formatting).
+- SPEC step lines use `ph-{N}` (as part of the step formatting).
 - Code markers use `p{N}` (as part of marker syntax).
 
 **Validation**:
@@ -164,14 +160,14 @@ Phase tokens:
 - Code coverage and orphan checks via `validate-code`
 
 **Files**:
-- Template: [weavers/sdlc/artifacts/FEATURE/template.md](../artifacts/FEATURE/template.md)
-- Rules: [weavers/sdlc/artifacts/FEATURE/rules.md](../artifacts/FEATURE/rules.md)
-- Checklist: [weavers/sdlc/artifacts/FEATURE/checklist.md](../artifacts/FEATURE/checklist.md)
-- Example: [weavers/sdlc/artifacts/FEATURE/examples/example.md](../artifacts/FEATURE/examples/example.md)
+- Template: [weavers/sdlc/artifacts/SPEC/template.md](../artifacts/SPEC/template.md)
+- Rules: [weavers/sdlc/artifacts/SPEC/rules.md](../artifacts/SPEC/rules.md)
+- Checklist: [weavers/sdlc/artifacts/SPEC/checklist.md](../artifacts/SPEC/checklist.md)
+- Example: [weavers/sdlc/artifacts/SPEC/examples/example.md](../artifacts/SPEC/examples/example.md)
 
 ### CODE
 
-**Purpose**: the implementation layer validated against FEATURE IDs.
+**Purpose**: the implementation layer validated against SPEC IDs.
 
 **Defines**:
 - No new Spider IDs are defined in code. Code only references IDs that exist in artifacts.
@@ -189,9 +185,9 @@ Phase tokens:
 
 ## Validation commands
 
-- Validate artifacts (templates + cross-refs): `python3 {Spider}/skills/spider/scripts/spider.py validate`
-- Validate code markers (pairing + coverage): `python3 {Spider}/skills/spider/scripts/spider.py validate-code`
-- Validate weaver package itself: `python3 {Spider}/skills/spider/scripts/spider.py validate-weavers`
+- Validate artifacts (templates + cross-refs): `python3 {spider_path}/skills/spider/scripts/spider.py validate`
+- Validate code markers (pairing + coverage): `python3 {spider_path}/skills/spider/scripts/spider.py validate-code`
+- Validate weaver package itself: `python3 {spider_path}/skills/spider/scripts/spider.py validate-weavers`
 
 ## References
 

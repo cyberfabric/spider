@@ -20,6 +20,7 @@ from .utils.files import (
     load_artifacts_registry,
 )
 from .utils.artifacts_meta import (
+    ArtifactsMeta,
     create_backup,
     generate_default_registry,
 )
@@ -293,6 +294,17 @@ def _cmd_self_check(argv: List[str]) -> int:
         print(json.dumps({"status": "ERROR", "message": reg_err or "Missing artifacts registry"}, indent=2, ensure_ascii=False))
         return 1
 
+    # Validate slugs in the registry
+    artifacts_meta = ArtifactsMeta.from_dict(reg)
+    slug_errors = artifacts_meta.validate_all_slugs()
+    if slug_errors:
+        print(json.dumps({
+            "status": "ERROR",
+            "message": "Invalid slugs in artifacts.json",
+            "slug_errors": slug_errors,
+        }, indent=2, ensure_ascii=False))
+        return 1
+
     weavers_cfg = reg.get("weavers") if isinstance(reg, dict) else None
     if not isinstance(weavers_cfg, dict) or not weavers_cfg:
         print(json.dumps({"status": "ERROR", "message": "No weavers defined in artifacts.json"}, indent=2, ensure_ascii=False))
@@ -334,7 +346,13 @@ def _cmd_self_check(argv: List[str]) -> int:
 
             kind = kind_dir.name
             template_path = kind_dir / "template.md"
-            example_path = kind_dir / "examples" / "example.md"
+            # Find any .md file in examples/ directory (not just example.md)
+            examples_dir = kind_dir / "examples"
+            example_path = None
+            if examples_dir.exists():
+                md_files = list(examples_dir.glob("*.md"))
+                if md_files:
+                    example_path = md_files[0]  # Use first .md file found
 
             if not template_path.exists():
                 continue
@@ -343,15 +361,15 @@ def _cmd_self_check(argv: List[str]) -> int:
                 "weaver": weaver_id,
                 "kind": kind,
                 "template_path": template_path.as_posix(),
-                "example_path": example_path.as_posix() if example_path.exists() else None,
+                "example_path": example_path.as_posix() if example_path else None,
                 "status": "PASS",
             }
 
             errs: List[Dict[str, object]] = []
             warns: List[Dict[str, object]] = []
 
-            if not example_path.exists():
-                warns.append({"type": "file", "message": "Example not found (skipped)", "path": example_path.as_posix()})
+            if not example_path:
+                warns.append({"type": "file", "message": "Example not found (skipped)", "path": (kind_dir / "examples").as_posix()})
             else:
                 rep = validate_artifact_file_against_template(
                     artifact_path=example_path,
@@ -845,17 +863,32 @@ def _cmd_init(argv: List[str]) -> int:
 
     # Use weaver-based WHEN clause format (not workflow-based)
     weaver_id = "spider-sdlc"
-    artifacts_when = f"ALWAYS open and follow `artifacts.json` WHEN Spider uses weaver `{weaver_id}` for artifact kinds: PRD, DESIGN, DECOMPOSITION, ADR, FEATURE OR codebase"
-    schema_rel = _safe_relpath_from_dir(spider_root / "schemas" / "artifacts.schema.json", adapter_dir)
-    registry_spec_rel = _safe_relpath_from_dir(spider_root / "requirements" / "artifacts-registry.md", adapter_dir)
+    artifacts_when = f"ALWAYS open and follow `artifacts.json` WHEN Spider uses weaver `{weaver_id}` for artifact kinds: PRD, DESIGN, DECOMPOSITION, ADR, SPEC OR codebase"
+    # Use {spider_path} variable instead of relative paths for Spider core references
     desired_agents = "\n".join([
         f"# Spider Adapter: {project_name}",
         "",
         f"**Extends**: `{extends_rel}`",
         "",
-        f"ALWAYS open and follow `{schema_rel}` WHEN working with artifacts.json",
+        "---",
         "",
-        f"ALWAYS open and follow `{registry_spec_rel}` WHEN working with artifacts.json",
+        "## Variables",
+        "",
+        "**While Spider is enabled**, remember these variables:",
+        "",
+        "| Variable | Value | Description |",
+        "|----------|-------|-------------|",
+        "| `{spider_adapter_path}` | Directory containing this AGENTS.md | Root path for Spider Adapter navigation |",
+        "",
+        "Use `{spider_adapter_path}` as the base path for all relative Spider Adapter file references.",
+        "",
+        "---",
+        "",
+        "## Navigation Rules",
+        "",
+        "ALWAYS open and follow `{spider_path}/schemas/artifacts.schema.json` WHEN working with artifacts.json",
+        "",
+        "ALWAYS open and follow `{spider_path}/requirements/artifacts-registry.md` WHEN working with artifacts.json",
         "",
         artifacts_when,
         "",
@@ -991,16 +1024,19 @@ def _cmd_init(argv: List[str]) -> int:
 
 # =============================================================================
 def _cmd_validate(argv: List[str]) -> int:
-    """Validate Spider artifacts using template-based parsing.
+    """Validate Spider artifacts and code traceability.
 
-    Validates structure against template, cross-references between artifacts,
-    and task statuses.
+    Performs deterministic validation checks (structure, cross-references,
+    task statuses, traceability markers) and produces a machine-readable report.
     """
     from .utils.template import cross_validate_artifacts
     from .utils.context import get_context
-
-    p = argparse.ArgumentParser(prog="validate", description="Validate Spider artifacts using template-based parsing")
+    p = argparse.ArgumentParser(
+        prog="validate",
+        description="Validate Spider artifacts and code traceability (structure + cross-refs + traceability)",
+    )
     p.add_argument("--artifact", default=None, help="Path to specific Spider artifact (if omitted, validates all registered Spider artifacts)")
+    p.add_argument("--skip-code", action="store_true", help="Skip code traceability validation")
     p.add_argument("--verbose", action="store_true", help="Print full validation report")
     p.add_argument("--output", default=None, help="Write report to file instead of stdout")
     args = p.parse_args(argv)
@@ -1143,6 +1179,110 @@ def _cmd_validate(argv: List[str]) -> int:
             if warn_path in validated_paths:
                 all_warnings.append(warn)
 
+    # Code traceability validation (unless skipped)
+    code_files_scanned: List[Dict[str, object]] = []
+    code_ids_found: Set[str] = set()
+    to_code_ids: Set[str] = set()
+    artifact_ids: Set[str] = set()
+
+    # Build map of artifact path to traceability mode
+    traceability_by_path: Dict[str, str] = {}
+    for artifact_path, _template_path, _artifact_type, traceability in artifacts_to_validate:
+        traceability_by_path[str(artifact_path)] = traceability
+
+    # Collect artifact IDs and to_code IDs (only from FULL traceability artifacts)
+    for art in parsed_artifacts:
+        art_traceability = traceability_by_path.get(str(art.path), "FULL")
+        for d in art.id_definitions:
+            artifact_ids.add(d.id)
+            # Only collect to_code IDs from artifacts with FULL traceability
+            if d.to_code and art_traceability == "FULL":
+                to_code_ids.add(d.id)
+
+    if not args.skip_code and not args.artifact:
+        # Scan code files from all systems
+        def resolve_code_path(p: str) -> Path:
+            return (project_root / p).resolve()
+
+        def scan_codebase_entry(entry: dict, traceability: str) -> None:
+            code_path = resolve_code_path(entry.get("path", ""))
+            extensions = entry.get("extensions", [".py"])
+
+            if not code_path.exists():
+                return
+
+            if code_path.is_file():
+                files_to_scan = [code_path]
+            else:
+                files_to_scan = []
+                for ext in extensions:
+                    files_to_scan.extend(code_path.rglob(f"*{ext}"))
+
+            for file_path in files_to_scan:
+                cf, errs = CodeFile.from_path(file_path)
+                if errs:
+                    all_errors.extend(errs)
+                    continue
+
+                if cf is None:
+                    continue
+
+                # Validate structure
+                result = cf.validate()
+                all_errors.extend(result.get("errors", []))
+                all_warnings.extend(result.get("warnings", []))
+
+                # Track IDs found
+                file_ids = cf.list_ids()
+                code_ids_found.update(file_ids)
+
+                if file_ids or cf.scope_markers or cf.block_markers:
+                    code_files_scanned.append({
+                        "path": str(file_path),
+                        "scope_markers": len(cf.scope_markers),
+                        "block_markers": len(cf.block_markers),
+                        "ids_referenced": len(file_ids),
+                    })
+
+                # Check for orphaned markers (IDs not in artifacts)
+                if traceability == "FULL":
+                    for ref in cf.references:
+                        if ref.id not in artifact_ids:
+                            all_errors.append({
+                                "type": "traceability",
+                                "message": "Code marker references ID not defined in any artifact",
+                                "path": str(file_path),
+                                "line": ref.line,
+                                "id": ref.id,
+                            })
+
+        def scan_system_codebase(system_node: "SystemNode") -> None:
+            for cb_entry in system_node.codebase:
+                # Determine traceability from system artifacts
+                traceability = "FULL"
+                for art in system_node.artifacts:
+                    if art.traceability == "DOCS-ONLY":
+                        traceability = "DOCS-ONLY"
+                        break
+                scan_codebase_entry({
+                    "path": cb_entry.path,
+                    "extensions": cb_entry.extensions,
+                }, traceability)
+            for child in system_node.children:
+                scan_system_codebase(child)
+
+        for system_node in meta.systems:
+            scan_system_codebase(system_node)
+
+        # Check for missing code markers (to_code IDs without markers)
+        missing_ids = to_code_ids - code_ids_found
+        for missing_id in sorted(missing_ids):
+            all_errors.append({
+                "type": "coverage",
+                "message": "ID marked to_code=\"true\" has no code marker",
+                "id": missing_id,
+            })
+
     # Build final report
     overall_status = "PASS" if not all_errors else "FAIL"
 
@@ -1152,6 +1292,14 @@ def _cmd_validate(argv: List[str]) -> int:
         "error_count": len(all_errors),
         "warning_count": len(all_warnings),
     }
+
+    # Add code validation stats if code was validated
+    if not args.skip_code and not args.artifact:
+        report["code_files_scanned"] = len(code_files_scanned)
+        report["to_code_ids_total"] = len(to_code_ids)
+        report["code_ids_found"] = len(code_ids_found)
+        if to_code_ids:
+            report["coverage"] = f"{len(code_ids_found & to_code_ids)}/{len(to_code_ids)}"
 
     # Add next step hint for agent
     if overall_status == "PASS":
@@ -1200,7 +1348,7 @@ def _cmd_list_ids(argv: List[str]) -> int:
     p.add_argument("--artifact", default=None, help="Path to Spider artifact file (if omitted, scans all registered Spider artifacts)")
     p.add_argument("--pattern", default=None, help="Filter IDs by substring or regex pattern")
     p.add_argument("--regex", action="store_true", help="Treat pattern as regular expression")
-    p.add_argument("--kind", default=None, help="Filter by ID kind from template markers (e.g., 'requirement', 'feature')")
+    p.add_argument("--kind", default=None, help="Filter by ID kind from template markers (e.g., 'requirement', 'spec')")
     p.add_argument("--all", action="store_true", help="Include duplicate IDs in results")
     p.add_argument("--include-code", action="store_true", help="Also scan code files for Spider marker references")
     args = p.parse_args(argv)
@@ -1846,250 +1994,6 @@ def _cmd_where_used(argv: List[str]) -> int:
 
 
 # =============================================================================
-# CODE VALIDATION COMMAND
-# =============================================================================
-
-def _cmd_validate_code(argv: List[str]) -> int:
-    """Validate Spider traceability markers in code files.
-
-    Checks that:
-    - All @spider-begin markers have matching @spider-end
-    - Block markers are not empty
-    - Code markers reference IDs that exist in artifacts
-    - All to_code="true" IDs have code markers (coverage)
-    - Respects traceability mode (FULL vs DOCS-ONLY)
-    """
-    p = argparse.ArgumentParser(prog="validate-code", description="Validate Spider code traceability markers")
-    p.add_argument("path", nargs="?", default=None, help="Path to code file or directory (defaults to codebase from artifacts.json)")
-    p.add_argument("--system", default=None, help="System name to validate (if omitted, validates all systems)")
-    p.add_argument("--verbose", action="store_true", help="Print full validation report")
-    p.add_argument("--output", default=None, help="Output file for JSON report")
-    args = p.parse_args(argv)
-
-    # Find project root and adapter
-    project_root = find_project_root(Path.cwd())
-    if not project_root:
-        print(json.dumps({"status": "ERROR", "message": "Not in Spider project"}, indent=None, ensure_ascii=False))
-        return 1
-
-    adapter_dir = find_adapter_directory(project_root)
-    if not adapter_dir:
-        print(json.dumps({"status": "ERROR", "message": "Adapter directory not found"}, indent=None, ensure_ascii=False))
-        return 1
-
-    reg, reg_err = load_artifacts_registry(adapter_dir)
-    if reg_err or not isinstance(reg, dict):
-        print(json.dumps({"status": "ERROR", "message": reg_err or "Invalid artifacts registry"}, indent=None, ensure_ascii=False))
-        return 1
-
-    # Collect artifact IDs and to_code IDs from all artifacts
-    from .utils.template import Template, cross_validate_artifacts
-
-    artifact_ids: Set[str] = set()
-    to_code_ids: Set[str] = set()
-    parsed_artifacts: List[TemplateArtifact] = []
-
-    weavers = reg.get("weavers", {})
-    systems = reg.get("systems", [])
-    project_root_from_reg = reg.get("project_root", "..")
-
-    def resolve_path(p: str) -> Path:
-        rel = Path(project_root_from_reg) / p
-        return (adapter_dir / rel).resolve()
-
-    def process_system(system: dict, filter_system: Optional[str]) -> None:
-        system_name = system.get("name", "")
-        if filter_system and system_name != filter_system:
-            for child in system.get("children", []):
-                process_system(child, filter_system)
-            return
-
-        weaver_name = system.get("weaver", "")
-        weaver_cfg = weavers.get(weaver_name, {})
-        weaver_base = weaver_cfg.get("path", "")
-
-        # Process artifacts to collect IDs
-        for art_cfg in system.get("artifacts", []):
-            art_path = resolve_path(art_cfg.get("path", ""))
-            art_kind = art_cfg.get("kind", "")
-            if not art_path.is_file():
-                continue
-
-            # Find template
-            template_path = resolve_path(f"{weaver_base}/artifacts/{art_kind}/template.md")
-            if not template_path.is_file():
-                continue
-
-            tmpl, errs = Template.from_path(template_path)
-            if errs or tmpl is None:
-                continue
-
-            artifact = tmpl.parse(art_path)
-            artifact._extract_ids_and_refs()
-            parsed_artifacts.append(artifact)
-
-            for d in artifact.id_definitions:
-                artifact_ids.add(d.id)
-                if d.to_code:
-                    to_code_ids.add(d.id)
-
-        # Recurse into children
-        for child in system.get("children", []):
-            process_system(child, filter_system)
-
-    for system in systems:
-        process_system(system, args.system)
-
-    # Now scan code files
-    all_errors: List[Dict[str, object]] = []
-    all_warnings: List[Dict[str, object]] = []
-    code_files_scanned: List[Dict[str, object]] = []
-    code_ids_found: Set[str] = set()
-
-    def scan_codebase_entry(entry: dict, traceability: str) -> None:
-        code_path = resolve_path(entry.get("path", ""))
-        extensions = entry.get("extensions", [".py"])
-
-        if not code_path.exists():
-            return
-
-        if code_path.is_file():
-            files_to_scan = [code_path]
-        else:
-            files_to_scan = []
-            for ext in extensions:
-                files_to_scan.extend(code_path.rglob(f"*{ext}"))
-
-        for file_path in files_to_scan:
-            cf, errs = CodeFile.from_path(file_path)
-            if errs:
-                all_errors.extend(errs)
-                continue
-
-            if cf is None:
-                continue
-
-            # Validate structure
-            result = cf.validate()
-            all_errors.extend(result.get("errors", []))
-            all_warnings.extend(result.get("warnings", []))
-
-            # Track IDs found
-            file_ids = cf.list_ids()
-            code_ids_found.update(file_ids)
-
-            if file_ids or cf.scope_markers or cf.block_markers:
-                code_files_scanned.append({
-                    "path": str(file_path),
-                    "scope_markers": len(cf.scope_markers),
-                    "block_markers": len(cf.block_markers),
-                    "ids_referenced": len(file_ids),
-                })
-
-            # Check for orphaned markers (IDs not in artifacts)
-            if traceability == "FULL":
-                for ref in cf.references:
-                    if ref.id not in artifact_ids:
-                        all_errors.append({
-                            "type": "traceability",
-                            "message": "Code marker references ID not defined in any artifact",
-                            "path": str(file_path),
-                            "line": ref.line,
-                            "id": ref.id,
-                        })
-            elif traceability == "DOCS-ONLY":
-                # In DOCS-ONLY mode, markers are prohibited
-                if cf.scope_markers or cf.block_markers:
-                    all_errors.append({
-                        "type": "traceability",
-                        "message": "Spider markers found but traceability is DOCS-ONLY",
-                        "path": str(file_path),
-                        "line": 1,
-                    })
-
-    # If path specified, validate just that
-    if args.path:
-        target_path = Path(args.path).resolve()
-        scan_codebase_entry({"path": str(target_path), "extensions": [target_path.suffix or ".py"]}, "FULL")
-    else:
-        # Scan all codebase entries from systems
-        def scan_system_codebase(system: dict, filter_system: Optional[str]) -> None:
-            system_name = system.get("name", "")
-            if filter_system and system_name != filter_system:
-                for child in system.get("children", []):
-                    scan_system_codebase(child, filter_system)
-                return
-
-            for cb_entry in system.get("codebase", []):
-                # Determine traceability from system artifacts
-                traceability = "FULL"  # default
-                for art in system.get("artifacts", []):
-                    if art.get("traceability") == "DOCS-ONLY":
-                        traceability = "DOCS-ONLY"
-                        break
-                scan_codebase_entry(cb_entry, traceability)
-
-            for child in system.get("children", []):
-                scan_system_codebase(child, filter_system)
-
-        for system in systems:
-            scan_system_codebase(system, args.system)
-
-    # Check for missing code markers (to_code IDs without markers)
-    missing_ids = to_code_ids - code_ids_found
-    for missing_id in sorted(missing_ids):
-        all_errors.append({
-            "type": "coverage",
-            "message": "ID marked to_code=\"true\" has no code marker",
-            "id": missing_id,
-        })
-
-    # Build report
-    overall_status = "PASS" if not all_errors else "FAIL"
-
-    report: Dict[str, object] = {
-        "status": overall_status,
-        "code_files_scanned": len(code_files_scanned),
-        "artifact_ids_total": len(artifact_ids),
-        "to_code_ids_total": len(to_code_ids),
-        "code_ids_found": len(code_ids_found),
-        "coverage": f"{len(code_ids_found & to_code_ids)}/{len(to_code_ids)}" if to_code_ids else "N/A",
-        "error_count": len(all_errors),
-        "warning_count": len(all_warnings),
-    }
-
-    # Add next step hint
-    if overall_status == "PASS":
-        report["next_step"] = "Code traceability validation passed. Review implementation against design requirements."
-
-    if args.verbose:
-        report["code_files"] = code_files_scanned
-        report["errors"] = all_errors
-        report["warnings"] = all_warnings
-        report["artifact_ids"] = sorted(artifact_ids)
-        report["to_code_ids"] = sorted(to_code_ids)
-        report["code_ids_found"] = sorted(code_ids_found)
-        if missing_ids:
-            report["missing_coverage"] = sorted(missing_ids)
-    else:
-        if all_errors:
-            report["errors"] = all_errors[:20]
-            if len(all_errors) > 20:
-                report["errors_truncated"] = len(all_errors) - 20
-
-    out = json.dumps(report, indent=2 if args.verbose else None, ensure_ascii=False)
-    if args.verbose:
-        out += "\n"
-
-    if args.output:
-        Path(args.output).write_text(out, encoding="utf-8")
-    else:
-        print(out)
-
-    return 0 if overall_status == "PASS" else 2
-
-
-# =============================================================================
 # TEMPLATE VALIDATION COMMAND
 # =============================================================================
 
@@ -2329,7 +2233,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     # Context may be None if no adapter found - that's OK for some commands like init
 
     # Define all available commands
-    validation_commands = ["validate", "validate-code", "validate-weavers"]
+    analysis_commands = ["validate", "validate-weavers"]
+    legacy_aliases = ["validate-code", "validate-rules"]
     search_commands = [
         "init",
         "list-ids", "list-id-kinds",
@@ -2339,7 +2244,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "self-check",
         "agents",
     ]
-    all_commands = validation_commands + search_commands
+    all_commands = analysis_commands + search_commands + legacy_aliases
 
     # Handle --help / -h at top level
     if argv_list and argv_list[0] in ("-h", "--help"):
@@ -2348,12 +2253,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         print("Spider CLI - artifact validation and traceability tool")
         print()
         print("Validation commands:")
-        for c in validation_commands:
+        for c in analysis_commands:
             print(f"  {c}")
         print()
         print("Search and utility commands:")
         for c in search_commands:
             print(f"  {c}")
+        print()
+        print("Legacy aliases:")
+        print("  validate-code → validate")
+        print("  validate-rules → validate-weavers")
         print()
         print("Run 'spider <command> --help' for command-specific options.")
         return 0
@@ -2362,7 +2271,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(json.dumps({
             "status": "ERROR",
             "message": "Missing subcommand",
-            "validation_commands": validation_commands,
+            "analysis_commands": analysis_commands,
             "search_commands": search_commands,
         }, indent=None, ensure_ascii=False))
         return 1
@@ -2379,7 +2288,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     if cmd == "validate":
         return _cmd_validate(rest)
     elif cmd == "validate-code":
-        return _cmd_validate_code(rest)
+        # Legacy alias: keep for compatibility.
+        return _cmd_validate(rest)
     elif cmd in ("validate-weavers", "validate-rules"):
         return _cmd_validate_weavers(rest)
     elif cmd == "init":

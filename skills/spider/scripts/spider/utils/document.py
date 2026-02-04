@@ -4,31 +4,8 @@ Spider Validator - Document Utilities
 Functions for working with documents and file paths.
 """
 
-import fnmatch
 from pathlib import Path
 from typing import List, Optional
-
-
-def detect_artifact_kind(artifact_path: Path) -> str:
-    """
-    Detect artifact kind from file path.
-    
-    Args:
-        artifact_path: Path to artifact file
-    
-    Returns:
-        Artifact kind string
-    """
-    name = artifact_path.name
-    if artifact_path.exists() and artifact_path.is_dir() and name == "ADR":
-        return "adr"
-    if name == "DECOMPOSITION.md":
-        return "features-manifest"
-    if name == "DESIGN.md" and "features" in artifact_path.parts and any(p.startswith("feature-") for p in artifact_path.parts):
-        return "feature-design"
-    if name == "DESIGN.md":
-        return "overall-design"
-    return "generic"
 
 
 def iter_text_files(
@@ -149,7 +126,6 @@ def to_relative_posix(path: Path, root: Path) -> str:
 
 
 __all__ = [
-    "detect_artifact_kind",
     "iter_text_files",
     "read_text_safe",
     "to_relative_posix",

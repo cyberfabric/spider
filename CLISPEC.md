@@ -62,24 +62,24 @@ RELATED: (optional)
 
 **COMMAND**: Command name (kebab-case)
 ```
-COMMAND init-feature
+COMMAND init-spec
 ```
 
 **SYNOPSIS**: Command usage pattern
 ```
-SYNOPSIS: spider init-feature <slug> [options]
+SYNOPSIS: spider init-spec <slug> [options]
 ```
 
 **DESCRIPTION**: Brief description (1-2 sentences)
 ```
-DESCRIPTION: Initialize a new feature with DESIGN.md template
+DESCRIPTION: Initialize a new spec with DESIGN.md template
 ```
 
 **ARGUMENTS**: Positional arguments (one per line)
 ```
 ARGUMENTS:
-  slug  <slug>  required  Feature identifier (lowercase-with-dashes)
-  name  <string>  optional  Human-readable feature name
+  slug  <slug>  required  Spec identifier (lowercase-with-dashes)
+  name  <string>  optional  Human-readable spec name
 ```
 
 **OPTIONS**: Named options/flags (one per line)
@@ -102,24 +102,24 @@ EXIT CODES:
 **EXAMPLE**: Usage examples (one or more)
 ```
 EXAMPLE:
-  $ spider init-feature user-authentication
-  $ spider init-feature data-export --template minimal
-  $ spider init-feature payment --skip-validation
+  $ spider init-spec user-authentication
+  $ spider init-spec data-export --template minimal
+  $ spider init-spec payment --skip-validation
 ```
 
 ### Optional Sections
 
 **WORKFLOW**: Reference to Spider workflow
 ```
-WORKFLOW: 05-init-feature
+WORKFLOW: 05-init-spec
 ```
 
 **RELATED**: Related commands/workflows
 ```
 RELATED:
-  - @CLI.validate-feature
-  - @CLI.init-features
-  - @Workflow.05-init-feature
+  - @CLI.validate-spec
+  - @CLI.init-specs
+  - @Workflow.05-init-spec
 ```
 
 ---
@@ -152,7 +152,7 @@ ARGUMENTS:
 
 ### Formatting Rules
 
-1. **Command names**: kebab-case (e.g., `init-feature`, `validate-architecture`)
+1. **Command names**: kebab-case (e.g., `init-spec`, `validate-architecture`)
 2. **Section headers**: UPPERCASE followed by colon
 3. **One item per line**: Arguments and options on separate lines
 4. **Indentation**: 2 spaces for items under sections
@@ -204,10 +204,10 @@ Reference other commands, workflows, or entities:
 @Workflow.adapter-config       # Reference to workflow file
 ```
 
-### Feature References
+### Spec References
 
 ```
-@Feature.{slug}                # Reference to feature
+@Spec.{slug}                # Reference to spec
 @DomainModel.{TypeName}        # Reference to domain type
 ```
 
@@ -216,13 +216,13 @@ Reference other commands, workflows, or entities:
 ## Complete Example
 
 ```
-COMMAND validate-feature
-SYNOPSIS: spider validate-feature <slug> [options]
-DESCRIPTION: Validate feature design completeness and Spider compliance
-WORKFLOW: 06-validate-feature
+COMMAND validate-spec
+SYNOPSIS: spider validate-spec <slug> [options]
+DESCRIPTION: Validate spec design completeness and Spider compliance
+WORKFLOW: 06-validate-spec
 
 ARGUMENTS:
-  slug  <slug>  required  Feature identifier to validate
+  slug  <slug>  required  Spec identifier to validate
 
 OPTIONS:
   --strict  <boolean>  Enable strict validation mode
@@ -230,50 +230,50 @@ OPTIONS:
   --output, -o  <path>  [default: stdout]  Output file for report
 
 EXIT CODES:
-  0  Feature design valid (score 100/100)
-  1  File system error or feature not found
+  0  Spec design valid (score 100/100)
+  1  File system error or spec not found
   2  Validation failed (score < 100/100)
   3  Workflow execution error
 
 EXAMPLE:
-  $ spider validate-feature user-authentication
-  $ spider validate-feature data-export --strict
-  $ spider validate-feature payment --output report.txt
+  $ spider validate-spec user-authentication
+  $ spider validate-spec data-export --strict
+  $ spider validate-spec payment --output report.txt
 
 RELATED:
-  - @CLI.init-feature
+  - @CLI.init-spec
   - @CLI.fix-design
-  - @Workflow.06-validate-feature
+  - @Workflow.06-validate-spec
 ---
 
-COMMAND init-feature
-SYNOPSIS: spider init-feature <slug> [options]
-DESCRIPTION: Initialize a new feature with DESIGN.md template
-WORKFLOW: 05-init-feature
+COMMAND init-spec
+SYNOPSIS: spider init-spec <slug> [options]
+DESCRIPTION: Initialize a new spec with DESIGN.md template
+WORKFLOW: 05-init-spec
 
 ARGUMENTS:
-  slug  <slug>  required  Feature identifier (lowercase-with-dashes)
+  slug  <slug>  required  Spec identifier (lowercase-with-dashes)
 
 OPTIONS:
   --template, -t  <string>  [default: standard]  Template to use (standard|minimal|full)
   --skip-validation  <boolean>  Skip architecture validation check
-  --force  <boolean>  Overwrite existing feature directory
+  --force  <boolean>  Overwrite existing spec directory
 
 EXIT CODES:
-  0  Feature initialized successfully
+  0  Spec initialized successfully
   1  File system error or invalid slug
   2  Architecture validation failed
-  3  Feature directory already exists
+  3  Spec directory already exists
 
 EXAMPLE:
-  $ spider init-feature user-authentication
-  $ spider init-feature data-export --template minimal
-  $ spider init-feature payment --skip-validation
+  $ spider init-spec user-authentication
+  $ spider init-spec data-export --template minimal
+  $ spider init-spec payment --skip-validation
 
 RELATED:
-  - @CLI.validate-feature
-  - @CLI.init-features
-  - @Workflow.05-init-feature
+  - @CLI.validate-spec
+  - @CLI.init-specs
+  - @Workflow.05-init-spec
 ---
 ```
 
@@ -385,8 +385,8 @@ your-tool validate-clispec architecture/cli-specs/commands.clispec
 **Location**: `architecture/cli-specs/commands.clispec`
 
 **Commands**:
-- @CLI.init-feature - Initialize feature
-- @CLI.validate-feature - Validate feature design
+- @CLI.init-spec - Initialize spec
+- @CLI.validate-spec - Validate spec design
 ```
 
 ---
@@ -467,4 +467,4 @@ Syntax highlighting:
 
 ## License
 
-This specification is part of the Spider (Feature-Driven Development) methodology.
+This specification is part of the Spider (Spec-Driven Development) methodology.

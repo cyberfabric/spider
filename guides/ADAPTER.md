@@ -18,32 +18,32 @@ These are validated by tooling and cannot be changed:
 
 ### 1. Design Hierarchy
 ```
-ADAPTER → PRD CONTEXT → OVERALL DESIGN → FEATURE DESIGN → CODE
+ADAPTER → PRD CONTEXT → OVERALL DESIGN → SPEC DESIGN → CODE
 ```
 Must reference parent level, never contradict.
 
 - **ADAPTER**: Defines tech stack, formats, conventions (first step, required)
 - **PRD CONTEXT**: Defines actors, capabilities, product requirements
 - **OVERALL DESIGN**: Architecture, domain model, API contracts
-- **FEATURE DESIGN**: Actor flows, algorithms, requirements
-- **CODE**: Implementation following feature design
+- **SPEC DESIGN**: Actor flows, algorithms, requirements
+- **CODE**: Implementation following spec design
 
 ### 2. Mandatory Spider Rules
 - Actor Flows (Section B) are PRIMARY - always start from what actors do
 - Use Spider DSL (SDSL) for flows/algorithms/states - NEVER code in DESIGN.md
 - Never redefine types - reference domain model from Overall Design
-- Validate before proceeding (Overall ≥90/100, Feature 100/100)
-- Feature size limits: ≤3000 lines (recommended), ≤4000 (hard limit)
+- Validate before proceeding (Overall ≥90/100, Spec 100/100)
+- Spec size limits: ≤3000 lines (recommended), ≤4000 (hard limit)
 - Design is source of truth - if code contradicts design, fix design first
 
 ### 3. File Structure
 ```
 architecture/
 ├── DESIGN.md                    # Overall Design
-└── features/
-    ├── DECOMPOSITION.md              # Feature manifest
-    └── feature-{slug}/
-        ├── DESIGN.md            # Feature Design
+└── specs/
+    ├── DECOMPOSITION.md              # Spec manifest
+    └── spec-{slug}/
+        ├── DESIGN.md            # Spec Design
 ```
 
 ### 4. DESIGN.md Sections
@@ -54,8 +54,8 @@ architecture/
 - Section D: Architecture Decision Records (ADR) - REQUIRED, MADR format
 - Section E: Project-Specific Details (optional)
 
-**Feature Design**:
-- Section A: Feature Overview
+**Spec Design**:
+- Section A: Spec Overview
 - Section B: Actor Flows (PRIMARY)
 - Section C: Algorithms
 - Section D: States (optional)
@@ -64,7 +64,7 @@ architecture/
 
 ### 5. Validation Scores
 - Overall Design: ≥90/100
-- Feature Design: 100/100 + 100% completeness
+- Spec Design: 100/100 + 100% completeness
 
 ---
 
@@ -95,11 +95,11 @@ Example location (in your adapter):
 .spider-adapter/specs/domain-model.md
 ```
 - Technology (TypeScript, JSON Schema, Protobuf, GTS, etc.)
-- Location (`architecture/domain-model/`, per-feature, etc.)
+- Location (`architecture/domain-model/`, per-spec, etc.)
 - DML syntax (`@DomainModel.TypeName` for clickable references)
 - Validation commands
 - Naming conventions
-- Traceability requirements (clickable links from Feature→Overall)
+- Traceability requirements (clickable links from Spec→Overall)
 
 ### API Contract Format
 
@@ -110,10 +110,10 @@ Example location (in your adapter):
 ```
 - Technology (OpenAPI, GraphQL, gRPC, CLISPEC, etc.)
 - Location (`architecture/api-specs/`, `architecture/cli-specs/`, etc.)
-- Linking syntax (`@API.GET:/path`, `@CLI.command-name`, `@Feature.{slug}` for clickable references)
+- Linking syntax (`@API.GET:/path`, `@CLI.command-name`, `@Spec.{slug}` for clickable references)
 - Validation commands
 - API conventions
-- Traceability requirements (clickable links from Feature→Overall)
+- Traceability requirements (clickable links from Spec→Overall)
 
 **Note**: For CLI tools, consider using **CLISPEC** - a built-in, simple format for CLI command documentation. See `../CLISPEC.md`.
 
@@ -247,7 +247,7 @@ Examples (in your adapter):
 - **Example**:
 
 ```text
-Replace: {Spider}/requirements/SDSL.md
+Replace: {spider_path}/requirements/SDSL.md
 With:    {project-root}/.spider-adapter/CustomBDL.md
 ```
 - **Requirements**: Define control flow keywords, syntax rules, validation criteria
@@ -312,15 +312,15 @@ With:    {project-root}/.spider-adapter/CustomBDL.md
 
 ---
 
-ALWAYS open and follow `specs/domain-model.md` WHEN executing workflows: design.md, design-validate.md, adr.md, adr-validate.md, features.md, features-validate.md, feature.md, feature-validate.md, code-validate.md
+ALWAYS open and follow `specs/domain-model.md` WHEN executing workflows: design.md, design-validate.md, adr.md, adr-validate.md, specs.md, specs-validate.md, spec.md, spec-validate.md, code-validate.md
 
-ALWAYS open and follow `specs/api-contracts.md` WHEN executing workflows: design.md, design-validate.md, adr.md, adr-validate.md, feature.md, feature-validate.md, code-validate.md
+ALWAYS open and follow `specs/api-contracts.md` WHEN executing workflows: design.md, design-validate.md, adr.md, adr-validate.md, spec.md, spec-validate.md, code-validate.md
 
 ALWAYS open and follow `specs/testing.md` WHEN executing workflows: code-validate.md
 
 ALWAYS open and follow `specs/build-deploy.md` WHEN executing workflows: code-validate.md
 
-ALWAYS open and follow `specs/project-structure.md` WHEN executing workflows: adapter.md, adapter-auto.md, adapter-manual.md, adapter-bootstrap.md, adapter-agents.md, adapter-validate.md, prd.md, prd-validate.md, design.md, design-validate.md, adr.md, adr-validate.md, features.md, features-validate.md, feature.md, feature-validate.md
+ALWAYS open and follow `specs/project-structure.md` WHEN executing workflows: adapter.md, adapter-auto.md, adapter-manual.md, adapter-bootstrap.md, adapter-agents.md, adapter-validate.md, prd.md, prd-validate.md, design.md, design-validate.md, adr.md, adr-validate.md, specs.md, specs-validate.md, spec.md, spec-validate.md
 
 ALWAYS open and follow `specs/conventions.md` WHEN executing workflows: adapter.md, adapter-auto.md, adapter-manual.md, adapter-bootstrap.md, adapter-validate.md, code-validate.md
 ```
@@ -358,7 +358,7 @@ Reference as: `@DomainModel.User`
 
 ## Traceability
 
-All Feature DESIGN.md files MUST use clickable links to domain model types.
+All Spec DESIGN.md files MUST use clickable links to domain model types.
 ```
 
 **Example spec file** (`specs/tech-stack.md`):

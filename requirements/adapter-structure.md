@@ -72,7 +72,7 @@ purpose: Define validation rules for Spider adapter files
 **Should not contain**:
 - PRD content (use PRD artifact).
 - Architecture decisions rationale (use ADRs).
-- Feature specs or implementation plans.
+- Spec specs or implementation plans.
 
 ---
 
@@ -101,35 +101,51 @@ purpose: Define validation rules for Spider adapter files
 
 **WHEN clause format** (mandatory for adapter navigation rules):
 ```
-ALWAYS open and follow `{spec-file}` WHEN Spider follows weaver `{weaver-id}` for artifact kinds: {KIND1}, {KIND2} [OR codebase]
+ALWAYS open and follow `{spec-file}` WHEN {action-description}
 ```
 
-**Valid artifact kinds**: Standard Spider kinds: PRD, DESIGN, DECOMPOSITION, ADR, FEATURE. Custom kinds may be added per project.
+**Action-based rules**: Rules describe WHAT the agent is doing, not which weaver or artifact kind is active. This makes rules universal and easier to match.
 
-**Codebase**: Use `OR codebase` when spec applies to code validation/generation
+#### Universal WHEN Rules
+
+| Spec File | WHEN Rule |
+|-----------|-----------|
+| `tech-stack.md` | WHEN writing code, choosing technologies, or adding dependencies |
+| `conventions.md` | WHEN writing code, naming files/functions/variables, or reviewing code |
+| `project-structure.md` | WHEN creating files, adding modules, or navigating codebase |
+| `domain-model.md` | WHEN working with entities, data structures, or business logic |
+| `testing.md` | WHEN writing tests, reviewing test coverage, or debugging |
+| `build-deploy.md` | WHEN building, deploying, or configuring CI/CD |
+| `patterns.md` | WHEN implementing features, designing components, or refactoring |
+| `api-contracts.md` | WHEN creating/consuming APIs, defining endpoints, or handling requests |
+| `security.md` | WHEN handling authentication, authorization, or sensitive data |
+| `data-governance.md` | WHEN storing user data, handling PII, or managing data lifecycle |
+| `performance.md` | WHEN optimizing, caching, or working with high-load components |
+| `reliability.md` | WHEN handling errors, implementing retries, or adding health checks |
+| `compliance.md` | WHEN handling regulated data, audit logging, or legal requirements |
 
 **Valid examples** ✅:
 ```markdown
-ALWAYS open and follow `specs/tech-stack.md` WHEN Spider follows weaver `spider-sdlc` for artifact kinds: DESIGN, ADR OR codebase
+ALWAYS open and follow `specs/tech-stack.md` WHEN writing code, choosing technologies, or adding dependencies
 
-ALWAYS open and follow `specs/conventions.md` WHEN Spider follows weaver `spider-sdlc` for codebase
+ALWAYS open and follow `specs/conventions.md` WHEN writing code, naming files/functions/variables, or reviewing code
 
-ALWAYS open and follow `specs/domain-model.md` WHEN Spider follows weaver `spider-sdlc` for artifact kinds: DESIGN, DECOMPOSITION, FEATURE
+ALWAYS open and follow `specs/testing.md` WHEN writing tests, reviewing test coverage, or debugging
 ```
 
 **Invalid examples** ❌:
 ```markdown
-# Missing weaver ID
-ALWAYS open and follow `specs/tech-stack.md` WHEN generating DESIGN
-→ FIX: Add `Spider follows weaver `spider-sdlc` for artifact kinds:`
+# Too vague - doesn't describe specific action
+ALWAYS open and follow `specs/tech-stack.md` WHEN working on project
+→ FIX: Be specific about the action
 
-# Using legacy workflow format
-ALWAYS open and follow `specs/tech-stack.md` WHEN executing workflows: spider-generate, spider-validate
-→ FIX: Use rules-based format with artifact kinds
+# Tied to weaver (legacy format)
+ALWAYS open and follow `specs/tech-stack.md` WHEN Spider uses weaver `spider-sdlc` for codebase
+→ FIX: Use action-based format: WHEN writing code, choosing technologies, or adding dependencies
 
-# Missing artifact kinds
-ALWAYS open and follow `specs/tech-stack.md` WHEN Spider follows weaver `spider-sdlc`
-→ FIX: Specify `for artifact kinds: X, Y` or `for codebase`
+# Tied to artifact kind (legacy format)
+ALWAYS open and follow `specs/domain-model.md` WHEN generating DESIGN
+→ FIX: Use action-based format: WHEN working with entities, data structures, or business logic
 ```
 
 ---
@@ -180,7 +196,7 @@ ALWAYS open and follow `specs/tech-stack.md` WHEN Spider follows weaver `spider-
 
 ## Spec Discovery Guide
 
-This section defines **what to look for** and **where to find it** when discovering project-specific knowledge for adapter specs. The domains are derived from the expertise areas in Spider checklists (PRD, DESIGN, DECOMPOSITION, ADR, FEATURE, and codebase).
+This section defines **what to look for** and **where to find it** when discovering project-specific knowledge for adapter specs. The domains are derived from the expertise areas in Spider checklists (PRD, DESIGN, DECOMPOSITION, ADR, SPEC, and codebase).
 
 ### Discovery Methodology
 
@@ -471,7 +487,7 @@ Each spec file MUST include:
 2. Run `/spider-adapter --rescan` to regenerate
 3. For each failed check, see [Consolidated Validation Checklist](#consolidated-validation-checklist)
 
-**Recovery**: After fixing issues, re-run `/spider-validate` to confirm resolution.
+**Recovery**: After fixing issues, re-run `/spider-analyze` to confirm resolution.
 
 ---
 
@@ -492,7 +508,7 @@ Each spec file MUST include:
 | 1.7 | Extends path resolves to valid file | YES | File exists at path |
 | 1.8 | No PRD content in adapter | YES | No problem/solution/scope sections |
 | 1.9 | No ADR rationale in adapter | YES | No decision rationale sections |
-| 1.10 | No feature specs in adapter | YES | No requirement IDs or flows |
+| 1.10 | No spec specs in adapter | YES | No requirement IDs or flows |
 
 ### Phase 2: Evolved Adapter (with specs)
 
@@ -501,8 +517,8 @@ Each spec file MUST include:
 | 2.1 | All Phase 1 checks pass | YES | Run Phase 1 first |
 | 2.2 | Version field present | YES | `**Version**:` in AGENTS.md |
 | 2.3 | Last Updated field present | YES | `**Last Updated**:` in AGENTS.md |
-| 2.4 | Tech Stack summary present | YES | Tech Stack section exists |
-| 2.5 | WHEN rules use rules-based format | YES | Pattern: `WHEN Spider follows rules` |
+| 2.4 | Project Overview section present | YES | Project description exists |
+| 2.5 | WHEN rules use action-based format | YES | Pattern: `WHEN {verb}ing ...` (action description) |
 | 2.6 | No orphaned WHEN rules | YES | All referenced specs exist |
 | 2.7 | tech-stack.md complete | CONDITIONAL | If tech stack defined in DESIGN |
 | 2.8 | domain-model.md complete | CONDITIONAL | If domain model in DESIGN |
@@ -530,7 +546,7 @@ Each spec file MUST include:
 | Issue | Symptom | Fix |
 |-------|---------|-----|
 | Missing Extends | Validation fails at 1.6 | Add `**Extends**: \`{path}/Spider/AGENTS.md\`` |
-| Legacy WHEN format | Validation fails at 2.5 | Convert to `WHEN Spider follows rules \`{id}\` for artifact kinds:` |
+| Legacy WHEN format | Validation fails at 2.5 | Convert to action-based: `WHEN writing code, ...` |
 | Orphaned WHEN rules | Validation fails at 2.6 | Create missing spec OR remove rule |
 | Inconsistent tech refs | Spec conflicts with DESIGN | Update spec to match DESIGN source of truth |
 | Missing spec files | Validation fails at 2.7-2.13 | Run `/spider-adapter --rescan` to generate |

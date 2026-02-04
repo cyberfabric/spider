@@ -518,7 +518,7 @@ Before evaluating each checklist item, the expert MUST:
 **Severity**: MEDIUM
 
 - [ ] Graceful degradation patterns documented
-- [ ] Feature flags architecture documented
+- [ ] Spec flags architecture documented
 - [ ] Canary deployment support documented
 - [ ] Blue/green deployment support documented
 - [ ] Rollback procedures documented
@@ -788,17 +788,17 @@ Before evaluating each checklist item, the expert MUST:
 
 ---
 
-## ❌ ARCH-DESIGN-NO-001: No Feature-Level Details
+## ❌ ARCH-DESIGN-NO-001: No Spec-Level Details
 **Severity**: CRITICAL
 
 **What to check**:
-- [ ] No feature-specific user flows
-- [ ] No feature-specific algorithms
-- [ ] No feature-specific state machines
-- [ ] No feature-specific error handling details
-- [ ] No feature implementation steps
+- [ ] No spec-specific user flows
+- [ ] No spec-specific algorithms
+- [ ] No spec-specific state machines
+- [ ] No spec-specific error handling details
+- [ ] No spec implementation steps
 
-**Where it belongs**: `Feature DESIGN`
+**Where it belongs**: `Spec DESIGN`
 
 ---
 
@@ -840,7 +840,7 @@ Before evaluating each checklist item, the expert MUST:
 - [ ] No implementation timelines
 - [ ] No TODO lists
 
-**Where it belongs**: Project management tools or Feature DESIGN
+**Where it belongs**: Project management tools or Spec DESIGN
 
 ---
 

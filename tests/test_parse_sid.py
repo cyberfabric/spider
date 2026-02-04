@@ -19,26 +19,26 @@ class TestSimpleIds:
     def test_basic_simple_id(self):
         """Parse a basic simple ID."""
         result = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is not None
         assert result.system == "myapp"
-        assert result.kind == "feature"
+        assert result.kind == "spec"
         assert result.slug == "auth"
         assert result.prefix_id is None
 
     def test_simple_id_with_multi_part_slug(self):
         """Parse a simple ID with hyphenated slug."""
         result = parse_spd(
-            spd="spd-myapp-feature-user-authentication",
-            expected_kind="feature",
+            spd="spd-myapp-spec-user-authentication",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is not None
         assert result.system == "myapp"
-        assert result.kind == "feature"
+        assert result.kind == "spec"
         assert result.slug == "user-authentication"
         assert result.prefix_id is None
 
@@ -67,13 +67,13 @@ class TestSimpleIds:
     def test_simple_id_empty_slug(self):
         """Parse a simple ID with no slug (just system-kind)."""
         result = parse_spd(
-            spd="spd-myapp-feature",
-            expected_kind="feature",
+            spd="spd-myapp-spec",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is not None
         assert result.system == "myapp"
-        assert result.kind == "feature"
+        assert result.kind == "spec"
         assert result.slug == ""
         assert result.prefix_id is None
 
@@ -84,50 +84,50 @@ class TestMultiWordSystems:
     def test_multi_word_system(self):
         """Parse ID with multi-word system name."""
         result = parse_spd(
-            spd="spd-account-server-feature-billing",
-            expected_kind="feature",
+            spd="spd-account-server-spec-billing",
+            expected_kind="spec",
             registered_systems={"account-server"},
         )
         assert result is not None
         assert result.system == "account-server"
-        assert result.kind == "feature"
+        assert result.kind == "spec"
         assert result.slug == "billing"
         assert result.prefix_id is None
 
     def test_multi_word_system_longest_match(self):
         """When multiple systems could match, longest match wins."""
         result = parse_spd(
-            spd="spd-account-server-feature-billing",
-            expected_kind="feature",
+            spd="spd-account-server-spec-billing",
+            expected_kind="spec",
             registered_systems={"account", "account-server"},
         )
         assert result is not None
         assert result.system == "account-server"
-        assert result.kind == "feature"
+        assert result.kind == "spec"
         assert result.slug == "billing"
 
     def test_shorter_system_when_longer_doesnt_match(self):
         """Use shorter system when it's the only match."""
         result = parse_spd(
-            spd="spd-account-feature-billing",
-            expected_kind="feature",
+            spd="spd-account-spec-billing",
+            expected_kind="spec",
             registered_systems={"account", "account-server"},
         )
         assert result is not None
         assert result.system == "account"
-        assert result.kind == "feature"
+        assert result.kind == "spec"
         assert result.slug == "billing"
 
     def test_three_word_system(self):
         """Parse ID with three-word system name."""
         result = parse_spd(
-            spd="spd-my-cool-app-feature-auth",
-            expected_kind="feature",
+            spd="spd-my-cool-app-spec-auth",
+            expected_kind="spec",
             registered_systems={"my-cool-app"},
         )
         assert result is not None
         assert result.system == "my-cool-app"
-        assert result.kind == "feature"
+        assert result.kind == "spec"
         assert result.slug == "auth"
 
 
@@ -135,12 +135,12 @@ class TestCompositeIds:
     """Tests for composite Spider IDs: spd-{system}-{kind1}-{slug1}-{kind2}-{slug2}"""
 
     def test_basic_composite_id(self):
-        """Parse a composite ID (feature-algo)."""
+        """Parse a composite ID (spec-algo)."""
         def where_defined(id_):
-            return id_ == "spd-myapp-feature-auth"
+            return id_ == "spd-myapp-spec-auth"
 
         result = parse_spd(
-            spd="spd-myapp-feature-auth-algo-hash",
+            spd="spd-myapp-spec-auth-algo-hash",
             expected_kind="algo",
             registered_systems={"myapp"},
             where_defined=where_defined,
@@ -149,15 +149,15 @@ class TestCompositeIds:
         assert result.system == "myapp"
         assert result.kind == "algo"
         assert result.slug == "hash"
-        assert result.prefix_id == "spd-myapp-feature-auth"
+        assert result.prefix_id == "spd-myapp-spec-auth"
 
-    def test_composite_id_feature_flow(self):
-        """Parse a feature-flow composite ID."""
+    def test_composite_id_spec_flow(self):
+        """Parse a spec-flow composite ID."""
         def where_defined(id_):
-            return id_ == "spd-myapp-feature-checkout"
+            return id_ == "spd-myapp-spec-checkout"
 
         result = parse_spd(
-            spd="spd-myapp-feature-checkout-flow-payment",
+            spd="spd-myapp-spec-checkout-flow-payment",
             expected_kind="flow",
             registered_systems={"myapp"},
             where_defined=where_defined,
@@ -165,15 +165,15 @@ class TestCompositeIds:
         assert result is not None
         assert result.kind == "flow"
         assert result.slug == "payment"
-        assert result.prefix_id == "spd-myapp-feature-checkout"
+        assert result.prefix_id == "spd-myapp-spec-checkout"
 
-    def test_composite_id_feature_req(self):
-        """Parse a feature-req composite ID."""
+    def test_composite_id_spec_req(self):
+        """Parse a spec-req composite ID."""
         def where_defined(id_):
-            return id_ == "spd-myapp-feature-auth"
+            return id_ == "spd-myapp-spec-auth"
 
         result = parse_spd(
-            spd="spd-myapp-feature-auth-req-password-validation",
+            spd="spd-myapp-spec-auth-req-password-validation",
             expected_kind="req",
             registered_systems={"myapp"},
             where_defined=where_defined,
@@ -181,7 +181,7 @@ class TestCompositeIds:
         assert result is not None
         assert result.kind == "req"
         assert result.slug == "password-validation"
-        assert result.prefix_id == "spd-myapp-feature-auth"
+        assert result.prefix_id == "spd-myapp-spec-auth"
 
     def test_composite_id_parent_not_defined(self):
         """Return None when parent ID doesn't exist."""
@@ -189,7 +189,7 @@ class TestCompositeIds:
             return False  # no IDs exist
 
         result = parse_spd(
-            spd="spd-myapp-feature-auth-algo-hash",
+            spd="spd-myapp-spec-auth-algo-hash",
             expected_kind="algo",
             registered_systems={"myapp"},
             where_defined=where_defined,
@@ -199,21 +199,21 @@ class TestCompositeIds:
     def test_composite_id_without_where_defined(self):
         """Composite ID parses without validation when where_defined is None."""
         result = parse_spd(
-            spd="spd-myapp-feature-auth-algo-hash",
+            spd="spd-myapp-spec-auth-algo-hash",
             expected_kind="algo",
             registered_systems={"myapp"},
             where_defined=None,  # no validation
         )
         assert result is not None
-        assert result.prefix_id == "spd-myapp-feature-auth"
+        assert result.prefix_id == "spd-myapp-spec-auth"
 
     def test_composite_id_multi_word_system(self):
         """Parse composite ID with multi-word system."""
         def where_defined(id_):
-            return id_ == "spd-account-server-feature-billing"
+            return id_ == "spd-account-server-spec-billing"
 
         result = parse_spd(
-            spd="spd-account-server-feature-billing-algo-invoice-calc",
+            spd="spd-account-server-spec-billing-algo-invoice-calc",
             expected_kind="algo",
             registered_systems={"account-server"},
             where_defined=where_defined,
@@ -222,7 +222,7 @@ class TestCompositeIds:
         assert result.system == "account-server"
         assert result.kind == "algo"
         assert result.slug == "invoice-calc"
-        assert result.prefix_id == "spd-account-server-feature-billing"
+        assert result.prefix_id == "spd-account-server-spec-billing"
 
 
 class TestCaseInsensitivity:
@@ -231,8 +231,8 @@ class TestCaseInsensitivity:
     def test_case_insensitive_spider_prefix(self):
         """The spd- prefix should be case-insensitive."""
         result = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is not None
@@ -241,8 +241,8 @@ class TestCaseInsensitivity:
     def test_case_insensitive_system(self):
         """System matching should be case-insensitive."""
         result = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is not None
@@ -251,20 +251,20 @@ class TestCaseInsensitivity:
     def test_case_insensitive_kind(self):
         """Kind matching should be case-insensitive."""
         result = parse_spd(
-            spd="spd-myapp-FEATURE-auth",
-            expected_kind="feature",
+            spd="spd-myapp-SPEC-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is not None
-        assert result.kind == "feature"  # returns expected_kind as passed
+        assert result.kind == "spec"  # returns expected_kind as passed
 
     def test_case_insensitive_composite_separator(self):
         """Composite ID separator matching should be case-insensitive."""
         def where_defined(id_):
-            return id_.lower() == "spd-myapp-feature-auth"
+            return id_.lower() == "spd-myapp-spec-auth"
 
         result = parse_spd(
-            spd="spd-myapp-feature-auth-ALGO-hash",
+            spd="spd-myapp-spec-auth-ALGO-hash",
             expected_kind="algo",
             registered_systems={"myapp"},
             where_defined=where_defined,
@@ -278,14 +278,14 @@ class TestCaseInsensitivity:
             return True
 
         result = parse_spd(
-            spd="spd-myapp-Feature-Auth-algo-hash",
+            spd="spd-myapp-Spec-Auth-algo-hash",
             expected_kind="algo",
             registered_systems={"myapp"},
             where_defined=where_defined,
         )
         assert result is not None
         # prefix_id preserves original case from the input
-        assert result.prefix_id == "spd-myapp-Feature-Auth"
+        assert result.prefix_id == "spd-myapp-Spec-Auth"
 
 
 class TestEdgeCases:
@@ -295,7 +295,7 @@ class TestEdgeCases:
         """Return None for None input."""
         result = parse_spd(
             spd=None,
-            expected_kind="feature",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is None
@@ -304,7 +304,7 @@ class TestEdgeCases:
         """Return None for empty string."""
         result = parse_spd(
             spd="",
-            expected_kind="feature",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is None
@@ -312,8 +312,8 @@ class TestEdgeCases:
     def test_not_spider_prefix(self):
         """Return None if doesn't start with spd-."""
         result = parse_spd(
-            spd="myapp-feature-auth",
-            expected_kind="feature",
+            spd="myapp-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is None
@@ -321,8 +321,8 @@ class TestEdgeCases:
     def test_unknown_system(self):
         """Return None for unknown system."""
         result = parse_spd(
-            spd="spd-unknown-feature-auth",
-            expected_kind="feature",
+            spd="spd-unknown-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is None
@@ -330,8 +330,8 @@ class TestEdgeCases:
     def test_empty_registered_systems(self):
         """Return None when no systems registered."""
         result = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems=set(),
         )
         assert result is None
@@ -340,7 +340,7 @@ class TestEdgeCases:
         """Return None for just 'spd-'."""
         result = parse_spd(
             spd="spd-",
-            expected_kind="feature",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is None
@@ -349,7 +349,7 @@ class TestEdgeCases:
         """Return None for just 'spd-system-'."""
         result = parse_spd(
             spd="spd-myapp-",
-            expected_kind="feature",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is None
@@ -357,8 +357,8 @@ class TestEdgeCases:
     def test_kind_mismatch_no_composite(self):
         """Return None when kind doesn't match and no composite found."""
         result = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="algo",  # looking for algo, but this is a feature
+            spd="spd-myapp-spec-auth",
+            expected_kind="algo",  # looking for algo, but this is a spec
             registered_systems={"myapp"},
         )
         assert result is None
@@ -366,8 +366,8 @@ class TestEdgeCases:
     def test_registered_systems_as_list(self):
         """Accept list as registered_systems (not just set)."""
         result = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems=["myapp", "other"],  # list, not set
         )
         assert result is not None
@@ -401,14 +401,14 @@ class TestRealWorldScenarios:
 
     def test_deeply_nested_composite(self):
         """Parse a deeply nested composite ID pattern."""
-        # spd-myapp-feature-auth-flow-login-step-validate
-        # This is feature-auth with flow-login, and we're looking for step
+        # spd-myapp-spec-auth-flow-login-step-validate
+        # This is spec-auth with flow-login, and we're looking for step
         def where_defined(id_):
-            # In real usage, we'd check if "spd-myapp-feature-auth-flow-login" exists
-            return id_ == "spd-myapp-feature-auth-flow-login"
+            # In real usage, we'd check if "spd-myapp-spec-auth-flow-login" exists
+            return id_ == "spd-myapp-spec-auth-flow-login"
 
         result = parse_spd(
-            spd="spd-myapp-feature-auth-flow-login-step-validate",
+            spd="spd-myapp-spec-auth-flow-login-step-validate",
             expected_kind="step",
             registered_systems={"myapp"},
             where_defined=where_defined,
@@ -416,7 +416,7 @@ class TestRealWorldScenarios:
         assert result is not None
         assert result.kind == "step"
         assert result.slug == "validate"
-        assert result.prefix_id == "spd-myapp-feature-auth-flow-login"
+        assert result.prefix_id == "spd-myapp-spec-auth-flow-login"
 
     def test_principle_id(self):
         """Parse a principle ID."""
@@ -454,8 +454,8 @@ class TestWhereDefinedCallback:
 
         # Simple ID - where_defined should NOT be called
         parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
             where_defined=where_defined,
         )
@@ -463,13 +463,13 @@ class TestWhereDefinedCallback:
 
         # Composite ID - where_defined SHOULD be called
         parse_spd(
-            spd="spd-myapp-feature-auth-algo-hash",
+            spd="spd-myapp-spec-auth-algo-hash",
             expected_kind="algo",
             registered_systems={"myapp"},
             where_defined=where_defined,
         )
         assert len(calls) == 1
-        assert calls[0] == "spd-myapp-feature-auth"
+        assert calls[0] == "spd-myapp-spec-auth"
 
     def test_where_defined_receives_full_parent_id(self):
         """where_defined receives the complete parent ID."""
@@ -480,14 +480,14 @@ class TestWhereDefinedCallback:
             return True
 
         parse_spd(
-            spd="spd-account-server-feature-billing-invoice-algo-calc",
+            spd="spd-account-server-spec-billing-invoice-algo-calc",
             expected_kind="algo",
             registered_systems={"account-server"},
             where_defined=where_defined,
         )
 
         assert len(received) == 1
-        assert received[0] == "spd-account-server-feature-billing-invoice"
+        assert received[0] == "spd-account-server-spec-billing-invoice"
 
 
 class TestDataclassProperties:
@@ -496,8 +496,8 @@ class TestDataclassProperties:
     def test_parsed_spd_is_frozen(self):
         """ParsedSpiderId should be immutable (frozen dataclass)."""
         result = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result is not None
@@ -508,13 +508,13 @@ class TestDataclassProperties:
     def test_parsed_spd_equality(self):
         """ParsedSpiderId instances with same values should be equal."""
         result1 = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         result2 = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         assert result1 == result2
@@ -522,13 +522,13 @@ class TestDataclassProperties:
     def test_parsed_spd_repr(self):
         """ParsedSpiderId should have a readable repr."""
         result = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
         )
         repr_str = repr(result)
         assert "myapp" in repr_str
-        assert "feature" in repr_str
+        assert "spec" in repr_str
         assert "auth" in repr_str
 
 
@@ -538,34 +538,34 @@ class TestKnownKindsValidation:
     def test_known_kinds_valid_kind(self):
         """Parse succeeds when kind is in known_kinds."""
         result = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
-            known_kinds={"feature", "algo", "fr"},
+            known_kinds={"spec", "algo", "fr"},
         )
         assert result is not None
-        assert result.kind == "feature"
+        assert result.kind == "spec"
 
     def test_known_kinds_invalid_kind_returns_none(self):
         """Parse returns None when first_kind not in known_kinds."""
         result = parse_spd(
-            spd="spd-myapp-featre-auth",  # typo: featre instead of feature
+            spd="spd-myapp-featre-auth",  # typo: featre instead of spec
             expected_kind="featre",
             registered_systems={"myapp"},
-            known_kinds={"feature", "algo", "fr"},
+            known_kinds={"spec", "algo", "fr"},
         )
         assert result is None
 
     def test_known_kinds_case_insensitive(self):
         """known_kinds matching should be case-insensitive."""
         result = parse_spd(
-            spd="spd-myapp-FEATURE-auth",
-            expected_kind="feature",
+            spd="spd-myapp-SPEC-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
-            known_kinds={"Feature", "Algo", "FR"},
+            known_kinds={"Spec", "Algo", "FR"},
         )
         assert result is not None
-        assert result.kind == "feature"
+        assert result.kind == "spec"
 
     def test_known_kinds_none_skips_validation(self):
         """When known_kinds is None, kind validation is skipped."""
@@ -584,35 +584,35 @@ class TestKnownKindsValidation:
             return True
 
         result = parse_spd(
-            spd="spd-myapp-feature-auth-unknownkind-hash",
+            spd="spd-myapp-spec-auth-unknownkind-hash",
             expected_kind="unknownkind",
             registered_systems={"myapp"},
             where_defined=where_defined,
-            known_kinds={"feature", "algo"},
+            known_kinds={"spec", "algo"},
         )
         assert result is None
 
     def test_known_kinds_composite_valid(self):
         """Composite ID succeeds when both kinds are in known_kinds."""
         def where_defined(id_):
-            return id_ == "spd-myapp-feature-auth"
+            return id_ == "spd-myapp-spec-auth"
 
         result = parse_spd(
-            spd="spd-myapp-feature-auth-algo-hash",
+            spd="spd-myapp-spec-auth-algo-hash",
             expected_kind="algo",
             registered_systems={"myapp"},
             where_defined=where_defined,
-            known_kinds={"feature", "algo"},
+            known_kinds={"spec", "algo"},
         )
         assert result is not None
         assert result.kind == "algo"
-        assert result.prefix_id == "spd-myapp-feature-auth"
+        assert result.prefix_id == "spd-myapp-spec-auth"
 
     def test_known_kinds_empty_set_rejects_all(self):
         """Empty known_kinds set rejects all kinds."""
         result = parse_spd(
-            spd="spd-myapp-feature-auth",
-            expected_kind="feature",
+            spd="spd-myapp-spec-auth",
+            expected_kind="spec",
             registered_systems={"myapp"},
             known_kinds=set(),
         )

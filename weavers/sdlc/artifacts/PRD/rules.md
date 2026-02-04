@@ -1,5 +1,7 @@
 # PRD Rules
 
+ALWAYS open and follow `{spider_path}/requirements/template.md` FIRST
+
 **Artifact**: PRD (Product Requirements Document)
 **Purpose**: Rules for PRD generation and validation
 
@@ -7,7 +9,7 @@
 - `template.md` — required structure
 - `checklist.md` — semantic quality criteria
 - `examples/example.md` — reference implementation
-- `{Spider}/requirements/template.md` — Spider template marker syntax specification
+- `{spider_path}/requirements/template.md` — Spider template marker syntax specification
 
 ---
 
@@ -31,7 +33,7 @@ Agent confirms understanding of requirements:
 - [ ] **DO NOT copy `spider-template:` frontmatter** — that is template metadata only
 - [ ] Artifact frontmatter (optional): use `spd:` format for document metadata
 - [ ] All required sections present and non-empty
-- [ ] All IDs follow `spd-{system}-{kind}-{slug}` convention
+- [ ] All IDs follow `spd-{hierarchy-prefix}-{kind}-{slug}` convention (see artifacts.json for hierarchy)
 - [ ] All capabilities have priority markers (`p1`-`p9`)
 - [ ] No placeholder content (TODO, TBD, FIXME)
 - [ ] No duplicate IDs within document
@@ -40,7 +42,7 @@ Agent confirms understanding of requirements:
 
 - [ ] When editing existing PRD: increment version in frontmatter
 - [ ] When changing capability definition: add `-v{N}` suffix to ID or increment existing version
-- [ ] Format: `spd-{system}-cap-{slug}-v2`, `spd-{system}-cap-{slug}-v3`, etc.
+- [ ] Format: `spd-{hierarchy-prefix}-cap-{slug}-v2`, `spd-{hierarchy-prefix}-cap-{slug}-v3`, etc.
 - [ ] Keep changelog of significant changes
 
 ### Semantic Requirements
@@ -68,8 +70,8 @@ Agent confirms understanding of requirements:
 
 ### Downstream Traceability
 
-- [ ] Capabilities are traced through: PRD → DESIGN → DECOMPOSITION → FEATURE → CODE
-- [ ] When capability fully implemented (all features IMPLEMENTED) → mark capability `[x]`
+- [ ] Capabilities are traced through: PRD → DESIGN → DECOMPOSITION → SPEC → CODE
+- [ ] When capability fully implemented (all specs IMPLEMENTED) → mark capability `[x]`
 - [ ] When all capabilities `[x]` → product version complete
 
 ### Checkbox Management (`covered_by` Attribute)
@@ -78,27 +80,27 @@ PRD defines IDs with `covered_by` attributes that track downstream implementatio
 
 | ID Type | `covered_by` | Meaning |
 |---------|--------------|---------|
-| `id:fr` | `DESIGN,DECOMPOSITION,FEATURE` | FR is covered when referenced in DESIGN, DECOMPOSITION, or FEATURE artifacts |
-| `id:nfr` | `DESIGN,DECOMPOSITION,FEATURE` | NFR is covered when referenced in downstream artifacts |
+| `id:fr` | `DESIGN,DECOMPOSITION,SPEC` | FR is covered when referenced in DESIGN, DECOMPOSITION, or SPEC artifacts |
+| `id:nfr` | `DESIGN,DECOMPOSITION,SPEC` | NFR is covered when referenced in downstream artifacts |
 
 **Checkbox States**:
 
 1. **FR/NFR Checkbox** (`id:fr`, `id:nfr`):
-   - `[ ] p1 - spd-{system}-fr-{slug}` — unchecked until requirement is fully implemented
-   - `[x] p1 - spd-{system}-fr-{slug}` — checked when ALL downstream references are `[x]`
+   - `[ ] p1 - spd-{hierarchy-prefix}-fr-{slug}` — unchecked until requirement is fully implemented
+   - `[x] p1 - spd-{hierarchy-prefix}-fr-{slug}` — checked when ALL downstream references are `[x]`
 
 **When to Check FR/NFR Checkboxes**:
 
 - [ ] A FR can be checked when:
   - All `id-ref:fr` references in DESIGN are `[x]` (if design addresses it)
-  - All `id-ref:fr` references in DECOMPOSITION are `[x]` (if features cover it)
+  - All `id-ref:fr` references in DECOMPOSITION are `[x]` (if specs cover it)
   - Implementation is verified and tested
 - [ ] An NFR can be checked when:
   - Design addresses the non-functional concern
-  - All features implement the constraint
+  - All specs implement the constraint
   - Acceptance criteria are met and verified
 
-**Validation Checks** (automated via `python3 {Spider}/skills/spider/scripts/spider.py validate`):
+**Validation Checks** (automated via `python3 {spider_path}/skills/spider/scripts/spider.py validate`):
 - Will warn if `id:fr`/`id:nfr` has no references in `covered_by` artifacts
 - Will warn if reference is `[x]` but definition is not
 - Agent does NOT manually check `covered_by` — the CLI tool handles this automatically
@@ -132,10 +134,10 @@ Agent executes tasks during generation:
 
 ### Phase 3: IDs and Structure
 
-- [ ] Generate actor IDs: `spd-{system}-actor-{slug}`
-- [ ] Generate capability IDs: `spd-{system}-cap-{slug}`
+- [ ] Generate actor IDs: `spd-{hierarchy-prefix}-actor-{slug}` (e.g., `spd-myapp-actor-admin-user`)
+- [ ] Generate capability IDs: `spd-{hierarchy-prefix}-cap-{slug}` (e.g., `spd-myapp-cap-user-management`)
 - [ ] Assign priorities based on business impact
-- [ ] Verify uniqueness with `python3 {Spider}/skills/spider/scripts/spider.py list-ids`
+- [ ] Verify uniqueness with `python3 {spider_path}/skills/spider/scripts/spider.py list-ids`
 
 ### Phase 4: Quality Check
 
@@ -151,7 +153,7 @@ Validation workflow applies rules in two phases:
 
 ### Phase 1: Structural Validation (Deterministic)
 
-Run `python3 {Spider}/skills/spider/scripts/spider.py validate --artifact <path>` for:
+Run `python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact <path>` for:
 - [ ] Template structure compliance
 - [ ] ID format validation
 - [ ] Priority markers present
@@ -242,4 +244,4 @@ After PRD generation/validation, offer these options:
 | PRD complete | `/spider-generate DESIGN` — create technical design |
 | Need architecture decision | `/spider-generate ADR` — document key decision |
 | PRD needs revision | Continue editing PRD |
-| Want checklist review only | `/spider-validate semantic` — semantic validation (skip deterministic) |
+| Want checklist review only | `/spider-analyze semantic` — semantic validation (skip deterministic) |

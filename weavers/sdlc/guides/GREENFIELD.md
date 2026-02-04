@@ -2,8 +2,7 @@
 
 Use this guide when you are starting a new project from scratch.
 
-Examples use Windsurf slash commands (like `/spider-design`).
-You can apply the same flow in any agent by opening the corresponding workflow files under [`workflows/`](../../../workflows/).
+All prompts work through the `spider` skill — enable it with `spider on` and use natural language prompts.
 
 ## Goal
 
@@ -11,234 +10,321 @@ Create a validated baseline (PRD + architecture) before writing code.
 
 ## What You Will Produce
 
-- Spider artifacts registered in `{adapter-dir}/artifacts.json` ([taxonomy](TAXONOMY.md))
-  - PRD (default: `{project-root}/architecture/PRD.md`)
-  - Overall DESIGN (default: `{project-root}/architecture/DESIGN.md`)
-  - ADR directory (default: `{project-root}/architecture/ADR/**`)
-  - DECOMPOSITION (default: `{project-root}/architecture/DECOMPOSITION.md`)
-  - Feature DESIGN (default: `{project-root}/architecture/features/feature-{slug}/DESIGN.md`)
+Spider artifacts registered in `.spider-adapter/artifacts.json` ([taxonomy](TAXONOMY.md)):
 
-## How to Provide Context in Prompts
+| Artifact | Default Location |
+|----------|------------------|
+| PRD | `architecture/PRD.md` |
+| ADR | `architecture/ADR/*.md` |
+| DESIGN | `architecture/DESIGN.md` |
+| DECOMPOSITION | `architecture/DECOMPOSITION.md` |
+| SPEC | `architecture/specs/{slug}.md` |
 
-Each workflow can be run with additional context in the same prompt.
+**Customizing artifact locations:**
 
-Recommended context to include:
-- Current state (what exists already, what is missing)
+| Prompt | What happens |
+|--------|--------------|
+| `spider set artifacts_dir to docs/design/` | Changes default base directory for new artifacts |
+| `spider move PRD to docs/requirements/PRD.md` | Moves artifact to new location |
+| `spider register PRD at specs/product-requirements.md` | Registers existing file as PRD artifact |
+| `spider show artifact locations` | Displays current paths from `artifacts.json` |
+
+You can also edit `.spider-adapter/artifacts.json` directly:
+- `artifacts_dir` — Default base directory for new artifacts (default: `architecture`)
+- Subdirectories for SPECs (`specs/`) and ADRs (`ADR/`) are defined by the weaver
+- Artifact paths in `artifacts` array are FULL paths — you can place artifacts anywhere
+
+## How to Provide Context
+
+Each prompt can include additional context. Recommended:
+
+- Current state (what exists, what is missing)
 - Links/paths to existing docs (README, specs, diagrams)
 - Constraints (security, compliance, performance)
 - Non-goals and out-of-scope items
-- For validation workflows: what artifact/path you want to validate (resolve via `{adapter-dir}/artifacts.json`; defaults may be `architecture/...`)
 
-Example format:
-```text
-/spider-design
+**Example format:**
+```
+spider make DESIGN for taskman
 Context:
-- Repo: <short description>
-- Existing docs:
-  - docs/architecture.md
-  - docs/openapi.yaml
-- Constraints:
-  - Must support SSO
-  - Must be multi-tenant
+- Repo: taskman - task management CLI tool
+- Existing docs: README.md
+- Constraints: SQLite storage, offline-first
 ```
 
-The agent should:
-- Read the provided inputs
-- Ask targeted questions
-- Propose answers
-- Produce the artifact(s)
+The agent will read inputs, ask targeted questions, propose answers, and produce artifacts.
 
-## Workflow Sequence (Greenfield)
+---
 
-### 1. `/spider-prd`
+## Workflow Sequence
 
-**What it does**:
-- Creates or updates the PRD artifact ([taxonomy](TAXONOMY.md#prdmd)).
+### 1. PRD
 
-**Provide context**:
-- Product vision, target users, key capabilities
-- Existing PRD/BRD (if any) and file paths
+**Create**
 
-**Prompt example**:
-```text
-/spider-prd
+| Prompt | What happens |
+|--------|--------------|
+| `spider make PRD` | Creates PRD interactively |
+| `spider make PRD for taskman` | Creates PRD with context |
+| `spider draft PRD from README` | Extracts initial PRD from README |
+
+**Update**
+
+| Prompt | What happens |
+|--------|--------------|
+| `spider update PRD` | Updates PRD interactively |
+| `spider extend PRD with task labels` | Adds capability to existing PRD |
+| `spider update PRD actors` | Updates actors section |
+| `spider update PRD requirements` | Updates requirements section |
+
+**Provide context:** product vision, target users, key capabilities, existing PRD/BRD.
+
+**Example:**
+```
+spider make PRD for taskman
 Context:
-- Product: Task management API
-- Users: individual users + teams
-- Key capabilities: create tasks, assign tasks, due dates, comments
+- Product: taskman - CLI task management tool
+- Users: developers, solo users
+- Key capabilities: create tasks, list tasks, mark done, due dates, priorities
+- Storage: SQLite local database
 ```
 
-### 2. `/spider-prd-validate`
+### 2. Validate PRD
 
-**What it does**:
-- Validates the PRD artifact deterministically (path resolved from `{adapter-dir}/artifacts.json`; default: `architecture/PRD.md`).
+| Prompt | What happens |
+|--------|--------------|
+| `spider validate PRD` | Full validation (300+ criteria) |
+| `spider validate PRD semantic` | Semantic only (content quality) |
+| `spider validate PRD structural` | Structural only (format, IDs) |
+| `spider validate PRD quick` | Fast check (critical issues) |
 
-**Provide context**:
-- If your PRD artifact is not in the standard location, provide the exact path to validate
+### 3. ADR + DESIGN
 
-**Result**:
-- PASS/FAIL with issues to fix.
+**Create DESIGN**
 
-Prompt example:
-```text
-/spider-prd-validate
+| Prompt | What happens |
+|--------|--------------|
+| `spider make DESIGN` | Creates DESIGN interactively |
+| `spider make DESIGN from PRD` | Transforms PRD into architecture |
+
+**Update DESIGN**
+
+| Prompt | What happens |
+|--------|--------------|
+| `spider update DESIGN` | Updates DESIGN interactively |
+| `spider extend DESIGN with sync-service` | Adds component to DESIGN |
+| `spider update DESIGN components` | Updates components section |
+| `spider update DESIGN data model` | Updates data model section |
+
+**Create ADR**
+
+| Prompt | What happens |
+|--------|--------------|
+| `spider make ADR for SQLite` | Creates ADR for technology choice |
+| `spider make ADR for CLI vs TUI` | Creates ADR comparing approaches |
+
+**Update ADR**
+
+| Prompt | What happens |
+|--------|--------------|
+| `spider update ADR 0001` | Updates specific ADR |
+| `spider supersede ADR 0001 with 0002` | Creates new ADR superseding old |
+
+**Provide context:** architecture constraints, existing domain model, API contracts.
+
+**Example:**
 ```
-
-### 3. `/spider-design` (ADR + Overall Design)
-
-**What it does**:
-- Creates or updates the overall design artifact ([taxonomy](TAXONOMY.md#designmd)).
-- Creates or updates ADR artifacts as needed ([taxonomy](TAXONOMY.md#adr)).
-
-**Provide context**:
-- Architecture constraints (cloud/on-prem, multi-tenant, auth model)
-- Existing domain model, database schema, API contracts
-
-Prompt example:
-```text
-/spider-design
+spider make DESIGN for taskman
 Context:
-- Tech: HTTP API, relational DB
-- Constraints:
-  - Must be multi-tenant
-  - Must support audit logging
-- Existing docs:
-  - docs/openapi.yaml
-  - docs/db-schema.md
+- Tech: CLI tool, SQLite storage
+- Constraints: offline-first, single binary, cross-platform
+- Language: Go or Rust
 ```
 
-If you need to create a new ADR or edit an existing ADR explicitly, use the dedicated ADR workflow:
-```text
-/spider-adr
+### 4. Validate DESIGN + ADR
+
+| Prompt | What happens |
+|--------|--------------|
+| `spider validate DESIGN` | Full validation (380+ criteria) |
+| `spider validate DESIGN semantic` | Semantic only (consistency) |
+| `spider validate DESIGN structural` | Structural only (format) |
+| `spider validate DESIGN refs` | Cross-references to PRD |
+| `spider validate ADR` | Validates all ADRs |
+| `spider validate ADR 0001` | Validates specific ADR |
+| `spider validate ADR semantic` | Semantic only (rationale quality) |
+
+### 5. DECOMPOSITION
+
+**Create**
+
+| Prompt | What happens |
+|--------|--------------|
+| `spider decompose` | Creates DECOMPOSITION interactively |
+| `spider decompose into specs` | Creates ordered spec list |
+| `spider decompose by capability` | Groups by business capability |
+
+**Update**
+
+| Prompt | What happens |
+|--------|--------------|
+| `spider add spec labels` | Adds new spec entry |
+| `spider update spec task-crud status` | Updates spec status |
+| `spider update spec task-crud priority` | Updates spec priority |
+| `spider reorder specs` | Changes spec order |
+
+**Provide context:** spec boundaries, grouping preferences.
+
+**Example:**
 ```
-
-### 4. `/spider-design-validate`
-
-**What it does**:
-- Validates the overall design artifact and related ADRs (paths resolved from `{adapter-dir}/artifacts.json`; defaults: `architecture/DESIGN.md`, `architecture/ADR/**`).
-
-**Provide context**:
-- If you want to validate a specific ADR first, provide the ADR file path
-- If you have multiple services/modules, mention which code areas the design must describe
-
-Prompt example:
-```text
-/spider-design-validate
-```
-
-If you created or updated ADRs, you can also run the dedicated ADR validator:
-```text
-/spider-adr-validate
-```
-
-To narrow the scope, add a focus ID in the same prompt (for example a requirement/principle ID referenced by ADRs):
-```text
-/spider-adr-validate
+spider decompose taskman into specs
 Context:
-- Focus on ADR ID: `spd-myapp-adr-authentication-strategy`
+- Split by capability: task-crud, task-list, task-search, labels, sync
 ```
 
-### 5. `/spider-features`
+### 6. Validate DECOMPOSITION
 
-**What it does**:
-- Creates or updates the DECOMPOSITION artifact ([taxonomy](TAXONOMY.md#featuresmd)) from the overall design.
+| Prompt | What happens |
+|--------|--------------|
+| `spider validate DECOMPOSITION` | Full validation (130+ criteria) |
+| `spider validate DECOMPOSITION semantic` | Semantic only (coverage) |
+| `spider validate DECOMPOSITION structural` | Structural only (format) |
+| `spider validate DECOMPOSITION refs` | Cross-references to DESIGN |
 
-**Provide context**:
-- Any feature boundaries you want (what should be separate features)
+### 7. SPEC
 
-Prompt example:
-```text
-/spider-features
+**Create**
+
+| Prompt | What happens |
+|--------|--------------|
+| `spider make SPEC for task-crud` | Creates spec design |
+| `spider make SPEC for task-list` | Creates detailed design |
+
+**Update**
+
+| Prompt | What happens |
+|--------|--------------|
+| `spider update SPEC task-crud` | Updates spec design |
+| `spider extend SPEC task-crud with bulk-delete` | Adds scenario to spec |
+| `spider update SPEC task-crud flows` | Updates flows section |
+| `spider update SPEC task-crud algorithms` | Updates algorithms section |
+
+**Provide context:** spec slug, acceptance criteria, edge cases, error handling.
+
+**Example:**
+```
+spider make SPEC for task-crud
 Context:
-- Split into features by capability: task-crud, comments, notifications
+- Include scenarios: create, update, delete, bulk operations
+- Edge cases: duplicate titles, invalid dates, missing required fields
 ```
 
-### 6. `/spider-features-validate`
+### 8. Validate SPEC
 
-**What it does**:
-- Validates the features manifest.
+| Prompt | What happens |
+|--------|--------------|
+| `spider validate SPEC task-crud` | Full validation (380+ criteria) |
+| `spider validate SPEC task-crud semantic` | Semantic only (flows, edge cases) |
+| `spider validate SPEC task-crud structural` | Structural only (SDSL, IDs) |
+| `spider validate SPEC task-crud refs` | Cross-references to DESIGN |
 
-**Provide context**:
-- If you keep the features manifest in a non-standard place, provide the exact path to validate
+### 9. CODE
 
-Prompt example:
-```text
-/spider-features-validate
-```
+**Implement from scratch**
 
-### 7. `/spider-feature`
+| Prompt | What happens |
+|--------|--------------|
+| `spider implement task-crud` | Generates code from SPEC |
+| `spider implement spec task-crud` | Same, explicit spec keyword |
+| `spider implement task-crud step by step` | Implements with user confirmation at each step |
+| `spider implement task-crud tests first` | Generates tests first, then implementation |
 
-**What it does**:
-- Creates or updates a feature design artifact ([taxonomy](TAXONOMY.md#feature-designmd)).
+**Implement specific parts**
 
-**Where SCENARIOS live**:
-- Define feature-level test scenarios inside the feature `DESIGN.md`.
+| Prompt | What happens |
+|--------|--------------|
+| `spider implement task-crud flow create` | Implements specific flow only |
+| `spider implement task-crud algorithm validate` | Implements specific algorithm only |
+| `spider implement task-crud api` | Implements API layer only |
+| `spider implement task-crud data layer` | Implements data/repository layer only |
+| `spider implement task-crud tests` | Generates tests only |
 
-**Provide context**:
-- Feature slug
-- Acceptance criteria, edge cases, error handling expectations
+**Continue / update**
 
-Prompt example:
-```text
-/spider-feature
-Context:
-- Feature: task-crud
-- Include scenarios: bulk update, permission errors, validation errors
-```
+| Prompt | What happens |
+|--------|--------------|
+| `spider continue implementing task-crud` | Continues partial implementation |
+| `spider sync code with SPEC task-crud` | Updates code to match SPEC changes |
+| `spider implement task-crud remaining` | Implements only unimplemented parts |
+| `spider refactor task-crud` | Refactors implementation keeping markers |
 
-### 8. `/spider-feature-validate`
+**Add markers to existing code**
 
-**What it does**:
-- Validates the feature design against overall design and manifest.
+| Prompt | What happens |
+|--------|--------------|
+| `spider add markers to cmd/task.go` | Adds `@spider-*` markers to existing code |
+| `spider add markers for task-crud` | Adds markers matching SPEC |
+| `spider fix markers in cmd/` | Fixes incorrect/incomplete markers |
 
-**Provide context**:
-- Feature slug to validate (or the feature directory path)
+**Provide context:** spec slug, code paths if non-standard.
 
-Prompt example:
-```text
-/spider-feature-validate
-Context:
-- Feature: task-crud
-```
+### 10. Validate Code
 
-### 9. `/spider-code`
+**Full validation**
 
-**What it does**:
-- Implements the feature directly from the feature design artifact (path resolved from `{adapter-dir}/artifacts.json`; default: `architecture/features/feature-{slug}/DESIGN.md`).
+| Prompt | What happens |
+|--------|--------------|
+| `spider validate code` | Validates all code markers |
+| `spider validate code for task-crud` | Validates specific spec |
+| `spider validate code in cmd/` | Validates code in specific path |
 
-**Provide context**:
-- Feature slug
-- If code lives outside the default service/module, provide the relevant code paths
+**Coverage**
 
-Prompt example:
-```text
-/spider-code
-Context:
-- Feature: task-crud
-```
+| Prompt | What happens |
+|--------|--------------|
+| `spider validate code coverage` | Reports implementation coverage % |
+| `spider validate code coverage for task-crud` | Coverage for specific spec |
+| `spider show uncovered flows` | Lists flows without implementation |
+| `spider show uncovered algorithms` | Lists algorithms without implementation |
 
-### 10. `/spider-code-validate`
+**Traceability**
 
-**What it does**:
-- Validates implementation against the feature design and traceability expectations.
+| Prompt | What happens |
+|--------|--------------|
+| `spider validate code orphans` | Finds markers referencing non-existent IDs |
+| `spider validate code refs` | Validates all marker references |
+| `spider validate code markers` | Checks marker format correctness |
+| `spider list code markers` | Lists all markers in codebase |
+| `spider list code markers for task-crud` | Lists markers for specific spec |
 
-**Provide context**:
-- Feature slug (or feature directory path)
-- If code lives outside the default service/module, provide the relevant code paths
+**Consistency**
 
-Prompt example:
-```text
-/spider-code-validate
-Context:
-- Feature: task-crud
-```
+| Prompt | What happens |
+|--------|--------------|
+| `spider compare code to SPEC task-crud` | Shows drift between code and spec |
+| `spider validate code consistency` | Checks code matches SPECs |
+| `spider find missing implementations` | Lists SPEC elements without code |
+
+---
 
 ## Iteration Rules
 
-- If a change impacts behavior, update the relevant design first (overall or feature).
-- Re-run the validator for the modified artifact before continuing.
+- If a change impacts behavior, update the relevant design first (DESIGN or SPEC)
+- Re-run validation for the modified artifact before continuing
+- If code contradicts design, update design first, then re-validate
 
-## Rules
+## Quick Reference
 
-- Always run validation workflows before moving to the next layer.
-- If code contradicts design, update design first, then re-validate.
+| Step | Generate | Validate |
+|------|----------|----------|
+| 1 | `spider make PRD for taskman` | `spider validate PRD` |
+| 2 | `spider make DESIGN` | `spider validate DESIGN` |
+| 3 | `spider make ADR for SQLite` | `spider validate ADR` |
+| 4 | `spider decompose` | `spider validate DECOMPOSITION` |
+| 5 | `spider make SPEC for task-crud` | `spider validate SPEC task-crud` |
+| 6 | `spider implement task-crud` | `spider validate code for task-crud` |
+
+**Validation modes** (append to any `validate` command):
+- `semantic` — content quality, completeness, clarity
+- `structural` — format, IDs, template compliance
+- `refs` — cross-references to other artifacts
+- `quick` — critical issues only (fast)

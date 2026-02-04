@@ -15,15 +15,9 @@ from spider.utils.parsing import (
     parse_required_sections,
     find_present_section_ids,
     split_by_section_letter,
-    split_by_feature_section_letter,
-    split_by_prd_section_letter,
     field_block,
     has_list_item,
     extract_backticked_ids,
-)
-from spider.constants import (
-    SECTION_FEATURE_RE,
-    SECTION_PRD_RE,
 )
 
 
@@ -122,59 +116,6 @@ Content A
         
         self.assertEqual(order, ["A"])
         self.assertIn("A", sections)
-
-
-class TestSplitByFeatureSectionLetter(unittest.TestCase):
-    """Test split_by_feature_section_letter function."""
-
-    def test_split_feature_sections(self):
-        """Test splitting feature DESIGN.md."""
-        text = """
-## A. Overview
-
-Feature overview
-
-## B. Requirements
-
-Requirements here
-
-## C. Design
-
-Design details
-"""
-        
-        order, sections = split_by_feature_section_letter(text)
-        
-        self.assertEqual(order, ["A", "B", "C"])
-        self.assertIn("A", sections)
-        self.assertIn("B", sections)
-        self.assertIn("C", sections)
-
-
-class TestSplitByPRDSectionLetter(unittest.TestCase):
-    """Test split_by_prd_section_letter function."""
-
-    def test_split_prd_sections(self):
-        """Test splitting PRD.md."""
-        text = """
-## A. PRD
-
-Context
-
-## B. Actors
-
-Actors list
-
-## C. Capabilities
-
-Capabilities
-"""
-        
-        order, sections = split_by_prd_section_letter(text)
-        
-        self.assertEqual(order, ["A", "B", "C"])
-        self.assertIn("A", sections)
-        self.assertIn("B", sections)
 
 
 class TestFieldBlock(unittest.TestCase):

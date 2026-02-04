@@ -8,45 +8,49 @@
 ## Artifact Kinds
 
 | Kind | Description | Template | Checklist | Example |
-|------|-------------|----------|-----------|---------|
-| PRD | Product Requirements Document | `PRD/template.md` | `PRD/checklist.md` | `PRD/examples/example.md` |
-| DESIGN | Overall System Design | `DESIGN/template.md` | `DESIGN/checklist.md` | `DESIGN/examples/example.md` |
-| ADR | Architecture Decision Record | `ADR/template.md` | `ADR/checklist.md` | `ADR/examples/example.md` |
-| DECOMPOSITION | Design Decomposition | `DECOMPOSITION/template.md` | `DECOMPOSITION/checklist.md` | `DECOMPOSITION/examples/example.md` |
-| FEATURE | Feature Design | `FEATURE/template.md` | `FEATURE/checklist.md` | `FEATURE/examples/example.md` |
+| --- | --- | --- | --- | --- |
+| PRD | Product Requirements Document | `artifacts/PRD/template.md` | `artifacts/PRD/checklist.md` | `artifacts/PRD/examples/example.md` |
+| DESIGN | Overall System Design | `artifacts/DESIGN/template.md` | `artifacts/DESIGN/checklist.md` | `artifacts/DESIGN/examples/example.md` |
+| ADR | Architecture Decision Record | `artifacts/ADR/template.md` | `artifacts/ADR/checklist.md` | `artifacts/ADR/examples/example.md` |
+| DECOMPOSITION | Design Decomposition | `artifacts/DECOMPOSITION/template.md` | `artifacts/DECOMPOSITION/checklist.md` | `artifacts/DECOMPOSITION/examples/example.md` |
+| SPEC | Spec Design | `artifacts/SPEC/template.md` | `artifacts/SPEC/checklist.md` | `artifacts/SPEC/examples/example.md` |
 
 ---
 
 ## Structure
 
-```
+```text
 weavers/sdlc/
 ├── README.md           # This file
-├── PRD/
-│   ├── template.md     # PRD template with Spider markers
-│   ├── checklist.md    # Expert review checklist
-│   └── examples/
-│       └── example.md  # Valid PRD example
-├── DESIGN/
-│   ├── template.md
-│   ├── checklist.md
-│   └── examples/
-│       └── example.md
-├── ADR/
-│   ├── template.md
-│   ├── checklist.md
-│   └── examples/
-│       └── example.md
-├── DECOMPOSITION/
-│   ├── template.md
-│   ├── checklist.md
-│   └── examples/
-│       └── example.md
-└── FEATURE/
-    ├── template.md
-    ├── checklist.md
-    └── examples/
-        └── example.md
+├── artifacts/
+│   ├── PRD/
+│   │   ├── template.md     # PRD template with Spider markers
+│   │   ├── checklist.md    # Expert review checklist
+│   │   └── examples/
+│   │       └── example.md  # Valid PRD example
+│   ├── DESIGN/
+│   │   ├── template.md
+│   │   ├── checklist.md
+│   │   └── examples/
+│   │       └── example.md
+│   ├── ADR/
+│   │   ├── template.md
+│   │   ├── checklist.md
+│   │   └── examples/
+│   │       └── example.md
+│   ├── DECOMPOSITION/
+│   │   ├── template.md
+│   │   ├── checklist.md
+│   │   └── examples/
+│   │       └── example.md
+│   └── SPEC/
+│       ├── template.md
+│       ├── checklist.md
+│       └── examples/
+│           └── example.md
+└── codebase/
+    ├── rules.md            # Code generation/validation rules
+    └── checklist.md        # Weaver-specific code checklist
 ```
 
 ---
@@ -56,10 +60,11 @@ weavers/sdlc/
 ### In execution-protocol.md
 
 Dependencies resolved as:
-```
-template:  weavers/sdlc/{KIND}/template.md
-checklist: weavers/sdlc/{KIND}/checklist.md
-example:   weavers/sdlc/{KIND}/examples/example.md
+
+```text
+template:  weavers/sdlc/artifacts/{KIND}/template.md
+checklist: weavers/sdlc/artifacts/{KIND}/checklist.md
+example:   weavers/sdlc/artifacts/{KIND}/examples/example.md
 ```
 
 ### In artifacts.json
@@ -69,7 +74,7 @@ example:   weavers/sdlc/{KIND}/examples/example.md
   "rules": {
     "spider-sdlc": {
       "path": "weavers/sdlc",
-      "artifacts": ["PRD", "DESIGN", "ADR", "DECOMPOSITION", "FEATURE"]
+      "artifacts": ["PRD", "DESIGN", "ADR", "DECOMPOSITION", "SPEC"]
     }
   }
 }
@@ -79,12 +84,12 @@ example:   weavers/sdlc/{KIND}/examples/example.md
 
 ## Artifact Hierarchy
 
-```
+```text
 PRD
  └── DESIGN
       ├── ADR (optional, per decision)
       └── DECOMPOSITION
-           └── FEATURE (per feature)
+           └── SPEC (per spec)
 ```
 
 Each child artifact references IDs from parent artifacts for traceability.

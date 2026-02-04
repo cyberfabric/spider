@@ -150,7 +150,7 @@ Before evaluating each checklist item, the expert MUST:
 - [ ] Description explains WHAT the project does
 - [ ] Description explains WHY it exists (problem it solves)
 - [ ] Description explains WHO should use it
-- [ ] Key features/capabilities listed
+- [ ] Key specs/capabilities listed
 - [ ] Differentiators from alternatives mentioned (if applicable)
 
 ### IDENT-README-003: Visual Identity
@@ -250,7 +250,7 @@ Before evaluating each checklist item, the expert MUST:
 ### USAGE-README-004: Advanced Usage
 **Severity**: MEDIUM
 
-- [ ] Advanced features documented or linked
+- [ ] Advanced specs documented or linked
 - [ ] Integration examples (with other tools)
 - [ ] Performance tips (if relevant)
 - [ ] Troubleshooting guide or FAQ
@@ -454,7 +454,7 @@ Before evaluating each checklist item, the expert MUST:
 **What to check**:
 - [ ] No deprecated installation methods
 - [ ] No outdated version numbers
-- [ ] No references to removed features
+- [ ] No references to removed specs
 - [ ] No old screenshots/GIFs
 - [ ] No stale badges showing failures
 

@@ -18,12 +18,15 @@
       "systems": [
         {
           "name": "MyApp",
+          "slug": "myapp",
           "weaver": "spider-sdlc",
+          "artifacts_dir": "architecture",
           "artifacts": [
             { "name": "Product Requirements", "path": "architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
             { "name": "Overall Design", "path": "architecture/DESIGN.md", "kind": "DESIGN", "traceability": "FULL" },
             { "name": "Initial Architecture", "path": "architecture/ADR/0001-initial-architecture.md", "kind": "ADR", "traceability": "DOCS-ONLY" },
-            { "name": "Design Decomposition", "path": "architecture/DECOMPOSITION.md", "kind": "DECOMPOSITION", "traceability": "FULL" }
+            { "name": "Design Decomposition", "path": "architecture/DECOMPOSITION.md", "kind": "DECOMPOSITION", "traceability": "FULL" },
+            { "name": "Auth Spec", "path": "architecture/specs/auth.md", "kind": "SPEC", "traceability": "FULL" }
           ],
           "codebase": [
             { "name": "Source Code", "path": "src", "extensions": [".ts", ".tsx"] }
@@ -31,10 +34,15 @@
           "children": [
             {
               "name": "Auth",
+              "slug": "auth",
               "weaver": "spider-sdlc",
+              "artifacts_dir": "modules/auth/architecture",
               "artifacts": [
                 { "path": "modules/auth/architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
-                { "path": "modules/auth/architecture/features/feature-sso/DESIGN.md", "kind": "FEATURE", "traceability": "FULL" }
+                { "path": "modules/auth/architecture/specs/sso.md", "kind": "SPEC", "traceability": "FULL" }
+              ],
+              "codebase": [
+                { "name": "Auth Module", "path": "src/modules/auth", "extensions": [".ts"] }
               ],
               "children": []
             }
@@ -94,17 +102,28 @@
     "system_node": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "weaver"],
+      "required": ["name", "slug", "weaver"],
       "properties": {
         "name": {
           "type": "string",
           "minLength": 1,
-          "description": "System/subsystem/component name"
+          "description": "Human-readable system/subsystem/component name"
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "Machine-readable identifier (lowercase, no spaces, hyphen-separated). Used for hierarchical ID generation: {parent-slug}-{child-slug}-{TYPE}-{N}"
         },
         "weaver": {
           "type": "string",
           "minLength": 1,
           "description": "Reference to a weaver ID from weavers"
+        },
+        "artifacts_dir": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Default base directory for NEW artifacts (relative to project_root). Does NOT affect existing artifact paths in 'artifacts' array. Default: 'architecture'. Subdirectories for specific artifact kinds (specs/, ADR/) are defined by the weaver."
         },
         "artifacts": {
           "type": "array",
@@ -147,7 +166,7 @@
         "kind": {
           "type": "string",
           "minLength": 1,
-          "description": "Artifact kind (e.g., PRD, DESIGN, ADR, DECOMPOSITION, FEATURE). Template resolved at: {weaver.path}/artifacts/{KIND}/template.md"
+          "description": "Artifact kind (e.g., PRD, DESIGN, ADR, DECOMPOSITION, SPEC). Template resolved at: {weaver.path}/artifacts/{KIND}/template.md"
         },
         "traceability": {
           "type": "string",

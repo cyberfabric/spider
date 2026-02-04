@@ -9,9 +9,24 @@ purpose: Unified Spider adapter workflow - scan, configure, validate
 
 # Spider Adapter Workflow
 
+Set `{spider_mode}` = `on` FIRST
+
 **Type**: Operation
 **Role**: Any
 **Artifact**: `{adapter-directory}/AGENTS.md` + `artifacts.json` + specs
+
+---
+
+## Routing
+
+This workflow is invoked through the main Spider workflows:
+
+| User Intent | Route | Example |
+|-------------|-------|---------|
+| Create/modify adapter | **generate.md** → adapter.md | "setup adapter", "update adapter" |
+| Check/validate adapter | **analyze.md** (adapter target) | "check adapter", "verify adapter" |
+
+**Direct invocation** via `/spider-adapter` routes to **generate.md** (assumes write intent).
 
 ---
 
@@ -44,17 +59,15 @@ Unified adapter workflow that handles the complete lifecycle:
 
 ---
 
-ALWAYS open and follow `../requirements/execution-protocol.md` WHEN executing this workflow
+ALWAYS open and follow `{spider_path}/requirements/execution-protocol.md` WHEN executing this workflow
 
 ## Requirements
 
-**ALWAYS open and follow**: `../requirements/adapter-structure.md`
+**ALWAYS open and follow**: `{spider_path}/requirements/adapter-structure.md`
 
-**ALWAYS open and follow**: `../schemas/artifacts.schema.json` WHEN generating artifacts.json
+**ALWAYS open and follow**: `{spider_path}/schemas/artifacts.schema.json` WHEN generating artifacts.json
 
-**ALWAYS open and follow**: `../requirements/reverse-engineering.md` WHEN scanning project structure (Phase 1)
-
-**ALWAYS open and follow**: `{WEAVER_PATH}/spec-hints.md` WHEN generating AGENTS.md navigation rules (Phase 3)
+**ALWAYS open and follow**: `{spider_path}/requirements/reverse-engineering.md` WHEN scanning project structure (Phase 1)
 
 Extract:
 - Adapter structure requirements
@@ -135,9 +148,9 @@ Detect:
 Search for Spider artifacts:
   - PRD.md (product requirements)
   - DESIGN.md (architecture design)
-  - DECOMPOSITION.md (features manifest)
+  - DECOMPOSITION.md (specs manifest)
   - ADR/ directory (architecture decisions)
-  - features/ directory (feature designs)
+  - specs/ directory (spec designs)
 
 Search for related docs:
   - README.md, CONTRIBUTING.md
@@ -162,7 +175,7 @@ Propose level structure:
 
 ### 1.4 Spec Discovery Scan
 
-**Reference**: `../requirements/adapter-structure.md` → Spec Discovery Guide
+**Reference**: `{spider_path}/requirements/adapter-structure.md` → Spec Discovery Guide
 
 Scan for domain-specific knowledge following the 12-domain model from Spider checklists:
 
@@ -367,7 +380,7 @@ Create `{ADAPTER_DIR}/artifacts.json` following schema:
 {
   "version": "1.0",
   "project_root": "{relative_path_to_project_root}",
-  "rules": {
+  "weavers": {
     "spider-sdlc": {
       "format": "Spider",
       "path": "{spider_core}/weavers/sdlc"
@@ -376,7 +389,9 @@ Create `{ADAPTER_DIR}/artifacts.json` following schema:
   "systems": [
     {
       "name": "{SYSTEM_NAME}",
-      "rules": "spider-sdlc",
+      "slug": "{system-slug}",
+      "weaver": "spider-sdlc",
+      "artifacts_dir": "{artifacts_dir}",
       "artifacts": [
         { "name": "Product Requirements", "path": "{artifacts_dir}/PRD.md", "kind": "PRD", "traceability": "{TRACEABILITY}" },
         { "name": "Overall Design", "path": "{artifacts_dir}/DESIGN.md", "kind": "DESIGN", "traceability": "{TRACEABILITY}" },
@@ -391,12 +406,37 @@ Create `{ADAPTER_DIR}/artifacts.json` following schema:
 }
 ```
 
+**Note**: The `slug` field is required and must be lowercase with hyphens only (pattern: `^[a-z0-9]+(-[a-z0-9]+)*$`). Example: `"name": "My App"` → `"slug": "my-app"`
+
+**Directory configuration**:
+- `artifacts_dir` — Default base directory for NEW artifacts (default: `architecture`)
+- Subdirectories for specific artifact kinds (`specs/`, `ADR/`) are defined by the weaver
+- Individual artifact `path` values are FULL paths relative to `project_root` (user can place artifacts anywhere)
+
+
 ### 3.3 Generate AGENTS.md
 
-**For each weaver in artifacts.json**:
-1. Load `{WEAVER_PATH}/spec-hints.md`
-2. Parse the Spec Mapping table
-3. Generate WHEN rules for each spec that exists in adapter
+**For each spec file discovered**:
+1. Match spec name to Universal WHEN Rule from table below
+2. Generate action-based WHEN rule (not tied to weaver/artifact kind)
+
+#### Universal WHEN Rules Table
+
+| Spec File | Universal WHEN Rule |
+|-----------|---------------------|
+| `tech-stack.md` | WHEN writing code, choosing technologies, or adding dependencies |
+| `conventions.md` | WHEN writing code, naming files/functions/variables, or reviewing code |
+| `project-structure.md` | WHEN creating files, adding modules, or navigating codebase |
+| `domain-model.md` | WHEN working with entities, data structures, or business logic |
+| `testing.md` | WHEN writing tests, reviewing test coverage, or debugging |
+| `build-deploy.md` | WHEN building, deploying, or configuring CI/CD |
+| `patterns.md` | WHEN implementing features, designing components, or refactoring |
+| `api-contracts.md` | WHEN creating/consuming APIs, defining endpoints, or handling requests |
+| `security.md` | WHEN handling authentication, authorization, or sensitive data |
+| `data-governance.md` | WHEN storing user data, handling PII, or managing data lifecycle |
+| `performance.md` | WHEN optimizing, caching, or working with high-load components |
+| `reliability.md` | WHEN handling errors, implementing retries, or adding health checks |
+| `compliance.md` | WHEN handling regulated data, audit logging, or legal requirements |
 
 Create `{ADAPTER_DIR}/AGENTS.md`:
 
@@ -407,40 +447,32 @@ Create `{ADAPTER_DIR}/AGENTS.md`:
 
 **Version**: 1.0
 **Last Updated**: {DATE}
-**Tech Stack**: {TECH_STACK_SUMMARY}
 
 ---
 
-## Project Structure
+## Project Overview
 
-{HIERARCHY_OVERVIEW}
+{PROJECT_DESCRIPTION}
 
 ---
 
 ## Navigation Rules
 
-<!-- Generated from {WEAVER_PATH}/spec-hints.md -->
-<!-- For each spec file in specs/, generate rule based on weaver's spec-hints.md mapping -->
-
-{FOR_EACH_WEAVER in artifacts.json}
-### {WEAVER_ID} Specs
+### Project Specs
 
 {FOR_EACH_SPEC in adapter/specs/}
-ALWAYS open and follow `specs/{SPEC_NAME}` WHEN Spider uses weaver `{WEAVER_ID}` for artifact kinds: {KINDS_FROM_SPEC_HINTS} [OR codebase if marked]
+ALWAYS open and follow `specs/{SPEC_NAME}` {UNIVERSAL_WHEN_RULE}
 {/FOR_EACH_SPEC}
-{/FOR_EACH_WEAVER}
 
 ---
 
-## Artifacts Registry
+## Quick Reference
 
-See `artifacts.json` for complete artifact configuration including:
-- Weaver packages
-- System hierarchy
-- Traceability settings
+- **Adapter**: `{ADAPTER_DIR}/`
+- **Specs**: `{ADAPTER_DIR}/specs/`
 ```
 
-**Note**: `{WEAVER_ID}` is the weaver identifier from artifacts.json (e.g., `spider-sdlc`)
+**Key principle**: Rules are action-based, not weaver-based. Agent loads specs when the action matches, regardless of which workflow or artifact type is active.
 
 ### 3.4 Generate Spec Files
 
@@ -746,7 +778,7 @@ Run adapter workflow with --agent {windsurf|cursor|claude|copilot}
 **After successful adapter setup**:
 - `/spider-generate PRD` — Define product requirements
 - `/spider-generate DESIGN` — Create architecture design
-- `/spider-generate DECOMPOSITION` — Create features manifest
+- `/spider-generate DECOMPOSITION` — Create specs manifest
 
 **For existing projects**:
 - Review detected artifacts
@@ -757,6 +789,6 @@ Run adapter workflow with --agent {windsurf|cursor|claude|copilot}
 
 ## References
 
-**Requirements**: `../requirements/adapter-structure.md`
-**Schema**: `../schemas/artifacts.schema.json`
-**Methodology**: `../requirements/reverse-engineering.md`
+**Requirements**: `{spider_path}/requirements/adapter-structure.md`
+**Schema**: `{spider_path}/schemas/artifacts.schema.json`
+**Methodology**: `{spider_path}/requirements/reverse-engineering.md`

@@ -4,12 +4,12 @@
 <!-- spd:##:overview -->
 ## 1. Overview
 
-TaskFlow design is decomposed into features organized around core task management capabilities. The decomposition follows a dependency order where foundational CRUD operations enable higher-level features like notifications and reporting.
+TaskFlow design is decomposed into specs organized around core task management capabilities. The decomposition follows a dependency order where foundational CRUD operations enable higher-level specs like notifications and reporting.
 
 **Decomposition Strategy**:
-- Features grouped by functional cohesion (related capabilities together)
-- Dependencies minimize coupling between features
-- Each feature covers specific components and sequences from DESIGN
+- Specs grouped by functional cohesion (related capabilities together)
+- Dependencies minimize coupling between specs
+- Each spec covers specific components and sequences from DESIGN
 - 100% coverage of all DESIGN elements verified
 
 <!-- spd:##:overview -->
@@ -21,33 +21,33 @@ TaskFlow design is decomposed into features organized around core task managemen
 <!-- spd:id:status has="priority,task" -->
 - [ ] `p1` - **ID**: `spd-taskflow-status-overall`
 
-<!-- spd:###:feature-title repeat="many" -->
-### 1. [Task CRUD](feature-task-crud/) ⏳ HIGH
+<!-- spd:###:spec-title repeat="many" -->
+### 1. [Task CRUD](spec-task-crud/) ⏳ HIGH
 
-<!-- spd:id:feature has="priority,task" -->
-- [ ] `p1` - **ID**: `spd-taskflow-feature-task-crud`
+<!-- spd:id:spec has="priority,task" -->
+- [ ] `p1` - **ID**: `spd-taskflow-spec-task-crud`
 
-<!-- spd:paragraph:feature-purpose required="true" -->
+<!-- spd:paragraph:spec-purpose required="true" -->
 - **Purpose**: Enable users to create, view, edit, and delete tasks with full lifecycle management.
-<!-- spd:paragraph:feature-purpose -->
+<!-- spd:paragraph:spec-purpose -->
 
-<!-- spd:paragraph:feature-depends -->
+<!-- spd:paragraph:spec-depends -->
 - **Depends On**: None
-<!-- spd:paragraph:feature-depends -->
+<!-- spd:paragraph:spec-depends -->
 
-<!-- spd:list:feature-scope -->
+<!-- spd:list:spec-scope -->
 - **Scope**:
   - Task creation with title, description, priority, due date
   - Task assignment to team members
   - Status transitions (BACKLOG → IN_PROGRESS → DONE)
   - Task deletion with soft-delete
-<!-- spd:list:feature-scope -->
+<!-- spd:list:spec-scope -->
 
-<!-- spd:list:feature-out-scope -->
+<!-- spd:list:spec-out-scope -->
 - **Out of scope**:
   - Recurring tasks
   - Task templates
-<!-- spd:list:feature-out-scope -->
+<!-- spd:list:spec-out-scope -->
 
 - **Requirements Covered**:
 <!-- spd:id-ref:fr has="priority,task" -->
@@ -58,7 +58,7 @@ TaskFlow design is decomposed into features organized around core task managemen
 - **Design Principles Covered**:
 <!-- spd:id-ref:principle has="priority,task" -->
   - [ ] `p1` - `spd-taskflow-principle-realtime-first`
-  - [ ] `p2` - `spd-taskflow-principle-simplicity-over-features`
+  - [ ] `p2` - `spd-taskflow-principle-simplicity-over-specs`
 <!-- spd:id-ref:principle -->
 
 - **Design Constraints Covered**:
@@ -66,11 +66,11 @@ TaskFlow design is decomposed into features organized around core task managemen
   - [ ] `p1` - `spd-taskflow-constraint-supported-platforms`
 <!-- spd:id-ref:constraint -->
 
-<!-- spd:list:feature-domain-entities -->
+<!-- spd:list:spec-domain-entities -->
 - **Domain Model Entities**:
   - Task
   - User
-<!-- spd:list:feature-domain-entities -->
+<!-- spd:list:spec-domain-entities -->
 
 - **Design Components**:
 <!-- spd:id-ref:component has="priority,task" -->
@@ -80,13 +80,13 @@ TaskFlow design is decomposed into features organized around core task managemen
   - [ ] `p2` - `spd-taskflow-component-redis-pubsub`
 <!-- spd:id-ref:component -->
 
-<!-- spd:list:feature-api -->
+<!-- spd:list:spec-api -->
 - **API**:
   - POST /api/tasks
   - GET /api/tasks
   - PUT /api/tasks/{id}
   - DELETE /api/tasks/{id}
-<!-- spd:list:feature-api -->
+<!-- spd:list:spec-api -->
 
 - **Sequences**:
 <!-- spd:id-ref:seq has="priority,task" -->
@@ -98,35 +98,35 @@ TaskFlow design is decomposed into features organized around core task managemen
   - [ ] `p1` - `spd-taskflow-dbtable-tasks`
 <!-- spd:id-ref:dbtable -->
 
-<!-- spd:id:feature -->
-<!-- spd:###:feature-title repeat="many" -->
+<!-- spd:id:spec -->
+<!-- spd:###:spec-title repeat="many" -->
 
-<!-- spd:###:feature-title repeat="many" -->
-### 2. [Notifications](feature-notifications/) ⏳ MEDIUM
+<!-- spd:###:spec-title repeat="many" -->
+### 2. [Notifications](spec-notifications/) ⏳ MEDIUM
 
-<!-- spd:id:feature has="priority,task" -->
-- [ ] `p2` - **ID**: `spd-taskflow-feature-notifications`
+<!-- spd:id:spec has="priority,task" -->
+- [ ] `p2` - **ID**: `spd-taskflow-spec-notifications`
 
-<!-- spd:paragraph:feature-purpose required="true" -->
+<!-- spd:paragraph:spec-purpose required="true" -->
 - **Purpose**: Notify users about task assignments, due dates, and status changes.
-<!-- spd:paragraph:feature-purpose -->
+<!-- spd:paragraph:spec-purpose -->
 
-<!-- spd:paragraph:feature-depends -->
-- **Depends On**: `spd-taskflow-feature-task-crud`
-<!-- spd:paragraph:feature-depends -->
+<!-- spd:paragraph:spec-depends -->
+- **Depends On**: `spd-taskflow-spec-task-crud`
+<!-- spd:paragraph:spec-depends -->
 
-<!-- spd:list:feature-scope -->
+<!-- spd:list:spec-scope -->
 - **Scope**:
   - Push notifications for task assignments
   - Email alerts for overdue tasks
   - In-app notification center
-<!-- spd:list:feature-scope -->
+<!-- spd:list:spec-scope -->
 
-<!-- spd:list:feature-out-scope -->
+<!-- spd:list:spec-out-scope -->
 - **Out of scope**:
   - SMS notifications
   - Custom notification templates
-<!-- spd:list:feature-out-scope -->
+<!-- spd:list:spec-out-scope -->
 
 - **Requirements Covered**:
 <!-- spd:id-ref:fr has="priority,task" -->
@@ -144,12 +144,12 @@ TaskFlow design is decomposed into features organized around core task managemen
   - [ ] `p1` - `spd-taskflow-constraint-supported-platforms`
 <!-- spd:id-ref:constraint -->
 
-<!-- spd:list:feature-domain-entities -->
+<!-- spd:list:spec-domain-entities -->
 - **Domain Model Entities**:
   - Task
   - User
   - Notification
-<!-- spd:list:feature-domain-entities -->
+<!-- spd:list:spec-domain-entities -->
 
 - **Design Components**:
 <!-- spd:id-ref:component has="priority,task" -->
@@ -158,12 +158,12 @@ TaskFlow design is decomposed into features organized around core task managemen
   - [ ] `p2` - `spd-taskflow-component-redis-pubsub`
 <!-- spd:id-ref:component -->
 
-<!-- spd:list:feature-api -->
+<!-- spd:list:spec-api -->
 - **API**:
   - POST /api/notifications
   - GET /api/notifications
   - PUT /api/notifications/{id}/read
-<!-- spd:list:feature-api -->
+<!-- spd:list:spec-api -->
 
 - **Sequences**:
 <!-- spd:id-ref:seq has="priority,task" -->
@@ -175,8 +175,8 @@ TaskFlow design is decomposed into features organized around core task managemen
   - [ ] `p2` - `spd-taskflow-dbtable-notifications`
 <!-- spd:id-ref:dbtable -->
 
-<!-- spd:id:feature -->
-<!-- spd:###:feature-title repeat="many" -->
+<!-- spd:id:spec -->
+<!-- spd:###:spec-title repeat="many" -->
 
 <!-- spd:id:status -->
 <!-- spd:##:entries -->

@@ -32,14 +32,15 @@ RELATED:
 ---
 
 COMMAND validate
-SYNOPSIS: python3 scripts/spider.py validate [--artifact <path>] [options]
-DESCRIPTION: Validate Spider artifacts using template-based parsing. Validates structure against template, cross-references between artifacts, and task statuses.
-WORKFLOW: design-validate, features-validate, feature-validate, prd-validate, adr-validate
+SYNOPSIS: python3 scripts/spider.py validate [--artifact <path>] [--skip-code] [options]
+DESCRIPTION: Validate Spider artifacts and code traceability. Validates structure against template, cross-references between artifacts, task statuses, and code traceability markers. By default validates both artifacts and code; use --skip-code to validate artifacts only.
+WORKFLOW: design-validate, specs-validate, spec-validate, prd-validate, adr-validate, code-validate
 
 ARGUMENTS:
 
 OPTIONS:
   --artifact  <path>  Path to specific Spider artifact (if omitted, validates all registered Spider artifacts)
+  --skip-code  <boolean>  Skip code traceability validation (by default, code is also validated)
   --verbose  <boolean>  Print full validation report (default: compact summary)
   --output  <path>  Save validation report to file (default: stdout)
 
@@ -52,13 +53,17 @@ OUTPUT:
   JSON object with:
   - status: PASS or FAIL
   - artifacts_validated: Number of artifacts checked
-  - structure_errors: Template structure violations
-  - reference_errors: Cross-reference issues (undefined IDs, broken links)
-  - status_errors: Task status inconsistencies
-  - traceability: Artifact traceability mode (FULL or DOCS-ONLY)
+  - error_count: Total errors found
+  - warning_count: Total warnings found
+  - code_files_scanned: Number of code files checked (when code validation enabled)
+  - to_code_ids_total: IDs marked to_code="true" (FULL traceability only)
+  - code_ids_found: IDs found in code markers
+  - coverage: Coverage ratio (found/required)
+  - next_step: Hint for agent on what to do next (when PASS)
 
 EXAMPLE:
   $ python3 scripts/spider.py validate
+  $ python3 scripts/spider.py validate --skip-code
   $ python3 scripts/spider.py validate --artifact architecture/PRD.md
   $ python3 scripts/spider.py validate --verbose
   $ python3 scripts/spider.py validate --output report.json
@@ -69,7 +74,7 @@ RELATED:
   - @CLI.where-used
   - @CLI.validate-weavers
   - @Workflow.design-validate
-  - @Workflow.feature-validate
+  - @Workflow.spec-validate
 ---
 
 COMMAND validate-weavers
@@ -105,50 +110,7 @@ EXAMPLE:
 
 RELATED:
   - @CLI.validate
-  - @CLI.validate-code
   - @Workflow.rules
----
-
-COMMAND validate-code
-SYNOPSIS: python3 scripts/spider.py validate-code [path] [options]
-DESCRIPTION: Validate Spider traceability markers in code files. Checks marker pairing (@spider-begin/@spider-end), empty blocks, orphaned markers (code refs IDs not in artifacts), and coverage (to_code="true" IDs without code markers). Respects traceability mode (FULL vs DOCS-ONLY).
-WORKFLOW: code-validate
-
-ARGUMENTS:
-  path  <path>  optional  Path to code file or directory (defaults to codebase entries from artifacts.json)
-
-OPTIONS:
-  --system  <string>  System name to validate (if omitted, validates all systems)
-  --verbose  <boolean>  Print full validation report
-  --output  <path>  Save validation report to file (default: stdout)
-
-EXIT CODES:
-  0  Validation passed
-  1  File system error or no adapter found
-  2  Validation failed (orphaned markers, missing coverage, etc.)
-
-OUTPUT:
-  JSON object with:
-  - status: PASS or FAIL
-  - code_files_scanned: Number of code files checked
-  - artifact_ids_total: Total IDs defined in artifacts
-  - to_code_ids_total: IDs marked to_code="true"
-  - code_ids_found: IDs found in code markers
-  - coverage: Coverage ratio (found/required)
-  - error_count: Total errors
-  - errors: List of validation errors (orphaned markers, missing coverage, etc.)
-  - next_step: Hint for agent on what to do next (when PASS)
-
-EXAMPLE:
-  $ python3 scripts/spider.py validate-code
-  $ python3 scripts/spider.py validate-code skills/spider/scripts/
-  $ python3 scripts/spider.py validate-code --system Spider --verbose
-  $ python3 scripts/spider.py validate-code --output code-report.json
-
-RELATED:
-  - @CLI.validate
-  - @CLI.list-ids
-  - @Workflow.code-validate
 ---
 
 COMMAND list-ids
@@ -161,7 +123,7 @@ OPTIONS:
   --artifact  <path>  Path to Spider artifact file (optional - if omitted, scans all registered Spider artifacts)
   --pattern  <string>  Filter IDs by substring or regex pattern
   --regex  <boolean>  Treat pattern as regular expression
-  --kind  <string>  Filter by ID kind from template markers (e.g., 'requirement', 'feature', 'actor')
+  --kind  <string>  Filter by ID kind from template markers (e.g., 'requirement', 'spec', 'actor')
   --all  <boolean>  Include duplicate IDs in results
   --include-code  <boolean>  Also scan code files for Spider marker references
 
@@ -182,12 +144,12 @@ EXAMPLE:
   $ python3 scripts/spider.py list-ids --pattern "-actor-"
   $ python3 scripts/spider.py list-ids --kind requirement
   $ python3 scripts/spider.py list-ids --include-code
-  $ python3 scripts/spider.py list-ids --artifact architecture/DESIGN.md --pattern "feature-.*" --regex
+  $ python3 scripts/spider.py list-ids --artifact architecture/DESIGN.md --pattern "spec-.*" --regex
 
 RELATED:
   - @CLI.where-defined
   - @CLI.get-content
-  - @CLI.validate-code
+  - @CLI.validate
 ---
 
 COMMAND list-id-kinds
@@ -239,12 +201,12 @@ EXIT CODES:
 EXAMPLE:
   $ python3 scripts/spider.py get-content --artifact architecture/PRD.md --id spd-myapp-actor-admin
   $ python3 scripts/spider.py get-content --artifact architecture/DESIGN.md --id spd-myapp-req-auth
-  $ python3 scripts/spider.py get-content --code src/auth.py --id spd-myapp-feature-auth-flow-login
-  $ python3 scripts/spider.py get-content --code src/auth.py --id spd-myapp-feature-auth-flow-login --inst inst-validate-creds
+  $ python3 scripts/spider.py get-content --code src/auth.py --id spd-myapp-spec-auth-flow-login
+  $ python3 scripts/spider.py get-content --code src/auth.py --id spd-myapp-spec-auth-flow-login --inst inst-validate-creds
 
 RELATED:
   - @CLI.list-ids
-  - @CLI.validate-code
+  - @CLI.validate
 ---
 
 COMMAND adapter-info
@@ -289,7 +251,7 @@ EXIT CODES:
 EXAMPLE:
   $ python3 scripts/spider.py where-defined --id spd-myapp-actor-admin
   $ python3 scripts/spider.py where-defined --id spd-myapp-req-auth
-  $ python3 scripts/spider.py where-defined --id spd-myapp-feature-auth --artifact architecture/DECOMPOSITION.md
+  $ python3 scripts/spider.py where-defined --id spd-myapp-spec-auth --artifact architecture/DECOMPOSITION.md
 
 RELATED:
   - @CLI.where-used
@@ -315,7 +277,7 @@ EXIT CODES:
 EXAMPLE:
   $ python3 scripts/spider.py where-used --id spd-myapp-actor-admin
   $ python3 scripts/spider.py where-used --id spd-myapp-req-auth
-  $ python3 scripts/spider.py where-used --id spd-myapp-feature-auth --artifact architecture/DESIGN.md
+  $ python3 scripts/spider.py where-used --id spd-myapp-spec-auth --artifact architecture/DESIGN.md
 
 RELATED:
   - @CLI.where-defined
@@ -325,7 +287,7 @@ RELATED:
 
 COMMAND agents
 SYNOPSIS: python3 scripts/spider.py agents --agent <name> [options]
-DESCRIPTION: Generate/update agent-specific workflow proxies and skill outputs. Creates unified proxy files for workflows (spider-generate, spider-validate, spider-adapter, spider-rules) and the spider skill entry point. Supports windsurf, cursor, claude, copilot.
+DESCRIPTION: Generate/update agent-specific workflow proxies and skill outputs. Creates unified proxy files for workflows (spider-generate, spider-analyze, spider-adapter, spider-rules) and the spider skill entry point. Supports windsurf, cursor, claude, copilot.
 WORKFLOW: adapter
 
 ARGUMENTS:
