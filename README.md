@@ -9,6 +9,10 @@
 
 **Audience**: Prompt engineers, AI developers, software architects, engineering teams
 
+<p align="center">
+  <img src="spider.png" alt="Spider Banner" width="100%" />
+</p>
+
 **Spider** is a platform for weaving agentic systems: its threads (like prompts, templates, DSL, rules) run through the whole project, turning intent into consistent artifacts. **Spider** focuses on four principles — **feedback**, **transformation**, **determinism**, and **quality** — so you can derive documents from documents, code from documents, or documents from code while keeping everything aligned. Each transformation is a controlled step in a pipeline: feedback tightens the web, deterministic validation removes LLM variability, and traceability keeps every derived piece connected and reviewable.
 
 As an **extensible platform**, **Spider** can be "trained" by registering thread packages called **Weavers**. Each **Weaver** bundles templates, rules, checklists and examples for a specific domain or use case. 
