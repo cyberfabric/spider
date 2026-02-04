@@ -1,5 +1,5 @@
 ---
-fdd: true
+spider: true
 type: requirement
 name: Adapter Triggers
 version: 1.0
@@ -7,6 +7,44 @@ purpose: Define when AI agent proposes running adapter workflow
 ---
 
 # Adapter Evolution Triggers
+
+---
+
+## Table of Contents
+
+- [Adapter Evolution Triggers](#adapter-evolution-triggers)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisite Checklist](#prerequisite-checklist)
+  - [Overview](#overview)
+  - [Mandatory Adapter Initialization](#mandatory-adapter-initialization)
+  - [Trigger Rules](#trigger-rules)
+    - [1. Design Decisions Made](#1-design-decisions-made)
+    - [2. Spec Patterns Detected](#2-spec-patterns-detected)
+    - [3. Implementation Code](#3-implementation-code)
+    - [4. User Decisions](#4-user-decisions)
+    - [5. Existing Project Discovery](#5-existing-project-discovery)
+  - [Detection Algorithm](#detection-algorithm)
+  - [User Response Handling](#user-response-handling)
+    - [\[Review\] Response Flow](#review-response-flow)
+  - [Error Handling](#error-handling)
+    - [Adapter Workflow Fails](#adapter-workflow-fails)
+    - [Trigger Detection Fails](#trigger-detection-fails)
+    - [Conflicting Decisions](#conflicting-decisions)
+  - [Agent Responsibilities](#agent-responsibilities)
+  - [Examples](#examples)
+    - [Example 1: Design Artifact Trigger](#example-1-design-artifact-trigger)
+    - [Example 2: Implementation Trigger](#example-2-implementation-trigger)
+    - [Example 3: User Decision Trigger](#example-3-user-decision-trigger)
+  - [Integration with Workflows](#integration-with-workflows)
+  - [Consolidated Validation Checklist](#consolidated-validation-checklist)
+    - [Structure (S)](#structure-s)
+    - [Completeness (C)](#completeness-c)
+    - [Clarity (CL)](#clarity-cl)
+    - [Integration (I)](#integration-i)
+    - [Final (F)](#final-f)
+  - [References](#references)
+
+---
 
 ## Prerequisite Checklist
 
@@ -23,13 +61,13 @@ This document defines when AI agents should propose running the adapter workflow
 
 ## Mandatory Adapter Initialization
 
-**BEFORE any FDD workflow execution**:
+**BEFORE any Spider workflow execution**:
 
-ALWAYS do check that adapter exists:
+Agent MUST check that adapter exists:
 - Search for `{adapter-directory}/AGENTS.md` in common locations:
-  - `/FDD-Adapter/AGENTS.md`
-  - `spec/FDD-Adapter/AGENTS.md`
-  - `docs/FDD-Adapter/AGENTS.md`
+  - `/.spider-adapter/AGENTS.md`
+  - `spec/.spider-adapter/AGENTS.md`
+  - `docs/.spider-adapter/AGENTS.md`
 
 IF adapter NOT found:
 - STOP workflow execution
@@ -78,17 +116,17 @@ Run adapter workflow to capture these? [Yes] [No] [Review]
 
 ---
 
-### 2. Feature Patterns Detected
+### 2. Spec Patterns Detected
 
-**Trigger**: Feature DESIGN.md created or validated
+**Trigger**: Spec DESIGN.md created or validated
 
 **Check**:
-- Feature DESIGN.md Section B (Actor Flows) completed
-- Feature DESIGN.md Section C (Algorithms) completed
-- Feature DESIGN.md Section E (Technical Details) completed
+- Spec DESIGN.md Section B (Actor Flows) completed
+- Spec DESIGN.md Section C (Algorithms) completed
+- Spec DESIGN.md Section E (Technical Details) completed
 
 **Scan for**:
-- Repeated patterns (algorithm appears in ≥2 features)
+- Repeated patterns (same algorithm name/structure appears in ≥2 SPEC artifacts within this project)
 - Architecture patterns (Repository, Factory, Strategy, etc.)
 - Code examples or pseudocode
 - Technical implementation details
@@ -100,8 +138,8 @@ Run adapter workflow to capture these? [Yes] [No] [Review]
 
 **Action**:
 ```
-Feature pattern detected:
-  - LRU caching strategy in fdd-context-provider
+Spec pattern detected:
+  - LRU caching strategy in spider-context-provider
   
 Add to adapter specs/patterns.md? [Yes] [No]
 ```
@@ -118,8 +156,8 @@ Add to adapter specs/patterns.md? [Yes] [No]
 - Code review completed (if applicable)
 
 **Scan for**:
-- Utility functions used ≥3 times
-- Repeated code patterns
+- Utility functions called ≥3 times across the project codebase (count by grep/search)
+- Repeated code patterns (similar structure in ≥2 files)
 - Boilerplate code
 - Integration code (external APIs, database)
 - Deviation from conventions
@@ -167,7 +205,7 @@ Capture in adapter specs/tech-stack.md? [Yes] [No]
 
 ### 5. Existing Project Discovery
 
-**Trigger**: First FDD workflow run in existing codebase
+**Trigger**: First Spider workflow run in existing codebase
 
 **Check**:
 - Source code exists (src/, app/, lib/)
@@ -195,10 +233,10 @@ Run adapter discovery to capture existing decisions? [Yes] [No]
 At ANY workflow step:
 
 1. Monitor for triggers:
-   - File created/updated (DESIGN.md, feature DESIGN.md, *.py, *.ts, etc.)
-   - Validation completed (design-validate, feature-validate)
-   - Tests passed
-   - User stated decision
+   - Artifact created/updated (kinds: PRD, DESIGN, DECOMPOSITION, ADR, SPEC)
+   - Artifact validated (any kind)
+   - Codebase changes (code committed, tests passed)
+   - User stated technical decision
 
 2. IF trigger detected:
    → Run trigger-specific scan
@@ -210,7 +248,7 @@ At ANY workflow step:
    → IF user accepts:
      → Run adapter workflow (appropriate mode)
      → Capture updates
-     → Update adapter specs
+     → Update adapter specs with rules-based WHEN clauses
    → IF user rejects:
      → Continue workflow
      → Log: "Adapter update skipped by user"
@@ -220,17 +258,91 @@ At ANY workflow step:
 
 ---
 
+## User Response Handling
+
+When proposal is shown to user, handle responses:
+
+| Response | Action |
+|----------|--------|
+| **[Yes]** | Run adapter workflow (appropriate mode), then resume original workflow |
+| **[No]** | Log "Adapter update skipped by user", continue original workflow |
+| **[Review]** | Show detailed diff of what would be captured, then re-prompt with [Yes] / [No] |
+
+### [Review] Response Flow
+
+```
+User selects: [Review]
+Agent shows:
+  Technical decisions to capture:
+
+  1. specs/tech-stack.md (NEW):
+     + Python 3.11+
+     + Django 4.2+
+     + PostgreSQL 15+
+
+  2. specs/domain-model.md (NEW):
+     + JSON Schema format
+     + Entity: User, Project, Task
+
+  3. AGENTS.md updates:
+     + WHEN rule for tech-stack.md
+     + WHEN rule for domain-model.md
+
+  Proceed with capture? [Yes] [No]
+```
+
+---
+
+## Error Handling
+
+### Adapter Workflow Fails
+
+**If adapter workflow fails during capture**:
+```
+⚠️ Adapter update failed: {error}
+→ Original workflow state preserved
+→ Technical decisions NOT captured
+→ Fix: Run /spider-adapter manually after resolving error
+```
+**Action**: Log error, continue original workflow without adapter updates.
+
+### Trigger Detection Fails
+
+**If trigger scan cannot complete** (file access, parsing error):
+```
+⚠️ Could not scan for adapter triggers: {reason}
+→ Skipping adapter proposal for this step
+→ Manual adapter update may be needed
+```
+**Action**: WARN and continue — do not block workflow.
+
+### Conflicting Decisions
+
+**If detected decision conflicts with existing adapter spec**:
+```
+⚠️ Conflict detected:
+  - Adapter: Python 3.10+
+  - DESIGN.md: Python 3.11+
+
+Options:
+  [Update] - Replace adapter spec with new decision
+  [Keep] - Keep existing adapter spec
+  [ADR] - Create ADR to document decision change
+```
+
+---
+
 ## Agent Responsibilities
 
-Agent ALWAYS do:
+**Agent MUST**:
 1. ✅ Check adapter initialization before ANY workflow
 2. ✅ Monitor for trigger events during workflow execution
 3. ✅ Scan for candidates when trigger detected
 4. ✅ Propose adapter update with clear context
-5. ✅ Respect user decision (accept/reject)
+5. ✅ Respect user decision (accept/reject/review)
 6. ✅ Never silently skip adapter opportunities
 
-Agent ALWAYS do NOT:
+**Agent MUST NOT**:
 1. ❌ Run adapter workflow without user approval
 2. ❌ Hardcode adapter calls in workflow steps
 3. ❌ Skip adapter proposals to "save time"
@@ -240,12 +352,12 @@ Agent ALWAYS do NOT:
 
 ## Examples
 
-### Example 1: Design Workflow Trigger
+### Example 1: Design Artifact Trigger
 
 ```
-User: "Run design workflow"
+User: "Generate DESIGN artifact"
 Agent: Checks adapter → Found minimal adapter
-Agent: Executes design workflow
+Agent: Executes generate workflow for artifact kind: DESIGN
 Agent: DESIGN.md created with Section C completed
 Agent: Trigger detected → Scans DESIGN.md + ADRs
 Agent: Finds: 3 ADRs with tech stack, JSON Schema format, Markdown tables
@@ -253,8 +365,9 @@ Agent: Proposes: "Design completed. 3 technical decisions not in adapter. Captur
 User: "Yes"
 Agent: Runs adapter workflow Mode 3 (Evolution)
 Agent: Creates specs/tech-stack.md, specs/domain-model.md, specs/api-contracts.md
-Agent: Updates AGENTS.md with 3 MUST rules
-Agent: Returns to design workflow completion
+Agent: Updates AGENTS.md with rules-based WHEN clauses:
+       ALWAYS open and follow `specs/tech-stack.md` WHEN Spider follows rules `spider-sdlc` for artifact kinds: DESIGN, ADR OR codebase
+Agent: Returns to generate workflow completion
 ```
 
 ### Example 2: Implementation Trigger
@@ -309,65 +422,68 @@ Execute: Monitor triggers during workflow
 
 ---
 
-## Validation Criteria
+## Consolidated Validation Checklist
 
-### Structure (25 points)
+**Use this single checklist for all adapter-triggers validation.**
 
-**Check**:
-- [ ] All 6 trigger types defined
-- [ ] Detection algorithm present
-- [ ] Agent responsibilities listed
-- [ ] Integration section complete
-- [ ] Proper markdown formatting
+### Structure (S)
 
-### Completeness (30 points)
+| # | Check | Required |
+|---|-------|----------|
+| S.1 | All 5 trigger types defined (Design, Spec Patterns, Implementation, User Decisions, Discovery) | YES |
+| S.2 | Detection algorithm present | YES |
+| S.3 | User response handling defined ([Yes], [No], [Review]) | YES |
+| S.4 | Error handling section present | YES |
+| S.5 | Agent responsibilities listed (MUST / MUST NOT) | YES |
+| S.6 | Integration section complete | YES |
+| S.7 | Proper markdown formatting | YES |
 
-**Check**:
-- [ ] Each trigger has: When, Check, Scan, Propose sections
-- [ ] Detection keywords specified
-- [ ] Proposal format examples provided
-- [ ] All workflow integration points defined
-- [ ] No placeholders or TODOs
+### Completeness (C)
 
-### Clarity (25 points)
+| # | Check | Required |
+|---|-------|----------|
+| C.1 | Each trigger has: Trigger, Check, Scan, Propose IF, Action sections | YES |
+| C.2 | Detection keywords specified (Trigger 4) | YES |
+| C.3 | Proposal format examples provided for each trigger | YES |
+| C.4 | Threshold scopes clarified (e.g., "≥3 times across project") | YES |
+| C.5 | No placeholders or TODOs | YES |
 
-**Check**:
-- [ ] Trigger conditions unambiguous
-- [ ] Agent actions clearly defined
-- [ ] Examples concrete and realistic
-- [ ] MUST/MUST NOT semantics correct
-- [ ] Imperative language used
+### Clarity (CL)
 
-### Integration (20 points)
+| # | Check | Required |
+|---|-------|----------|
+| CL.1 | Trigger conditions unambiguous | YES |
+| CL.2 | Agent actions clearly defined | YES |
+| CL.3 | Examples concrete and realistic | YES |
+| CL.4 | MUST/MUST NOT semantics correct (not "ALWAYS do NOT") | YES |
+| CL.5 | Imperative language used | YES |
 
-**Check**:
-- [ ] References workflow-execution.md correctly
-- [ ] References adapter-structure.md correctly
-- [ ] Consistent with FDD principles
-- [ ] Used by/References sections complete
-- [ ] Integration examples provided
+### Integration (I)
 
-**Total**: 100/100
+| # | Check | Required |
+|---|-------|----------|
+| I.1 | References execution-protocol.md correctly | YES |
+| I.2 | References adapter-structure.md correctly | YES |
+| I.3 | Consistent with Spider principles | YES |
+| I.4 | Used by/References sections complete | YES |
+| I.5 | Integration examples provided | YES |
 
-**Pass threshold**: ≥95/100
+### Final (F)
+
+| # | Check | Required |
+|---|-------|----------|
+| F.1 | Document follows required structure | YES |
+| F.2 | All validation criteria pass | YES |
 
 ---
-
-## Validation Checklist
-
-- [ ] Document follows required structure
-- [ ] All validation criteria pass
-
----
-
 
 ## References
 
 **Used by**:
-- All FDD workflows (via workflow-execution.md)
+- All Spider workflows (via execution-protocol.md)
 - AI agent execution logic
 
 **References**:
-- `adapter-structure.md` - Adapter structure
-- `adapter-new.md` - Adapter workflow modes
-- `workflow-execution.md` - Workflow execution rules
+- `adapter-structure.md` - Adapter structure and WHEN rule format
+- `../workflows/adapter.md` - Adapter workflow
+- `execution-protocol.md` - Common execution protocol

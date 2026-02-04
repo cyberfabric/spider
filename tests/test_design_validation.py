@@ -23,41 +23,41 @@ except ModuleNotFoundError:  # pragma: no cover
     pytest = _PytestShim()  # type: ignore
 
 
-# Add fdd.py to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "fdd" / "scripts"))
+# Add spider.py to path
+sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spider" / "scripts"))
 
 
-def test_features_manifest_references_design():
-    """Verify FEATURES.md references DESIGN.md for each feature."""
-    features_path = Path(__file__).parent.parent / "architecture" / "features" / "FEATURES.md"
+def test_specs_manifest_references_design():
+    """Verify DECOMPOSITION.md references DESIGN.md for each spec."""
+    specs_path = Path(__file__).parent.parent / "architecture" / "specs" / "DECOMPOSITION.md"
     
-    if not features_path.exists():
-        pytest.skip("FEATURES.md not found")
+    if not specs_path.exists():
+        pytest.skip("DECOMPOSITION.md not found")
     
-    content = features_path.read_text(encoding='utf-8')
+    content = specs_path.read_text(encoding='utf-8')
     
-    # Verify FEATURES.md mentions design artifacts
+    # Verify DECOMPOSITION.md mentions design artifacts
     assert 'DESIGN.md' in content or 'design' in content.lower(), \
-        "FEATURES.md should reference DESIGN.md files"
+        "DECOMPOSITION.md should reference DESIGN.md files"
     
-    # Check that feature entries have proper structure
+    # Check that spec entries have proper structure
     assert '## ' in content or '###' in content, \
-        "FEATURES.md should have feature sections"
+        "DECOMPOSITION.md should have spec sections"
 
 
-def test_validate_all_feature_designs_have_required_sections():
-    """Validate feature-init-structure DESIGN.md has required sections A-F."""
-    features_dir = Path(__file__).parent.parent / "architecture" / "features"
-    if not features_dir.exists():
-        pytest.skip("architecture/features/ directory not found")
+def test_validate_all_spec_designs_have_required_sections():
+    """Validate spec-init-structure DESIGN.md has required sections A-F."""
+    specs_dir = Path(__file__).parent.parent / "architecture" / "specs"
+    if not specs_dir.exists():
+        pytest.skip("architecture/specs/ directory not found")
     
-    # Only validate init-structure feature (others are placeholders)
-    design_path = features_dir / "feature-init-structure" / "DESIGN.md"
+    # Only validate init-structure spec (others are placeholders)
+    design_path = specs_dir / "spec-init-structure" / "DESIGN.md"
     if not design_path.exists():
-        pytest.skip("feature-init-structure/DESIGN.md not found")
+        pytest.skip("spec-init-structure/DESIGN.md not found")
     design_files = [design_path]
     
-    # Required sections for feature design
+    # Required sections for spec design
     required_sections = ['## A.', '## B.', '## C.', '## D.', '## E.', '## F.']
     
     errors = []
@@ -76,13 +76,13 @@ def test_validate_all_feature_designs_have_required_sections():
         if missing_sections:
             errors.append(f"{design_path.parent.name}/DESIGN.md: Missing sections: {', '.join(missing_sections)}")
         
-        # Also verify has title and feature ID
+        # Also verify has title and spec ID
         if '# ' not in content:
             errors.append(f"{design_path.parent.name}/DESIGN.md: Missing title (# heading)")
         
         if '**ID**:' not in content and '- [ ]' not in content:
-            errors.append(f"{design_path.parent.name}/DESIGN.md: Missing feature/flow IDs")
+            errors.append(f"{design_path.parent.name}/DESIGN.md: Missing spec/flow IDs")
     
     # Report all errors found
     if errors:
-        pytest.fail(f"Feature DESIGN.md structure validation failed:\n" + "\n".join(errors))
+        pytest.fail(f"Spec DESIGN.md structure validation failed:\n" + "\n".join(errors))

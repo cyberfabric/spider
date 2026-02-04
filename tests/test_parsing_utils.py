@@ -9,24 +9,20 @@ import sys
 import re
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "fdd" / "scripts"))
+sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spider" / "scripts"))
 
-from fdd.utils.parsing import (
+from spider.utils.parsing import (
     parse_required_sections,
     find_present_section_ids,
     split_by_section_letter,
-    split_by_feature_section_letter,
-    split_by_prd_section_letter,
     field_block,
     has_list_item,
     extract_backticked_ids,
 )
-from fdd.constants import (
-    SECTION_FEATURE_RE,
-    SECTION_PRD_RE,
-    ACTOR_ID_RE,
-    CAPABILITY_ID_RE,
-)
+
+
+ACTOR_ID_RE = re.compile(r"^spd-[a-z0-9-]+-actor-[a-z0-9-]+$", re.IGNORECASE)
+CAPABILITY_ID_RE = re.compile(r"^spd-[a-z0-9-]+-capability-[a-z0-9-]+$", re.IGNORECASE)
 
 
 class TestFindPresentSectionIds(unittest.TestCase):
@@ -120,59 +116,6 @@ Content A
         
         self.assertEqual(order, ["A"])
         self.assertIn("A", sections)
-
-
-class TestSplitByFeatureSectionLetter(unittest.TestCase):
-    """Test split_by_feature_section_letter function."""
-
-    def test_split_feature_sections(self):
-        """Test splitting feature DESIGN.md."""
-        text = """
-## A. Overview
-
-Feature overview
-
-## B. Requirements
-
-Requirements here
-
-## C. Design
-
-Design details
-"""
-        
-        order, sections = split_by_feature_section_letter(text)
-        
-        self.assertEqual(order, ["A", "B", "C"])
-        self.assertIn("A", sections)
-        self.assertIn("B", sections)
-        self.assertIn("C", sections)
-
-
-class TestSplitByPRDSectionLetter(unittest.TestCase):
-    """Test split_by_prd_section_letter function."""
-
-    def test_split_prd_sections(self):
-        """Test splitting PRD.md."""
-        text = """
-## A. PRD
-
-Context
-
-## B. Actors
-
-Actors list
-
-## C. Capabilities
-
-Capabilities
-"""
-        
-        order, sections = split_by_prd_section_letter(text)
-        
-        self.assertEqual(order, ["A", "B", "C"])
-        self.assertIn("A", sections)
-        self.assertIn("B", sections)
 
 
 class TestFieldBlock(unittest.TestCase):
@@ -293,26 +236,26 @@ class TestExtractBacktickedIds(unittest.TestCase):
 
     def test_extract_single_id(self):
         """Test extracting single backticked ID."""
-        line = "Actor: `fdd-test-actor-user`"
+        line = "Actor: `spd-test-actor-user`"
         
         ids = extract_backticked_ids(line, ACTOR_ID_RE)
         
         self.assertEqual(len(ids), 1)
-        self.assertEqual(ids[0], "fdd-test-actor-user")
+        self.assertEqual(ids[0], "spd-test-actor-user")
 
     def test_extract_multiple_ids(self):
         """Test extracting multiple backticked IDs."""
-        line = "Actors: `fdd-test-actor-user`, `fdd-test-actor-admin`"
+        line = "Actors: `spd-test-actor-user`, `spd-test-actor-admin`"
         
         ids = extract_backticked_ids(line, ACTOR_ID_RE)
         
         self.assertEqual(len(ids), 2)
-        self.assertIn("fdd-test-actor-user", ids)
-        self.assertIn("fdd-test-actor-admin", ids)
+        self.assertIn("spd-test-actor-user", ids)
+        self.assertIn("spd-test-actor-admin", ids)
 
     def test_extract_no_match(self):
         """Test extracting when pattern doesn't match."""
-        line = "Capability: `fdd-test-capability-login`"
+        line = "Capability: `spd-test-capability-login`"
         
         ids = extract_backticked_ids(line, ACTOR_ID_RE)
         
@@ -320,16 +263,16 @@ class TestExtractBacktickedIds(unittest.TestCase):
 
     def test_extract_with_spaces(self):
         """Test extracting IDs with spaces around them."""
-        line = "ID: `  fdd-test-actor-user  `"
+        line = "ID: `  spd-test-actor-user  `"
         
         ids = extract_backticked_ids(line, ACTOR_ID_RE)
         
         self.assertEqual(len(ids), 1)
-        self.assertEqual(ids[0], "fdd-test-actor-user")
+        self.assertEqual(ids[0], "spd-test-actor-user")
 
     def test_extract_capability_ids(self):
         """Test extracting capability IDs."""
-        line = "**Capabilities**: `fdd-test-capability-login`, `fdd-test-capability-logout`"
+        line = "**Capabilities**: `spd-test-capability-login`, `spd-test-capability-logout`"
         
         ids = extract_backticked_ids(line, CAPABILITY_ID_RE)
         

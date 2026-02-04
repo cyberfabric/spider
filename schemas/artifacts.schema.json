@@ -1,161 +1,52 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/fdd/artifacts.schema.json",
-  "title": "FDD Artifact Registry (artifacts.json)",
+  "$id": "https://example.com/spider/artifacts.schema.json",
+  "title": "Spider Artifact Registry (artifacts.json)",
   "type": "object",
   "additionalProperties": false,
-  "required": ["version", "artifacts"],
+  "required": ["version", "systems", "weavers"],
   "examples": [
     {
       "version": "1.0",
-      "artifacts": [
+      "project_root": "..",
+      "weavers": {
+        "spider-sdlc": {
+          "format": "Spider",
+          "path": "weavers/sdlc"
+        }
+      },
+      "systems": [
         {
-          "kind": "PRD",
-          "system": "PlatformX",
-          "path": "architecture/PRD.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "DESIGN",
-          "system": "PlatformX",
-          "path": "architecture/DESIGN.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "ADR",
-          "system": "PlatformX",
-          "path": "architecture/ADR/general/0001-platformx-adr-initial-architecture.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "FEATURES",
-          "system": "PlatformX",
-          "path": "architecture/features/FEATURES.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "FEATURE",
-          "system": "Accounts",
-          "parent": "PlatformX",
-          "path": "modules/accounts/architecture/DESIGN.md",
-          "format": "FDD",
-          "traceability_enabled": true
-        },
-        {
-          "kind": "SRC",
-          "system": "PlatformX",
-          "path": "src",
-          "format": "CONTEXT",
-          "traceability_enabled": false,
-          "extensions": [".rs", ".ts"]
-        },
-        {
-          "kind": "CUSTOM",
-          "system": "PlatformX",
-          "path": "docs/CONTRIBUTING.md",
-          "format": "CONTEXT",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "PRD",
-          "system": "Accounts",
-          "parent": "PlatformX",
-          "path": "modules/accounts/architecture/PRD.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "DESIGN",
-          "system": "Accounts",
-          "parent": "PlatformX",
-          "path": "modules/accounts/architecture/DESIGN.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "FEATURES",
-          "system": "Accounts",
-          "parent": "PlatformX",
-          "path": "modules/accounts/architecture/features/FEATURES.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "FEATURE",
-          "system": "Accounts",
-          "parent": "PlatformX",
-          "path": "modules/accounts/architecture/features/feature-auth/DESIGN.md",
-          "format": "FDD",
-          "traceability_enabled": true
-        },
-        {
-          "kind": "CUSTOM",
-          "system": "Accounts",
-          "parent": "PlatformX",
-          "path": "modules/accounts/README.md",
-          "format": "CONTEXT",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "PRD",
-          "system": "IDP",
-          "parent": "PlatformX",
-          "path": "modules/idp/architecture/PRD.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "DESIGN",
-          "system": "IDP",
-          "parent": "PlatformX",
-          "path": "modules/idp/architecture/DESIGN.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "FEATURE",
-          "system": "IDP",
-          "parent": "PlatformX",
-          "path": "modules/idp/architecture/features/feature-sso/DESIGN.md",
-          "format": "FDD",
-          "traceability_enabled": true
-        },
-        {
-          "kind": "SRC",
-          "system": "IDP",
-          "parent": "PlatformX",
-          "path": "modules/idp/src",
-          "format": "CONTEXT",
-          "traceability_enabled": false,
-          "extensions": [".rs"]
-        },
-        {
-          "kind": "PRD",
-          "system": "Events",
-          "parent": "PlatformX",
-          "path": "modules/events/architecture/PRD.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "FEATURES",
-          "system": "Events",
-          "parent": "PlatformX",
-          "path": "modules/events/architecture/features/FEATURES.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "CUSTOM",
-          "system": "Events",
-          "parent": "PlatformX",
-          "path": "modules/events/docs/OPERATIONS.md",
-          "format": "CONTEXT",
-          "traceability_enabled": false
+          "name": "MyApp",
+          "slug": "myapp",
+          "weaver": "spider-sdlc",
+          "artifacts_dir": "architecture",
+          "artifacts": [
+            { "name": "Product Requirements", "path": "architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
+            { "name": "Overall Design", "path": "architecture/DESIGN.md", "kind": "DESIGN", "traceability": "FULL" },
+            { "name": "Initial Architecture", "path": "architecture/ADR/0001-initial-architecture.md", "kind": "ADR", "traceability": "DOCS-ONLY" },
+            { "name": "Design Decomposition", "path": "architecture/DECOMPOSITION.md", "kind": "DECOMPOSITION", "traceability": "FULL" },
+            { "name": "Auth Spec", "path": "architecture/specs/auth.md", "kind": "SPEC", "traceability": "FULL" }
+          ],
+          "codebase": [
+            { "name": "Source Code", "path": "src", "extensions": [".ts", ".tsx"] }
+          ],
+          "children": [
+            {
+              "name": "Auth",
+              "slug": "auth",
+              "weaver": "spider-sdlc",
+              "artifacts_dir": "modules/auth/architecture",
+              "artifacts": [
+                { "path": "modules/auth/architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
+                { "path": "modules/auth/architecture/specs/sso.md", "kind": "SPEC", "traceability": "FULL" }
+              ],
+              "codebase": [
+                { "name": "Auth Module", "path": "src/modules/auth", "extensions": [".ts"] }
+              ],
+              "children": []
+            }
+          ]
         }
       ]
     }
@@ -163,60 +54,142 @@
   "properties": {
     "version": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "description": "Schema version"
     },
-    "artifacts": {
+    "project_root": {
+      "type": "string",
+      "minLength": 1,
+      "default": "..",
+      "description": "Relative path from artifacts.json to the project root directory. All paths in artifacts and codebase are resolved relative to this."
+    },
+    "weavers": {
+      "$ref": "#/$defs/weavers"
+    },
+    "systems": {
       "type": "array",
-      "items": { "$ref": "#/definitions/artifact" }
+      "description": "Root-level systems (top of the hierarchy tree)",
+      "items": {
+        "$ref": "#/$defs/system_node"
+      }
     }
   },
-  "definitions": {
-    "artifact": {
+  "$defs": {
+    "weavers": {
+      "type": "object",
+      "description": "Registry of weaver packages. Each weaver defines a template directory and format.",
+      "additionalProperties": {
+        "$ref": "#/$defs/weaver"
+      }
+    },
+    "weaver": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "system", "path", "format"],
-      "examples": [
-        {
-          "kind": "PRD",
-          "system": "FDD",
-          "path": "architecture/PRD.md",
-          "format": "FDD",
-          "traceability_enabled": false
-        },
-        {
-          "kind": "SRC",
-          "system": "FDD",
-          "path": "skills/fdd",
-          "format": "CONTEXT",
-          "traceability_enabled": false,
-          "extensions": [".py", ".rs"]
-        }
-      ],
+      "required": ["format", "path"],
       "properties": {
-        "kind": {
-          "type": "string",
-          "enum": ["ADR", "DESIGN", "PRD", "FEATURE", "FEATURES", "SRC", "CUSTOM"]
-        },
-        "system": {
-          "type": "string",
-          "minLength": 1
-        },
-        "parent": {
+        "format": {
           "type": "string",
           "minLength": 1,
-          "description": "Optional parent system/subsystem name for hierarchical composition."
+          "description": "Template format identifier. Use 'Spider' for full Spider tooling support with validation. Other values are treated as custom formats with LLM-only semantic processing."
         },
         "path": {
           "type": "string",
-          "minLength": 1
-        },
-        "format": {
+          "minLength": 1,
+          "description": "Path to weaver package directory (resolved relative to project root). Contains artifacts/{KIND}/ and codebase/ subdirectories."
+        }
+      }
+    },
+    "system_node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "slug", "weaver"],
+      "properties": {
+        "name": {
           "type": "string",
-          "enum": ["FDD", "CONTEXT"]
+          "minLength": 1,
+          "description": "Human-readable system/subsystem/component name"
         },
-        "traceability_enabled": {
-          "type": "boolean",
-          "default": false
+        "slug": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "Machine-readable identifier (lowercase, no spaces, hyphen-separated). Used for hierarchical ID generation: {parent-slug}-{child-slug}-{TYPE}-{N}"
+        },
+        "weaver": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Reference to a weaver ID from weavers"
+        },
+        "artifacts_dir": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Default base directory for NEW artifacts (relative to project_root). Does NOT affect existing artifact paths in 'artifacts' array. Default: 'architecture'. Subdirectories for specific artifact kinds (specs/, ADR/) are defined by the weaver."
+        },
+        "artifacts": {
+          "type": "array",
+          "description": "Artifacts belonging to this system node",
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        },
+        "codebase": {
+          "type": "array",
+          "description": "Source code directories belonging to this system node",
+          "items": {
+            "$ref": "#/$defs/codebase_entry"
+          }
+        },
+        "children": {
+          "type": "array",
+          "description": "Nested child systems (subsystems, components, modules, etc.)",
+          "items": {
+            "$ref": "#/$defs/system_node"
+          }
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "kind"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable name for the artifact (optional, for display purposes)"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path to the artifact file (resolved relative to project root). Must be a file path, not a directory."
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Artifact kind (e.g., PRD, DESIGN, ADR, DECOMPOSITION, SPEC). Template resolved at: {weaver.path}/artifacts/{KIND}/template.md"
+        },
+        "traceability": {
+          "type": "string",
+          "enum": ["FULL", "DOCS-ONLY"],
+          "default": "FULL",
+          "description": "FULL = traceability to codebase (default); DOCS-ONLY = documentation-only tracing"
+        }
+      }
+    },
+    "codebase_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "extensions"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable name for the codebase entry (optional, for display purposes)"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path to source code directory (resolved relative to project root)"
         },
         "extensions": {
           "type": "array",
@@ -224,26 +197,42 @@
           "items": {
             "type": "string",
             "pattern": "^\\.[A-Za-z0-9]+$"
-          }
-        }
-      },
-      "allOf": [
-        {
-          "if": {
-            "properties": { "kind": { "const": "SRC" } },
-            "required": ["kind"]
           },
-          "then": {
-            "required": ["extensions"],
-            "properties": {
-              "format": { "const": "CONTEXT" }
-            }
+          "description": "File extensions to include (e.g., .rs, .ts, .py)"
+        },
+        "singleLineComments": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
           },
-          "else": {
-            "not": { "required": ["extensions"] }
-          }
+          "description": "Single-line comment prefixes (e.g., [\"#\", \"//\"]). If omitted, defaults based on file extension."
+        },
+        "multiLineComments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/multiline_comment"
+          },
+          "description": "Multi-line comment delimiters. If omitted, defaults based on file extension."
         }
-      ]
+      }
+    },
+    "multiline_comment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Opening delimiter (e.g., /*, <!--, \"\"\")"
+        },
+        "end": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Closing delimiter (e.g., */, -->, \"\"\")"
+        }
+      }
     }
   }
- }
+}

@@ -1,1081 +1,231 @@
-# Flow-Driven Development (FDD)
-FDD project overview.
+# **Spider**
 
-**Version**: 1.0  
-**Status**: Active  
-**Audience**: Development teams, technical leads, architects
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-2.0-green.svg)]()
+[![Status](https://img.shields.io/badge/status-active-brightgreen.svg)]()
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)]()
 
-Flow-Driven Development is a **universal methodology** for building software systems with clear traceability from requirements to implementation.
+**Version**: 2.0 | **Status**: Active | **Language**: English
 
-**Built for modern development**: FDD works with AI coding assistants, supports any tech stack, and provides structured workflows that teams can follow manually or automate.
+**Audience**: Prompt engineers, AI developers, software architects, engineering teams
 
----
+**Spider** is a platform for weaving agentic systems: its threads (like prompts, templates, DSL, rules) run through the whole project, turning intent into consistent artifacts. **Spider** focuses on four principles — **feedback**, **transformation**, **determinism**, and **quality** — so you can derive documents from documents, code from documents, or documents from code while keeping everything aligned. Each transformation is a controlled step in a pipeline: feedback tightens the web, deterministic validation removes LLM variability, and traceability keeps every derived piece connected and reviewable.
 
-## 🚀 Quick Start
+As an **extensible platform**, **Spider** can be "trained" by registering thread packages called **Weavers**. Each **Weaver** bundles templates, rules, checklists and examples for a specific domain or use case. 
 
-**New to FDD?** Start here: **[QUICKSTART.md](QUICKSTART.md)**
-
-Learn FDD in 10 minutes with:
-- **Exact prompts to copy-paste** into your AI chat
-- **Complete example**: Task management API from start to finish
-- **Common scenarios**: What to do when requirements change
-- **Working with existing docs**: Use what you already have
-
-**Live example**: [Taskman (FDD example project)](https://github.com/cyberfabric/fdd-examples-taskman) — a complete task management project with the full FDD artifact set and implementation.
+**Spider** comes with a built-in **SDLC Weaver** that implements a full Software Development Life Cycle (SDLC) pipeline from Product Requirements Document (PRD) to code, with traceability and validation at every step.
 
 ---
 
-## What is FDD?
+## Table of Contents
 
-FDD helps teams build software by:
-
-1. **Designing before coding**: Document what you're building in clear, reviewable formats
-2. **Breaking work into features**: Each feature is independent and testable
-3. **Using plain English**: Algorithms described in FDL (not code), reviewable by non-programmers
-4. **Ensuring traceability**: Requirements remain traceable to implementation
-5. **Validating designs**: Catch issues before implementation
-
----
-
-## FDD Flow Overview
-
-![FDD Layered Flow](fdd-flow-layers.drawio.svg)
-
-**The 6-layer flow** (each layer builds on validated previous layer):
-
-**Layer 0: Project Adapter** (Architect, Project Manager)
-- Define tech stack & conventions (any language, any tools)
-- Workflows: `adapter`, `adapter-agents`, `adapter-from-source`
-
-**Layer 1: PRD** (Product Owner, Project Manager)
-- Define product requirements, use cases, capabilities
-- Workflows: `prd`, `prd-validate`
-- ✅ Validated before proceeding
-
-**Layer 2: Overall Design** (Architect, Project Manager)
-- Actors, domain model, API contracts, industry best practices
-- Workflows: `design`, `design-validate`, `adr`, `adr-validate`
-- ✅ Validated (≥90/100) before proceeding
-
-**Layer 3: Feature Planning** (Architect, Project Manager)
-- FEATURES.md manifest, feature list, dependencies, design decomposition
-- Workflows: `features`, `features-validate`
-- ✅ Validated before proceeding
-
-**Layer 4: Feature Design** (Solution Architect, Project Manager)
-- Actor flows in FDL, algorithms, states, requirements
-- Validated against overall design
-- Workflows: `feature`, `feature-validate`
-- ✅ Validated (100/100) before proceeding
-
-**Layer 5: Implementation** (Developer/QA, Project Manager)
-- Implement feature directly from feature design
-- Workflows: `implement`, `code-validate`
-
-**Key principles**: 
-- Each layer validated before proceeding to next
-- Design is source of truth, enforced by tooling
-- PRD → Design → Features → Implementation
-- All workflows support CREATE & UPDATE modes for iteration
+- [**Spider**](#spider)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Project Setup (Spider + Agents)](#project-setup-spider--agents)
+  - [Using Spider](#using-spider)
+    - [Example Prompts](#example-prompts)
+    - [Agent Skill](#agent-skill)
+    - [Workflow Commands](#workflow-commands)
+    - [Checklists and Quality Gates](#checklists-and-quality-gates)
+  - [Weaver: **Spider SDLC**](#weaver-spider-sdlc)
+  - [Contributing](#contributing)
 
 ---
 
-## The AGENTS.md Foundation
+## Prerequisites
 
-FDD is built on the **AGENTS.md approach** - a standardized file that serves as the single source of truth for AI agents. Instead of scattered documentation across README files, wikis, and comments, `AGENTS.md` provides complete methodology rules, workflow references, and project-specific context in one place.
+Before using **Spider**, ensure you have:
 
-**Two-level hierarchy**:
-1. Core `AGENTS.md` - FDD methodology (universal, in FDD root)
-2. `{adapter-directory}/AGENTS.md` - Project-specific adapter (your tech stack, conventions, workflows)
-
-**Key benefits**:
-- AI agents load complete context instantly (no searching)
-- Workflows become executable (agents follow step-by-step)
-- Version controlled (track methodology changes via git)
-- Composable (core + project extensions, no duplication)
-- Human + AI harmony (README for humans, AGENTS.md for AI)
-
-When an AI agent encounters FDD, it reads `FDD-Adapter/AGENTS.md` → which references `FDD/AGENTS.md` → complete understanding of methodology + project conventions + workflows.
+- **Python 3.8+** — Required for `spider` tool execution
+- **Git** — For version control and submodule installation (recommended)
+- **AI Agent** — Claude Code, Windsurf, Cursor, GH Copilot, or similar LLM-powered coding assistant integrated with your IDE
 
 ---
 
-## Key Strengths
+## Project Setup (Spider + Agents)
 
-### 1. Interactive Workflows - Your AI Pair Programmer
+Add Spider to your repo, then initialize and generate agent proxy files.
 
-FDD provides **10 operation workflows** that guide you step-by-step through the entire development process. Each workflow **works in two modes**: CREATE (generate new) and UPDATE (edit existing), making them fully independent and iterative.
-
-**Key Innovation: Create AND Edit Support**
-
-All operation workflows automatically detect whether you're creating something new or updating existing artifacts:
-- **CREATE mode**: Generates from scratch with guided questions
-- **UPDATE mode**: Reads current content, proposes changes, preserves unchanged parts
-
-**Example: Creating or Updating a Project Adapter**
-
-First time:
-```
-Open and follow `workflows/adapter.md`
-→ No adapter found → CREATE mode
-```
-
-Later, to update:
-```
-Open and follow `workflows/adapter.md`
-→ Adapter exists → UPDATE mode
-→ What to update?
-   - Domain model specs
-   - API contract specs
-   - Testing configuration
-   - Build commands
-```
-
-Both modes ask targeted questions:
-```
-Q1: Project name?
-   CREATE: Propose from package.json
-   UPDATE: Show current "fdd-cli", ask to change or keep
-
-Q2: Domain model technology?
-   CREATE: Detect and propose (GTS, JSON Schema, TypeScript...)
-   UPDATE: Show current "GTS", ask to change or keep
-
-Q3: API contract format?
-   CREATE: Propose (OpenAPI, CLISPEC, GraphQL...)
-   UPDATE: Show current "CLISPEC", ask to change or keep
-```
-
-**Result**: 
-- **CREATE**: Fully configured adapter in 5-10 minutes
-- **UPDATE**: Targeted changes without recreating everything
-
-**Example: Iterating on Feature Design**
-
-```
-Open and follow `workflows/feature.md`
-→ Feature exists → UPDATE mode
-→ What to update?
-   - Add new actor flow
-   - Edit existing algorithm
-   - Update technical details
-   - Add new requirements
-```
-
-Workflow shows current content and asks for specific changes - no need to start from scratch.
-
-**Why This Is Revolutionary**:
-- **Truly iterative** - Update artifacts as project evolves
-- **No data loss** - UPDATE mode preserves unchanged content
-- **Independent workflows** - Run any workflow anytime
-- **No memorization** - Workflows guide you every time
-- **No mistakes** - Each step validated before proceeding
-- **Consistent results** - Same structure every time
-- **AI-friendly** - AI agents follow workflows naturally
-- **Human-readable** - Anyone can execute manually if needed
-
-### 2. Adapter System - Works With Any Tech Stack
-
-FDD core is **100% technology-agnostic**. Your project adapter makes it specific to YOUR stack.
-
-**Adapters define**:
-- **Domain model format**: GTS, JSON Schema, TypeScript, Protobuf, CTI, etc.
-- **API contracts**: OpenAPI, GraphQL, gRPC, RAML, CLISPEC, etc.
-- **Testing strategy**: Jest, Pytest, Go test, etc.
-- **Build tools**: Webpack, Vite, Cargo, Maven, etc.
-- **Project conventions**: Naming, structure, security model
-
-**Example Adapters**:
-
-**Microservice with REST API**:
-```yaml
-Domain Model: OpenAPI + JSON Schema
-API Contracts: OpenAPI 3.1
-Testing: Jest + Supertest
-Deployment: Docker + Kubernetes
-```
-
-**CLI Tool**:
-```yaml
-Domain Model: GTS (Global Type System)
-API Contracts: CLISPEC (command specifications)
-Testing: Vitest
-Deployment: npm publish
-```
-
-**GraphQL Backend**:
-```yaml
-Domain Model: GraphQL Schema
-API Contracts: GraphQL SDL
-Testing: Apollo Server Testing
-Deployment: Serverless
-```
-
-**Why This Matters**:
-- **Use your existing stack** - No forced technology choices
-- **Migrate gradually** - Add FDD to existing projects
-- **Team flexibility** - Different teams, different stacks, same methodology
-- **Future-proof** - New tech? Just create new adapter
-
-### 3. Skills System - Claude-Compatible AI Tools
-
-FDD provides **Claude-compatible skills** for automated artifact search and validation:
-
-**Available Skills**:
-
-**fdd** (Unified Tool):
-- **Validation**: Validate FDD artifacts registered in `{adapter-dir}/artifacts.json` (defaults include PRD, DESIGN, ADR directory, FEATURES, and feature DESIGN artifacts)
-- **Search**: List sections, IDs, and items in any artifact
-- **Traceability**: Find where FDD/ADR IDs are defined or used (repo-wide traceability)
-- **Code Integration**: Codebase traceability scan (@fdd-* tags)
-- Support for qualified IDs (`:ph-*`, `:inst-*`)
-- Deterministic validation (no subjective scoring)
-
-**How Skills Work**:
-1. Agent discovers skills via `skills/SKILLS.md`
-2. Selects `fdd` skill for FDD-related tasks
-3. Enters "Skill Lock" - uses only that skill's commands
-4. Executes via Python scripts (requires `python3`)
-
-**Example Usage**:
 ```bash
-# Search for an ID across the repository
-python3 skills/fdd/scripts/fdd.py where-used --id "fdd-example-req-001"
+# Option A: git submodule (recommended)
+git submodule add https://github.com/cyberfabric/spider spider
+git submodule update --init --recursive
 
-# Validate feature design
-python3 skills/fdd/scripts/fdd.py validate \
-  --artifact {feature_design_path_from_artifacts_json}
-
-# List all IDs in a document
-python3 skills/fdd/scripts/fdd.py list-ids --artifact {design_path_from_artifacts_json}
+# Option B: plain clone
+git clone https://github.com/cyberfabric/spider spider
 ```
 
-Skills integrate with FDD workflows - validation workflows use `fdd` as the Deterministic Gate.
-
-### 4. Workflow-Driven Development - Everything Has a Process
-
-In FDD, **every action is a workflow**. Development becomes predictable and repeatable.
-
-**Workflow Categories**:
-
-**Operation Workflows** (13 workflows - all support CREATE & UPDATE modes):
-```
-Adapter Configuration:
-├─ adapter.md               → Create OR update project adapter
-├─ adapter-auto.md          → Auto-detect adapter from codebase
-├─ adapter-manual.md        → Manual adapter setup
-├─ adapter-bootstrap.md     → Bootstrap minimal adapter
-└─ adapter-agents.md        → Create OR update AI agent integration
-
-Architecture & Requirements:
-├─ prd.md      → Create OR update PRD (PRD.md)
-├─ adr.md                   → Create/add/edit Architecture Decision Records
-└─ design.md                → Create OR update overall design (DESIGN.md)
-
-Feature Management:
-├─ features.md              → Create OR update features manifest (FEATURES.md)
-├─ feature.md               → Create OR update feature design
-└─ code.md     → Implement feature directly from DESIGN.md
-```
-
-**Validation Workflows** (7 automated, read-only):
-```
-├─ adapter-validate.md      → Validate adapter completeness
-├─ prd-validate.md     → Validate PRD.md structure
-├─ adr-validate.md          → Validate ADR directory structure  
-├─ design-validate.md       → Validate DESIGN.md (≥90/100)
-├─ features-validate.md     → Validate FEATURES.md manifest
-├─ feature-validate.md      → Validate feature DESIGN.md (100/100)
-└─ code-validate.md → Validate entire feature code against design
-```
-
-**Total**: 20 workflows (13 operation + 7 validation) + 2 skills
-
-**Key Principle**: All operation workflows are **independent and iterative** - run them anytime to create new or update existing artifacts.
-
-**Real Development Flow**:
-```
-Day 1: Create adapter
-       Run: adapter.md workflow
-       → CREATE mode detected (no adapter exists)
-       → 10 minutes, adapter ready
-
-Day 2: Create PRD & design
-       Run: prd.md workflow
-       → CREATE mode, 30 min, PRD.md complete
-       
-       Run: design.md workflow  
-       → CREATE mode, 2-3 hours, DESIGN.md complete
-       → Auto-creates ADR-0001 (Initial Architecture)
-       
-       Run: design-validate.md
-       → 5 minutes, score 95/100 
-       → Auto-validates ADR/*
-
-Day 3: Plan features
-       Run: features.md workflow
-       → CREATE mode, 5 minutes, FEATURES.md generated
-       
-       Run: features-validate.md
-       → 5 minutes, manifest validated 
-
-Week 1-2: Develop features (iterative)
-          Run: feature.md workflow
-          → CREATE: New feature design, 1-2 hours
-          → UPDATE: Edit flows/algorithms, 15-30 min
-          
-          Run: feature-validate.md
-          → 100/100 score required 
-          
-          Run: code.md
-          → Code implementation (directly from design)
-          
-          Run: code-validate.md
-          → Validate complete feature code
-
-Ongoing: Update artifacts as project evolves
-         → Update adapter: adapter.md (UPDATE mode)
-         → Update design: design.md (UPDATE mode)
-         → Add ADRs: adr.md (ADD mode)
-         → Update features: feature.md (UPDATE mode)
-```
-
-**Why Workflows Matter**:
-- **Nothing forgotten** - Checklists ensure completeness
-- **Clear handoffs** - Team knows exactly what to do next
-- **Progress tracking** - Always know where you are
-- **Onboarding speed** - New members follow workflows
-- **Quality gates** - Validation before proceeding
-
-### 4. FDD vs OpenSpec vs Spec Kit vs MCAF
-
-For a comprehensive comparison of FDD with other AI-assisted development methodologies, see:
-
-**[SDD_COMPARISON.md](SDD_COMPARISON.md)**
-
-This document provides:
-- Detailed cross-capability matrix with quantitative scoring
-- Deep comparison across multiple dimensions
-- Best-fit use cases for each framework
-- Practical interoperability patterns
-
-### 5. FDL (FDD Description Language) - Plain English Logic
-
-FDD uses **FDL** to describe behavior in plain English - no code syntax, just numbered markdown lists with bold keywords.
-
-**Why**: Anyone can review (stakeholders, QA, developers). Design stays valid across languages. Perfect for AI code generation.
-
-**Format**: Each step includes checkbox `[ ]`/`[x]`, phase `ph-N`, description, and instruction ID `inst-id`.
-
-**Example - User Authentication**:
-
-```markdown
-1. [x] - `ph-1` - User submits login form - `inst-submit-form`
-2. [x] - `ph-1` - System validates credentials - `inst-validate-creds`
-   1. [x] - `ph-1` - **IF** invalid: - `inst-if-invalid`
-      1. [x] - `ph-1` - Show error - `inst-show-error`
-      2. [x] - `ph-1` - **RETURN** error - `inst-return-error`
-3. [ ] - `ph-2` - **TRY**: - `inst-try`
-   1. [ ] - `ph-2` - Create session token - `inst-create-token`
-   2. [ ] - `ph-2` - Store in database - `inst-store-db`
-4. [ ] - `ph-2` - **CATCH** DatabaseError: - `inst-catch`
-   1. [ ] - `ph-2` - Log error - `inst-log-error`
-   2. [ ] - `ph-2` - **RETURN** 500 error - `inst-return-500`
-5. [ ] - `ph-1` - Redirect to dashboard - `inst-redirect`
-```
-
-**Keywords**: **IF**/ELSE, **FOR EACH**, **WHILE**, **TRY**/CATCH, **PARALLEL**, **RETURN**, **MATCH**
-
-**Used in**: Actor Flows (Section B), Algorithms (Section C), State Machines (Section D)
-
-**Full syntax**: See `requirements/FDL.md`
-
-**Why No Code in Designs**:
-
-FDD **strictly prohibits code** in DESIGN.md files:
-- No `if (x > 5) { ... }` syntax
-- No function definitions
-- No framework-specific patterns
-- Only FDL plain English
-
-**This is enforced by validation** - designs with code fail validation.
-
-**The Business Impact**:
-
-Before FDL:
-```
-Developer writes algorithm in code
-    ↓
-Stakeholder can't review (too technical)
-    ↓
-Logic bug discovered in production
-    ↓
-Expensive fix + customer impact
-```
-
-With FDL:
-```
-Designer writes algorithm in FDL
-    ↓
-Stakeholder reviews and approves
-    ↓
-Developer implements validated logic
-    ↓
-Bug caught before coding
-```
-
-**See Full FDL Specification**: `requirements/FDL.md`
-
-### 6. Structured Project Organization - Rules and Validation
-
-FDD enforces **consistent structure and validation** across your entire project.
-
-**Project Structure Rules**:
-
-```
-architecture/
-├── PRD.md                  # PRD (required)
-│   ├── Section A: Vision & Purpose
-│   ├── Section B: Actors
-│   ├── Section C: Capabilities
-│   └── Section D: Additional Context
-│
-├── DESIGN.md                    # Overall Design (required)
-│   ├── Section A: Architecture Overview
-│   ├── Section B: Requirements & Principles
-│   ├── Section C: Technical Architecture
-│   └── Section D: Additional Context (optional)
-│
-├── ADR/{category}/NNNN-fdd-{slug}.md  # Architecture Decision Records (MADR format)
-│
-├── diagrams/                    # Architecture diagrams
-│
-└── features/                    # All features
-    ├── FEATURES.md             # Feature manifest (generated)
-    │
-    └── feature-{slug}/         # Individual feature
-        ├── DESIGN.md           # Feature design (required)
-        │   ├── Section A: Overview
-        │   ├── Section B: Actor Flows (PRIMARY)
-        │   ├── Section C: Algorithms
-        │   ├── Section D: States (optional)
-        │   ├── Section E: Technical Details
-        │   └── Section F: Requirements
-        │
-```
-
-**Validation Rules Enforced**:
-
-**PRD Validation** (workflow prd-validate):
-- All sections present (A, B, C, D)
-- Vision and purpose clearly defined
-- All actors identified
-- Core capabilities documented
-
-**Overall Design Validation** (workflow design-validate):
-- All sections present (A, B, C)
-- Architecture style documented
-- Domain model documented (in chosen DML format)
-- API contracts documented (in chosen format)
-- No contradictions in architecture
-- Score ≥90/100 before proceeding
-
-**Features Manifest Validation** (workflow features-validate):
-- All features listed with unique IDs
-- Valid priorities (CRITICAL, HIGH, MEDIUM, LOW)
-- Valid status emojis (⏳ NOT_STARTED, 🔄 IN_PROGRESS, ✅ COMPLETE)
-- All feature directories exist
-- No orphaned feature directories
-- Dependencies are valid (no circular, no missing)
-
-**Feature Design Validation** (workflow feature-validate):
-- All sections present (A-G)
-- Section B (Actor Flows) is PRIMARY and complete
-- Algorithms in FDL only (no code)
-- No type redefinitions (must reference Overall Design)
-- All dependencies declared
-- Implementation changes planned
-- Score 100/100 + 100% completeness
-
-**Documentation Rules**:
-- FDL only in designs - No code in DESIGN.md files
-- Single source of truth - Types defined once in Overall Design
-- Cross-references validated - All references must exist
-- Status tracking - Feature status always accurate
-- Dependency checking - No circular dependencies allowed
-
-**Why Structure and Validation Matter**:
-- Consistency - Every feature follows same pattern
-- Quality gates - Can't proceed with incomplete designs
-- Team coordination - Everyone knows where to find things
-- Maintenance ease - Structure is predictable
-- AI-friendly - Clear structure helps AI navigate and generate
-
-**Example Validation Failure**:
-```
-Feature Design Validation Failed
-
-Issues Found:
-1. Section B (Actor Flows) incomplete - missing "User Logout" flow
-2. Section E redefines type "User" - must reference Overall Design
-3. Section G missing implementation change for "session management"
-
-Score: 78/100 (minimum: 100/100)
-Completeness: 85% (minimum: 100%)
-
-→ Fix issues and re-run validation (workflow feature-validate)
-```
-
----
-
-## Why Use FDD?
-
-### What You Get With FDD
-
-**For Single Expert / Architect**:
-- AI does 80% of the work: Design → validation → implementation automated
-- Living documentation: Designs stay up-to-date with code (enforced by validation)
-- Full traceability: From product requirement → design → code change
-- Faster delivery: AI handles boilerplate, you focus on business logic
-- Catch issues early: Validation happens before coding
-
-**For Teams**:
-- Stakeholders can review: Actor flows in plain English, no code knowledge needed
-- Clear handoffs: Feature designs are complete specs, not ambiguous tickets
-- Progress tracking: FEATURES.md shows exactly what's done/in-progress/pending
-- Consistency: Workflows enforce same standards across all features
-- Onboarding: New team members read designs, not reverse-engineer code
-
-**For Business**:
-- Lower costs: Less rework, fewer bugs, faster development
-- Predictability: Features have complete designs before implementation
-- Risk reduction: Validation catches architectural issues early
-- Audit trail: Every change is documented and traceable
-
-### What Happens Without FDD
-
-**The typical scenario**:
-1. Developer starts coding from vague requirements
-2. Discovers edge cases during implementation
-3. Goes back to architect/PM for clarification
-4. Delays accumulate, scope creeps
-5. Bugs discovered after deployment (logic wasn't reviewed)
-6. Technical debt grows (no overall design document)
-7. Refactoring becomes risky (no source of truth)
-
-**Specific problems FDD prevents**:
-
-| Without FDD | With FDD |
-|-------------|----------|
-| Requirements in scattered Jira tickets | Complete Overall Design in one place |
-| Stakeholders can't review logic | Actor flows reviewable by non-programmers |
-| Type definitions duplicated across features | Domain model in Overall Design, referenced everywhere |
-| API changes break other features | API contracts defined upfront, validated |
-| "Documentation" outdated or missing | Designs validated against code, stay current |
-| Developer interprets requirements differently | Feature Design is unambiguous spec |
-| AI assistant generates inconsistent code | AI follows workflows, enforces patterns |
-| Can't track feature dependencies | FEATURES.md shows dependency graph |
-| Rework after stakeholder review | Stakeholders review design before coding |
-
----
-
-## Core Components
-
-### 1. Complete Design Hierarchy
-
-**Adapter** (`{adapter-directory}/AGENTS.md`):
-- Tech stack definition (any language, any framework)
-- Domain model format (GTS, JSON Schema, TypeScript, etc.)
-- API contract format (OpenAPI, GraphQL, CLISPEC, etc.)
-- Testing frameworks and build tools
-- Project-specific conventions
-
-**PRD** (path defined by `{adapter-dir}/artifacts.json`, kind: `PRD`; default: `architecture/PRD.md`):
-- System vision and purpose
-- Key actors (users, systems, services)
-- Core capabilities (what system can do)
-- Business constraints and compliance requirements
-
-**Overall Design** (path defined by `{adapter-dir}/artifacts.json`, kind: `DESIGN`; default: `architecture/DESIGN.md`):
-- Architecture style and layers
-- Requirements and principles
-- Domain model types (formally specified)
-- API contracts (formally specified)
-- Security model and NFRs
-- Architecture Decision Records (path defined by `{adapter-dir}/artifacts.json`, kind: `ADR`; default: `architecture/ADR/`)
-
-**Features Manifest** (path defined by `{adapter-dir}/artifacts.json`, kind: `FEATURES`; default: `architecture/features/FEATURES.md`):
-- Complete list of all features
-- Feature priorities (CRITICAL, HIGH, MEDIUM, LOW)
-- Feature status (⏳ NOT_STARTED, 🔄 IN_PROGRESS, ✅ COMPLETE)
-- Dependencies between features
-- Auto-generated from feature designs
-
-**Feature Design** (path defined by `{adapter-dir}/artifacts.json`, kind: `FEATURE`; default: `architecture/features/feature-{slug}/DESIGN.md`):
-- Feature overview and scope
-- Actor flows (how users interact - PRIMARY)
-- Algorithms in FDL (plain English logic)
-- States (optional state machines)
-- Technical details (database, operations, errors)
-- Requirements (formalized scope + testing)
-
-### 3. Formal Specifications
-
-**DML (Domain Model Language)** - you choose format:
-- [GTS](https://github.com/GlobalTypeSystem/gts-spec), [CTI](https://github.com/acronis/go-cti/blob/main/cti-spec/SPEC.md), JSON Schema, RAML, Protobuf etc.
-- Must be documented before implementation
-- Should be machine-readable and versionable (recommended)
-
-**API Contracts** - you choose format:
-- OpenAPI, GraphQL Schema, gRPC, RAML, etc.
-- **CLISPEC** (built-in format for CLI tools)
-- Must be documented before implementation
-
----
-
-## Getting Started
-
-### 1. Quick Overview (5 minutes)
-
-**Read these files**:
-1. `README.md` (this file) - Overview, getting started, team workflow
-2. `QUICKSTART.md` - 5-minute quick start guide with examples
-3. `FDL.md` - Learn plain English algorithm syntax
-4. `workflows/README.md` - Understand workflow system
-
-### 2. Add FDD to Your Project (15 minutes)
-
-**Option A: Copy FDD core**
 ```bash
-# In your project root
-cp -r /path/to/FDD /FDD
+# Agent-safe invocation (recommended)
+python3 spider/skills/spider/scripts/spider.py init
+python3 spider/skills/spider/scripts/spider.py agents --agent windsurf
 ```
 
-**Option B: Git submodule** (recommended for shared projects)
+Supported agents: `windsurf`, `cursor`, `claude`, `copilot`.
+
+If you update the Spider submodule later, re-run:
+
 ```bash
-git submodule add <fdd-repo-url> /FDD
+python3 spider/skills/spider/scripts/spider.py agents --agent windsurf
 ```
 
-### 3. Create Project Adapter (5-10 minutes) 
+## Using Spider
 
-**Follow workflow**: `workflows/adapter.md`
+### Example Prompts
 
-With AI agent:
-```
-Open and follow `workflows/adapter.md` to create the adapter
-```
+**Enable / Disable**
 
-This interactive workflow will:
-1. Detect mode (CREATE/UPDATE)
-2. Ask guided questions about your project
-3. Choose domain model format (GTS, JSON Schema, TypeScript, etc.)
-4. Choose API contract format (OpenAPI, GraphQL, CLISPEC, etc.)
-5. Capture security model and non-functional requirements
-6. Generate or update `{adapter-directory}/AGENTS.md` and spec files
+| Prompt | What the agent does |
+|--------|---------------------|
+| `spider on` | Enables Spider mode — discovers adapter, loads project context, shows available workflows |
+| `spider off` | Disables Spider mode — returns to normal assistant behavior |
 
-**Result**: Adapter created/updated at `{adapter-directory}/` with status COMPLETE or INCOMPLETE
+**Setup & Adapter Configuration**
 
-For manual setup, see: [**`guides/ADAPTER.md`**](guides/ADAPTER.md)
+| Prompt | What the agent does |
+|--------|---------------------|
+| `spider init` | Scans project structure, creates `.spider-adapter/` with `artifacts.json`, `AGENTS.md`, and domain specs |
+| `spider configure adapter for Python monorepo with FastAPI` | Generates adapter with tech-stack specs, testing conventions, and codebase mappings |
+| `spider add src/api/ to tracked codebase` | Updates `artifacts.json` to include directory in traceability scanning |
+| `spider register SPEC at docs/specs/payments.md` | Adds artifact entry to `artifacts.json` with kind, path, and system mapping |
+| `spider add tech-stack spec for PostgreSQL + Redis` | Creates `specs/tech-stack.md` with database and caching conventions |
+| `spider update testing conventions` | Modifies `specs/testing.md` with project-specific test patterns |
+| `spider show adapter config` | Displays `artifacts.json` structure, registered artifacts, and codebase mappings |
+| `spider regenerate AGENTS.md` | Rebuilds navigation rules based on current artifact registry |
 
-### 4. Configure AI Agent (2 minutes, optional) 
+**Artifact Generation**
 
-**Follow workflow**: `workflows/adapter-agents.md`
+| Prompt | What the agent does |
+|--------|---------------------|
+| `spider make PRD for user authentication system` | Generates PRD with actors, capabilities, requirements, flows, and constraints following the template |
+| `spider make DESIGN from PRD.md` | Transforms PRD into architecture design with components, interfaces, data models, and full traceability |
+| `spider decompose auth spec into tasks` | Creates DECOMPOSITION artifact breaking the spec into ordered, dependency-mapped implementation units |
+| `spider make SPEC spec for login flow` | Produces detailed spec design with acceptance criteria, edge cases, and code implementation instructions |
 
-This optional workflow uses the `fdd` skill generators to create/update agent-specific integration files.
+**Validation & Quality**
 
-**Supported agents**:
-- Windsurf: `--agent windsurf`
-- Cursor: `--agent cursor`
-- Claude Code: `--agent claude`
-- GitHub Copilot: `--agent copilot`
+| Prompt | What the agent does |
+|--------|---------------------|
+| `spider validate PRD.md` | Runs deterministic template validation + semantic quality scoring against PRD checklist (50+ criteria) |
+| `spider validate all` | Validates entire artifact hierarchy, checks cross-references, reports broken links and missing IDs |
+| `spider validate code for auth module` | Scans code for `@spider-*` markers, verifies coverage against SPEC specs, reports unimplemented items |
+| `spider review DESIGN.md with consistency-checklist` | Performs multi-phase consistency analysis detecting contradictions and alignment issues |
 
-**What it generates**:
-- Workflow proxies (one per FDD workflow): `agent-workflows` (config: `fdd-agent-workflows.json`)
-- Skill outputs pointing to the canonical `skills/fdd/SKILL.md`: `agent-skills` (config: `fdd-agent-skills.json`)
+**With Checklists (Deep Review)**
 
-**Result**: Your agent has local files that redirect back to the canonical FDD workflows/skill.
+| Prompt | What the agent does |
+|--------|---------------------|
+| `spider review PRD with PRD checklist, focus on requirements` | Applies 50+ expert criteria: completeness, testability, atomicity, no implementation leakage |
+| `spider review SPEC spec with code-checklist` | Checks implementation readiness: error handling, security, edge cases, testing strategy |
+| `spider validate codebase with reverse-engineering checklist` | Systematic code archaeology: identifies patterns, dependencies, undocumented behaviors |
+| `spider improve this prompt with prompt-engineering checklist` | Applies prompt design guidelines: clarity, constraints, examples, output format |
 
-### 5. Create PRD & Design (2-4 hours) 
+**Traceability & Search**
 
-**AI agent workflows**: 
-```
-Open and follow `workflows/prd.md`
-Open and follow `workflows/design.md`
-```
+| Prompt | What the agent does |
+|--------|---------------------|
+| `spider find requirements related to authentication` | Searches artifacts for IDs matching pattern, returns definitions and all references |
+| `spider trace REQ-AUTH-001` | Traces requirement through DESIGN → SPEC → code, shows implementation locations |
+| `spider list unimplemented specs` | Cross-references SPEC specs with code markers, reports items without `@spider-*` tags |
 
-These workflows guide you through creating PRD.md and DESIGN.md with interactive questions.
+**Code Review & Pull Requests**
 
-### 6. Start First Feature (1-2 hours) 
+| Prompt | What the agent does |
+|--------|---------------------|
+| `spider review PR https://github.com/org/repo/pull/123` | Fetches PR diff, validates changes against design specs, checks traceability markers, reports coverage gaps |
+| `spider review PR #59` | Reviews local PR by number — checks code quality, design alignment, and Spider marker consistency |
+| `spider review PR with code-checklist` | Deep PR review applying code quality criteria: error handling, security, edge cases, testing |
+| `spider analyze PR against SPEC spec` | Verifies PR implements all items from linked SPEC spec, reports missing or extra changes |
+| `spider check PR traceability` | Scans PR diff for `@spider-*` markers, validates they reference existing design IDs |
 
-**AI agent workflows**:
-```
-Open and follow `workflows/features.md`  # Generate FEATURES manifest
-Open and follow `workflows/feature.md`   # Create feature design
-```
+**Weavers & Extensions**
 
-These workflows extract features from design and guide you through creating feature designs.
+| Prompt | What the agent does |
+|--------|---------------------|
+| `spider make weaver for API documentation` | Scaffolds weaver directory with template, rules, checklist, and examples for custom artifact kind |
+| `spider register weaver at weavers/api-docs` | Adds weaver entry with format and path to artifact registry |
+| `spider add ENDPOINT kind to api-docs weaver` | Creates template structure for new artifact kind with markers and validation rules |
+| `spider show weaver SDLC` | Displays weaver directory layout, available artifact kinds, and their templates |
+| `spider analyze weavers` | Checks template marker pairing, frontmatter, and rule syntax across all weavers |
+
+### Agent Skill
+
+Spider provides a single **Agent Skill** (`spider`) following the [Agent Skills specification](https://agentskills.io/specification). The skill is defined in `skills/spider/SKILL.md` and gets loaded into the agent's context when invoked.
+
+The skill provides:
+- Artifact validation and search capabilities
+- ID lookup and traceability across documents and code
+- Protocol guard for consistent context loading
+- Integration with project adapter
+
+When the skill is loaded, the agent gains access to Spider's CLI commands and workflow triggers.
+
+### Workflow Commands
+
+For agents that don't support the Agent Skills specification, Spider provides **workflow commands** — slash commands that load structured prompts guiding the agent through deterministic pipelines:
+
+| Command | Workflow | Description |
+|---------|----------|-------------|
+| `/spider` | — | Enable Spider mode, discover adapter, show available workflows |
+| `/spider-generate` | `workflows/generate.md` | Create/update artifacts (PRD, DESIGN, DECOMPOSITION, ADR, SPEC) or implement code with traceability markers |
+| `/spider-analyze` | `workflows/analyze.md` | Validate artifacts against templates or code against design (deterministic + semantic) |
+| `/spider-adapter` | `workflows/adapter.md` | Create/update project adapter — scan structure, configure rules, generate `AGENTS.md` and `artifacts.json` |
+
+Each workflow includes feedback loops, quality gates, and references to relevant checklists and rules.
+
+### Checklists and Quality Gates
+
+Spider provides **expert-level checklists** for validation at each stage.
+
+**Artifact checklists** in `weavers/sdlc/artifacts/{KIND}/`:
+- [**PRD checklist**](weavers/sdlc/artifacts/PRD/checklist.md) — 300+ criteria for requirements completeness, stakeholder coverage, constraint clarity
+- [**DESIGN checklist**](weavers/sdlc/artifacts/DESIGN/checklist.md) — 380+ criteria for architecture validation, component boundaries, integration points
+- [**DECOMPOSITION checklist**](weavers/sdlc/artifacts/DECOMPOSITION/checklist.md) — 130+ criteria for spec breakdown quality, dependency mapping
+- [**SPEC checklist**](weavers/sdlc/artifacts/SPEC/checklist.md) — 380+ criteria for implementation readiness, acceptance criteria, edge cases
+- [**ADR checklist**](weavers/sdlc/artifacts/ADR/checklist.md) — 270+ criteria for decision rationale, alternatives analysis, consequences
+
+**Generic checklists** in `requirements/`:
+- [**Code checklist**](requirements/code-checklist.md) — 200+ criteria for code quality, security, error handling, testing
+- [**Consistency checklist**](requirements/consistency-checklist.md) — 45+ criteria for cross-artifact consistency and contradiction detection
+- [**Reverse engineering**](requirements/reverse-engineering.md) — 270+ criteria for legacy code analysis methodology
+- [**Prompt engineering**](requirements/prompt-engineering.md) — 220+ criteria for AI prompt design guidelines
+
+Use checklists by referencing them in `/spider-analyze` or manually during review.
 
 ---
 
-## IDE Setup
+## Weaver: **Spider SDLC**
 
-To set up your AI assistant (Windsurf, Cursor, Cline, etc.) to work natively with FDD:
+**Spider SDLC** is a production-ready software development life cycle (SDLC) SDD built on **Spider**. It fully leverages Spider’s capabilities — identifier-based **traceability**, reliable **workflows** that follow a strict protocol, and Weaver-defined rules and tasks, structured templates and quality checklists. Each Weaver can both generate (transform/derive) content and evaluate it: scoring semantic quality, validating artifact-to-artifact alignment (e.g., requirements → design → implementation), and enforcing structure against the templates defined in the weaver.
 
-**Use workflow**: `workflows/adapter-agents.md`
-
-This workflow runs the `fdd` generators (`agent-workflows`, `agent-skills`) to create agent-specific proxy files.
-
----
-
-## Working with AI Assistants
-
-FDD is designed to work with AI coding assistants (but doesn't require them).
-
-### Recommended AI Setup (By Operation Type)
-
-FDD tasks vary greatly. Each operation class below lists realistic model options as of 2024-2026.
-
-#### Model Classes
-- **Reasoning** – frontier-level logic, best for complex reasoning & strict validation.
-- **Flagship** – balanced capability & speed, strong generalists.
-- **Fast/Lite** – latency-optimized, high throughput, smaller context.
-
-#### 1. Documentation & Design (Writing)
-**Tasks**: Create/expand PRD/DESIGN/FEATURES/ADR artifacts (paths resolved from `{adapter-dir}/artifacts.json`)
-**Requirements**: Long-context understanding, structured output, template following
-
-**Recommended**
-- **Cloud**: `Claude 3.5 Sonnet`, `GPT-4o`, `Gemini 1.5 Pro`
-- **Local**: `DeepSeek-V3`, `Qwen2.5 72B`, `Llama 3.1 70B`
-
-#### 2. Validation & QA (Checking)
-**Tasks**: Score artifacts, detect contradictions, enforce checklists
-**Requirements**: **Reasoning ONLY**, attention to detail, structured evaluation
-
-**Recommended**
-- **Cloud**: `Claude 3.5 Sonnet`, `GPT-4o`, `o1-preview` (for complex validation)
-- **Local**: `DeepSeek-R1`, `Qwen2.5-Coder 32B` – validation requires strong models
-
-#### 3. Implementation (Coding)
-**Tasks**: Write/refactor code & tests from validated feature design
-**Requirements**: Code generation, spec-following, moderate reasoning
-
-**Recommended**
-- **Cloud**: `Claude 3.5 Sonnet`, `GPT-4o`, `Gemini 1.5 Flash`
-- **Local**: `DeepSeek-Coder V2`, `Qwen2.5-Coder 32B`, `CodeLlama 70B`
-
-#### 4. Adapter & Analysis (Scanning)
-**Tasks**: Project scanning, adapter setup, large file trees
-**Requirements**: Large context window (100k+ tokens)
-
-**Recommended**
-- **Cloud**: `Claude 3.5 Sonnet (200k)`, `Gemini 1.5 Pro (2M)`, `GPT-4o (128k)`
-- **Local**: `Qwen2.5 72B (128k)`, `Llama 3.1 70B (128k)`
-
-
-### AI Limitations
-
-AI assistants can:
-- Initialize structures
-- Generate design templates
-- Validate against checklists
-- Implement features from validated designs
-- Write tests
-
-Humans must:
-- Define product requirements
-- Make architectural decisions
-- Review actor flows
-- Approve designs
-- Final code review
-
----
-
-## Team Workflow
-
-FDD is designed for a **single expert** (typically an architect or senior developer) working with AI assistants. The expert follows FDD workflows to create PRD, design architecture, plan features, and code features. AI agents handle routine tasks like validation, file generation, and code implementation according to adapter conventions.
-
-**With AI Assistants** (recommended for 2024-2026):
-- Use **Claude 3.5 Sonnet** or **GPT-4o** for most workflows
-- Use **o1-preview** or **Claude 3.5 Sonnet** for validation workflows
-- Skills system (`fdd`) works with any AI assistant
-- Requires `python3` for skill execution
-
-For teams, work can be distributed: one person owns overall design and architecture decisions (PRD/DESIGN/ADR artifacts), while others can own individual feature designs (FEATURES + feature DESIGN artifacts) and implementation. All artifacts use plain English (FDL) for actor flows and algorithms, making them reviewable by non-technical stakeholders. Validation workflows ensure consistency and completeness before implementation.
-
-
----
-
-## Directory Structure
-
-```
-{adapter-directory}/FDD/                        # Core FDD (standalone, universal)
-├── README.md                                   # This file - overview, getting started
-├── QUICKSTART.md                               # 5-minute quick start guide
-├── AGENTS.md                                   # AI agent instructions
-├── WORKFLOW.md                                 # Workflow system overview
-├── FDL.md                                      # FDD Description Language syntax (removed)
-├── CLISPEC.md                                  # CLI command specification format
-├── guides/ADAPTER.md                           # How to create project adapter
-├── requirements/                               # All FDD requirements and structure specs
-│   ├── FDL.md                                  # FDD Description Language syntax
-│   ├── execution-protocol.md                   # Workflow execution protocol
-│   ├── workflow-execution.md                   # General workflow execution
-│   ├── prd-structure.md           # PRD.md structure
-│   ├── overall-design-structure.md             # DESIGN.md structure
-│   ├── adr-structure.md                        # ADR directory structure
-│   ├── features-manifest-structure.md          # FEATURES.md structure
-│   ├── feature-design-structure.md             # Feature DESIGN.md structure
-│   
-│   └── adapter-structure.md                    # Adapter structure requirements
-├── skills/                                     # Claude-compatible AI skills
-│   ├── SKILLS.md                               # Skills discovery protocol
-│   └── fdd/                                    # Unified FDD tool
-│       ├── SKILL.md                            # Skill definition
-│       ├── scripts/fdd.py                      # Unified Python script
-│       └── tests/                              # Unit tests
-└── workflows/                                  # 20 workflows (13 operation + 7 validation)
-    ├── README.md                               # Workflow system overview
-    ├── AGENTS.md                               # Workflow selection (for AI)
-    ├── adapter.md                              # Create/update project adapter
-    ├── adapter-auto.md                         # Auto-detect adapter from codebase
-    ├── adapter-manual.md                       # Manual adapter setup
-    ├── adapter-bootstrap.md                    # Bootstrap minimal adapter
-    ├── adapter-agents.md                       # Create/update AI agent config
-    ├── adapter-validate.md                     # Validate adapter completeness
-    ├── prd.md                     # Create/update PRD.md
-    ├── prd-validate.md                    # Validate PRD.md
-    ├── adr.md                                  # Create/add/edit ADRs
-    ├── adr-validate.md                         # Validate ADR
-    ├── design.md                               # Create/update DESIGN.md
-    ├── design-validate.md                      # Validate DESIGN.md
-    ├── features.md                             # Create/update FEATURES.md
-    ├── features-validate.md                    # Validate FEATURES.md
-    ├── feature.md                              # Create/update feature design
-    ├── feature-validate.md                     # Validate feature design
-    ├── code.md                    # Implement feature directly from DESIGN.md
-    └── code-validate.md                # Validate entire feature code
-
-{adapter-directory}/                # Your project adapter (created by workflow)
-├── AGENTS.md                                   # AI instructions (project-specific)
-└── specs/                                      # Detailed specifications
-    ├── domain-model.md                         # Domain model format
-    ├── api-contracts.md                        # API contracts format
-    ├── testing.md                              # Testing strategy
-    └── build.md                                # Build and deployment
-
-architecture/                                    # Your designs (created by workflows)
-├── PRD.md                                 # PRD
-├── DESIGN.md                                   # Overall Design
-├── ADR/{category}/NNNN-fdd-id-{slug}.md        # Architecture Decision Records
-├── diagrams/                                   # Architecture diagrams
-└── features/                                   # Feature designs
-    ├── FEATURES.md                            # Feature manifest
-    └── feature-{slug}/                        # Individual features
-        └── DESIGN.md                          # Feature design
-```
-
-
----
-
-## Documentation
-
-### For Developers
-
-- **This File** (`README.md`) - Overview, getting started, team workflow
-- **`QUICKSTART.md`** - 5-minute quick start guide with examples
-- **`WORKFLOW.md`** - Workflow system overview and best practices
-- **`requirements/FDL.md`** - FDD Description Language syntax guide
-- **`CLISPEC.md`** - CLI command specification format
-- **`workflows/README.md`** - All 20 workflows overview
-- **`skills/SKILLS.md`** - Skills discovery protocol for AI agents
-
-### For AI Assistants
-
-- **`AGENTS.md`** - Core FDD methodology for AI
-- **`workflows/AGENTS.md`** - Workflow selection guide for AI
-- **Project adapter's `AGENTS.md`** - Project-specific AI instructions
-
-### For Creating Adapters
-
-- **`guides/ADAPTER.md`** - Complete guide for creating project adapters
-- **`workflows/adapter.md`** - Interactive workflow for adapter creation/update
-
----
-
-## FAQs
-
-### Do I need AI assistants to use FDD?
-
-**Recommended.** FDD is specifically designed to work with AI assistants that support agentic workflows. While workflows are human-readable, manual execution can be challenging and time-consuming.
-
-**Without AI assistants**:
-- You'll need a full team (architect + developers + QA)
-- Workflows must be followed manually
-- More overhead for validation and tracking
-
-**With AI assistants** (recommended):
-- Single expert (architect) can handle entire workflow
-- AI follows workflows automatically
-- Faster design generation and validation
-- AI implements features from validated designs
-
-### What tech stack do I need?
-
-**Any.** FDD is technology-agnostic. You choose:
-- Domain model format (GTS, CTI, JSON Schema, TypeScript, Protobuf, etc.)
-- API format (OpenAPI, RAML, GraphQL, gRPC, etc.)
-- Implementation language (JavaScript, Python, Go, etc.)
-
-Your **adapter** documents these choices.
-
-### How long does it take to set up?
-
-- **Add FDD core**: 5 minutes
-- **Create adapter**: 1-2 hours (first time)
-- **Initialize project**: 30 minutes
-- **First feature design**: 1-2 hours
-
-After initial setup, feature design time depends on complexity.
-
-### Can I use FDD with existing projects?
-
-**Yes.** You can:
-1. Add FDD to existing project
-2. Create adapter for existing tech stack
-3. Start documenting new features in FDD
-4. Gradually migrate existing features (optional)
-
-
-### What if my team doesn't know FDD?
-
-Follow the onboarding checklist:
-1. **Reading** (30 min): README.md, FDL.md, workflows/README.md
-2. **Setup** (15 min): IDE, tools, adapter review
-3. **Practice** (2 hours): Review example feature, create small feature with guidance
-
-### How do I validate designs?
-
-Follow validation workflows:
-- **PRD**: `workflows/prd-validate.md`
-- **Overall Design**: `workflows/design-validate.md`
-- **Feature Design**: `workflows/feature-validate.md`
-
-Validation is done via checklists (manual review). AI assistants can help automate checks.
-
----
-
-## Examples
-
-### Example: Login Feature
-
-**PRD** (default: `architecture/PRD.md`):
-```markdown
-## B. Actors
-- **End User**: Person accessing the system
-
-## C. Capabilities
-- User authentication with email/password
-```
-
-**Overall Design** (default: `architecture/DESIGN.md`):
-```markdown
-## C. Technical Architecture
-
-### Domain Model
-- User (id, email, passwordHash, createdAt)
-- Session (id, userId, token, expiresAt)
-
-### API Contracts
-- POST /auth/login (email, password) → session token
-```
-
-**Feature Design** (default: `architecture/features/feature-login/DESIGN.md`):
-```markdown
-## B. Actor Flows
-
-### Actor: End User
-
-1. User navigates to login page
-2. User enters email and password
-3. User clicks "Login" button
-4. System validates credentials
-5. IF credentials valid
-   5.1. System creates session
-   5.2. System redirects to dashboard
-6. ELSE
-   6.1. System shows error "Invalid credentials"
-   6.2. User remains on login page
-```
-
----
-
-## References
-
-- **FDD GitHub**: https://github.com/ainetx/fdd
-- **GTS (Global Type System)**: https://github.com/GlobalTypeSystem/gts-spec
-- **CTI (Common Type Interface)**: https://github.com/acronis/go-cti
-- **Live example (Taskman)**: https://github.com/cyberfabric/fdd-examples-taskman
-
----
-
-## Version History
-
-### v1.0 (Current)
-
-**Features**:
-- Core + Adapters architecture (technology-agnostic core, framework-specific adapters)
-- Universal Workflows (18 workflows: 10 operation + 8 validation)
-- 7-layer design flow (PRD → Design → Features → Implementation)
-- FDD Description Language (FDL)
-- CLISPEC format (CLI command specification)
-- Design Requirements (formal specifications without prescribing technologies)
-- Validation-first approach
-- Framework adapters pattern
-- Quick start guide for rapid onboarding
-
-**Structure**:
-- Core FDD (universal, framework-agnostic methodology)
-- Project adapters (technology-specific integration)
-- 20 workflows: 13 operation + 7 validation (IDE-agnostic guides)
-- Claude-compatible skill (`fdd` - unified validation, search & traceability)
-- Design requirements (formal specifications without technology lock-in)
-- Built-in formats (FDL, CLISPEC)
-
-**Documentation**:
-- Complete methodology guide (README.md)
-- Quick start guide (QUICKSTART.md)
-- 20 workflows: 13 operation + 7 validation (IDE-agnostic)
-- FDD Description Language spec (requirements/FDL.md)
-- CLI specification format (CLISPEC.md)
-- Skills system for AI agents (skills/)
-- Framework adapter templates
-
----
-
-## License
-
-Apache License 2.0
-
-Copyright (c) 2026 FDD Contributors
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+See the [SDLC Pipeline](weavers/sdlc/README.md) for a detailed overview of the **Spider SDLC** pipeline, artifact kinds, generation and validation processes, and references to related documentation.
 
 ---
 
 ## Contributing
 
-When FDD becomes a separate repository:
-1. Follow FDD methodology for FDD changes
-2. Update workflows with real-world examples
-3. Maintain backward compatibility
-4. Document breaking changes
+We welcome contributions to **Spider**.
+
+**How to contribute**:
+
+1. **Report issues**: Use GitHub Issues for bugs, spec requests, or questions
+2. **Submit pull requests**: Fork the repository, create a branch, submit PR with description
+3. **Follow** **Spider** **methodology**: Use **Spider** workflows when making changes to **Spider** itself
+4. **Update documentation**: Include doc updates for any user-facing changes
+
+**Guidelines**:
+- Follow existing code style and conventions
+- Update workflows with real-world examples when possible
+- Maintain backward compatibility
+- Document breaking changes in version history
+- Add tests for new functionality
+
+**Development setup**:
+```bash
+git clone <spider-repo-url>
+cd spider
+make test-coverage
+make self-check
+make validate
+```

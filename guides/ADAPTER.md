@@ -1,8 +1,12 @@
-# FDD Adapter Creation Guide
+# Spider Adapter Creation Guide
 
 ## Core Principle
 
-Adapters extend FDD with project-specific context. Start files with `Extends: ../FDD/path/to/file.md`.
+Adapters extend Spider with project-specific context. Start files with:
+
+```text
+Extends: ../Spider/path/to/file.md
+```
 
 **You can override/add anything EXCEPT the immutable rules below.**
 
@@ -14,32 +18,32 @@ These are validated by tooling and cannot be changed:
 
 ### 1. Design Hierarchy
 ```
-ADAPTER → PRD CONTEXT → OVERALL DESIGN → FEATURE DESIGN → CODE
+ADAPTER → PRD CONTEXT → OVERALL DESIGN → SPEC DESIGN → CODE
 ```
 Must reference parent level, never contradict.
 
 - **ADAPTER**: Defines tech stack, formats, conventions (first step, required)
 - **PRD CONTEXT**: Defines actors, capabilities, product requirements
 - **OVERALL DESIGN**: Architecture, domain model, API contracts
-- **FEATURE DESIGN**: Actor flows, algorithms, requirements
-- **CODE**: Implementation following feature design
+- **SPEC DESIGN**: Actor flows, algorithms, requirements
+- **CODE**: Implementation following spec design
 
-### 2. Mandatory FDD Rules
+### 2. Mandatory Spider Rules
 - Actor Flows (Section B) are PRIMARY - always start from what actors do
-- Use FDL for flows/algorithms/states - NEVER code in DESIGN.md
+- Use Spider DSL (SDSL) for flows/algorithms/states - NEVER code in DESIGN.md
 - Never redefine types - reference domain model from Overall Design
-- Validate before proceeding (Overall ≥90/100, Feature 100/100)
-- Feature size limits: ≤3000 lines (recommended), ≤4000 (hard limit)
+- Validate before proceeding (Overall ≥90/100, Spec 100/100)
+- Spec size limits: ≤3000 lines (recommended), ≤4000 (hard limit)
 - Design is source of truth - if code contradicts design, fix design first
 
 ### 3. File Structure
 ```
 architecture/
 ├── DESIGN.md                    # Overall Design
-└── features/
-    ├── FEATURES.md              # Feature manifest
-    └── feature-{slug}/
-        ├── DESIGN.md            # Feature Design
+└── specs/
+    ├── DECOMPOSITION.md              # Spec manifest
+    └── spec-{slug}/
+        ├── DESIGN.md            # Spec Design
 ```
 
 ### 4. DESIGN.md Sections
@@ -50,17 +54,17 @@ architecture/
 - Section D: Architecture Decision Records (ADR) - REQUIRED, MADR format
 - Section E: Project-Specific Details (optional)
 
-**Feature Design**:
-- Section A: Feature Overview
+**Spec Design**:
+- Section A: Spec Overview
 - Section B: Actor Flows (PRIMARY)
 - Section C: Algorithms
 - Section D: States (optional)
 - Section E: Technical Details
-- Section F: Requirements (formalized scope + Testing Scenarios in FDL)
+- Section F: Requirements (formalized scope + Testing Scenarios in Spider DSL (SDSL))
 
 ### 5. Validation Scores
 - Overall Design: ≥90/100
-- Feature Design: 100/100 + 100% completeness
+- Spec Design: 100/100 + 100% completeness
 
 ---
 
@@ -68,67 +72,121 @@ architecture/
 
 Everything else is adapter-specific. Define as needed:
 
-**Note**: All FDD operation workflows now support **CREATE and UPDATE modes**. Adapters can be created once and updated anytime as project evolves. Use `adapter.md` workflow to create or update your adapter.
+**Note**: All Spider operation workflows now support **CREATE and UPDATE modes**. Adapters can be created once and updated anytime as project evolves. Use `adapter.md` workflow to create or update your adapter.
 
-### Tech Stack (`specs/tech-stack.md`)
+### Tech Stack
+
+Example location (in your adapter):
+
+```text
+.spider-adapter/specs/tech-stack.md
+```
 - Primary language and version
 - Frameworks (backend, frontend)
 - Database type and version
 - Additional services (cache, message queue, search)
 - Development tools (package manager, build tool, linter, formatter)
 
-### Domain Model Format (`specs/domain-model.md`)
+### Domain Model Format
+
+Example location (in your adapter):
+
+```text
+.spider-adapter/specs/domain-model.md
+```
 - Technology (TypeScript, JSON Schema, Protobuf, GTS, etc.)
-- Location (`architecture/domain-model/`, per-feature, etc.)
+- Location (`architecture/domain-model/`, per-spec, etc.)
 - DML syntax (`@DomainModel.TypeName` for clickable references)
 - Validation commands
 - Naming conventions
-- Traceability requirements (clickable links from Feature→Overall)
+- Traceability requirements (clickable links from Spec→Overall)
 
-### API Contract Format (`specs/api-contracts.md`)
+### API Contract Format
+
+Example location (in your adapter):
+
+```text
+.spider-adapter/specs/api-contracts.md
+```
 - Technology (OpenAPI, GraphQL, gRPC, CLISPEC, etc.)
 - Location (`architecture/api-specs/`, `architecture/cli-specs/`, etc.)
-- Linking syntax (`@API.GET:/path`, `@CLI.command-name`, `@Feature.{slug}` for clickable references)
+- Linking syntax (`@API.GET:/path`, `@CLI.command-name`, `@Spec.{slug}` for clickable references)
 - Validation commands
 - API conventions
-- Traceability requirements (clickable links from Feature→Overall)
+- Traceability requirements (clickable links from Spec→Overall)
 
-**Note**: For CLI tools, consider using **CLISPEC** - a built-in, simple format for CLI command documentation. See `CLISPEC.md` for specification.
+**Note**: For CLI tools, consider using **CLISPEC** - a built-in, simple format for CLI command documentation. See `../CLISPEC.md`.
 
-### Patterns & Architecture (`specs/patterns.md`)
+### Patterns & Architecture
+
+Example location (in your adapter):
+
+```text
+.spider-adapter/specs/patterns.md
+```
 - Architecture style (layered, hexagonal, microservices, etc.)
 - Core design patterns (DI, repository, error handling, etc.)
 - Anti-patterns to avoid
 - Module organization guidelines
 
-### Code Conventions (`specs/conventions.md`)
+### Code Conventions
+
+Example location (in your adapter):
+
+```text
+.spider-adapter/specs/conventions.md
+```
 - Naming conventions (files, directories, variables, functions, classes)
 - Code style (indentation, line length, braces, imports)
 - Documentation requirements
 - Error handling patterns
 
-### Testing Strategy (`specs/testing.md`)
+### Testing Strategy
+
+Example location (in your adapter):
+
+```text
+.spider-adapter/specs/testing.md
+```
 - Test frameworks (unit, integration, E2E)
 - Test organization and structure
 - Coverage requirements
 - Mocking strategy
 - Test commands
 
-### Build & Deployment (`specs/build-deploy.md`)
+### Build & Deployment
+
+Example location (in your adapter):
+
+```text
+.spider-adapter/specs/build-deploy.md
+```
 - Build tool and commands
 - Development environment setup
 - CI/CD pipeline configuration
 - Deployment strategy and environments
 - Database migrations
 
-### Linting (`specs/linting.md`)
+### Linting
+
+Example location (in your adapter):
+
+```text
+.spider-adapter/specs/linting.md
+```
 - Linter configuration
 - Formatting tools
 - Pre-commit hooks
 - CI integration
 - Custom lint rules
 
-### Security (`specs/security.md`)
+### Security
+
+Example location (in your adapter):
+
+```text
+.spider-adapter/specs/security.md
+```
 - Authentication and authorization strategy
 - Input validation requirements
 - Data protection (encryption, sensitive data handling)
@@ -136,7 +194,13 @@ Everything else is adapter-specific. Define as needed:
 - Secrets management
 - Security testing
 
-### Performance (`specs/performance.md`)
+### Performance
+
+Example location (in your adapter):
+
+```text
+.spider-adapter/specs/performance.md
+```
 - Performance requirements and SLAs
 - Benchmarking strategy and tools
 - Profiling guidelines
@@ -144,19 +208,31 @@ Everything else is adapter-specific. Define as needed:
 - Caching strategies
 - Resource usage limits
 
-### Project Structure (`specs/project-structure.md`)
+### Project Structure
+
+Example location (in your adapter):
+
+```text
+.spider-adapter/specs/project-structure.md
+```
 - Directory organization
 - File naming conventions
-- FDD artifact locations
+- Spider artifact locations
 - Source code structure
 - Test and documentation locations
 
 ### Additional Specs (as needed)
-- `rest-api-guidelines.md` - REST API conventions
-- `graphql-guidelines.md` - GraphQL schema patterns
-- `architectural-lints.md` - Custom architectural rules
-- `module-creation.md` - Module creation templates
-- Language-specific guidelines (e.g., `rust-guidelines.md`, `typescript-guidelines.md`)
+
+Examples (in your adapter):
+
+```text
+.spider-adapter/specs/rest-api-guidelines.md
+.spider-adapter/specs/graphql-guidelines.md
+.spider-adapter/specs/architectural-lints.md
+.spider-adapter/specs/module-creation.md
+.spider-adapter/specs/rust-guidelines.md
+.spider-adapter/specs/typescript-guidelines.md
+```
 
 **Required in all spec files**:
 - **Validation checklist**: Agent self-verification criteria
@@ -166,9 +242,14 @@ Everything else is adapter-specific. Define as needed:
 **Validation output format**: MUST be chat output only, NO report files
 
 ### Behavior Description Language (Optional Override)
-- **Default**: FDL (Flow Description Language) for flows/algorithms/states
+- **Default**: Spider DSL (SDSL) for flows/algorithms/states
 - **Can override**: Create custom behavior specification in `{adapter-directory}/`
-- **Example**: Replace `../FDL.md` with `../FDD-Adapter/CustomBDL.md`
+- **Example**:
+
+```text
+Replace: {spider_path}/requirements/SDSL.md
+With:    {project-root}/.spider-adapter/CustomBDL.md
+```
 - **Requirements**: Define control flow keywords, syntax rules, validation criteria
 - **Note**: Must update workflows 05 and 06 to reference custom spec
 
@@ -184,7 +265,7 @@ Everything else is adapter-specific. Define as needed:
 
 ```bash
 {project-root}/
-├── FDD-Adapter/                 # Your project-specific extensions (at root level)
+├── .spider-adapter/                 # Your project-specific extensions (at root level)
 │   ├── AGENTS.md                # Navigation rules (WHEN executing workflows: ...)
 │   └── specs/                   # Detailed specifications
 │       ├── tech-stack.md        # Languages, frameworks, databases, versions
@@ -198,17 +279,17 @@ Everything else is adapter-specific. Define as needed:
 │       ├── security.md          # Security requirements and practices
 │       ├── performance.md       # Performance requirements and optimization
 │       └── project-structure.md # Directory structure and organization
-└── FDD/                         # Core FDD (as git submodule or direct copy)
+└── Spider/                         # Core Spider (as git submodule or direct copy)
 ```
 
-**Important**: FDD-Adapter MUST be at project root level, discoverable from `{project-root}/FDD-Adapter/`
+**Important**: .spider-adapter MUST be at project root level, discoverable from `{project-root}/.spider-adapter/`
 
 **Alternative locations** (if needed):
-- `{project-root}/guidelines/FDD-Adapter/`
-- `{project-root}/spec/FDD-Adapter/`
-- `{project-root}/docs/FDD-Adapter/`
+- `{project-root}/guidelines/.spider-adapter/`
+- `{project-root}/spec/.spider-adapter/`
+- `{project-root}/docs/.spider-adapter/`
 
-**Avoid**: Deep nesting like `{project-root}/guidelines/subfolder/FDD-Adapter/` ❌
+**Avoid**: Deep nesting like `{project-root}/guidelines/subfolder/.spider-adapter/` ❌
 
 **Common spec files** (create as needed):
 - **Core**: tech-stack, domain-model, api-contracts, conventions, testing, build-deploy
@@ -221,9 +302,9 @@ Everything else is adapter-specific. Define as needed:
 ## Template: AGENTS.md
 
 ```markdown
-# FDD Adapter: {Project Name}
+# Spider Adapter: {Project Name}
 
-**Extends**: `../../FDD/AGENTS.md`
+**Extends**: `../../Spider/AGENTS.md`
 
 **Version**: 1.0  
 **Status**: COMPLETE  
@@ -231,20 +312,24 @@ Everything else is adapter-specific. Define as needed:
 
 ---
 
-ALWAYS open and follow `specs/domain-model.md` WHEN executing workflows: design.md, design-validate.md, adr.md, adr-validate.md, features.md, features-validate.md, feature.md, feature-validate.md, code-validate.md
+ALWAYS open and follow `specs/domain-model.md` WHEN executing workflows: design.md, design-validate.md, adr.md, adr-validate.md, specs.md, specs-validate.md, spec.md, spec-validate.md, code-validate.md
 
-ALWAYS open and follow `specs/api-contracts.md` WHEN executing workflows: design.md, design-validate.md, adr.md, adr-validate.md, feature.md, feature-validate.md, code-validate.md
+ALWAYS open and follow `specs/api-contracts.md` WHEN executing workflows: design.md, design-validate.md, adr.md, adr-validate.md, spec.md, spec-validate.md, code-validate.md
 
 ALWAYS open and follow `specs/testing.md` WHEN executing workflows: code-validate.md
 
 ALWAYS open and follow `specs/build-deploy.md` WHEN executing workflows: code-validate.md
 
-ALWAYS open and follow `specs/project-structure.md` WHEN executing workflows: adapter.md, adapter-auto.md, adapter-manual.md, adapter-bootstrap.md, adapter-agents.md, adapter-validate.md, prd.md, prd-validate.md, design.md, design-validate.md, adr.md, adr-validate.md, features.md, features-validate.md, feature.md, feature-validate.md
+ALWAYS open and follow `specs/project-structure.md` WHEN executing workflows: adapter.md, adapter-auto.md, adapter-manual.md, adapter-bootstrap.md, adapter-agents.md, adapter-validate.md, prd.md, prd-validate.md, design.md, design-validate.md, adr.md, adr-validate.md, specs.md, specs-validate.md, spec.md, spec-validate.md
 
 ALWAYS open and follow `specs/conventions.md` WHEN executing workflows: adapter.md, adapter-auto.md, adapter-manual.md, adapter-bootstrap.md, adapter-validate.md, code-validate.md
 ```
 
-**Example spec file** (`specs/domain-model.md`):
+**Example spec file** (in your adapter):
+
+```text
+.spider-adapter/specs/domain-model.md
+```
 ```markdown
 # Domain Model Specification
 
@@ -273,7 +358,7 @@ Reference as: `@DomainModel.User`
 
 ## Traceability
 
-All Feature DESIGN.md files MUST use clickable links to domain model types.
+All Spec DESIGN.md files MUST use clickable links to domain model types.
 ```
 
 **Example spec file** (`specs/tech-stack.md`):
