@@ -1847,8 +1847,15 @@ def _cmd_get_content(argv: List[str]) -> int:
     result = artifact.get_with_location(args.id)
 
     if result is None:
-        print(json.dumps({"status": "NOT_FOUND", "id": args.id}, indent=None, ensure_ascii=False))
-        return 2
+        # Fallback: artifacts without `<!-- spd:... -->` markers can still provide
+        # content via scope markup (see utils.document.get_content_scoped_without_markers).
+        from .utils.document import get_content_scoped_without_markers
+
+        fallback = get_content_scoped_without_markers(artifact_path, id_value=args.id)
+        if fallback is None:
+            print(json.dumps({"status": "NOT_FOUND", "id": args.id}, indent=None, ensure_ascii=False))
+            return 2
+        result = fallback
 
     text, start_line, end_line = result
     print(json.dumps({

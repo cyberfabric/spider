@@ -1678,6 +1678,164 @@ spider-template:
             out = json.loads(stdout.getvalue())
             self.assertIn("text", out)  # get-content returns "text" field
 
+    def test_get_content_without_markers_uses_heading_scope(self):
+        """Fallback get-content for artifacts with no `<!-- spd:... -->` markers (heading scope)."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            templates_dir = root / "weavers" / "sdlc" / "artifacts" / "PRD"
+            templates_dir.mkdir(parents=True)
+
+            tmpl_content = """---
+spider-template:
+  version:
+    major: 1
+    minor: 0
+  kind: PRD
+---
+<!-- spd:free:body -->
+text
+<!-- spd:free:body -->
+"""
+            (templates_dir / "template.md").write_text(tmpl_content, encoding="utf-8")
+
+            art_dir = root / "architecture"
+            art_dir.mkdir(parents=True)
+            art_content = """# PRD
+
+### spd-test-1
+alpha
+beta
+
+### spd-test-2
+gamma
+"""
+            art_path = art_dir / "PRD.md"
+            art_path.write_text(art_content, encoding="utf-8")
+
+            _bootstrap_registry_new_format(
+                root,
+                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                systems=[{
+                    "name": "Test",
+                    "weavers": "spider",
+                    "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
+                }],
+            )
+
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                exit_code = main(["get-content", "--artifact", str(art_path), "--id", "spd-test-1"])
+
+            self.assertEqual(exit_code, 0)
+            out = json.loads(stdout.getvalue())
+            self.assertEqual(out.get("status"), "FOUND")
+            self.assertEqual(out.get("text"), "alpha\nbeta")
+
+    def test_get_content_without_markers_uses_hash_fence_scope(self):
+        """Fallback get-content for artifacts with no markers using ## scope fences."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            templates_dir = root / "weavers" / "sdlc" / "artifacts" / "PRD"
+            templates_dir.mkdir(parents=True)
+
+            tmpl_content = """---
+spider-template:
+  version:
+    major: 1
+    minor: 0
+  kind: PRD
+---
+<!-- spd:free:body -->
+text
+<!-- spd:free:body -->
+"""
+            (templates_dir / "template.md").write_text(tmpl_content, encoding="utf-8")
+
+            art_dir = root / "architecture"
+            art_dir.mkdir(parents=True)
+            art_content = """intro
+##
+spd-test-1
+line-a
+line-b
+##
+outro
+"""
+            art_path = art_dir / "PRD.md"
+            art_path.write_text(art_content, encoding="utf-8")
+
+            _bootstrap_registry_new_format(
+                root,
+                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                systems=[{
+                    "name": "Test",
+                    "weavers": "spider",
+                    "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
+                }],
+            )
+
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                exit_code = main(["get-content", "--artifact", str(art_path), "--id", "spd-test-1"])
+
+            self.assertEqual(exit_code, 0)
+            out = json.loads(stdout.getvalue())
+            self.assertEqual(out.get("status"), "FOUND")
+            self.assertEqual(out.get("text"), "line-a\nline-b")
+
+    def test_get_content_without_markers_hash_fence_multiple_ids(self):
+        """Hash-fence scope variant: IDs are delimiters within the same fence."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            templates_dir = root / "weavers" / "sdlc" / "artifacts" / "PRD"
+            templates_dir.mkdir(parents=True)
+
+            tmpl_content = """---
+spider-template:
+  version:
+    major: 1
+    minor: 0
+  kind: PRD
+---
+<!-- spd:free:body -->
+text
+<!-- spd:free:body -->
+"""
+            (templates_dir / "template.md").write_text(tmpl_content, encoding="utf-8")
+
+            art_dir = root / "architecture"
+            art_dir.mkdir(parents=True)
+            art_content = """##
+spd-aa
+aaa
+spd-bb
+bbb
+spd-cc
+ccc
+##
+"""
+            art_path = art_dir / "PRD.md"
+            art_path.write_text(art_content, encoding="utf-8")
+
+            _bootstrap_registry_new_format(
+                root,
+                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                systems=[{
+                    "name": "Test",
+                    "weavers": "spider",
+                    "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
+                }],
+            )
+
+            stdout = io.StringIO()
+            with redirect_stdout(stdout):
+                exit_code = main(["get-content", "--artifact", str(art_path), "--id", "spd-bb"])
+
+            self.assertEqual(exit_code, 0)
+            out = json.loads(stdout.getvalue())
+            self.assertEqual(out.get("status"), "FOUND")
+            self.assertEqual(out.get("text"), "bbb")
+
 
 class TestCLIWhereDefinedCommand(unittest.TestCase):
     """Additional tests for where-defined command."""
