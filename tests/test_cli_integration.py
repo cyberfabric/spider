@@ -2261,6 +2261,67 @@ text
             self.assertEqual(out.get("status"), "PASS")
             self.assertEqual(out.get("error_count"), 0)
 
+    def test_validate_markerless_definition_passes_when_referenced_from_code_in_full_traceability(self):
+        """If other kinds exist but no other-artifact ref, a code marker reference satisfies coverage when FULL."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+
+            prd_dir = root / "weavers" / "sdlc" / "artifacts" / "PRD"
+            dsn_dir = root / "weavers" / "sdlc" / "artifacts" / "DESIGN"
+            prd_dir.mkdir(parents=True)
+            dsn_dir.mkdir(parents=True)
+            tmpl = """---
+spider-template:
+  version:
+    major: 1
+    minor: 0
+  kind: {KIND}
+---
+<!-- spd:free:body -->
+text
+<!-- spd:free:body -->
+"""
+            (prd_dir / "template.md").write_text(tmpl.format(KIND="PRD"), encoding="utf-8")
+            (dsn_dir / "template.md").write_text(tmpl.format(KIND="DESIGN"), encoding="utf-8")
+
+            arch = root / "architecture"
+            arch.mkdir(parents=True)
+            prd_path = arch / "PRD.md"
+            dsn_path = arch / "DESIGN.md"
+            prd_path.write_text("**ID**: `spd-test-aa`\ncontent\n", encoding="utf-8")
+            dsn_path.write_text("# Design\n(no refs)\n", encoding="utf-8")
+
+            src = root / "src"
+            src.mkdir(parents=True)
+            (src / "app.py").write_text("# @spider-actor:spd-test-aa:p1\n", encoding="utf-8")
+
+            _bootstrap_registry_new_format(
+                root,
+                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                systems=[{
+                    "name": "Test",
+                    "weavers": "spider",
+                    "artifacts": [
+                        {"path": "architecture/PRD.md", "kind": "PRD", "traceability": "FULL"},
+                        {"path": "architecture/DESIGN.md", "kind": "DESIGN", "traceability": "FULL"},
+                    ],
+                    "codebase": [{"name": "Code", "path": "src", "extensions": [".py"]}],
+                }],
+            )
+
+            cwd = os.getcwd()
+            try:
+                os.chdir(str(root))
+                stdout = io.StringIO()
+                with redirect_stdout(stdout):
+                    exit_code = main(["validate", "--artifact", str(prd_path), "--verbose"])
+            finally:
+                os.chdir(cwd)
+
+            self.assertEqual(exit_code, 0)
+            out = json.loads(stdout.getvalue())
+            self.assertEqual(out.get("status"), "PASS")
+
 
 class TestCLIWhereDefinedCommand(unittest.TestCase):
     """Additional tests for where-defined command."""

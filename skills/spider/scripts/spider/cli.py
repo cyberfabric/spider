@@ -1284,12 +1284,139 @@ def _cmd_validate(argv: List[str]) -> int:
             if warn_path in validated_paths:
                 all_warnings.append(warn)
 
+    # Code traceability validation (unless skipped)
+    code_files_scanned: List[Dict[str, object]] = []
+    code_ids_found: Set[str] = set()
+    to_code_ids: Set[str] = set()
+    artifact_ids: Set[str] = set()
+    markerless_full_ids_to_check: Set[str] = set()
+
+    # Build map of artifact path to traceability mode
+    traceability_by_path: Dict[str, str] = {}
+    for artifact_path, _template_path, _artifact_type, traceability in artifacts_to_validate:
+        traceability_by_path[str(artifact_path)] = traceability
+
+    from .utils.document import file_has_spider_markers, scan_spd_ids_without_markers
+
+    # Determine which markerless FULL-traceability IDs we might accept references from code for.
+    for artifact_path, _template_path, artifact_kind, traceability in artifacts_to_validate:
+        if traceability != "FULL":
+            continue
+        if file_has_spider_markers(artifact_path):
+            continue
+        for h in scan_spd_ids_without_markers(artifact_path):
+            if h.get("type") == "definition" and h.get("id"):
+                markerless_full_ids_to_check.add(str(h["id"]))
+
+    strict_code_validation = not args.artifact
+    should_scan_code = (not args.skip_code) and (strict_code_validation or bool(markerless_full_ids_to_check))
+
+    if strict_code_validation and len(all_artifacts_for_cross) > 0:
+        # Build complete set of defined artifact IDs (including markerless) for orphan checks.
+        for art in all_artifacts_for_cross:
+            if file_has_spider_markers(art.path):
+                art._extract_ids_and_refs()
+                for d in art.id_definitions:
+                    artifact_ids.add(d.id)
+                    art_traceability = traceability_by_path.get(str(art.path), "FULL")
+                    if d.to_code and art_traceability == "FULL":
+                        to_code_ids.add(d.id)
+            else:
+                for h in scan_spd_ids_without_markers(art.path):
+                    if h.get("type") == "definition" and h.get("id"):
+                        artifact_ids.add(str(h["id"]))
+
+    if should_scan_code:
+        # Scan code files from all systems
+        def resolve_code_path(p: str) -> Path:
+            return (project_root / p).resolve()
+
+        def scan_codebase_entry(entry: dict, traceability: str) -> None:
+            code_path = resolve_code_path(entry.get("path", ""))
+            extensions = entry.get("extensions", [".py"])
+
+            if not code_path.exists():
+                return
+
+            if code_path.is_file():
+                files_to_scan = [code_path]
+            else:
+                files_to_scan = []
+                for ext in extensions:
+                    files_to_scan.extend(code_path.rglob(f"*{ext}"))
+
+            for file_path in files_to_scan:
+                cf, errs = CodeFile.from_path(file_path)
+                if errs or cf is None:
+                    if strict_code_validation and errs:
+                        all_errors.extend(errs)
+                    continue
+
+                if strict_code_validation:
+                    # Validate structure
+                    result = cf.validate()
+                    all_errors.extend(result.get("errors", []))
+                    all_warnings.extend(result.get("warnings", []))
+
+                # Track IDs found
+                file_ids = cf.list_ids()
+                code_ids_found.update(file_ids)
+
+                if file_ids or cf.scope_markers or cf.block_markers:
+                    code_files_scanned.append({
+                        "path": str(file_path),
+                        "scope_markers": len(cf.scope_markers),
+                        "block_markers": len(cf.block_markers),
+                        "ids_referenced": len(file_ids),
+                    })
+
+                if strict_code_validation:
+                    # Check for orphaned markers (IDs not in artifacts)
+                    if traceability == "FULL":
+                        for ref in cf.references:
+                            if ref.id not in artifact_ids:
+                                all_errors.append({
+                                    "type": "traceability",
+                                    "message": "Code marker references ID not defined in any artifact",
+                                    "path": str(file_path),
+                                    "line": ref.line,
+                                    "id": ref.id,
+                                })
+
+        def scan_system_codebase(system_node: "SystemNode") -> None:
+            for cb_entry in system_node.codebase:
+                # Determine traceability from system artifacts
+                traceability = "FULL"
+                for art in system_node.artifacts:
+                    if art.traceability == "DOCS-ONLY":
+                        traceability = "DOCS-ONLY"
+                        break
+                scan_codebase_entry({
+                    "path": cb_entry.path,
+                    "extensions": cb_entry.extensions,
+                }, traceability)
+            for child in system_node.children:
+                scan_system_codebase(child)
+
+        for system_node in meta.systems:
+            scan_system_codebase(system_node)
+
+        if strict_code_validation:
+            # Check for missing code markers (to_code IDs without markers)
+            missing_ids = to_code_ids - code_ids_found
+            for missing_id in sorted(missing_ids):
+                all_errors.append({
+                    "type": "coverage",
+                    "message": "ID marked to_code=\"true\" has no code marker",
+                    "id": missing_id,
+                })
+
     # Markerless covered-by (simplified):
     # If an artifact has no markers, each `**ID**: ...` definition must be referenced
     # from at least one OTHER artifact kind. If no other kinds exist in scope → warn.
+    #
+    # If traceability is FULL for this artifact, a code reference also satisfies coverage.
     if len(all_artifacts_for_cross) > 0:
-        from .utils.document import scan_spd_ids_without_markers, file_has_spider_markers
-
         present_kinds: Set[str] = set()
         refs_by_id: Dict[str, Set[str]] = {}
 
@@ -1322,6 +1449,7 @@ def _cmd_validate(argv: List[str]) -> int:
 
             kind = art.template.kind
             other_kinds = sorted(k for k in present_kinds if k != kind)
+            art_traceability = traceability_by_path.get(art_path_str, "FULL")
 
             for h in scan_spd_ids_without_markers(art.path):
                 if h.get("type") != "definition":
@@ -1342,119 +1470,21 @@ def _cmd_validate(argv: List[str]) -> int:
                     continue
 
                 referenced_kinds = sorted(k for k in refs_by_id.get(did, set()) if k != kind)
-                if not referenced_kinds:
-                    all_errors.append(Template.error(
-                        "structure",
-                        "ID not referenced from other artifact kinds",
-                        path=art.path,
-                        line=line,
-                        id=did,
-                        other_kinds=other_kinds,
-                    ))
-
-    # Code traceability validation (unless skipped)
-    code_files_scanned: List[Dict[str, object]] = []
-    code_ids_found: Set[str] = set()
-    to_code_ids: Set[str] = set()
-    artifact_ids: Set[str] = set()
-
-    # Build map of artifact path to traceability mode
-    traceability_by_path: Dict[str, str] = {}
-    for artifact_path, _template_path, _artifact_type, traceability in artifacts_to_validate:
-        traceability_by_path[str(artifact_path)] = traceability
-
-    # Collect artifact IDs and to_code IDs (only from FULL traceability artifacts)
-    for art in parsed_artifacts:
-        art_traceability = traceability_by_path.get(str(art.path), "FULL")
-        for d in art.id_definitions:
-            artifact_ids.add(d.id)
-            # Only collect to_code IDs from artifacts with FULL traceability
-            if d.to_code and art_traceability == "FULL":
-                to_code_ids.add(d.id)
-
-    if not args.skip_code and not args.artifact:
-        # Scan code files from all systems
-        def resolve_code_path(p: str) -> Path:
-            return (project_root / p).resolve()
-
-        def scan_codebase_entry(entry: dict, traceability: str) -> None:
-            code_path = resolve_code_path(entry.get("path", ""))
-            extensions = entry.get("extensions", [".py"])
-
-            if not code_path.exists():
-                return
-
-            if code_path.is_file():
-                files_to_scan = [code_path]
-            else:
-                files_to_scan = []
-                for ext in extensions:
-                    files_to_scan.extend(code_path.rglob(f"*{ext}"))
-
-            for file_path in files_to_scan:
-                cf, errs = CodeFile.from_path(file_path)
-                if errs:
-                    all_errors.extend(errs)
+                if referenced_kinds:
                     continue
 
-                if cf is None:
+                # Allow code reference to satisfy coverage when FULL.
+                if art_traceability == "FULL" and did in code_ids_found:
                     continue
 
-                # Validate structure
-                result = cf.validate()
-                all_errors.extend(result.get("errors", []))
-                all_warnings.extend(result.get("warnings", []))
-
-                # Track IDs found
-                file_ids = cf.list_ids()
-                code_ids_found.update(file_ids)
-
-                if file_ids or cf.scope_markers or cf.block_markers:
-                    code_files_scanned.append({
-                        "path": str(file_path),
-                        "scope_markers": len(cf.scope_markers),
-                        "block_markers": len(cf.block_markers),
-                        "ids_referenced": len(file_ids),
-                    })
-
-                # Check for orphaned markers (IDs not in artifacts)
-                if traceability == "FULL":
-                    for ref in cf.references:
-                        if ref.id not in artifact_ids:
-                            all_errors.append({
-                                "type": "traceability",
-                                "message": "Code marker references ID not defined in any artifact",
-                                "path": str(file_path),
-                                "line": ref.line,
-                                "id": ref.id,
-                            })
-
-        def scan_system_codebase(system_node: "SystemNode") -> None:
-            for cb_entry in system_node.codebase:
-                # Determine traceability from system artifacts
-                traceability = "FULL"
-                for art in system_node.artifacts:
-                    if art.traceability == "DOCS-ONLY":
-                        traceability = "DOCS-ONLY"
-                        break
-                scan_codebase_entry({
-                    "path": cb_entry.path,
-                    "extensions": cb_entry.extensions,
-                }, traceability)
-            for child in system_node.children:
-                scan_system_codebase(child)
-
-        for system_node in meta.systems:
-            scan_system_codebase(system_node)
-
-        # Check for missing code markers (to_code IDs without markers)
-        missing_ids = to_code_ids - code_ids_found
-        for missing_id in sorted(missing_ids):
-            all_errors.append({
-                "type": "coverage",
-                "message": "ID marked to_code=\"true\" has no code marker",
-                "id": missing_id,
-            })
+                all_errors.append(Template.error(
+                    "structure",
+                    "ID not referenced from other artifact kinds",
+                    path=art.path,
+                    line=line,
+                    id=did,
+                    other_kinds=other_kinds,
+                ))
 
     # Build final report
     overall_status = "PASS" if not all_errors else "FAIL"
