@@ -12,11 +12,11 @@ import sys
 from pathlib import Path
 from contextlib import redirect_stdout, redirect_stderr
 
-# Add spider.py to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spider" / "scripts"))
+# Add spaider.py to path
+sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spaider" / "scripts"))
 
-from spider.cli import main
-from spider.utils.files import (
+from spaider.cli import main
+from spaider.utils.files import (
     find_project_root,
     load_project_config,
     find_adapter_directory,
@@ -34,22 +34,22 @@ class TestAdapterInfoCommand(unittest.TestCase):
             project_root = Path(tmp_dir) / "project"
             project_root.mkdir()
             
-            adapter_dir = project_root / ".spider-adapter"
+            adapter_dir = project_root / ".spaider-adapter"
             adapter_dir.mkdir()
             specs_dir = adapter_dir / "specs"
             specs_dir.mkdir()
             
-            # Create .spider-config.json
-            config_file = project_root / ".spider-config.json"
+            # Create .spaider-config.json
+            config_file = project_root / ".spaider-config.json"
             config_file.write_text(json.dumps({
-                "spiderAdapterPath": ".spider-adapter"
+                "spaiderAdapterPath": ".spaider-adapter"
             }))
             
             # Create AGENTS.md
             agents_file = adapter_dir / "AGENTS.md"
-            agents_file.write_text("""# Spider Adapter: TestProject
+            agents_file.write_text("""# Spaider Adapter: TestProject
 
-**Extends**: `../Spider/AGENTS.md`
+**Extends**: `../Spaider/AGENTS.md`
 
 **Version**: 1.0
 """)
@@ -78,7 +78,7 @@ class TestAdapterInfoCommand(unittest.TestCase):
             self.assertIn("domain-model", output["specs"])
             self.assertIn("tech-stack", output["specs"])
             self.assertTrue(output["has_config"])
-            self.assertIn(".spider-adapter", output["adapter_dir"])
+            self.assertIn(".spaider-adapter", output["adapter_dir"])
             self.assertIn("artifacts_registry_path", output)
             self.assertIn("artifacts_registry", output)
             self.assertIsNone(output.get("artifacts_registry_error"))
@@ -94,14 +94,14 @@ class TestAdapterInfoCommand(unittest.TestCase):
             # Add .git to mark as project root
             (project_root / ".git").mkdir()
             
-            adapter_dir = project_root / ".spider-adapter"
+            adapter_dir = project_root / ".spaider-adapter"
             adapter_dir.mkdir()
             
             # Create AGENTS.md with Extends
             agents_file = adapter_dir / "AGENTS.md"
-            agents_file.write_text("""# Spider Adapter: MyProject
+            agents_file.write_text("""# Spaider Adapter: MyProject
 
-**Extends**: `../../Spider/AGENTS.md`
+**Extends**: `../../Spaider/AGENTS.md`
 """)
             
             # Run command
@@ -149,9 +149,9 @@ class TestAdapterInfoCommand(unittest.TestCase):
             project_root.mkdir()
             
             # Create config pointing to non-existent adapter
-            config_file = project_root / ".spider-config.json"
+            config_file = project_root / ".spaider-config.json"
             config_file.write_text(json.dumps({
-                "spiderAdapterPath": "invalid-path"
+                "spaiderAdapterPath": "invalid-path"
             }))
             
             # Run command
@@ -186,58 +186,58 @@ class TestAdapterInfoCommand(unittest.TestCase):
             self.assertEqual(output["status"], "NOT_FOUND")
             self.assertIn("No project root found", output["message"])
     
-    def test_adapter_info_with_spider_root_exclusion(self):
-        """Test adapter-info excludes Spider core directory when spider-root provided."""
+    def test_adapter_info_with_spaider_root_exclusion(self):
+        """Test adapter-info excludes Spaider core directory when spaider-root provided."""
         with tempfile.TemporaryDirectory() as tmp_dir:
-            # Setup: Create nested structure with both Spider and adapter
+            # Setup: Create nested structure with both Spaider and adapter
             project_root = Path(tmp_dir) / "project"
             project_root.mkdir()
             (project_root / ".git").mkdir()
             
-            # Create Spider core directory (should be excluded)
-            spider_core = project_root / "Spider"
-            spider_core.mkdir()
-            (spider_core / "AGENTS.md").write_text("# Spider Core\n")
-            (spider_core / "requirements").mkdir()
-            (spider_core / "workflows").mkdir()
+            # Create Spaider core directory (should be excluded)
+            spaider_core = project_root / "Spaider"
+            spaider_core.mkdir()
+            (spaider_core / "AGENTS.md").write_text("# Spaider Core\n")
+            (spaider_core / "requirements").mkdir()
+            (spaider_core / "workflows").mkdir()
             
             # Create real adapter
-            adapter_dir = project_root / ".spider-adapter"
+            adapter_dir = project_root / ".spaider-adapter"
             adapter_dir.mkdir()
             agents_file = adapter_dir / "AGENTS.md"
-            agents_file.write_text("""# Spider Adapter: RealProject
+            agents_file.write_text("""# Spaider Adapter: RealProject
 
-**Extends**: `../Spider/AGENTS.md`
+**Extends**: `../Spaider/AGENTS.md`
 """)
             
-            # Run command with spider-root
+            # Run command with spaider-root
             stdout_capture = io.StringIO()
             with redirect_stdout(stdout_capture):
                 exit_code = main([
                     "adapter-info",
                     "--root", str(project_root),
-                    "--spider-root", str(spider_core)
+                    "--spaider-root", str(spaider_core)
                 ])
             
-            # Verify it found the adapter, not Spider core
+            # Verify it found the adapter, not Spaider core
             output = json.loads(stdout_capture.getvalue())
             
             self.assertEqual(exit_code, 0)
             self.assertEqual(output["status"], "FOUND")
             self.assertEqual(output["project_name"], "RealProject")
-            self.assertIn(".spider-adapter", output["adapter_dir"])
-            self.assertNotIn("Spider", output["adapter_dir"])
+            self.assertIn(".spaider-adapter", output["adapter_dir"])
+            self.assertNotIn("Spaider", output["adapter_dir"])
 
 
 class TestAdapterHelperFunctions(unittest.TestCase):
     """Test suite for adapter discovery helper functions."""
     
     def test_find_project_root_with_config(self):
-        """Test find_project_root locates .spider-config.json."""
+        """Test find_project_root locates .spaider-config.json."""
         with tempfile.TemporaryDirectory() as tmp_dir:
             project_root = Path(tmp_dir) / "project"
             project_root.mkdir()
-            (project_root / ".spider-config.json").write_text("{}")
+            (project_root / ".spaider-config.json").write_text("{}")
             
             subdir = project_root / "src" / "lib"
             subdir.mkdir(parents=True)
@@ -273,15 +273,15 @@ class TestAdapterHelperFunctions(unittest.TestCase):
             project_root = Path(tmp_dir) / "project"
             project_root.mkdir()
             
-            config_file = project_root / ".spider-config.json"
+            config_file = project_root / ".spaider-config.json"
             config_file.write_text(json.dumps({
-                "spiderAdapterPath": ".spider-adapter",
+                "spaiderAdapterPath": ".spaider-adapter",
                 "other": "value"
             }))
             
             config = load_project_config(project_root)
             self.assertIsNotNone(config)
-            self.assertEqual(config["spiderAdapterPath"], ".spider-adapter")
+            self.assertEqual(config["spaiderAdapterPath"], ".spaider-adapter")
             self.assertEqual(config["other"], "value")
     
     def test_load_project_config_missing(self):
@@ -299,7 +299,7 @@ class TestAdapterHelperFunctions(unittest.TestCase):
             project_root = Path(tmp_dir) / "project"
             project_root.mkdir()
             
-            config_file = project_root / ".spider-config.json"
+            config_file = project_root / ".spaider-config.json"
             config_file.write_text("{ invalid json }")
             
             config = load_project_config(project_root)
@@ -312,14 +312,14 @@ class TestAdapterHelperFunctions(unittest.TestCase):
             project_root.mkdir()
             
             # Create config
-            config_file = project_root / ".spider-config.json"
-            config_file.write_text(json.dumps({"spiderAdapterPath": "custom-adapter"}))
+            config_file = project_root / ".spaider-config.json"
+            config_file.write_text(json.dumps({"spaiderAdapterPath": "custom-adapter"}))
             
             # Create adapter at configured path
             adapter_dir = project_root / "custom-adapter"
             adapter_dir.mkdir()
             agents_file = adapter_dir / "AGENTS.md"
-            agents_file.write_text("**Extends**: Spider")
+            agents_file.write_text("**Extends**: Spaider")
             
             found = find_adapter_directory(project_root)
             self.assertEqual(found.resolve() if found else None, adapter_dir.resolve())
@@ -332,13 +332,13 @@ class TestAdapterHelperFunctions(unittest.TestCase):
             (project_root / ".git").mkdir()
             
             # Create adapter in nested location
-            adapter_dir = project_root / "docs" / ".spider-adapter"
+            adapter_dir = project_root / "docs" / ".spaider-adapter"
             adapter_dir.mkdir(parents=True)
             (adapter_dir / "specs").mkdir()
             agents_file = adapter_dir / "AGENTS.md"
-            agents_file.write_text("""# Spider Adapter: Test
+            agents_file.write_text("""# Spaider Adapter: Test
 
-**Extends**: `../../Spider/AGENTS.md`
+**Extends**: `../../Spaider/AGENTS.md`
 """)
             
             found = find_adapter_directory(project_root)
@@ -352,9 +352,9 @@ class TestAdapterHelperFunctions(unittest.TestCase):
             
             # Create AGENTS.md
             agents_file = adapter_dir / "AGENTS.md"
-            agents_file.write_text("""# Spider Adapter: MyProject
+            agents_file.write_text("""# Spaider Adapter: MyProject
 
-**Extends**: `../Spider/AGENTS.md`
+**Extends**: `../Spaider/AGENTS.md`
 **Version**: 2.0
 """)
             

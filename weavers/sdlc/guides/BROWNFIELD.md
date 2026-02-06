@@ -1,12 +1,12 @@
 # Brownfield Guide
 
-Use this guide when you already have a codebase and want to adopt Spider.
+Use this guide when you already have a codebase and want to adopt Spaider.
 
-All prompts work through the `spider` skill — enable it with `spider on` and use natural language prompts.
+All prompts work through the `spaider` skill — enable it with `spaider on` and use natural language prompts.
 
 ## Goal
 
-Adopt Spider incrementally — start with what makes sense for your project, not a fixed sequence.
+Adopt Spaider incrementally — start with what makes sense for your project, not a fixed sequence.
 
 ## Key Principle: Start Anywhere
 
@@ -15,9 +15,9 @@ Unlike greenfield projects, **brownfield has no required order**. You can:
 - Start with **any artifact** — PRD, DESIGN, SPEC, or even just CODE
 - Work **top-down** (PRD → DESIGN → CODE) or **bottom-up** (CODE → SPEC → DESIGN)
 - Adopt **incrementally** — use only what you need, add more later
-- Use **code-only mode** — just Spider's code generation with checklist benefits
+- Use **code-only mode** — just Spaider's code generation with checklist benefits
 
-**Even with zero artifacts**, Spider's code generation uses the `code-checklist` internally for quality guidance.
+**Even with zero artifacts**, Spaider's code generation uses the `code-checklist` internally for quality guidance.
 
 ---
 
@@ -29,9 +29,9 @@ You just want better code generation. No artifacts needed.
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider implement spec auth` | Generates code using code-checklist quality guidance |
-| `spider add markers to src/auth/` | Adds traceability markers to existing code |
-| `spider validate code` | Validates code quality and marker correctness |
+| `spaider implement spec auth` | Generates code using code-checklist quality guidance |
+| `spaider add markers to src/auth/` | Adds traceability markers to existing code |
+| `spaider validate code` | Validates code quality and marker correctness |
 
 **Benefits**: Quality-guided code generation, consistent patterns, marker-based traceability.
 
@@ -40,11 +40,11 @@ You just want better code generation. No artifacts needed.
 You want to document existing specs, then build up.
 
 ```
-1. spider reverse SPEC from src/auth/     → Creates SPEC spec from code
-2. spider reverse SPEC from src/billing/  → Creates another SPEC spec
-3. spider decompose from specs            → Creates DECOMPOSITION from SPECs
-4. spider make DESIGN from DECOMPOSITION     → Creates DESIGN from structure
-5. spider make PRD from DESIGN               → (optional) Creates PRD from DESIGN
+1. spaider reverse SPEC from src/auth/     → Creates SPEC spec from code
+2. spaider reverse SPEC from src/billing/  → Creates another SPEC spec
+3. spaider decompose from specs            → Creates DECOMPOSITION from SPECs
+4. spaider make DESIGN from DECOMPOSITION     → Creates DESIGN from structure
+5. spaider make PRD from DESIGN               → (optional) Creates PRD from DESIGN
 ```
 
 **When to use**: You want to document what exists without changing code.
@@ -54,10 +54,10 @@ You want to document existing specs, then build up.
 You want to capture architecture, then decompose into specs.
 
 ```
-1. spider reverse DESIGN from codebase       → Extracts architecture from code
-2. spider decompose                          → Creates spec breakdown
-3. spider make SPEC for {slug}            → Creates detailed specs
-4. spider implement {slug}                   → Implements with markers
+1. spaider reverse DESIGN from codebase       → Extracts architecture from code
+2. spaider decompose                          → Creates spec breakdown
+3. spaider make SPEC for {slug}            → Creates detailed specs
+4. spaider implement {slug}                   → Implements with markers
 ```
 
 **When to use**: You want architectural control before spec work.
@@ -67,11 +67,11 @@ You want to capture architecture, then decompose into specs.
 You want complete documentation from requirements to code.
 
 ```
-1. spider reverse PRD from codebase          → Extracts requirements
-2. spider make DESIGN from PRD               → Creates architecture
-3. spider decompose                          → Creates spec breakdown
-4. spider make SPEC for {slug}            → Creates detailed specs
-5. spider implement {slug}                   → Implements with markers
+1. spaider reverse PRD from codebase          → Extracts requirements
+2. spaider make DESIGN from PRD               → Creates architecture
+3. spaider decompose                          → Creates spec breakdown
+4. spaider make SPEC for {slug}            → Creates detailed specs
+5. spaider implement {slug}                   → Implements with markers
 ```
 
 **When to use**: New team members, compliance requirements, or major refactoring.
@@ -81,10 +81,10 @@ You want complete documentation from requirements to code.
 Start minimal, add artifacts as needed.
 
 ```
-Week 1: spider implement {slug}              → Code-only, with checklist
-Week 2: spider make SPEC for {slug}       → Add specs for complex specs
-Week 3: spider decompose                     → Organize specs
-Later:  spider make DESIGN                   → Document architecture
+Week 1: spaider implement {slug}              → Code-only, with checklist
+Week 2: spaider make SPEC for {slug}       → Add specs for complex specs
+Week 3: spaider decompose                     → Organize specs
+Later:  spaider make DESIGN                   → Document architecture
 ```
 
 **When to use**: You want low-friction adoption with growing benefits.
@@ -93,7 +93,7 @@ Later:  spider make DESIGN                   → Document architecture
 
 ## What You Will Produce
 
-Spider artifacts registered in `.spider-adapter/artifacts.json` ([taxonomy](TAXONOMY.md)):
+Spaider artifacts registered in `.spaider-adapter/artifacts.json` ([taxonomy](TAXONOMY.md)):
 
 | Artifact | Default Location |
 |----------|------------------|
@@ -105,7 +105,7 @@ Spider artifacts registered in `.spider-adapter/artifacts.json` ([taxonomy](TAXO
 
 ## How to Provide Context
 
-Brownfield work is context-heavy. Add context to control what the agent reads and how it maps existing reality into Spider artifacts.
+Brownfield work is context-heavy. Add context to control what the agent reads and how it maps existing reality into Spaider artifacts.
 
 Recommended context:
 - Source of truth (code vs docs)
@@ -115,7 +115,7 @@ Recommended context:
 
 **Example format:**
 ```
-spider make DESIGN
+spaider make DESIGN
 Context:
 - Source of truth: code
 - Code areas: src/api/, src/domain/
@@ -137,32 +137,32 @@ Goal: produce validated baseline artifacts before you add or refactor specs.
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider reverse PRD from codebase` | Extracts requirements from existing code |
-| `spider reverse PRD from src/` | Extracts from specific directory |
-| `spider make PRD from code` | Same, alternative phrasing |
+| `spaider reverse PRD from codebase` | Extracts requirements from existing code |
+| `spaider reverse PRD from src/` | Extracts from specific directory |
+| `spaider make PRD from code` | Same, alternative phrasing |
 
 **Create from existing docs**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider make PRD from README` | Creates PRD from project README |
-| `spider make PRD from docs/requirements.txt` | Extracts from existing requirements |
-| `spider make PRD from this conversation` | Creates PRD from stakeholder discussion |
-| `spider import user-stories.md as PRD` | Converts user stories to PRD |
+| `spaider make PRD from README` | Creates PRD from project README |
+| `spaider make PRD from docs/requirements.txt` | Extracts from existing requirements |
+| `spaider make PRD from this conversation` | Creates PRD from stakeholder discussion |
+| `spaider import user-stories.md as PRD` | Converts user stories to PRD |
 
 **Update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider update PRD` | Updates PRD interactively |
-| `spider extend PRD with {capability}` | Adds capability to existing PRD |
-| `spider sync PRD from code` | Updates PRD to match current code |
+| `spaider update PRD` | Updates PRD interactively |
+| `spaider extend PRD with {capability}` | Adds capability to existing PRD |
+| `spaider sync PRD from code` | Updates PRD to match current code |
 
 **Provide context:** source of truth, code entry points, existing docs.
 
 **Example:**
 ```
-spider reverse PRD from codebase
+spaider reverse PRD from codebase
 Context:
 - Source of truth: code
 - Code entry points: src/routes/, src/controllers/
@@ -173,10 +173,10 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate PRD` | Full validation (300+ criteria) |
-| `spider validate PRD semantic` | Semantic only (content quality) |
-| `spider validate PRD structural` | Structural only (format, IDs) |
-| `spider validate PRD quick` | Fast check (critical issues) |
+| `spaider validate PRD` | Full validation (300+ criteria) |
+| `spaider validate PRD semantic` | Semantic only (content quality) |
+| `spaider validate PRD structural` | Structural only (format, IDs) |
+| `spaider validate PRD quick` | Fast check (critical issues) |
 
 ### 3. ADR + DESIGN
 
@@ -184,40 +184,40 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider reverse DESIGN from codebase` | Documents current architecture from code |
-| `spider reverse DESIGN from src/` | From specific directory |
-| `spider make DESIGN from code` | Same, alternative phrasing |
+| `spaider reverse DESIGN from codebase` | Documents current architecture from code |
+| `spaider reverse DESIGN from src/` | From specific directory |
+| `spaider make DESIGN from code` | Same, alternative phrasing |
 
 **Create from existing docs**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider make DESIGN from PRD` | Transforms PRD into architecture |
-| `spider import OpenAPI as DESIGN` | Converts API spec into DESIGN |
-| `spider import db-schema.sql as DESIGN data model` | Extracts data model from SQL |
+| `spaider make DESIGN from PRD` | Transforms PRD into architecture |
+| `spaider import OpenAPI as DESIGN` | Converts API spec into DESIGN |
+| `spaider import db-schema.sql as DESIGN data model` | Extracts data model from SQL |
 
 **Update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider update DESIGN` | Updates DESIGN interactively |
-| `spider extend DESIGN with {component}` | Adds component to DESIGN |
-| `spider sync DESIGN from code` | Updates DESIGN to match current code |
+| `spaider update DESIGN` | Updates DESIGN interactively |
+| `spaider extend DESIGN with {component}` | Adds component to DESIGN |
+| `spaider sync DESIGN from code` | Updates DESIGN to match current code |
 
 **ADR**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider make ADR for PostgreSQL` | Creates ADR for technology choice |
-| `spider make ADR for REST vs GraphQL` | Creates ADR comparing approaches |
-| `spider draft ADR from discussion` | Extracts decision from conversation |
-| `spider update ADR 0001` | Updates specific ADR |
+| `spaider make ADR for PostgreSQL` | Creates ADR for technology choice |
+| `spaider make ADR for REST vs GraphQL` | Creates ADR comparing approaches |
+| `spaider draft ADR from discussion` | Extracts decision from conversation |
+| `spaider update ADR 0001` | Updates specific ADR |
 
 **Provide context:** source of truth, existing specs, constraints.
 
 **Example:**
 ```
-spider reverse DESIGN from codebase
+spaider reverse DESIGN from codebase
 Context:
 - Source of truth: code
 - Existing specs: docs/openapi.yaml, docs/db-schema.md
@@ -228,13 +228,13 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate DESIGN` | Full validation (380+ criteria) |
-| `spider validate DESIGN semantic` | Semantic only (consistency) |
-| `spider validate DESIGN structural` | Structural only (format) |
-| `spider validate DESIGN refs` | Cross-references to PRD |
-| `spider validate ADR` | Validates all ADRs |
-| `spider validate ADR 0001` | Validates specific ADR |
-| `spider validate ADR semantic` | Semantic only (rationale quality) |
+| `spaider validate DESIGN` | Full validation (380+ criteria) |
+| `spaider validate DESIGN semantic` | Semantic only (consistency) |
+| `spaider validate DESIGN structural` | Structural only (format) |
+| `spaider validate DESIGN refs` | Cross-references to PRD |
+| `spaider validate ADR` | Validates all ADRs |
+| `spaider validate ADR 0001` | Validates specific ADR |
+| `spaider validate ADR semantic` | Semantic only (rationale quality) |
 
 ### 5. DECOMPOSITION
 
@@ -242,24 +242,24 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider decompose` | Creates DECOMPOSITION interactively |
-| `spider decompose from codebase` | Extracts specs from existing code structure |
-| `spider decompose by module` | Groups by code modules |
-| `spider decompose by capability` | Groups by business capability |
+| `spaider decompose` | Creates DECOMPOSITION interactively |
+| `spaider decompose from codebase` | Extracts specs from existing code structure |
+| `spaider decompose by module` | Groups by code modules |
+| `spaider decompose by capability` | Groups by business capability |
 
 **Update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider add spec {slug}` | Adds new spec entry |
-| `spider update spec {slug} status` | Updates spec status |
-| `spider update spec {slug} priority` | Updates spec priority |
+| `spaider add spec {slug}` | Adds new spec entry |
+| `spaider update spec {slug} status` | Updates spec status |
+| `spaider update spec {slug} priority` | Updates spec priority |
 
 **Provide context:** module boundaries, spec grouping preferences.
 
 **Example:**
 ```
-spider decompose from codebase
+spaider decompose from codebase
 Context:
 - Group specs by modules: billing, auth, reporting
 - Code structure: src/modules/
@@ -269,10 +269,10 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate DECOMPOSITION` | Full validation (130+ criteria) |
-| `spider validate DECOMPOSITION semantic` | Semantic only (coverage) |
-| `spider validate DECOMPOSITION structural` | Structural only (format) |
-| `spider validate DECOMPOSITION refs` | Cross-references to DESIGN |
+| `spaider validate DECOMPOSITION` | Full validation (130+ criteria) |
+| `spaider validate DECOMPOSITION semantic` | Semantic only (coverage) |
+| `spaider validate DECOMPOSITION structural` | Structural only (format) |
+| `spaider validate DECOMPOSITION refs` | Cross-references to DESIGN |
 
 ---
 
@@ -284,8 +284,8 @@ Use when baseline exists and you want to add a new capability.
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider add spec {slug}` | Adds new spec to decomposition |
-| `spider add spec notifications` | Example: adds notifications spec |
+| `spaider add spec {slug}` | Adds new spec to decomposition |
+| `spaider add spec notifications` | Example: adds notifications spec |
 
 ### 2. SPEC spec
 
@@ -293,30 +293,30 @@ Use when baseline exists and you want to add a new capability.
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider make SPEC for {slug}` | Creates spec spec |
-| `spider make SPEC spec for notifications` | Creates detailed design |
+| `spaider make SPEC for {slug}` | Creates spec spec |
+| `spaider make SPEC spec for notifications` | Creates detailed design |
 
 **Reverse-engineer from existing code**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider reverse SPEC from src/notifications/` | Creates spec from existing code |
-| `spider reverse SPEC {slug} from code` | Same, using spec slug |
-| `spider draft SPEC from code` | Same, alternative phrasing |
+| `spaider reverse SPEC from src/notifications/` | Creates spec from existing code |
+| `spaider reverse SPEC {slug} from code` | Same, using spec slug |
+| `spaider draft SPEC from code` | Same, alternative phrasing |
 
 **Update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider update SPEC {slug}` | Updates spec spec |
-| `spider extend SPEC {slug} with {scenario}` | Adds scenario to spec |
-| `spider sync SPEC {slug} from code` | Updates spec to match code |
+| `spaider update SPEC {slug}` | Updates spec spec |
+| `spaider extend SPEC {slug} with {scenario}` | Adds scenario to spec |
+| `spaider sync SPEC {slug} from code` | Updates spec to match code |
 
 **Provide context:** spec slug, code boundaries, scenarios to include.
 
 **Example:**
 ```
-spider make SPEC for notifications
+spaider make SPEC for notifications
 Context:
 - Include scenarios: retries, rate limits, provider outage
 - Code boundaries: src/notifications/
@@ -326,10 +326,10 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate SPEC {slug}` | Full validation (380+ criteria) |
-| `spider validate SPEC {slug} semantic` | Semantic only (flows, edge cases) |
-| `spider validate SPEC {slug} structural` | Structural only (SDSL, IDs) |
-| `spider validate SPEC {slug} refs` | Cross-references to DESIGN |
+| `spaider validate SPEC {slug}` | Full validation (380+ criteria) |
+| `spaider validate SPEC {slug} semantic` | Semantic only (flows, edge cases) |
+| `spaider validate SPEC {slug} structural` | Structural only (SDSL, IDs) |
+| `spaider validate SPEC {slug} refs` | Cross-references to DESIGN |
 
 ### 4. CODE
 
@@ -337,40 +337,40 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider implement {slug}` | Generates code from SPEC spec |
-| `spider implement {slug} step by step` | Implements with user confirmation |
-| `spider implement {slug} tests first` | Generates tests first, then code |
+| `spaider implement {slug}` | Generates code from SPEC spec |
+| `spaider implement {slug} step by step` | Implements with user confirmation |
+| `spaider implement {slug} tests first` | Generates tests first, then code |
 
 **Implement specific parts**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider implement {slug} flow {flow-id}` | Implements specific flow only |
-| `spider implement {slug} api` | Implements API layer only |
-| `spider implement {slug} data layer` | Implements data/repository layer only |
-| `spider implement {slug} tests` | Generates tests only |
+| `spaider implement {slug} flow {flow-id}` | Implements specific flow only |
+| `spaider implement {slug} api` | Implements API layer only |
+| `spaider implement {slug} data layer` | Implements data/repository layer only |
+| `spaider implement {slug} tests` | Generates tests only |
 
 **Continue / update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider continue implementing {slug}` | Continues partial implementation |
-| `spider implement {slug} remaining` | Implements only unimplemented parts |
-| `spider sync code with SPEC {slug}` | Updates code to match SPEC changes |
+| `spaider continue implementing {slug}` | Continues partial implementation |
+| `spaider implement {slug} remaining` | Implements only unimplemented parts |
+| `spaider sync code with SPEC {slug}` | Updates code to match SPEC changes |
 
 **Add markers to existing code**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider add markers to {path}` | Adds `@spider-*` markers to existing code |
-| `spider add markers for {slug}` | Adds markers matching SPEC spec |
-| `spider fix markers in {path}` | Fixes incorrect/incomplete markers |
+| `spaider add markers to {path}` | Adds `@spaider-*` markers to existing code |
+| `spaider add markers for {slug}` | Adds markers matching SPEC spec |
+| `spaider fix markers in {path}` | Fixes incorrect/incomplete markers |
 
 **Provide context:** spec slug, code paths.
 
 **Example:**
 ```
-spider implement notifications
+spaider implement notifications
 Context:
 - Where to implement: src/notifications/
 ```
@@ -381,36 +381,36 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate code` | Validates all code markers |
-| `spider validate code for {slug}` | Validates specific spec |
-| `spider validate code in {path}` | Validates code in specific path |
+| `spaider validate code` | Validates all code markers |
+| `spaider validate code for {slug}` | Validates specific spec |
+| `spaider validate code in {path}` | Validates code in specific path |
 
 **Coverage**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate code coverage` | Reports implementation coverage % |
-| `spider validate code coverage for {slug}` | Coverage for specific spec |
-| `spider show uncovered flows` | Lists flows without implementation |
-| `spider show uncovered algorithms` | Lists algorithms without implementation |
+| `spaider validate code coverage` | Reports implementation coverage % |
+| `spaider validate code coverage for {slug}` | Coverage for specific spec |
+| `spaider show uncovered flows` | Lists flows without implementation |
+| `spaider show uncovered algorithms` | Lists algorithms without implementation |
 
 **Traceability**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate code orphans` | Finds markers referencing non-existent IDs |
-| `spider validate code refs` | Validates all marker references |
-| `spider validate code markers` | Checks marker format correctness |
-| `spider list code markers` | Lists all markers in codebase |
-| `spider list code markers for {slug}` | Lists markers for specific spec |
+| `spaider validate code orphans` | Finds markers referencing non-existent IDs |
+| `spaider validate code refs` | Validates all marker references |
+| `spaider validate code markers` | Checks marker format correctness |
+| `spaider list code markers` | Lists all markers in codebase |
+| `spaider list code markers for {slug}` | Lists markers for specific spec |
 
 **Consistency**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider compare code to SPEC {slug}` | Shows drift between code and spec |
-| `spider validate code consistency` | Checks code matches SPEC specs |
-| `spider find missing implementations` | Lists SPEC elements without code |
+| `spaider compare code to SPEC {slug}` | Shows drift between code and spec |
+| `spaider validate code consistency` | Checks code matches SPEC specs |
+| `spaider find missing implementations` | Lists SPEC elements without code |
 
 ---
 
@@ -420,12 +420,12 @@ When code and design drift apart:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider compare DESIGN to code` | Shows drift between design and implementation |
-| `spider compare SPEC {slug} to code` | Shows drift for specific spec |
-| `spider sync DESIGN from code` | Updates DESIGN to match current code |
-| `spider sync SPEC {slug} from code` | Updates SPEC to match current code |
-| `spider sync code with SPEC {slug}` | Updates code to match SPEC |
-| `spider diff SPEC {slug}` | Shows changes since last validation |
+| `spaider compare DESIGN to code` | Shows drift between design and implementation |
+| `spaider compare SPEC {slug} to code` | Shows drift for specific spec |
+| `spaider sync DESIGN from code` | Updates DESIGN to match current code |
+| `spaider sync SPEC {slug} from code` | Updates SPEC to match current code |
+| `spaider sync code with SPEC {slug}` | Updates code to match SPEC |
+| `spaider diff SPEC {slug}` | Shows changes since last validation |
 
 ---
 
@@ -434,36 +434,36 @@ When code and design drift apart:
 ### Requirements Changed
 
 ```
-spider update PRD
-spider validate PRD
-spider propagate PRD changes to DESIGN
-spider validate DESIGN
+spaider update PRD
+spaider validate PRD
+spaider propagate PRD changes to DESIGN
+spaider validate DESIGN
 ```
 
 ### Design Changed
 
 ```
-spider update DESIGN
-spider validate DESIGN
-spider propagate DESIGN changes to SPEC {slug}
-spider validate SPEC {slug}
+spaider update DESIGN
+spaider validate DESIGN
+spaider propagate DESIGN changes to SPEC {slug}
+spaider validate SPEC {slug}
 ```
 
 ### Spec Design Changed
 
 ```
-spider update SPEC {slug}
-spider validate SPEC {slug}
-spider sync code with SPEC {slug}
-spider validate code for {slug}
+spaider update SPEC {slug}
+spaider validate SPEC {slug}
+spaider sync code with SPEC {slug}
+spaider validate code for {slug}
 ```
 
 ### Code Changed Without Design Update
 
 ```
-spider compare SPEC {slug} to code
-spider sync SPEC {slug} from code
-spider validate SPEC {slug}
+spaider compare SPEC {slug} to code
+spaider sync SPEC {slug} from code
+spaider validate SPEC {slug}
 ```
 
 ---
@@ -474,37 +474,37 @@ spider validate SPEC {slug}
 
 | Level | What you do | Benefits |
 |-------|-------------|----------|
-| **Code-only** | `spider implement {slug}` | Code checklist, consistent patterns |
-| **+ SPEC** | Add `spider make SPEC` | Flows, algorithms, edge cases documented |
-| **+ DECOMPOSITION** | Add `spider decompose` | Spec organization, dependencies |
-| **+ DESIGN** | Add `spider make DESIGN` | Architecture, components, data model |
-| **+ PRD** | Add `spider make PRD` | Requirements, actors, full traceability |
+| **Code-only** | `spaider implement {slug}` | Code checklist, consistent patterns |
+| **+ SPEC** | Add `spaider make SPEC` | Flows, algorithms, edge cases documented |
+| **+ DECOMPOSITION** | Add `spaider decompose` | Spec organization, dependencies |
+| **+ DESIGN** | Add `spaider make DESIGN` | Architecture, components, data model |
+| **+ PRD** | Add `spaider make PRD` | Requirements, actors, full traceability |
 
 ### Top-Down (Full)
 
 | Step | Generate | Validate |
 |------|----------|----------|
-| 1 | `spider reverse PRD from codebase` | `spider validate PRD` |
-| 2 | `spider reverse DESIGN from codebase` | `spider validate DESIGN` |
-| 3 | `spider decompose` | `spider validate DECOMPOSITION` |
-| 4 | `spider make SPEC for {slug}` | `spider validate SPEC {slug}` |
-| 5 | `spider implement {slug}` | `spider validate code for {slug}` |
+| 1 | `spaider reverse PRD from codebase` | `spaider validate PRD` |
+| 2 | `spaider reverse DESIGN from codebase` | `spaider validate DESIGN` |
+| 3 | `spaider decompose` | `spaider validate DECOMPOSITION` |
+| 4 | `spaider make SPEC for {slug}` | `spaider validate SPEC {slug}` |
+| 5 | `spaider implement {slug}` | `spaider validate code for {slug}` |
 
 ### Bottom-Up (Spec-First)
 
 | Step | Generate | Validate |
 |------|----------|----------|
-| 1 | `spider reverse SPEC from src/{path}/` | `spider validate SPEC {slug}` |
-| 2 | `spider decompose from specs` | `spider validate DECOMPOSITION` |
-| 3 | `spider make DESIGN from DECOMPOSITION` | `spider validate DESIGN` |
+| 1 | `spaider reverse SPEC from src/{path}/` | `spaider validate SPEC {slug}` |
+| 2 | `spaider decompose from specs` | `spaider validate DECOMPOSITION` |
+| 3 | `spaider make DESIGN from DECOMPOSITION` | `spaider validate DESIGN` |
 
 ### Code-Only
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider implement {slug}` | Generates code with checklist guidance |
-| `spider add markers to {path}` | Adds traceability to existing code |
-| `spider validate code` | Validates code quality |
+| `spaider implement {slug}` | Generates code with checklist guidance |
+| `spaider add markers to {path}` | Adds traceability to existing code |
+| `spaider validate code` | Validates code quality |
 
 **Validation modes** (append to any `validate` command):
 - `semantic` — content quality, completeness, clarity
@@ -517,5 +517,5 @@ spider validate SPEC {slug}
 - Start with what you need — add more artifacts as value becomes clear
 - If code changes affect spec behavior, update SPEC first
 - Re-validate the SPEC design
-- Run `spider validate code` to ensure design and code remain consistent
+- Run `spaider validate code` to ensure design and code remain consistent
 - If code contradicts design, decide: update design OR update code

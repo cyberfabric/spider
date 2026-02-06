@@ -1,5 +1,5 @@
 ---
-spider: true
+spaider: true
 type: requirement
 name: Code Quality Expert Checklist
 version: 1.0

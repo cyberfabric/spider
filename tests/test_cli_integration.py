@@ -14,21 +14,21 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from contextlib import redirect_stdout, redirect_stderr
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spider" / "scripts"))
+sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spaider" / "scripts"))
 
-from spider.cli import main
+from spaider.cli import main
 
 
 def _bootstrap_registry(project_root: Path, *, entries: list) -> None:
     (project_root / ".git").mkdir(exist_ok=True)
-    (project_root / ".spider-config.json").write_text(
-        '{\n  "spiderAdapterPath": "adapter"\n}\n',
+    (project_root / ".spaider-config.json").write_text(
+        '{\n  "spaiderAdapterPath": "adapter"\n}\n',
         encoding="utf-8",
     )
     adapter_dir = project_root / "adapter"
     adapter_dir.mkdir(parents=True, exist_ok=True)
     (adapter_dir / "AGENTS.md").write_text(
-        "# Spider Adapter: Test\n\n**Extends**: `../AGENTS.md`\n",
+        "# Spaider Adapter: Test\n\n**Extends**: `../AGENTS.md`\n",
         encoding="utf-8",
     )
     (adapter_dir / "artifacts.json").write_text(
@@ -111,8 +111,8 @@ class TestCLIValidateCommand(unittest.TestCase):
             _bootstrap_registry(
                 root,
                 entries=[
-                    {"kind": "SPEC", "system": "Test", "path": "architecture/specs/spec-a/DESIGN.md", "format": "Spider"},
-                    {"kind": "SPEC", "system": "Test", "path": "architecture/specs/spec-b/DESIGN.md", "format": "Spider"},
+                    {"kind": "SPEC", "system": "Test", "path": "architecture/specs/spec-a/DESIGN.md", "format": "Spaider"},
+                    {"kind": "SPEC", "system": "Test", "path": "architecture/specs/spec-b/DESIGN.md", "format": "Spaider"},
                     {"kind": "SRC", "system": "Test", "path": "src", "format": "CONTEXT", "traceability_enabled": True, "extensions": [".py"]},
                 ],
             )
@@ -137,7 +137,7 @@ class TestCLIValidateCommand(unittest.TestCase):
             _bootstrap_registry(
                 root,
                 entries=[
-                    {"kind": "SPEC", "system": "Test", "path": "architecture/specs/spec-x/DESIGN.md", "format": "Spider"},
+                    {"kind": "SPEC", "system": "Test", "path": "architecture/specs/spec-x/DESIGN.md", "format": "Spaider"},
                 ],
             )
 
@@ -155,14 +155,14 @@ class TestCLIInitCommand(unittest.TestCase):
             project = Path(tmpdir) / "project"
             project.mkdir()
 
-            spider_core = project / "Spider"
-            spider_core.mkdir()
-            (spider_core / "AGENTS.md").write_text("# Spider Core\n", encoding="utf-8")
-            (spider_core / "requirements").mkdir()
-            (spider_core / "workflows").mkdir()
-            (spider_core / "skills" / "spider").mkdir(parents=True)
-            (spider_core / "skills" / "spider" / "SKILL.md").write_text(
-                "---\nname: spider\ndescription: Spider skill\n---\n# Spider\n",
+            spaider_core = project / "Spaider"
+            spaider_core.mkdir()
+            (spaider_core / "AGENTS.md").write_text("# Spaider Core\n", encoding="utf-8")
+            (spaider_core / "requirements").mkdir()
+            (spaider_core / "workflows").mkdir()
+            (spaider_core / "skills" / "spaider").mkdir(parents=True)
+            (spaider_core / "skills" / "spaider" / "SKILL.md").write_text(
+                "---\nname: spaider\ndescription: Spaider skill\n---\n# Spaider\n",
                 encoding="utf-8",
             )
 
@@ -172,15 +172,15 @@ class TestCLIInitCommand(unittest.TestCase):
                     "init",
                     "--project-root",
                     str(project),
-                    "--spider-root",
-                    str(spider_core),
+                    "--spaider-root",
+                    str(spaider_core),
                     "--yes",
                 ])
             self.assertEqual(exit_code, 0)
             out = json.loads(stdout.getvalue())
             self.assertEqual(out.get("status"), "PASS")
-            self.assertTrue((project / ".spider-config.json").exists())
-            self.assertTrue((project / ".spider-adapter" / "AGENTS.md").exists())
+            self.assertTrue((project / ".spaider-config.json").exists())
+            self.assertTrue((project / ".spaider-adapter" / "AGENTS.md").exists())
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
@@ -190,8 +190,8 @@ class TestCLIInitCommand(unittest.TestCase):
                     "windsurf",
                     "--root",
                     str(project),
-                    "--spider-root",
-                    str(spider_core),
+                    "--spaider-root",
+                    str(spaider_core),
                     "--dry-run",
                 ])
             self.assertEqual(exit_code, 0)
@@ -205,8 +205,8 @@ class TestCLIInitCommand(unittest.TestCase):
                     "--openai",
                     "--root",
                     str(project),
-                    "--spider-root",
-                    str(spider_core),
+                    "--spaider-root",
+                    str(spaider_core),
                     "--dry-run",
                 ])
             self.assertEqual(exit_code, 0)
@@ -218,11 +218,11 @@ class TestCLIInitCommand(unittest.TestCase):
             project = Path(tmpdir) / "project"
             project.mkdir()
 
-            spider_core = project / "Spider"
-            spider_core.mkdir()
-            (spider_core / "AGENTS.md").write_text("# Spider Core\n", encoding="utf-8")
-            (spider_core / "requirements").mkdir()
-            (spider_core / "workflows").mkdir()
+            spaider_core = project / "Spaider"
+            spaider_core.mkdir()
+            (spaider_core / "AGENTS.md").write_text("# Spaider Core\n", encoding="utf-8")
+            (spaider_core / "requirements").mkdir()
+            (spaider_core / "workflows").mkdir()
 
             orig_cwd = os.getcwd()
             try:
@@ -230,12 +230,12 @@ class TestCLIInitCommand(unittest.TestCase):
                 with unittest.mock.patch("builtins.input", side_effect=["", ""]):
                     stdout = io.StringIO()
                     with redirect_stdout(stdout), redirect_stderr(io.StringIO()):
-                        exit_code = main(["init", "--spider-root", str(spider_core)])
+                        exit_code = main(["init", "--spaider-root", str(spaider_core)])
                 self.assertEqual(exit_code, 0)
                 out = json.loads(stdout.getvalue())
                 self.assertEqual(out.get("status"), "PASS")
-                self.assertTrue((project / ".spider-config.json").exists())
-                self.assertTrue((project / ".spider-adapter" / "AGENTS.md").exists())
+                self.assertTrue((project / ".spaider-config.json").exists())
+                self.assertTrue((project / ".spaider-adapter" / "AGENTS.md").exists())
             finally:
                 os.chdir(orig_cwd)
 
@@ -243,21 +243,21 @@ class TestCLIInitCommand(unittest.TestCase):
 class TestCLIAgentsCommand(unittest.TestCase):
     """Test agents command for workflow and skill proxy generation."""
 
-    def _write_minimal_spider_skill(self, root: Path) -> None:
-        (root / "skills" / "spider").mkdir(parents=True, exist_ok=True)
-        (root / "skills" / "spider" / "SKILL.md").write_text(
-            "---\nname: spider\ndescription: Spider skill for testing\n---\n# Spider\n",
+    def _write_minimal_spaider_skill(self, root: Path) -> None:
+        (root / "skills" / "spaider").mkdir(parents=True, exist_ok=True)
+        (root / "skills" / "spaider" / "SKILL.md").write_text(
+            "---\nname: spaider\ndescription: Spaider skill for testing\n---\n# Spaider\n",
             encoding="utf-8",
         )
 
     def _write_workflows_with_frontmatter(self, root: Path) -> None:
         (root / "workflows").mkdir(parents=True, exist_ok=True)
         (root / "workflows" / "generate.md").write_text(
-            "---\nspider: true\ntype: workflow\nname: spider-generate\ndescription: Generate Spider artifacts\n---\n# Generate\n",
+            "---\nspaider: true\ntype: workflow\nname: spaider-generate\ndescription: Generate Spaider artifacts\n---\n# Generate\n",
             encoding="utf-8",
         )
         (root / "workflows" / "analyze.md").write_text(
-            "---\nspider: true\ntype: workflow\nname: spider-analyze\ndescription: Analyze Spider artifacts\n---\n# Analyze\n",
+            "---\nspaider: true\ntype: workflow\nname: spaider-analyze\ndescription: Analyze Spaider artifacts\n---\n# Analyze\n",
             encoding="utf-8",
         )
 
@@ -282,12 +282,12 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                exit_code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                exit_code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(exit_code, 0)
 
             out = json.loads(stdout.getvalue())
@@ -299,12 +299,12 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                exit_code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root), "--dry-run"])
+                exit_code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root), "--dry-run"])
             self.assertEqual(exit_code, 0)
 
             out = json.loads(stdout.getvalue())
@@ -317,15 +317,15 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                exit_code = main(["agents", "--agent", "mystery-agent", "--root", str(root), "--spider-root", str(root)])
+                exit_code = main(["agents", "--agent", "mystery-agent", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(exit_code, 0)
 
-            cfg_path = root / "spider-agents.json"
+            cfg_path = root / "spaider-agents.json"
             self.assertTrue(cfg_path.exists())
             cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
             self.assertIn("mystery-agent", cfg.get("agents", {}))
@@ -335,7 +335,7 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / "spider-agents.json").write_text(
+            (root / "spaider-agents.json").write_text(
                 json.dumps({"version": 1, "agents": "bad"}, indent=2) + "\n",
                 encoding="utf-8",
             )
@@ -351,9 +351,9 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
-            (root / "spider-agents.json").write_text(
+            (root / "spaider-agents.json").write_text(
                 json.dumps({
                     "version": 1,
                     "agents": {
@@ -367,7 +367,7 @@ class TestCLIAgentsCommand(unittest.TestCase):
             )
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             # Should return partial status due to workflow error
             out = json.loads(stdout.getvalue())
             self.assertIn("Missing workflow_dir", str(out.get("errors", [])))
@@ -377,9 +377,9 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
-            (root / "spider-agents.json").write_text(
+            (root / "spaider-agents.json").write_text(
                 json.dumps({
                     "version": 1,
                     "agents": {
@@ -396,7 +396,7 @@ class TestCLIAgentsCommand(unittest.TestCase):
             )
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             out = json.loads(stdout.getvalue())
             self.assertIn("Missing or invalid template", str(out.get("errors", [])))
 
@@ -405,9 +405,9 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
-            (root / "spider-agents.json").write_text(
+            (root / "spaider-agents.json").write_text(
                 json.dumps({
                     "version": 1,
                     "agents": {
@@ -421,7 +421,7 @@ class TestCLIAgentsCommand(unittest.TestCase):
             )
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             out = json.loads(stdout.getvalue())
             self.assertIn("outputs must be an array", str(out.get("errors", [])))
 
@@ -430,8 +430,8 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
-            (root / "spider-agents.json").write_text(
+            self._write_minimal_spaider_skill(root)
+            (root / "spaider-agents.json").write_text(
                 json.dumps({
                     "version": 1,
                     "agents": {
@@ -447,7 +447,7 @@ class TestCLIAgentsCommand(unittest.TestCase):
             )
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             out = json.loads(stdout.getvalue())
             self.assertIn("missing path", str(out.get("errors", [])))
 
@@ -456,8 +456,8 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
-            (root / "spider-agents.json").write_text(
+            self._write_minimal_spaider_skill(root)
+            (root / "spaider-agents.json").write_text(
                 json.dumps({
                     "version": 1,
                     "agents": {
@@ -473,7 +473,7 @@ class TestCLIAgentsCommand(unittest.TestCase):
             )
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             out = json.loads(stdout.getvalue())
             self.assertIn("invalid template", str(out.get("errors", [])))
 
@@ -482,13 +482,13 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             # First run - create files
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
 
             # Modify a file to trigger update
             wf_dir = root / ".windsurf" / "workflows"
@@ -500,7 +500,7 @@ class TestCLIAgentsCommand(unittest.TestCase):
             # Second run - should update
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                exit_code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                exit_code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(exit_code, 0)
             out = json.loads(stdout.getvalue())
             # Should have some updated files
@@ -512,11 +512,11 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             # Create config with only cursor
-            cfg_path = root / "spider-agents.json"
+            cfg_path = root / "spaider-agents.json"
             cfg_path.write_text(
                 json.dumps({
                     "version": 1,
@@ -529,7 +529,7 @@ class TestCLIAgentsCommand(unittest.TestCase):
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
             cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
@@ -542,9 +542,9 @@ class TestCLIAgentsCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
 
-            (root / "spider-agents.json").write_text(
+            (root / "spaider-agents.json").write_text(
                 json.dumps({
                     "version": 1,
                     "agents": {
@@ -564,7 +564,7 @@ class TestCLIAgentsCommand(unittest.TestCase):
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                exit_code = main(["agents", "--agent", "test", "--root", str(root), "--spider-root", str(root)])
+                exit_code = main(["agents", "--agent", "test", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(exit_code, 0)
 
             out = json.loads(stdout.getvalue())
@@ -574,14 +574,14 @@ class TestCLIAgentsCommand(unittest.TestCase):
             skill_file = root / ".test" / "skill.md"
             self.assertTrue(skill_file.exists())
             content = skill_file.read_text(encoding="utf-8")
-            self.assertIn("# spider", content)
+            self.assertIn("# spaider", content)
 
             # Modify file and run again to test update
             skill_file.write_text("# Modified\n", encoding="utf-8")
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                exit_code = main(["agents", "--agent", "test", "--root", str(root), "--spider-root", str(root)])
+                exit_code = main(["agents", "--agent", "test", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(exit_code, 0)
 
             out = json.loads(stdout.getvalue())
@@ -593,7 +593,7 @@ class TestCLIParseFrontmatter(unittest.TestCase):
 
     def test_parse_frontmatter_valid(self):
         """Test parsing valid frontmatter."""
-        from spider.cli import _parse_frontmatter
+        from spaider.cli import _parse_frontmatter
 
         with TemporaryDirectory() as tmpdir:
             f = Path(tmpdir) / "test.md"
@@ -605,7 +605,7 @@ class TestCLIParseFrontmatter(unittest.TestCase):
 
     def test_parse_frontmatter_no_frontmatter(self):
         """Test parsing file without frontmatter."""
-        from spider.cli import _parse_frontmatter
+        from spaider.cli import _parse_frontmatter
 
         with TemporaryDirectory() as tmpdir:
             f = Path(tmpdir) / "test.md"
@@ -616,7 +616,7 @@ class TestCLIParseFrontmatter(unittest.TestCase):
 
     def test_parse_frontmatter_unclosed(self):
         """Test parsing file with unclosed frontmatter."""
-        from spider.cli import _parse_frontmatter
+        from spaider.cli import _parse_frontmatter
 
         with TemporaryDirectory() as tmpdir:
             f = Path(tmpdir) / "test.md"
@@ -627,14 +627,14 @@ class TestCLIParseFrontmatter(unittest.TestCase):
 
     def test_parse_frontmatter_file_not_found(self):
         """Test parsing non-existent file."""
-        from spider.cli import _parse_frontmatter
+        from spaider.cli import _parse_frontmatter
 
         result = _parse_frontmatter(Path("/tmp/does-not-exist-abc123.md"))
         self.assertEqual(result, {})
 
     def test_parse_frontmatter_empty_values_skipped(self):
         """Test that empty values are skipped."""
-        from spider.cli import _parse_frontmatter
+        from spaider.cli import _parse_frontmatter
 
         with TemporaryDirectory() as tmpdir:
             f = Path(tmpdir) / "test.md"
@@ -648,41 +648,41 @@ class TestCLIParseFrontmatter(unittest.TestCase):
 class TestCLIAgentsEdgeCases(unittest.TestCase):
     """Test agents command edge cases for better coverage."""
 
-    def _write_minimal_spider_skill(self, root: Path) -> None:
-        (root / "skills" / "spider").mkdir(parents=True, exist_ok=True)
-        (root / "skills" / "spider" / "SKILL.md").write_text(
-            "---\nname: spider\ndescription: Spider skill\n---\n# Spider\n",
+    def _write_minimal_spaider_skill(self, root: Path) -> None:
+        (root / "skills" / "spaider").mkdir(parents=True, exist_ok=True)
+        (root / "skills" / "spaider" / "SKILL.md").write_text(
+            "---\nname: spaider\ndescription: Spaider skill\n---\n# Spaider\n",
             encoding="utf-8",
         )
 
     def _write_workflows_with_frontmatter(self, root: Path) -> None:
         (root / "workflows").mkdir(parents=True, exist_ok=True)
         (root / "workflows" / "generate.md").write_text(
-            "---\nspider: true\ntype: workflow\nname: spider-generate\ndescription: Generate\n---\n# Generate\n",
+            "---\nspaider: true\ntype: workflow\nname: spaider-generate\ndescription: Generate\n---\n# Generate\n",
             encoding="utf-8",
         )
 
     def test_agents_renames_misnamed_proxy(self):
         """Test agents command renames misnamed proxy files."""
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
             wf_dir.mkdir(parents=True)
 
             # Create misnamed proxy file (wrong filename but correct target)
-            target_rel = spider_cli._safe_relpath(root / "workflows" / "generate.md", root)
+            target_rel = spaider_cli._safe_relpath(root / "workflows" / "generate.md", root)
             misnamed = wf_dir / "old-name.md"
-            misnamed.write_text(f"# /spider-generate\n\nALWAYS open and follow `{target_rel}`\n", encoding="utf-8")
+            misnamed.write_text(f"# /spaider-generate\n\nALWAYS open and follow `{target_rel}`\n", encoding="utf-8")
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                exit_code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                exit_code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(exit_code, 0)
 
             out = json.loads(stdout.getvalue())
@@ -695,19 +695,19 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
             wf_dir.mkdir(parents=True)
 
             # Create stale proxy pointing to non-existent workflow
-            stale = wf_dir / "spider-stale.md"
-            stale.write_text(f"# /spider-stale\n\nALWAYS open and follow `{root}/workflows/does-not-exist.md`\n", encoding="utf-8")
+            stale = wf_dir / "spaider-stale.md"
+            stale.write_text(f"# /spaider-stale\n\nALWAYS open and follow `{root}/workflows/does-not-exist.md`\n", encoding="utf-8")
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                exit_code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                exit_code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(exit_code, 0)
 
             out = json.loads(stdout.getvalue())
@@ -719,14 +719,14 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
             wf_dir.mkdir(parents=True)
 
             # Create a proxy file
-            proxy = wf_dir / "spider-generate.md"
+            proxy = wf_dir / "spaider-generate.md"
             proxy.write_text("# existing\n", encoding="utf-8")
 
             orig = Path.read_text
@@ -739,7 +739,7 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
             with unittest.mock.patch.object(Path, "read_text", _rt):
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                    code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
     def test_agents_skills_read_error_on_output(self):
@@ -747,13 +747,13 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
 
             skill_out = root / ".test" / "skill.md"
             skill_out.parent.mkdir(parents=True)
             skill_out.write_text("# existing\n", encoding="utf-8")
 
-            (root / "spider-agents.json").write_text(
+            (root / "spaider-agents.json").write_text(
                 json.dumps({
                     "version": 1,
                     "agents": {
@@ -781,7 +781,7 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
             with unittest.mock.patch.object(Path, "read_text", _rt):
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    code = main(["agents", "--agent", "test", "--root", str(root), "--spider-root", str(root)])
+                    code = main(["agents", "--agent", "test", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
     def test_agents_delete_stale_unlink_error(self):
@@ -789,15 +789,15 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
             wf_dir.mkdir(parents=True)
 
             # Create stale proxy
-            stale = wf_dir / "spider-stale.md"
-            stale.write_text(f"# /spider-stale\n\nALWAYS open and follow `{root}/workflows/does-not-exist.md`\n", encoding="utf-8")
+            stale = wf_dir / "spaider-stale.md"
+            stale.write_text(f"# /spaider-stale\n\nALWAYS open and follow `{root}/workflows/does-not-exist.md`\n", encoding="utf-8")
 
             orig_unlink = Path.unlink
 
@@ -809,7 +809,7 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
             with unittest.mock.patch.object(Path, "unlink", _unlink):
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                    code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             # Should still succeed (error is silently ignored)
             self.assertEqual(code, 0)
 
@@ -818,7 +818,7 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
@@ -841,7 +841,7 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
             with unittest.mock.patch.object(Path, "read_text", _rt):
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                    code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
     def test_agents_rename_skip_non_proxy_files(self):
@@ -849,7 +849,7 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
@@ -869,34 +869,34 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
     def test_agents_rename_conflict_skips(self):
         """Test agents command skips rename when destination already exists."""
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
             wf_dir.mkdir(parents=True)
 
             # Create misnamed proxy
-            target_rel = spider_cli._safe_relpath(root / "workflows" / "generate.md", root)
+            target_rel = spaider_cli._safe_relpath(root / "workflows" / "generate.md", root)
             misnamed = wf_dir / "old-name.md"
-            misnamed.write_text(f"# /spider-generate\n\nALWAYS open and follow `{target_rel}`\n", encoding="utf-8")
+            misnamed.write_text(f"# /spaider-generate\n\nALWAYS open and follow `{target_rel}`\n", encoding="utf-8")
 
             # Also create the destination file (conflict)
-            dst = wf_dir / "spider-generate.md"
+            dst = wf_dir / "spaider-generate.md"
             dst.write_text("preexisting content\n", encoding="utf-8")
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
             # Both files should still exist (no rename due to conflict)
@@ -908,42 +908,42 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
             wf_dir.mkdir(parents=True)
 
             # Proxy pointing to non-workflow path (not in workflows/ dir)
-            non_wf = wf_dir / "spider-other.md"
-            non_wf.write_text("# /spider-other\n\nALWAYS open and follow `some/other/path.md`\n", encoding="utf-8")
+            non_wf = wf_dir / "spaider-other.md"
+            non_wf.write_text("# /spaider-other\n\nALWAYS open and follow `some/other/path.md`\n", encoding="utf-8")
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
             # File should not be deleted (not a workflow proxy)
             self.assertTrue(non_wf.exists())
 
-    def test_agents_delete_stale_skips_non_spider_workflow(self):
-        """Test agents command skips deletion for proxies pointing outside spider_root."""
+    def test_agents_delete_stale_skips_non_spaider_workflow(self):
+        """Test agents command skips deletion for proxies pointing outside spaider_root."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
             wf_dir.mkdir(parents=True)
 
-            # Proxy pointing to workflow outside spider_root
-            outside = wf_dir / "spider-outside.md"
-            outside.write_text("# /spider-outside\n\nALWAYS open and follow `/other/workflows/x.md`\n", encoding="utf-8")
+            # Proxy pointing to workflow outside spaider_root
+            outside = wf_dir / "spaider-outside.md"
+            outside.write_text("# /spaider-outside\n\nALWAYS open and follow `/other/workflows/x.md`\n", encoding="utf-8")
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
     def test_agents_delete_stale_read_error(self):
@@ -951,14 +951,14 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
             wf_dir.mkdir(parents=True)
 
             # Create a stale-looking file
-            stale = wf_dir / "spider-stale.md"
+            stale = wf_dir / "spaider-stale.md"
             stale.write_text("# stale\n", encoding="utf-8")
 
             orig = Path.read_text
@@ -975,7 +975,7 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
             with unittest.mock.patch.object(Path, "read_text", _rt):
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                    code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
     def test_agents_delete_stale_no_regex_match(self):
@@ -983,19 +983,19 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
             wf_dir.mkdir(parents=True)
 
             # Create file with ALWAYS but malformed (no backtick)
-            malformed = wf_dir / "spider-malformed.md"
-            malformed.write_text("# /spider-malformed\n\nALWAYS open and follow something\n", encoding="utf-8")
+            malformed = wf_dir / "spaider-malformed.md"
+            malformed.write_text("# /spaider-malformed\n\nALWAYS open and follow something\n", encoding="utf-8")
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
     def test_agents_unrecognized_agent_added_to_existing_config(self):
@@ -1003,11 +1003,11 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             # Create config with only cursor
-            cfg_path = root / "spider-agents.json"
+            cfg_path = root / "spaider-agents.json"
             cfg_path.write_text(
                 json.dumps({
                     "version": 1,
@@ -1020,7 +1020,7 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
-                code = main(["agents", "--agent", "new-mystery-agent", "--root", str(root), "--spider-root", str(root)])
+                code = main(["agents", "--agent", "new-mystery-agent", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
             cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
@@ -1030,21 +1030,21 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
 
     def test_agents_rename_scan_second_read_error(self):
         """Test agents command handles second read error during rename scan."""
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            self._write_minimal_spider_skill(root)
+            self._write_minimal_spaider_skill(root)
             self._write_workflows_with_frontmatter(root)
 
             wf_dir = root / ".windsurf" / "workflows"
             wf_dir.mkdir(parents=True)
 
             # Create misnamed proxy file
-            target_rel = spider_cli._safe_relpath(root / "workflows" / "generate.md", root)
+            target_rel = spaider_cli._safe_relpath(root / "workflows" / "generate.md", root)
             misnamed = wf_dir / "old.md"
-            misnamed.write_text(f"# /spider-generate\n\nALWAYS open and follow `{target_rel}`\n", encoding="utf-8")
+            misnamed.write_text(f"# /spaider-generate\n\nALWAYS open and follow `{target_rel}`\n", encoding="utf-8")
 
             orig = Path.read_text
             call_count = [0]
@@ -1060,7 +1060,7 @@ class TestCLIAgentsEdgeCases(unittest.TestCase):
             with unittest.mock.patch.object(Path, "read_text", _rt):
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spider-root", str(root)])
+                    code = main(["agents", "--agent", "windsurf", "--root", str(root), "--spaider-root", str(root)])
             self.assertEqual(code, 0)
 
 
@@ -1124,7 +1124,7 @@ class TestCLITraceabilityCommands(unittest.TestCase):
             _bootstrap_registry(
                 root,
                 entries=[
-                    {"kind": "DESIGN", "system": "Test", "path": "architecture/DESIGN.md", "format": "Spider", "traceability_enabled": True},
+                    {"kind": "DESIGN", "system": "Test", "path": "architecture/DESIGN.md", "format": "Spaider", "traceability_enabled": True},
                 ],
             )
 
@@ -1159,7 +1159,7 @@ class TestCLITraceabilityCommands(unittest.TestCase):
             _bootstrap_registry(
                 root,
                 entries=[
-                    {"kind": "DESIGN", "system": "Test", "path": "architecture/DESIGN.md", "format": "Spider", "traceability_enabled": True},
+                    {"kind": "DESIGN", "system": "Test", "path": "architecture/DESIGN.md", "format": "Spaider", "traceability_enabled": True},
                 ],
             )
 
@@ -1171,28 +1171,28 @@ class TestCLITraceabilityCommands(unittest.TestCase):
 
 class TestCLICoreHelpers(unittest.TestCase):
     def test_safe_relpath_from_dir_relpath_exception_returns_abs(self):
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         target = Path("/tmp/x")
-        with unittest.mock.patch.object(spider_cli.os.path, "relpath", side_effect=Exception("boom")):
-            out = spider_cli._safe_relpath_from_dir(target, Path("/tmp"))
+        with unittest.mock.patch.object(spaider_cli.os.path, "relpath", side_effect=Exception("boom")):
+            out = spaider_cli._safe_relpath_from_dir(target, Path("/tmp"))
         self.assertEqual(out, target.as_posix())
 
     def test_render_template_missing_variable_raises_system_exit(self):
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         with self.assertRaises(SystemExit):
-            spider_cli._render_template(["{missing}"], {})
+            spaider_cli._render_template(["{missing}"], {})
 
     def test_list_workflow_files_missing_dir_returns_empty(self):
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            self.assertEqual(spider_cli._list_workflow_files(root), [])
+            self.assertEqual(spaider_cli._list_workflow_files(root), [])
 
     def test_list_workflow_files_filters_and_handles_read_error(self):
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -1216,11 +1216,11 @@ class TestCLICoreHelpers(unittest.TestCase):
                 return orig(self, *a, **k)
 
             with unittest.mock.patch.object(Path, "read_text", _rt):
-                out = spider_cli._list_workflow_files(root)
+                out = spaider_cli._list_workflow_files(root)
             self.assertEqual(out, ["ok.md"])
 
     def test_list_workflow_files_iterdir_error_returns_empty(self):
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -1235,30 +1235,30 @@ class TestCLICoreHelpers(unittest.TestCase):
                 return orig(self)
 
             with unittest.mock.patch.object(Path, "iterdir", _it):
-                self.assertEqual(spider_cli._list_workflow_files(root), [])
+                self.assertEqual(spaider_cli._list_workflow_files(root), [])
 
     def test_resolve_user_path_relative_uses_base(self):
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         with TemporaryDirectory() as tmpdir:
             base = Path(tmpdir)
-            out = spider_cli._resolve_user_path("foo", base)
+            out = spaider_cli._resolve_user_path("foo", base)
             self.assertEqual(out, (base / "foo").resolve())
 
     def test_prompt_path_returns_user_input_over_default(self):
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         with unittest.mock.patch("builtins.input", return_value="abc"):
-            out = spider_cli._prompt_path("Q?", "def")
+            out = spaider_cli._prompt_path("Q?", "def")
         self.assertEqual(out, "abc")
 
     def test_load_json_file_invalid_json_returns_none(self):
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         with TemporaryDirectory() as tmpdir:
             p = Path(tmpdir) / "x.json"
             p.write_text("{not-json}", encoding="utf-8")
-            self.assertIsNone(spider_cli._load_json_file(p))
+            self.assertIsNone(spaider_cli._load_json_file(p))
 
 
 class TestCLIErrorHandling(unittest.TestCase):
@@ -1330,11 +1330,11 @@ class TestCLIAdapterInfo(unittest.TestCase):
         self.assertIn("status", out)
 
     def test_adapter_info_config_error_when_path_invalid(self):
-        """Cover adapter-info CONFIG_ERROR when .spider-config.json points to missing adapter directory."""
+        """Cover adapter-info CONFIG_ERROR when .spaider-config.json points to missing adapter directory."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "missing-adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "missing-adapter"}', encoding="utf-8")
 
             cwd = os.getcwd()
             try:
@@ -1357,10 +1357,10 @@ class TestCLIAdapterInfo(unittest.TestCase):
 
             outside = Path(tmpdir) / "outside-adapter"
             outside.mkdir(parents=True)
-            (outside / "AGENTS.md").write_text("# Spider Adapter: Outside\n\n**Extends**: `../AGENTS.md`\n", encoding="utf-8")
+            (outside / "AGENTS.md").write_text("# Spaider Adapter: Outside\n\n**Extends**: `../AGENTS.md`\n", encoding="utf-8")
 
             # Point config path outside the project.
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "../outside-adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "../outside-adapter"}', encoding="utf-8")
 
             stdout = io.StringIO()
             with redirect_stdout(stdout):
@@ -1375,20 +1375,20 @@ class TestCLIAdapterInfo(unittest.TestCase):
 def _bootstrap_registry_new_format(project_root: Path, *, systems: list, weavers: dict = None) -> None:
     """Bootstrap registry with new format (systems instead of artifacts)."""
     (project_root / ".git").mkdir(exist_ok=True)
-    (project_root / ".spider-config.json").write_text(
-        '{\n  "spiderAdapterPath": "adapter"\n}\n',
+    (project_root / ".spaider-config.json").write_text(
+        '{\n  "spaiderAdapterPath": "adapter"\n}\n',
         encoding="utf-8",
     )
     adapter_dir = project_root / "adapter"
     adapter_dir.mkdir(parents=True, exist_ok=True)
     (adapter_dir / "AGENTS.md").write_text(
-        "# Spider Adapter: Test\n\n**Extends**: `../AGENTS.md`\n",
+        "# Spaider Adapter: Test\n\n**Extends**: `../AGENTS.md`\n",
         encoding="utf-8",
     )
     registry = {
         "version": "1.0",
         "project_root": "..",
-        "weavers": weavers if weavers is not None else {"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+        "weavers": weavers if weavers is not None else {"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
         "systems": systems,
     }
     (adapter_dir / "artifacts.json").write_text(
@@ -1427,7 +1427,7 @@ class TestCLIListIdsCommand(unittest.TestCase):
 
             # Create template
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1450,10 +1450,10 @@ spider-template:
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -1531,7 +1531,7 @@ class TestCLIValidateWeaversCommand(unittest.TestCase):
 
             # Create valid template
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1587,7 +1587,7 @@ text
 
             # Create valid template
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1638,7 +1638,7 @@ class TestCLIGetContentCommand(unittest.TestCase):
 
             # Create template
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1662,10 +1662,10 @@ spider-template:
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -1686,7 +1686,7 @@ spider-template:
             templates_dir.mkdir(parents=True)
 
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1714,10 +1714,10 @@ gamma
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -1739,7 +1739,7 @@ gamma
             templates_dir.mkdir(parents=True)
 
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1766,10 +1766,10 @@ outro
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -1791,7 +1791,7 @@ outro
             templates_dir.mkdir(parents=True)
 
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1819,10 +1819,10 @@ ccc
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -1844,7 +1844,7 @@ ccc
             templates_dir.mkdir(parents=True)
 
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1873,10 +1873,10 @@ text
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -1898,7 +1898,7 @@ text
             templates_dir.mkdir(parents=True)
 
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1929,10 +1929,10 @@ ccc
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -1957,7 +1957,7 @@ class TestCLIIdCommandsWithoutMarkers(unittest.TestCase):
             templates_dir.mkdir(parents=True)
 
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1986,10 +1986,10 @@ See also `spd-test-ref-1` in text.
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -2012,7 +2012,7 @@ See also `spd-test-ref-1` in text.
             templates_dir.mkdir(parents=True)
             (templates_dir / "template.md").write_text(
                 """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -2032,10 +2032,10 @@ text
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -2056,7 +2056,7 @@ text
             templates_dir.mkdir(parents=True)
             (templates_dir / "template.md").write_text(
                 """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -2076,10 +2076,10 @@ text
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -2106,7 +2106,7 @@ class TestValidateMarkerlessCrossKindCoverage(unittest.TestCase):
             prd_dir.mkdir(parents=True)
             dsn_dir.mkdir(parents=True)
             tmpl = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -2129,10 +2129,10 @@ text
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [
                         {"path": "architecture/PRD.md", "kind": "PRD"},
                         {"path": "architecture/DESIGN.md", "kind": "DESIGN"},
@@ -2163,7 +2163,7 @@ text
             prd_dir.mkdir(parents=True)
             (prd_dir / "template.md").write_text(
                 """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -2183,10 +2183,10 @@ text
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -2214,7 +2214,7 @@ text
             prd_dir.mkdir(parents=True)
             dsn_dir.mkdir(parents=True)
             tmpl = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -2236,10 +2236,10 @@ text
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [
                         {"path": "architecture/PRD.md", "kind": "PRD"},
                         {"path": "architecture/DESIGN.md", "kind": "DESIGN"},
@@ -2271,7 +2271,7 @@ text
             prd_dir.mkdir(parents=True)
             dsn_dir.mkdir(parents=True)
             tmpl = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -2293,14 +2293,14 @@ text
 
             src = root / "src"
             src.mkdir(parents=True)
-            (src / "app.py").write_text("# @spider-actor:spd-test-aa:p1\n", encoding="utf-8")
+            (src / "app.py").write_text("# @spaider-actor:spd-test-aa:p1\n", encoding="utf-8")
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [
                         {"path": "architecture/PRD.md", "kind": "PRD", "traceability": "FULL"},
                         {"path": "architecture/DESIGN.md", "kind": "DESIGN", "traceability": "FULL"},
@@ -2367,15 +2367,15 @@ class TestCLIWhereUsedCommand(unittest.TestCase):
                 os.chdir(cwd)
 
 
-def _setup_spider_project(root: Path) -> None:
-    """Setup a complete Spider project with template and artifact."""
+def _setup_spaider_project(root: Path) -> None:
+    """Setup a complete Spaider project with template and artifact."""
     # Create template at new path: weavers/sdlc/artifacts/PRD/template.md
     templates_dir = root / "weavers" / "sdlc" / "artifacts" / "PRD"
     templates_dir.mkdir(parents=True)
 
     # Create template with ID block
     tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -2398,10 +2398,10 @@ spider-template:
 
     _bootstrap_registry_new_format(
         root,
-        weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+        weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
         systems=[{
             "name": "Test",
-            "weavers": "spider",
+            "weavers": "spaider",
             "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
         }],
     )
@@ -2414,7 +2414,7 @@ class TestCLIWhereDefinedWithArtifacts(unittest.TestCase):
         """Test where-defined finds an ID."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2433,7 +2433,7 @@ class TestCLIWhereDefinedWithArtifacts(unittest.TestCase):
         """Test where-defined returns NOT_FOUND for missing ID."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2451,7 +2451,7 @@ class TestCLIWhereDefinedWithArtifacts(unittest.TestCase):
         """Test where-defined with --artifact flag."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2474,7 +2474,7 @@ class TestCLIWhereUsedWithArtifacts(unittest.TestCase):
         """Test where-used finds references."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2495,7 +2495,7 @@ class TestCLIListIdKindsWithArtifacts(unittest.TestCase):
         """Test list-id-kinds with --artifact flag."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2514,7 +2514,7 @@ class TestCLIListIdKindsWithArtifacts(unittest.TestCase):
         """Test list-id-kinds without --artifact scans all."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2537,7 +2537,7 @@ class TestCLIListIdsWithArtifacts(unittest.TestCase):
         """Test list-ids without --artifact scans all."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2556,7 +2556,7 @@ class TestCLIListIdsWithArtifacts(unittest.TestCase):
         """Test list-ids with --kind and --pattern filters."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2578,7 +2578,7 @@ class TestCLIListIdsErrorBranches(unittest.TestCase):
         """Test list-ids when artifact exists but not in registry."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             # Create artifact NOT in registry
             unregistered = root / "unregistered.md"
@@ -2595,7 +2595,7 @@ class TestCLIListIdsErrorBranches(unittest.TestCase):
         """Test list-ids with --regex filter."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2611,7 +2611,7 @@ class TestCLIListIdsErrorBranches(unittest.TestCase):
         """Test list-ids with --all flag."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2631,7 +2631,7 @@ class TestCLIListIdKindsErrorBranches(unittest.TestCase):
         """Test list-id-kinds when artifact file doesn't exist."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2650,7 +2650,7 @@ class TestCLIListIdKindsErrorBranches(unittest.TestCase):
         """Test list-id-kinds when artifact not in registry."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             # Create artifact NOT in registry
             unregistered = root / "unregistered.md"
@@ -2674,7 +2674,7 @@ class TestCLIGetContentErrorBranches(unittest.TestCase):
         """Test get-content when artifact file doesn't exist."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             stdout = io.StringIO()
             nonexistent = root / "nonexistent.md"
@@ -2688,7 +2688,7 @@ class TestCLIGetContentErrorBranches(unittest.TestCase):
         """Test get-content when artifact not in registry."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             # Create artifact NOT in registry
             unregistered = root / "unregistered.md"
@@ -2703,7 +2703,7 @@ class TestCLIGetContentErrorBranches(unittest.TestCase):
         """Test get-content when ID doesn't exist."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2726,7 +2726,7 @@ class TestCLIWhereDefinedErrorBranches(unittest.TestCase):
         """Test where-defined with empty ID."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2742,7 +2742,7 @@ class TestCLIWhereDefinedErrorBranches(unittest.TestCase):
         """Test where-defined with nonexistent artifact."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2763,7 +2763,7 @@ class TestCLIWhereUsedErrorBranches(unittest.TestCase):
         """Test where-used with empty ID."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2779,7 +2779,7 @@ class TestCLIWhereUsedErrorBranches(unittest.TestCase):
         """Test where-used with --include-definitions flag."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2796,7 +2796,7 @@ class TestCLIWhereUsedErrorBranches(unittest.TestCase):
         """Test where-used with nonexistent artifact."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2813,7 +2813,7 @@ class TestCLIWhereUsedErrorBranches(unittest.TestCase):
         """Test where-used with artifact not in registry."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             # Create artifact NOT in registry
             unregistered = root / "unregistered.md"
@@ -2833,7 +2833,7 @@ class TestCLIWhereUsedErrorBranches(unittest.TestCase):
         """Test where-used with valid artifact flag."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -2856,7 +2856,7 @@ class TestCLIValidateWeaversErrorBranches(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "adapter"}', encoding="utf-8")
             adapter = root / "adapter"
             adapter.mkdir()
             (adapter / "AGENTS.md").write_text("# Test\n", encoding="utf-8")
@@ -2873,11 +2873,11 @@ class TestCLIValidateWeaversErrorBranches(unittest.TestCase):
             finally:
                 os.chdir(cwd)
 
-    def test_validate_rules_no_spider_templates(self):
-        """Test validate-weavers when no Spider templates in registry."""
+    def test_validate_rules_no_spaider_templates(self):
+        """Test validate-weavers when no Spaider templates in registry."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            # Setup with non-Spider format
+            # Setup with non-Spaider format
             _bootstrap_registry_new_format(
                 root,
                 weavers={"other": {"format": "OTHER", "path": "templates"}},
@@ -2908,10 +2908,10 @@ class TestCLIInitBackupBranch(unittest.TestCase):
             adapter = root / "adapter"
             adapter.mkdir()
             (adapter / "AGENTS.md").write_text("# Old adapter\n", encoding="utf-8")
-            (adapter / ".spider-config.json").write_text('{"spiderAdapterPath": "adapter"}', encoding="utf-8")
+            (adapter / ".spaider-config.json").write_text('{"spaiderAdapterPath": "adapter"}', encoding="utf-8")
 
             # Point config to existing adapter
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "adapter"}', encoding="utf-8")
 
             cwd = os.getcwd()
             stdout = io.StringIO()
@@ -2919,7 +2919,7 @@ class TestCLIInitBackupBranch(unittest.TestCase):
                 os.chdir(str(root))
                 with redirect_stdout(stdout):
                     exit_code = main(["init", "--yes"])
-                # May fail if Spider core not found, but should at least try backup
+                # May fail if Spaider core not found, but should at least try backup
                 self.assertIn(exit_code, [0, 1, 2])
             finally:
                 os.chdir(cwd)
@@ -2970,7 +2970,7 @@ class TestCLISelfCheckCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "adapter"}', encoding="utf-8")
             adapter = root / "adapter"
             adapter.mkdir()
             (adapter / "AGENTS.md").write_text("# Test\n", encoding="utf-8")
@@ -3013,7 +3013,7 @@ class TestCLIGetContentErrorBranches(unittest.TestCase):
         """Test get-content when artifact is not under project root."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             # Create artifact outside project root
             outside = Path(tmpdir) / "outside" / "test.md"
@@ -3036,7 +3036,7 @@ class TestCLIGetContentErrorBranches(unittest.TestCase):
         """Test get-content when artifact is not in registry."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             # Create artifact file under project root but not registered
             unregistered = root / "unregistered.md"
@@ -3063,7 +3063,7 @@ class TestCLIListIdKindsErrorBranches(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "adapter"}', encoding="utf-8")
             adapter = root / "adapter"
             adapter.mkdir()
             (adapter / "AGENTS.md").write_text("# Test\n", encoding="utf-8")
@@ -3085,7 +3085,7 @@ class TestCLIListIdKindsErrorBranches(unittest.TestCase):
         """Test list-id-kinds when artifact is outside project root."""
         with TemporaryDirectory() as tmpdir1, TemporaryDirectory() as tmpdir2:
             root = Path(tmpdir1)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             # Create artifact in different temp dir
             outside = Path(tmpdir2) / "outside.md"
@@ -3103,8 +3103,8 @@ class TestCLIListIdKindsErrorBranches(unittest.TestCase):
             finally:
                 os.chdir(cwd)
 
-    def test_list_id_kinds_no_spider_artifacts(self):
-        """Test list-id-kinds when no Spider-format artifacts in registry."""
+    def test_list_id_kinds_no_spaider_artifacts(self):
+        """Test list-id-kinds when no Spaider-format artifacts in registry."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             _bootstrap_registry_new_format(
@@ -3134,7 +3134,7 @@ class TestCLIWhereDefinedErrorBranches(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "adapter"}', encoding="utf-8")
             adapter = root / "adapter"
             adapter.mkdir()
             (adapter / "AGENTS.md").write_text("# Test\n", encoding="utf-8")
@@ -3156,7 +3156,7 @@ class TestCLIWhereDefinedErrorBranches(unittest.TestCase):
         """Test where-defined when artifact is outside project root."""
         with TemporaryDirectory() as tmpdir1, TemporaryDirectory() as tmpdir2:
             root = Path(tmpdir1)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             # Create artifact in different temp dir
             outside = Path(tmpdir2) / "outside.md"
@@ -3185,7 +3185,7 @@ class TestCLIValidateTemplatesVerbose(unittest.TestCase):
             templates_dir = root / "templates"
             templates_dir.mkdir(parents=True)
 
-            # Create invalid template (missing spider-template frontmatter)
+            # Create invalid template (missing spaider-template frontmatter)
             (templates_dir / "PRD.template.md").write_text(
                 "<!-- spd:id:item -->\nNo frontmatter here\n<!-- spd:id:item -->",
                 encoding="utf-8"
@@ -3193,10 +3193,10 @@ class TestCLIValidateTemplatesVerbose(unittest.TestCase):
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "templates"}},
+                weavers={"spaider": {"format": "Spaider", "path": "templates"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -3222,7 +3222,7 @@ class TestCLIValidateTemplatesVerbose(unittest.TestCase):
         """Test validate-templates --verbose with valid templates."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -3247,7 +3247,7 @@ class TestCLIInitErrorBranches(unittest.TestCase):
             root = Path(tmpdir)
             (root / ".git").mkdir()
             # Create config as directory
-            (root / ".spider-config.json").mkdir()
+            (root / ".spaider-config.json").mkdir()
 
             cwd = os.getcwd()
             try:
@@ -3265,7 +3265,7 @@ class TestCLIInitErrorBranches(unittest.TestCase):
             root = Path(tmpdir)
             (root / ".git").mkdir()
             # Create incomplete config
-            (root / ".spider-config.json").write_text('{"someOtherKey": "value"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"someOtherKey": "value"}', encoding="utf-8")
 
             cwd = os.getcwd()
             try:
@@ -3273,7 +3273,7 @@ class TestCLIInitErrorBranches(unittest.TestCase):
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
                     exit_code = main(["init", "--yes", "--project-root", str(root)])
-                # May fail due to incomplete config or Spider core not found
+                # May fail due to incomplete config or Spaider core not found
                 self.assertIn(exit_code, [0, 1, 2])
             finally:
                 os.chdir(cwd)
@@ -3284,8 +3284,8 @@ class TestCLIInitErrorBranches(unittest.TestCase):
             root = Path(tmpdir)
             (root / ".git").mkdir()
             # Create config with different paths
-            (root / ".spider-config.json").write_text(
-                '{"spiderCorePath": "different/path", "spiderAdapterPath": "different/adapter"}',
+            (root / ".spaider-config.json").write_text(
+                '{"spaiderCorePath": "different/path", "spaiderAdapterPath": "different/adapter"}',
                 encoding="utf-8"
             )
 
@@ -3305,7 +3305,7 @@ class TestCLIInitErrorBranches(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            adapter = root / ".spider-adapter"
+            adapter = root / ".spaider-adapter"
             adapter.mkdir(parents=True)
             # Create AGENTS.md as directory
             (adapter / "AGENTS.md").mkdir()
@@ -3326,7 +3326,7 @@ class TestCLIInitErrorBranches(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            adapter = root / ".spider-adapter"
+            adapter = root / ".spaider-adapter"
             adapter.mkdir(parents=True)
             # Create artifacts.json as directory
             (adapter / "artifacts.json").mkdir()
@@ -3349,7 +3349,7 @@ class TestCLIInitErrorBranches(unittest.TestCase):
             (root / ".git").mkdir()
 
             # Create existing adapter
-            adapter = root / ".spider-adapter"
+            adapter = root / ".spaider-adapter"
             adapter.mkdir(parents=True)
             (adapter / "AGENTS.md").write_text("# Old content\n", encoding="utf-8")
             (adapter / "artifacts.json").write_text('{"version": "old"}', encoding="utf-8")
@@ -3372,11 +3372,11 @@ class TestCLIInitErrorBranches(unittest.TestCase):
             (root / ".git").mkdir()
 
             # Create existing valid config with extra fields
-            config = root / ".spider-config.json"
-            config.write_text('{"spiderCorePath": "old/path", "spiderAdapterPath": "old/adapter", "customField": "keep-me"}', encoding="utf-8")
+            config = root / ".spaider-config.json"
+            config.write_text('{"spaiderCorePath": "old/path", "spaiderAdapterPath": "old/adapter", "customField": "keep-me"}', encoding="utf-8")
 
             # Create existing adapter
-            adapter = root / ".spider-adapter"
+            adapter = root / ".spaider-adapter"
             adapter.mkdir(parents=True)
             (adapter / "AGENTS.md").write_text("# Old content\n", encoding="utf-8")
             (adapter / "artifacts.json").write_text('{"version": 1}', encoding="utf-8")
@@ -3405,7 +3405,7 @@ class TestCLIWhereUsedErrorBranches(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "adapter"}', encoding="utf-8")
             adapter = root / "adapter"
             adapter.mkdir()
             (adapter / "AGENTS.md").write_text("# Test\n", encoding="utf-8")
@@ -3427,7 +3427,7 @@ class TestCLIWhereUsedErrorBranches(unittest.TestCase):
         """Test where-used when artifact is outside project root."""
         with TemporaryDirectory() as tmpdir1, TemporaryDirectory() as tmpdir2:
             root = Path(tmpdir1)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             # Create artifact in different temp dir
             outside = Path(tmpdir2) / "outside.md"
@@ -3454,7 +3454,7 @@ class TestCLIListIdsErrorBranches(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "adapter"}', encoding="utf-8")
             adapter = root / "adapter"
             adapter.mkdir()
             (adapter / "AGENTS.md").write_text("# Test\n", encoding="utf-8")
@@ -3476,7 +3476,7 @@ class TestCLIListIdsErrorBranches(unittest.TestCase):
         """Test list-ids when artifact is outside project root."""
         with TemporaryDirectory() as tmpdir1, TemporaryDirectory() as tmpdir2:
             root = Path(tmpdir1)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             # Create artifact in different temp dir
             outside = Path(tmpdir2) / "outside.md"
@@ -3494,8 +3494,8 @@ class TestCLIListIdsErrorBranches(unittest.TestCase):
             finally:
                 os.chdir(cwd)
 
-    def test_list_ids_no_spider_artifacts(self):
-        """Test list-ids when no Spider-format artifacts in registry."""
+    def test_list_ids_no_spaider_artifacts(self):
+        """Test list-ids when no Spaider-format artifacts in registry."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             _bootstrap_registry_new_format(
@@ -3544,7 +3544,7 @@ class TestCLIValidateCommandBranches(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "adapter"}', encoding="utf-8")
             adapter = root / "adapter"
             adapter.mkdir()
             (adapter / "AGENTS.md").write_text("# Test\n", encoding="utf-8")
@@ -3562,8 +3562,8 @@ class TestCLIValidateCommandBranches(unittest.TestCase):
             finally:
                 os.chdir(cwd)
 
-    def test_validate_no_spider_artifacts(self):
-        """Test validate when no Spider-format artifacts in registry."""
+    def test_validate_no_spaider_artifacts(self):
+        """Test validate when no Spaider-format artifacts in registry."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             _bootstrap_registry_new_format(
@@ -3588,7 +3588,7 @@ class TestCLIValidateCommandBranches(unittest.TestCase):
         """Test validate --verbose output includes detailed info."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -3606,7 +3606,7 @@ class TestCLIValidateCommandBranches(unittest.TestCase):
         """Test validate --output writes to file."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
             output_file = root / "report.json"
 
             cwd = os.getcwd()
@@ -3623,10 +3623,10 @@ class TestCLIValidateCommandBranches(unittest.TestCase):
                 os.chdir(cwd)
 
     def test_validate_artifact_not_in_registry(self):
-        """Test validate when artifact is not in Spider registry."""
+        """Test validate when artifact is not in Spaider registry."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             # Create artifact file not in registry
             unregistered = root / "unregistered.md"
@@ -3661,10 +3661,10 @@ class TestCLIValidateCommandBranches(unittest.TestCase):
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "templates"}},
+                weavers={"spaider": {"format": "Spaider", "path": "templates"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -3688,7 +3688,7 @@ class TestCLIWhereUsedWithIncludeDefinitions(unittest.TestCase):
         """Test where-used --include-definitions includes definitions."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -3711,7 +3711,7 @@ class TestCLIListIdsFilters(unittest.TestCase):
         """Test list-ids --kind filter."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -3729,14 +3729,14 @@ class TestCLIListIdsFilters(unittest.TestCase):
         """Test list-ids --pattern filter."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
                 os.chdir(str(root))
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    exit_code = main(["list-ids", "--pattern", "spider"])
+                    exit_code = main(["list-ids", "--pattern", "spaider"])
                 self.assertEqual(exit_code, 0)
                 out = json.loads(stdout.getvalue())
                 self.assertIn("ids", out)
@@ -3747,14 +3747,14 @@ class TestCLIListIdsFilters(unittest.TestCase):
         """Test list-ids --pattern --regex filter."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
                 os.chdir(str(root))
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    exit_code = main(["list-ids", "--pattern", "spider.*1", "--regex"])
+                    exit_code = main(["list-ids", "--pattern", "spaider.*1", "--regex"])
                 self.assertEqual(exit_code, 0)
                 out = json.loads(stdout.getvalue())
                 self.assertIn("ids", out)
@@ -3765,7 +3765,7 @@ class TestCLIListIdsFilters(unittest.TestCase):
         """Test list-ids --all to include duplicates."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -3788,7 +3788,7 @@ class TestCLIListIdsFilters(unittest.TestCase):
 
             # Create template with priority
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -3815,10 +3815,10 @@ spider-template:
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                 }],
             )
@@ -3858,7 +3858,7 @@ class TestCLIGetContentBranches(unittest.TestCase):
         """Test get-content when ID is found."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
             artifact = root / "architecture" / "PRD.md"
 
             cwd = os.getcwd()
@@ -3896,7 +3896,7 @@ class TestCLIAdapterInfoCommand(unittest.TestCase):
         """Test adapter-info with valid adapter."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project(root)
+            _setup_spaider_project(root)
 
             cwd = os.getcwd()
             try:
@@ -3909,13 +3909,13 @@ class TestCLIAdapterInfoCommand(unittest.TestCase):
                 os.chdir(cwd)
 
 
-def _setup_spider_project_with_codebase(root: Path) -> None:
-    """Setup complete Spider project with codebase entries for testing."""
+def _setup_spaider_project_with_codebase(root: Path) -> None:
+    """Setup complete Spaider project with codebase entries for testing."""
     # Create template
     templates_dir = root / "weavers" / "sdlc" / "artifacts" / "PRD"
     templates_dir.mkdir(parents=True)
     tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -3936,21 +3936,21 @@ spider-template:
 """
     (art_dir / "PRD.md").write_text(art_content, encoding="utf-8")
 
-    # Create code directory with Spider markers
+    # Create code directory with Spaider markers
     code_dir = root / "src"
     code_dir.mkdir(parents=True)
     (code_dir / "module.py").write_text(
-        "# @spider-flow:spd-test-1:p1\ndef test(): pass\n",
+        "# @spaider-flow:spd-test-1:p1\ndef test(): pass\n",
         encoding="utf-8"
     )
 
     # Bootstrap registry with codebase entry
     _bootstrap_registry_new_format(
         root,
-        weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+        weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
         systems=[{
             "name": "Test",
-            "weaver": "spider",
+            "weaver": "spaider",
             "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD", "traceability": "FULL"}],
             "codebase": [{"path": "src", "extensions": [".py"]}],
         }],
@@ -3995,7 +3995,7 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
         """Test validate-code is integrated into validate command."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project_with_codebase(root)
+            _setup_spaider_project_with_codebase(root)
 
             cwd = os.getcwd()
             try:
@@ -4015,7 +4015,7 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
         """Test validate-code with verbose output."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project_with_codebase(root)
+            _setup_spaider_project_with_codebase(root)
 
             cwd = os.getcwd()
             try:
@@ -4034,7 +4034,7 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
         """Test validate-code with output file."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project_with_codebase(root)
+            _setup_spaider_project_with_codebase(root)
             output_file = root / "report.json"
 
             cwd = os.getcwd()
@@ -4055,7 +4055,7 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
         """Test validate-code scanning codebase entries."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project_with_codebase(root)
+            _setup_spaider_project_with_codebase(root)
 
             cwd = os.getcwd()
             try:
@@ -4073,12 +4073,12 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
         """Test validate detects orphaned markers (ID not in artifacts)."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project_with_codebase(root)
+            _setup_spaider_project_with_codebase(root)
 
             # Add code file with orphaned marker (ID not in artifacts)
             orphan_file = root / "src" / "orphan.py"
             orphan_file.write_text(
-                "# @spider-flow:spd-unknown-id:p1\ndef orphan(): pass\n",
+                "# @spaider-flow:spd-unknown-id:p1\ndef orphan(): pass\n",
                 encoding="utf-8"
             )
 
@@ -4101,8 +4101,8 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text(
-                '{"spiderAdapterPath": "adapter"}',
+            (root / ".spaider-config.json").write_text(
+                '{"spaiderAdapterPath": "adapter"}',
                 encoding="utf-8"
             )
             adapter_dir = root / "adapter"
@@ -4127,7 +4127,7 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
         """Test validate with --skip-code flag."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            _setup_spider_project_with_codebase(root)
+            _setup_spaider_project_with_codebase(root)
 
             cwd = os.getcwd()
             try:
@@ -4152,7 +4152,7 @@ class TestCLIValidateCodeCommand(unittest.TestCase):
             templates_dir = root / "weavers" / "sdlc" / "artifacts" / "PRD"
             templates_dir.mkdir(parents=True)
             (templates_dir / "template.md").write_text("""---
-spider-template:
+spaider-template:
   version: {major: 1, minor: 0}
   kind: PRD
 ---
@@ -4171,21 +4171,21 @@ spider-template:
             # Create code with markers
             (root / "src").mkdir(parents=True)
             (root / "src" / "module.py").write_text(
-                "# @spider-flow:spd-test-1:p1\ndef test(): pass\n",
+                "# @spaider-flow:spd-test-1:p1\ndef test(): pass\n",
                 encoding="utf-8"
             )
 
             # Bootstrap registry with nested systems
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Parent",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                     "children": [{
                         "name": "Child",
-                        "weavers": "spider",
+                        "weavers": "spaider",
                         "artifacts": [],
                         "codebase": [{"path": "src", "extensions": [".py"]}],
                     }],
@@ -4211,7 +4211,7 @@ spider-template:
             templates_dir = root / "weavers" / "sdlc" / "artifacts" / "PRD"
             templates_dir.mkdir(parents=True)
             (templates_dir / "template.md").write_text("""---
-spider-template:
+spaider-template:
   version: {major: 1, minor: 0}
   kind: PRD
 ---
@@ -4229,10 +4229,10 @@ spider-template:
             # Bootstrap with codebase pointing to nonexistent directory
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                     "codebase": [{"path": "nonexistent/dir", "extensions": [".py"]}],
                 }],
@@ -4270,7 +4270,7 @@ class TestCLIGetContentCodeFile(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             code_file = Path(tmpdir) / "test.py"
             code_file.write_text(
-                "# @spider-flow:spd-test-flow-login:p1\ndef login(): pass\n",
+                "# @spaider-flow:spd-test-flow-login:p1\ndef login(): pass\n",
                 encoding="utf-8"
             )
 
@@ -4299,9 +4299,9 @@ class TestCLIGetContentCodeFile(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             code_file = Path(tmpdir) / "test.py"
             code_file.write_text(
-                "# @spider-begin:spd-test-flow-login:p1:inst-validate\n"
+                "# @spaider-begin:spd-test-flow-login:p1:inst-validate\n"
                 "def validate(): return True\n"
-                "# @spider-end:spd-test-flow-login:p1:inst-validate\n",
+                "# @spaider-end:spd-test-flow-login:p1:inst-validate\n",
                 encoding="utf-8"
             )
 
@@ -4354,7 +4354,7 @@ class TestCLIListIdsIncludeCode(unittest.TestCase):
             templates_dir = root / "weavers" / "sdlc" / "artifacts" / "PRD"
             templates_dir.mkdir(parents=True)
             tmpl_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -4378,17 +4378,17 @@ spider-template:
             code_dir = root / "src"
             code_dir.mkdir(parents=True)
             (code_dir / "module.py").write_text(
-                "# @spider-flow:spd-test-flow-test:p1\ndef test(): pass\n",
+                "# @spaider-flow:spd-test-flow-test:p1\ndef test(): pass\n",
                 encoding="utf-8"
             )
 
             # Bootstrap registry with codebase entry
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}],
                     "codebase": [{"path": "src", "extensions": [".py"]}],
                 }],
@@ -4454,7 +4454,7 @@ class TestCLIGetContentCodePath(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             code_file = Path(tmpdir) / "test.py"
             code_file.write_text(
-                "# @spider-flow:spd-test-flow-auth:inst-validate\ndef validate(): pass\n# @spider-flow\n",
+                "# @spaider-flow:spd-test-flow-auth:inst-validate\ndef validate(): pass\n# @spaider-flow\n",
                 encoding="utf-8"
             )
 
@@ -4589,10 +4589,10 @@ class TestCLIValidateCrossRef(unittest.TestCase):
 
             _bootstrap_registry_new_format(
                 root,
-                weavers={"spider": {"format": "Spider", "path": "weavers/sdlc"}},
+                weavers={"spaider": {"format": "Spaider", "path": "weavers/sdlc"}},
                 systems=[{
                     "name": "Test",
-                    "weavers": "spider",
+                    "weavers": "spaider",
                     "artifacts": [
                         {"path": "architecture/PRD.md", "kind": "PRD"},
                         {"path": "architecture/DESIGN.md", "kind": "DESIGN"},

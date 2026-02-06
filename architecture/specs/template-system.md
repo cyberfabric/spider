@@ -2,7 +2,7 @@
 # Spec: Template System
 
 <!-- spd:id-ref:spec has="task" -->
-- [x] - `spd-spider-spec-template-system`
+- [x] - `spd-spaider-spec-template-system`
 <!-- spd:id-ref:spec -->
 
 <!-- spd:##:context -->
@@ -10,33 +10,33 @@
 
 <!-- spd:overview -->
 ### 1. Overview
-The Template System provides marker-based parsing and validation for Spider artifacts. It enables deterministic structural validation by parsing templates with Spider markers (`spd:type:name` format), matching artifact content against template structure, and extracting/validating Spider IDs.
+The Template System provides marker-based parsing and validation for Spaider artifacts. It enables deterministic structural validation by parsing templates with Spaider markers (`spd:type:name` format), matching artifact content against template structure, and extracting/validating Spaider IDs.
 
 Problem: AI agents need deterministic validation of artifacts to ensure consistent quality.
 Primary value: Enables machine-readable artifact structure with automated validation.
-Key assumptions: Templates use Spider marker syntax; artifacts follow template structure.
+Key assumptions: Templates use Spaider marker syntax; artifacts follow template structure.
 <!-- spd:overview -->
 
 <!-- spd:paragraph:purpose -->
 ### 2. Purpose
-Enable deterministic parsing and validation of Spider artifacts against marker-based templates, ensuring structural compliance and ID integrity across the artifact hierarchy.
+Enable deterministic parsing and validation of Spaider artifacts against marker-based templates, ensuring structural compliance and ID integrity across the artifact hierarchy.
 
 Success criteria: All artifacts validate in <100ms; marker parsing handles all valid template syntax; cross-validation detects orphaned and missing references.
 <!-- spd:paragraph:purpose -->
 
 ### 3. Actors
 <!-- spd:id-ref:actor -->
-- `spd-spider-actor-developer`
-- `spd-spider-actor-architect`
-- `spd-spider-actor-ai-assistant`
+- `spd-spaider-actor-developer`
+- `spd-spaider-actor-architect`
+- `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 ### 4. References
 <!-- spd:list:references -->
 - Overall Design: [DESIGN.md](../DESIGN.md)
-- ADRs: `spd-spider-adr-template-centric-architecture-v1`
+- ADRs: `spd-spaider-adr-template-centric-architecture-v1`
 - Related spec: [Rules Packages](./rules-packages.md)
-- Implementation: `skills/spider/scripts/spider/utils/template.py`
+- Implementation: `skills/spaider/scripts/spaider/utils/template.py`
 <!-- spd:list:references -->
 <!-- spd:##:context -->
 
@@ -47,11 +47,11 @@ Success criteria: All artifacts validate in <100ms; marker parsing handles all v
 ### Load Template
 
 <!-- spd:id:flow has="task" to_code="true" -->
-- [x] **ID**: `spd-spider-spec-template-system-flow-load`
+- [x] **ID**: `spd-spaider-spec-template-system-flow-load`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-- `spd-spider-actor-ai-assistant`
+- `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:sdsl:flow-steps -->
@@ -59,8 +59,8 @@ Success criteria: All artifacts validate in <100ms; marker parsing handles all v
 2. [x] - `p1` - File: READ template content from `{weaver}/artifacts/{KIND}/template.md` - `inst-read-file`
 3. [x] - `p1` - Parse YAML frontmatter (version, kind, policy) - `inst-parse-frontmatter`
 4. [x] - `p1` - **IF** frontmatter missing or invalid **RETURN** error "Invalid template frontmatter" - `inst-check-frontmatter`
-5. [x] - `p1` - Algorithm: parse marker blocks using `spd-spider-spec-template-system-algo-parse-markers` - `inst-parse-markers`
-6. [x] - `p1` - State: transition template to LOADED using `spd-spider-spec-template-system-state-lifecycle` - `inst-set-loaded`
+5. [x] - `p1` - Algorithm: parse marker blocks using `spd-spaider-spec-template-system-algo-parse-markers` - `inst-parse-markers`
+6. [x] - `p1` - State: transition template to LOADED using `spd-spaider-spec-template-system-state-lifecycle` - `inst-set-loaded`
 7. [x] - `p1` - **RETURN** Template object with blocks, version, policy - `inst-return-template`
 <!-- spd:sdsl:flow-steps -->
 <!-- spd:id:flow -->
@@ -70,22 +70,22 @@ Success criteria: All artifacts validate in <100ms; marker parsing handles all v
 ### Validate Artifact
 
 <!-- spd:id:flow has="task" to_code="true" -->
-- [x] **ID**: `spd-spider-spec-template-system-flow-validate`
+- [x] **ID**: `spd-spaider-spec-template-system-flow-validate`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-- `spd-spider-actor-developer`
-- `spd-spider-actor-ai-assistant`
+- `spd-spaider-actor-developer`
+- `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:sdsl:flow-steps -->
 1. [x] - `p1` - CLI receives artifact path and resolves template from registry - `inst-resolve-template`
 2. [x] - `p1` - File: READ artifact content from path - `inst-read-artifact`
-3. [x] - `p1` - Algorithm: parse artifact blocks using `spd-spider-spec-template-system-algo-parse-markers` - `inst-parse-artifact`
-4. [x] - `p1` - Algorithm: match artifact blocks to template using `spd-spider-spec-template-system-algo-match-blocks` - `inst-match-blocks`
+3. [x] - `p1` - Algorithm: parse artifact blocks using `spd-spaider-spec-template-system-algo-parse-markers` - `inst-parse-artifact`
+4. [x] - `p1` - Algorithm: match artifact blocks to template using `spd-spaider-spec-template-system-algo-match-blocks` - `inst-match-blocks`
 5. [x] - `p1` - **FOR EACH** matched block pair (template, artifact): - `inst-loop-blocks`
-   1. [x] - `p1` - Algorithm: validate content using `spd-spider-spec-template-system-algo-validate-content` - `inst-validate-content`
-6. [x] - `p1` - Algorithm: extract and validate IDs using `spd-spider-spec-template-system-algo-extract-ids` - `inst-extract-ids`
+   1. [x] - `p1` - Algorithm: validate content using `spd-spaider-spec-template-system-algo-validate-content` - `inst-validate-content`
+6. [x] - `p1` - Algorithm: extract and validate IDs using `spd-spaider-spec-template-system-algo-extract-ids` - `inst-extract-ids`
 7. [x] - `p1` - **IF** kind="SPEC": validate filename matches main spec ID slug - `inst-validate-filename`
 8. [x] - `p1` - **IF** errors exist **RETURN** ValidationResult(status=FAIL, errors) - `inst-return-fail`
 9. [x] - `p1` - **RETURN** ValidationResult(status=PASS, ids, refs) - `inst-return-pass`
@@ -97,18 +97,18 @@ Success criteria: All artifacts validate in <100ms; marker parsing handles all v
 ### Cross-Validate Artifacts
 
 <!-- spd:id:flow has="task" to_code="true" -->
-- [x] **ID**: `spd-spider-spec-template-system-flow-cross-validate`
+- [x] **ID**: `spd-spaider-spec-template-system-flow-cross-validate`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-- `spd-spider-actor-architect`
-- `spd-spider-actor-ai-assistant`
+- `spd-spaider-actor-architect`
+- `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:sdsl:flow-steps -->
 1. [x] - `p1` - CLI loads all artifacts from registry - `inst-load-all`
 2. [x] - `p1` - **FOR EACH** artifact in registry: - `inst-loop-artifacts`
-   1. [x] - `p1` - Flow: validate artifact using `spd-spider-spec-template-system-flow-validate` - `inst-validate-each`
+   1. [x] - `p1` - Flow: validate artifact using `spd-spaider-spec-template-system-flow-validate` - `inst-validate-each`
    2. [x] - `p1` - Collect all defined IDs into global set - `inst-collect-ids`
    3. [x] - `p1` - Collect all referenced IDs into global set - `inst-collect-refs`
 3. [x] - `p1` - **FOR EACH** reference in all refs: - `inst-loop-refs`
@@ -126,13 +126,13 @@ Success criteria: All artifacts validate in <100ms; marker parsing handles all v
 ### Parse Marker Blocks
 
 <!-- spd:id:algo has="task" to_code="true" -->
-- [x] **ID**: `spd-spider-spec-template-system-algo-parse-markers`
+- [x] **ID**: `spd-spaider-spec-template-system-algo-parse-markers`
 
 <!-- spd:sdsl:algo-steps -->
 1. [x] - `p1` - Split content into lines - `inst-split-lines`
 2. [x] - `p1` - Initialize empty block stack and results list - `inst-init-stack`
 3. [x] - `p1` - **FOR EACH** line with index: - `inst-loop-lines`
-   1. [x] - `p1` - **IF** line matches Spider marker pattern: - `inst-check-marker`
+   1. [x] - `p1` - **IF** line matches Spaider marker pattern: - `inst-check-marker`
       1. [x] - `p1` - Parse marker type, name, and attributes using regex - `inst-parse-marker`
       2. [x] - `p1` - **IF** opening marker: push to stack with line number - `inst-push-open`
       3. [x] - `p1` - **IF** closing marker: pop from stack, create TemplateBlock - `inst-pop-close`
@@ -146,7 +146,7 @@ Success criteria: All artifacts validate in <100ms; marker parsing handles all v
 ### Match Blocks
 
 <!-- spd:id:algo has="task" to_code="true" -->
-- [x] **ID**: `spd-spider-spec-template-system-algo-match-blocks`
+- [x] **ID**: `spd-spaider-spec-template-system-algo-match-blocks`
 
 <!-- spd:sdsl:algo-steps -->
 1. [x] - `p1` - Initialize matched pairs list and unmatched template blocks - `inst-init-match`
@@ -166,7 +166,7 @@ Success criteria: All artifacts validate in <100ms; marker parsing handles all v
 ### Extract IDs
 
 <!-- spd:id:algo has="task" to_code="true" -->
-- [x] **ID**: `spd-spider-spec-template-system-algo-extract-ids`
+- [x] **ID**: `spd-spaider-spec-template-system-algo-extract-ids`
 
 <!-- spd:sdsl:algo-steps -->
 1. [x] - `p1` - Initialize definitions list and references list - `inst-init-lists`
@@ -187,7 +187,7 @@ Success criteria: All artifacts validate in <100ms; marker parsing handles all v
 ### Validate Block Content
 
 <!-- spd:id:algo has="task" to_code="true" -->
-- [x] **ID**: `spd-spider-spec-template-system-algo-validate-content`
+- [x] **ID**: `spd-spaider-spec-template-system-algo-validate-content`
 
 <!-- spd:sdsl:algo-steps -->
 1. [x] - `p1` - Dispatch based on block type from `VALID_MARKER_TYPES` - `inst-dispatch`
@@ -215,7 +215,7 @@ Success criteria: All artifacts validate in <100ms; marker parsing handles all v
 ### Template Loading Lifecycle
 
 <!-- spd:id:state has="task" to_code="true" -->
-- [x] **ID**: `spd-spider-spec-template-system-state-lifecycle`
+- [x] **ID**: `spd-spaider-spec-template-system-state-lifecycle`
 
 <!-- spd:sdsl:state-transitions -->
 1. [x] - `p1` - **FROM** UNINITIALIZED **TO** LOADING **WHEN** from_path() called - `inst-start-load`
@@ -235,59 +235,59 @@ Success criteria: All artifacts validate in <100ms; marker parsing handles all v
 ### Template Parsing
 
 <!-- spd:id:req has="priority,task" to_code="true" -->
-- [x] `p1` - **ID**: `spd-spider-spec-template-system-req-parsing`
+- [x] `p1` - **ID**: `spd-spaider-spec-template-system-req-parsing`
 
 <!-- spd:paragraph:req-body -->
-Templates with Spider markers are parsed into structured TemplateBlock objects with type, name, attributes, and line ranges. Supports all marker types in VALID_MARKER_TYPES including id, id-ref, list, paragraph, table, sdsl, headings, and free.
+Templates with Spaider markers are parsed into structured TemplateBlock objects with type, name, attributes, and line ranges. Supports all marker types in VALID_MARKER_TYPES including id, id-ref, list, paragraph, table, sdsl, headings, and free.
 <!-- spd:paragraph:req-body -->
 
 **Implementation details**:
 <!-- spd:list:req-impl -->
 - API: `Template.from_path(path)` returns `(Template, errors)`
-- Module: `skills/spider/scripts/spider/utils/template.py`
+- Module: `skills/spaider/scripts/spaider/utils/template.py`
 - Domain: `Template`, `TemplateBlock`, `TemplateVersion`, `TemplatePolicy`
 <!-- spd:list:req-impl -->
 
 **Implements**:
 <!-- spd:id-ref:flow has="priority" -->
-- `p1` - `spd-spider-spec-template-system-flow-load`
+- `p1` - `spd-spaider-spec-template-system-flow-load`
 <!-- spd:id-ref:flow -->
 
 <!-- spd:id-ref:algo has="priority" -->
-- `p1` - `spd-spider-spec-template-system-algo-parse-markers`
+- `p1` - `spd-spaider-spec-template-system-algo-parse-markers`
 <!-- spd:id-ref:algo -->
 
 **Covers (PRD)**:
 <!-- spd:id-ref:fr -->
-- `spd-spider-fr-artifact-templates`
-- `spd-spider-fr-validation`
+- `spd-spaider-fr-artifact-templates`
+- `spd-spaider-fr-validation`
 <!-- spd:id-ref:fr -->
 
 <!-- spd:id-ref:nfr -->
-- `spd-spider-nfr-validation-performance`
+- `spd-spaider-nfr-validation-performance`
 <!-- spd:id-ref:nfr -->
 
 **Covers (DESIGN)**:
 <!-- spd:id-ref:principle -->
-- `spd-spider-principle-machine-readable`
-- `spd-spider-principle-deterministic-gate`
+- `spd-spaider-principle-machine-readable`
+- `spd-spaider-principle-deterministic-gate`
 <!-- spd:id-ref:principle -->
 
 <!-- spd:id-ref:constraint -->
-- `spd-spider-constraint-markdown`
-- `spd-spider-constraint-stdlib-only`
+- `spd-spaider-constraint-markdown`
+- `spd-spaider-constraint-stdlib-only`
 <!-- spd:id-ref:constraint -->
 
 <!-- spd:id-ref:component -->
-- `spd-spider-component-spider-skill`
+- `spd-spaider-component-spaider-skill`
 <!-- spd:id-ref:component -->
 
 <!-- spd:id-ref:seq -->
-- `spd-spider-seq-validate-overall-design`
+- `spd-spaider-seq-validate-overall-design`
 <!-- spd:id-ref:seq -->
 
 <!-- spd:id-ref:dbtable -->
-- `spd-spider-dbtable-na`
+- `spd-spaider-dbtable-na`
 <!-- spd:id-ref:dbtable -->
 <!-- spd:id:req -->
 <!-- spd:###:req-title repeat="many" -->
@@ -296,7 +296,7 @@ Templates with Spider markers are parsed into structured TemplateBlock objects w
 ### Artifact Validation
 
 <!-- spd:id:req has="priority,task" to_code="true" -->
-- [x] `p1` - **ID**: `spd-spider-spec-template-system-req-validation`
+- [x] `p1` - **ID**: `spd-spaider-spec-template-system-req-validation`
 
 <!-- spd:paragraph:req-body -->
 Artifacts are validated against their templates with block matching, content validation per type, and ID extraction. Returns structured ValidationResult with PASS/FAIL status, errors list, and extracted IDs/references.
@@ -306,51 +306,51 @@ Artifacts are validated against their templates with block matching, content val
 <!-- spd:list:req-impl -->
 - API: `Template.validate(artifact_path)` returns `Dict[str, List[errors]]`
 - API: `Artifact.validate()` returns validation result
-- Module: `skills/spider/scripts/spider/utils/template.py`
+- Module: `skills/spaider/scripts/spaider/utils/template.py`
 - Domain: `Artifact`, `ArtifactBlock`, `IdDefinition`, `IdReference`
 <!-- spd:list:req-impl -->
 
 **Implements**:
 <!-- spd:id-ref:flow has="priority" -->
-- `p1` - `spd-spider-spec-template-system-flow-validate`
+- `p1` - `spd-spaider-spec-template-system-flow-validate`
 <!-- spd:id-ref:flow -->
 
 <!-- spd:id-ref:algo has="priority" -->
-- `p1` - `spd-spider-spec-template-system-algo-match-blocks`
-- `p1` - `spd-spider-spec-template-system-algo-extract-ids`
-- `p1` - `spd-spider-spec-template-system-algo-validate-content`
+- `p1` - `spd-spaider-spec-template-system-algo-match-blocks`
+- `p1` - `spd-spaider-spec-template-system-algo-extract-ids`
+- `p1` - `spd-spaider-spec-template-system-algo-validate-content`
 <!-- spd:id-ref:algo -->
 
 **Covers (PRD)**:
 <!-- spd:id-ref:fr -->
-- `spd-spider-fr-validation`
-- `spd-spider-fr-template-qa`
+- `spd-spaider-fr-validation`
+- `spd-spaider-fr-template-qa`
 <!-- spd:id-ref:fr -->
 
 <!-- spd:id-ref:nfr -->
-- `spd-spider-nfr-validation-performance`
+- `spd-spaider-nfr-validation-performance`
 <!-- spd:id-ref:nfr -->
 
 **Covers (DESIGN)**:
 <!-- spd:id-ref:principle -->
-- `spd-spider-principle-deterministic-gate`
-- `spd-spider-principle-machine-readable-artifacts`
+- `spd-spaider-principle-deterministic-gate`
+- `spd-spaider-principle-machine-readable-artifacts`
 <!-- spd:id-ref:principle -->
 
 <!-- spd:id-ref:constraint -->
-- `spd-spider-constraint-markdown`
+- `spd-spaider-constraint-markdown`
 <!-- spd:id-ref:constraint -->
 
 <!-- spd:id-ref:component -->
-- `spd-spider-component-spider-skill`
+- `spd-spaider-component-spaider-skill`
 <!-- spd:id-ref:component -->
 
 <!-- spd:id-ref:seq -->
-- `spd-spider-seq-validate-overall-design`
+- `spd-spaider-seq-validate-overall-design`
 <!-- spd:id-ref:seq -->
 
 <!-- spd:id-ref:dbtable -->
-- `spd-spider-dbtable-na`
+- `spd-spaider-dbtable-na`
 <!-- spd:id-ref:dbtable -->
 <!-- spd:id:req -->
 <!-- spd:###:req-title repeat="many" -->
@@ -359,7 +359,7 @@ Artifacts are validated against their templates with block matching, content val
 ### Cross-Artifact Validation
 
 <!-- spd:id:req has="priority,task" to_code="true" -->
-- [x] `p1` - **ID**: `spd-spider-spec-template-system-req-cross-validation`
+- [x] `p1` - **ID**: `spd-spaider-spec-template-system-req-cross-validation`
 
 <!-- spd:paragraph:req-body -->
 Multiple artifacts are validated together to detect orphaned references (refs pointing to undefined IDs) and missing references. Supports external system references via prefix detection.
@@ -368,49 +368,49 @@ Multiple artifacts are validated together to detect orphaned references (refs po
 **Implementation details**:
 <!-- spd:list:req-impl -->
 - API: `cross_validate_artifacts(artifacts, project_root)` returns cross-validation result
-- Module: `skills/spider/scripts/spider/utils/template.py`
+- Module: `skills/spaider/scripts/spaider/utils/template.py`
 - Domain: Uses Artifact.list_ids(), Artifact.list_refs()
 <!-- spd:list:req-impl -->
 
 **Implements**:
 <!-- spd:id-ref:flow has="priority" -->
-- `p1` - `spd-spider-spec-template-system-flow-cross-validate`
+- `p1` - `spd-spaider-spec-template-system-flow-cross-validate`
 <!-- spd:id-ref:flow -->
 
 <!-- spd:id-ref:algo has="priority" -->
-- `p1` - `spd-spider-spec-template-system-algo-extract-ids`
+- `p1` - `spd-spaider-spec-template-system-algo-extract-ids`
 <!-- spd:id-ref:algo -->
 
 **Covers (PRD)**:
 <!-- spd:id-ref:fr -->
-- `spd-spider-fr-cross-artifact-validation`
-- `spd-spider-fr-traceability`
+- `spd-spaider-fr-cross-artifact-validation`
+- `spd-spaider-fr-traceability`
 <!-- spd:id-ref:fr -->
 
 <!-- spd:id-ref:nfr -->
-- `spd-spider-nfr-validation-performance`
+- `spd-spaider-nfr-validation-performance`
 <!-- spd:id-ref:nfr -->
 
 **Covers (DESIGN)**:
 <!-- spd:id-ref:principle -->
-- `spd-spider-principle-traceability`
-- `spd-spider-principle-deterministic-gate`
+- `spd-spaider-principle-traceability`
+- `spd-spaider-principle-deterministic-gate`
 <!-- spd:id-ref:principle -->
 
 <!-- spd:id-ref:constraint -->
-- `spd-spider-constraint-stdlib-only`
+- `spd-spaider-constraint-stdlib-only`
 <!-- spd:id-ref:constraint -->
 
 <!-- spd:id-ref:component -->
-- `spd-spider-component-spider-skill`
+- `spd-spaider-component-spaider-skill`
 <!-- spd:id-ref:component -->
 
 <!-- spd:id-ref:seq -->
-- `spd-spider-seq-traceability-query`
+- `spd-spaider-seq-traceability-query`
 <!-- spd:id-ref:seq -->
 
 <!-- spd:id-ref:dbtable -->
-- `spd-spider-dbtable-na`
+- `spd-spaider-dbtable-na`
 <!-- spd:id-ref:dbtable -->
 <!-- spd:id:req -->
 <!-- spd:###:req-title repeat="many" -->
@@ -422,7 +422,7 @@ Multiple artifacts are validated together to detect orphaned references (refs po
 <!-- spd:free:context-notes -->
 **Implementation Notes**:
 
-The Template System is implemented in `skills/spider/scripts/spider/utils/template.py` (~1200 LOC) with:
+The Template System is implemented in `skills/spaider/scripts/spaider/utils/template.py` (~1200 LOC) with:
 - `Template` class: Parses and holds template structure
 - `Artifact` class: Parses artifacts against templates
 - `TemplateBlock` dataclass: Represents a marker block span
@@ -434,12 +434,12 @@ The Template System is implemented in `skills/spider/scripts/spider/utils/templa
 - Structure: `#`, `##`, `###`, `####`, `#####`, `######`
 - Special: `link`, `image`, `sdsl`
 
-**SDSL (Spider DSL)** format:
+**SDSL (Spaider DSL)** format:
 ```
 N. [ ] - `pN` - Description - `inst-slug`
 ```
 
-**Dependencies**: None (Python stdlib only per `spd-spider-constraint-stdlib-only`)
+**Dependencies**: None (Python stdlib only per `spd-spaider-constraint-stdlib-only`)
 <!-- spd:free:context-notes -->
 <!-- spd:##:additional-context -->
 

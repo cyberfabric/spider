@@ -28,7 +28,7 @@
 - `template.md` — required structure
 - `checklist.md` — semantic quality criteria
 - `examples/example.md` — reference implementation
-- `{spider_path}/requirements/template.md` — Spider template marker syntax specification
+- `{spaider_path}/requirements/template.md` — Spaider template marker syntax specification
 
 ---
 
@@ -152,8 +152,8 @@ DESIGN defines IDs with `covered_by` attributes that track downstream implementa
   - Implementation is verified and tested
 
 **Validation Checks**:
-- `spider validate` will warn if `id:*` has no references in `covered_by` artifacts
-- `spider validate` will warn if reference is `[x]` but definition is not
+- `spaider validate` will warn if `id:*` has no references in `covered_by` artifacts
+- `spaider validate` will warn if reference is `[x]` but definition is not
 
 ---
 
@@ -171,7 +171,7 @@ Agent executes tasks during generation:
 **If PRD not found or incomplete**:
 ```
 ⚠ Parent PRD not found or incomplete
-→ Option 1: Run /spider-generate PRD first (recommended)
+→ Option 1: Run /spaider-generate PRD first (recommended)
 → Option 2: Continue without PRD (DESIGN will lack traceability)
    - Document "PRD pending" in DESIGN frontmatter
    - Skip PRD reference validation
@@ -182,7 +182,7 @@ Agent executes tasks during generation:
 ```
 ⚠ PRD may be outdated (last modified: {date})
 → Review PRD before proceeding
-→ If PRD needs updates: /spider-generate PRD UPDATE
+→ If PRD needs updates: /spaider-generate PRD UPDATE
 → If PRD is current: proceed with DESIGN
 ```
 
@@ -228,7 +228,7 @@ If DESIGN cannot be completed in a single session:
 - [ ] Generate component IDs (if needed)
 - [ ] Link to PRD actors/capabilities
 - [ ] Reference relevant ADRs
-- [ ] Verify uniqueness with `spider list-ids`
+- [ ] Verify uniqueness with `spaider list-ids`
 
 ### Phase 4: Quality Check
 
@@ -244,7 +244,7 @@ Validation workflow applies rules in two phases:
 
 ### Phase 1: Structural Validation (Deterministic)
 
-Run `spider validate` for:
+Run `spaider validate` for:
 - [ ] Template structure compliance
 - [ ] ID format validation
 - [ ] Cross-reference validity
@@ -285,8 +285,8 @@ After DESIGN generation/validation, offer these options:
 
 | Condition | Suggested Next Step |
 |-----------|---------------------|
-| DESIGN complete | `/spider-generate DECOMPOSITION` — create specs manifest |
-| Need architecture decision | `/spider-generate ADR` — document key decision |
-| PRD missing/incomplete | `/spider-generate PRD` — create/update PRD first |
+| DESIGN complete | `/spaider-generate DECOMPOSITION` — create specs manifest |
+| Need architecture decision | `/spaider-generate ADR` — document key decision |
+| PRD missing/incomplete | `/spaider-generate PRD` — create/update PRD first |
 | DESIGN needs revision | Continue editing DESIGN |
-| Want checklist review only | `/spider-analyze semantic` — semantic validation (skip deterministic) |
+| Want checklist review only | `/spaider-analyze semantic` — semantic validation (skip deterministic) |

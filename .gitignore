@@ -42,10 +42,10 @@ coverage.json
 .claude
 .cursor
 .agents/
-spider-agents.json
+spaider-agents.json
 .tmp/
-spider-flow-layers-2a.drawio.svg
+spaider-flow-layers-2a.drawio.svg
 .github/prompts/*
 .github/copilot-instructions.md
 /tmp
-Spider.code-workspace
+Spaider.code-workspace

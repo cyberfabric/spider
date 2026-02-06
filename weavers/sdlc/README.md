@@ -2,16 +2,16 @@
 
 ## Overview
 
-**Spider SDLC** is an artifact-first pipeline that turns intent into implementation through a fixed sequence of document layers, with deterministic validation gates and end-to-end traceability.
+**Spaider SDLC** is an artifact-first pipeline that turns intent into implementation through a fixed sequence of document layers, with deterministic validation gates and end-to-end traceability.
 
 - **Layered transformation**: PRD → ADR + DESIGN → DECOMPOSITION → SPEC → CODE.
 - **Deterministic gates**: templates, IDs, cross-references, and task/acceptance criteria are validated at every step.
-- **Behavior spec**: the **SPEC** layer expresses behavior as **Spider DSL (SDSL)** flows/algorithms that can be implemented directly.
+- **Behavior spec**: the **SPEC** layer expresses behavior as **Spaider DSL (SDSL)** flows/algorithms that can be implemented directly.
 - **Traceability chain**: each downstream artifact references upstream IDs, and code keeps links via tags/markers.
 
 ## Pipeline Diagram
 
-![**Spider** SDLC pipeline: PRD → DESIGN → DECOMPOSITION → SPEC → CODE, with validation gates and ID traceability between layers](pipeline.drawio.svg)
+![**Spaider** SDLC pipeline: PRD → DESIGN → DECOMPOSITION → SPEC → CODE, with validation gates and ID traceability between layers](pipeline.drawio.svg)
 
 Each layer **transforms** the previous artifact into a new form while **preserving traceability through IDs and references**:
 
@@ -27,15 +27,15 @@ The LLM reads the upstream artifact, understands its intent, and generates a dow
 ---
 ## 🚀 Quick Start
 
-**New to** **Spider SDLC**? Start here: **[QUICKSTART.md](guides/QUICKSTART.md)**
+**New to** **Spaider SDLC**? Start here: **[QUICKSTART.md](guides/QUICKSTART.md)**
 
-Learn **Spider** in 10 minutes with:
+Learn **Spaider** in 10 minutes with:
 - **Exact prompts to copy-paste** into your AI chat
 - **Complete example**: Task management API from start to finish
 - **Common scenarios**: What to do when requirements change
 - **Working with existing docs**: Use what you already have
 
-**Live example**: [Taskman (example project)](https://github.com/cyberfabric/spider-examples-taskman) — a complete task management project with a full artifact set and implementation.
+**Live example**: [Taskman (example project)](https://github.com/cyberfabric/spaider-examples-taskman) — a complete task management project with a full artifact set and implementation.
 
 ## The 6-Layer SDLC Pipeline
 
@@ -45,12 +45,12 @@ Learn **Spider** in 10 minutes with:
 | **ADR** | Captures key architecture decisions with rationale | Template structure, ID format | Semantic review vs industry best practices | Architects alignment |
 | **DESIGN** | Derived from PRD with architecture decisions | Cross reference ID and tasks validation | Semantic review vs PRD + ADR + industry best practices | Architects alignment |
 | **DECOMPOSITION** | Decomposed from DESIGN into implementable spec scope | Cross reference ID and tasks validation | Semantic review vs DESIGN + industry best practices | Architects alignment |
-| **SPEC** | Expanded from DECOMPOSITION into **Spider DSL** (**SDSL**) flows/algorithms plus implementation requirements | Cross reference ID and tasks validation | Semantic review vs DESIGN + DECOMPOSITION + industry best practices | Architects & Developers alignment |
+| **SPEC** | Expanded from DECOMPOSITION into **Spaider DSL** (**SDSL**) flows/algorithms plus implementation requirements | Cross reference ID and tasks validation | Semantic review vs DESIGN + DECOMPOSITION + industry best practices | Architects & Developers alignment |
 | **CODE** | Implemented from SPEC specs with traceability in code comments | Cross reference ID and tasks validation | Semantic review vs SPEC + DESIGN + DECOMPOSITION + industry best practices | Developers & QA alignment |
 
-## Spider SDLC vs Popular SDD Methodologies
+## Spaider SDLC vs Popular SDD Methodologies
 
-For a comprehensive comparison of **Spider SDLC** with other AI-assisted development methodologies, see:
+For a comprehensive comparison of **Spaider SDLC** with other AI-assisted development methodologies, see:
 
 **[SDD_COMPARISON.md](../../SDD_COMPARISON.md)**
 
@@ -62,13 +62,13 @@ This document provides:
 
 ## What SDLC weaver provides
 
-**Structured Templates** — Templates in spider format for each artifact kind.
+**Structured Templates** — Templates in spaider format for each artifact kind.
 
 **Semantic Checklists** — Expert review criteria for quality gates for each kind of artifact and source code. Agents self-review before output.
 
 **Examples** — Canonical examples for each artifact kind.
 
-**Rules specifications** — A set of tasks and acceptance criteria applicable for Spider workflows to generate and validate each artifact kind and source code.
+**Rules specifications** — A set of tasks and acceptance criteria applicable for Spaider workflows to generate and validate each artifact kind and source code.
 
 ## References
 
@@ -76,7 +76,7 @@ This document provides:
 - [Template Specification](../../requirements/template.md) — Marker syntax and validation
 - [Semantic Checklists](codebase/checklist.md) — Code quality review criteria
 - [Traceability Specification](../../requirements/traceability.md) — Code-to-design linking
-- [**Spider DSL** Specification](../../requirements/SDSL.md) — Behavior description language
+- [**Spaider DSL** Specification](../../requirements/SDSL.md) — Behavior description language
 - [Prompt Engineering](../../requirements/prompt-engineering.md) — 9-layer methodology
 
 ## Documentation
@@ -88,4 +88,4 @@ This document provides:
 - [GREENFIELD.md](guides/GREENFIELD.md) — Starting new projects
 - [BROWNFIELD.md](guides/BROWNFIELD.md) — Integrating with existing codebases
 - [MONOLITH.md](guides/MONOLITH.md) — Working with monolithic applications
-- [TAXONOMY.md](guides/TAXONOMY.md) — **Spider** terminology and concepts
+- [TAXONOMY.md](guides/TAXONOMY.md) — **Spaider** terminology and concepts

@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
 
-from skills.spider.scripts.spider.utils.template import (
+from skills.spaider.scripts.spaider.utils.template import (
     Artifact,
     Template,
     cross_validate_artifacts,
@@ -18,7 +18,7 @@ def _write(path: Path, text: str) -> Path:
 def _sample_template_text(kind: str = "PRD") -> str:
     return f"""
 ---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -154,7 +154,7 @@ def test_cross_validate_covered_by_and_refs(tmp_path: Path):
     # DESIGN template needs id-ref:item with has="priority,task" to match definition
     design_template = """
 ---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -265,7 +265,7 @@ def test_first_nonempty_all_empty():
 
 def test_frontmatter_no_closing_marker(tmp_path: Path):
     """Cover frontmatter without closing ---."""
-    bad = _write(tmp_path / "bad.template.md", "---\nspider-template:\n  kind: X")
+    bad = _write(tmp_path / "bad.template.md", "---\nspaider-template:\n  kind: X")
     tmpl, errs = load_template(bad)
     assert tmpl is None
     assert errs
@@ -273,7 +273,7 @@ def test_frontmatter_no_closing_marker(tmp_path: Path):
 
 def test_frontmatter_invalid_indentation(tmp_path: Path):
     """Cover invalid frontmatter indentation."""
-    bad = _write(tmp_path / "bad.template.md", "---\nspider-template:\n   kind: X\n---")
+    bad = _write(tmp_path / "bad.template.md", "---\nspaider-template:\n   kind: X\n---")
     tmpl, errs = load_template(bad)
     assert tmpl is None
     assert any("indentation" in str(e.get("message", "")).lower() for e in errs)
@@ -281,7 +281,7 @@ def test_frontmatter_invalid_indentation(tmp_path: Path):
 
 def test_frontmatter_invalid_line(tmp_path: Path):
     """Cover invalid frontmatter line (no colon)."""
-    bad = _write(tmp_path / "bad.template.md", "---\nspider-template:\n  invalid line no colon\n---")
+    bad = _write(tmp_path / "bad.template.md", "---\nspaider-template:\n  invalid line no colon\n---")
     tmpl, errs = load_template(bad)
     assert tmpl is None
 
@@ -289,7 +289,7 @@ def test_frontmatter_invalid_line(tmp_path: Path):
 def test_frontmatter_comment_line_ignored(tmp_path: Path):
     """Cover frontmatter with comment lines."""
     text = """---
-spider-template:
+spaider-template:
   # this is a comment
   version:
     major: 1
@@ -306,7 +306,7 @@ spider-template:
 def test_template_missing_kind(tmp_path: Path):
     """Cover template missing kind."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -321,7 +321,7 @@ spider-template:
 def test_template_missing_version(tmp_path: Path):
     """Cover template missing version - now uses default version."""
     text = """---
-spider-template:
+spaider-template:
   kind: TEST
 ---
 """
@@ -338,7 +338,7 @@ spider-template:
 def test_template_invalid_unknown_sections(tmp_path: Path):
     """Cover invalid unknown_sections value - now falls back to 'warn'."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -358,7 +358,7 @@ spider-template:
 def test_template_version_too_high(tmp_path: Path):
     """Cover template version higher than supported."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 99
     minor: 0
@@ -374,7 +374,7 @@ spider-template:
 def test_template_unclosed_marker(tmp_path: Path):
     """Cover unclosed marker in template."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -392,7 +392,7 @@ Content without closing marker
 def test_template_unknown_marker_type(tmp_path: Path):
     """Cover unknown marker type in template - should fail loading."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -412,7 +412,7 @@ Content with unknown type
 def test_block_validation_free_type(tmp_path: Path):
     """Cover free block type (no validation)."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -432,7 +432,7 @@ Any content here
 def test_block_validation_id_empty(tmp_path: Path):
     """Cover ID block with empty content."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -452,7 +452,7 @@ spider-template:
 def test_block_validation_id_ref_empty(tmp_path: Path):
     """Cover ID ref block with empty content."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -472,7 +472,7 @@ spider-template:
 def test_block_validation_id_ref_invalid_format(tmp_path: Path):
     """Cover ID ref with invalid format."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -492,7 +492,7 @@ spider-template:
 def test_block_validation_list_empty(tmp_path: Path):
     """Cover empty list block."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -512,7 +512,7 @@ spider-template:
 def test_block_validation_list_not_bullet(tmp_path: Path):
     """Cover list block without bullet format."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -532,7 +532,7 @@ spider-template:
 def test_block_validation_numbered_list_invalid(tmp_path: Path):
     """Cover numbered-list with non-numbered content."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -552,7 +552,7 @@ spider-template:
 def test_block_validation_task_list_invalid(tmp_path: Path):
     """Cover task-list with invalid format."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -572,7 +572,7 @@ spider-template:
 def test_block_validation_task_list_missing_priority(tmp_path: Path):
     """Cover task-list with priority requirement but missing priority."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -592,7 +592,7 @@ spider-template:
 def test_block_validation_table_too_few_rows(tmp_path: Path):
     """Cover table with less than 2 rows."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -614,7 +614,7 @@ spider-template:
 def test_block_validation_table_invalid_header(tmp_path: Path):
     """Cover table with invalid header."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -636,7 +636,7 @@ spider-template:
 def test_block_validation_table_no_data_rows(tmp_path: Path):
     """Cover table with no data rows."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -659,7 +659,7 @@ spider-template:
 def test_block_validation_table_row_mismatch(tmp_path: Path):
     """Cover table with row column mismatch."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -681,7 +681,7 @@ spider-template:
 def test_block_validation_paragraph_empty(tmp_path: Path):
     """Cover empty paragraph block."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -701,7 +701,7 @@ Some text
 def test_block_validation_code_no_fence(tmp_path: Path):
     """Cover code block without opening fence."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -723,7 +723,7 @@ code
 def test_block_validation_code_unclosed_fence(tmp_path: Path):
     """Cover code block with unclosed fence."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -745,7 +745,7 @@ code
 def test_block_validation_heading(tmp_path: Path):
     """Cover heading block validation."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -766,7 +766,7 @@ spider-template:
 def test_block_validation_heading_empty(tmp_path: Path):
     """Cover empty heading block."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -786,7 +786,7 @@ spider-template:
 def test_block_validation_link_invalid(tmp_path: Path):
     """Cover invalid link block."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -806,7 +806,7 @@ spider-template:
 def test_block_validation_image_invalid(tmp_path: Path):
     """Cover invalid image block."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -826,7 +826,7 @@ spider-template:
 def test_block_validation_sdsl_empty(tmp_path: Path):
     """Cover empty SDSL block."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -846,7 +846,7 @@ spider-template:
 def test_block_validation_sdsl_invalid_line(tmp_path: Path):
     """Cover SDSL block with invalid line."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -899,7 +899,7 @@ def test_artifact_unclosed_marker(tmp_path: Path):
 def test_artifact_unknown_marker_warning(tmp_path: Path):
     """Cover unknown marker producing error (unknown markers are always errors, regardless of unknown_sections policy)."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -921,7 +921,7 @@ text
 def test_artifact_unknown_marker_error(tmp_path: Path):
     """Cover unknown marker producing error when policy is error."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -942,7 +942,7 @@ text
 def test_artifact_block_repeat_once_violation(tmp_path: Path):
     """Cover block appearing more than once when repeat=one."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1013,7 +1013,7 @@ def test_artifact_list_ids(tmp_path: Path):
 def test_id_task_status_all_done_but_id_not_marked(tmp_path: Path):
     """Cover ID task status validation - all tasks done but ID not marked."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1043,7 +1043,7 @@ spider-template:
 def test_id_task_status_id_done_but_tasks_not(tmp_path: Path):
     """Cover ID task status validation - ID marked done but tasks not all done."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1073,7 +1073,7 @@ spider-template:
 def test_cross_validate_ref_no_definition(tmp_path: Path):
     """Cover cross validation when reference has no definition."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1096,9 +1096,9 @@ def test_artifact_with_template_frontmatter_detected(tmp_path: Path):
     tmpl_path = _write(tmp_path / "tmpl.template.md", _sample_template_text())
     tmpl, _ = load_template(tmpl_path)
 
-    # Artifact should NOT have spider-template frontmatter
+    # Artifact should NOT have spaider-template frontmatter
     bad_artifact = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1114,7 +1114,7 @@ Some content
 
 
 def test_artifact_without_template_frontmatter_ok(tmp_path: Path):
-    """Cover that normal frontmatter (without spider-template) is OK."""
+    """Cover that normal frontmatter (without spaider-template) is OK."""
     tmpl_path = _write(tmp_path / "tmpl.template.md", _sample_template_text())
     tmpl, _ = load_template(tmpl_path)
 
@@ -1155,7 +1155,7 @@ code
 def test_cross_validate_external_system_ref_no_error(tmp_path: Path):
     """External system references should not error when registered_systems is provided."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1188,7 +1188,7 @@ spider-template:
 def test_cross_validate_internal_system_ref_errors(tmp_path: Path):
     """Internal system references without definition should error."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1221,7 +1221,7 @@ spider-template:
 def test_cross_validate_multi_word_system_external(tmp_path: Path):
     """Multi-word system names should be handled correctly."""
     text = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1254,7 +1254,7 @@ def test_cross_validate_ref_has_attribute_is_optional(tmp_path: Path):
     """Reference decides its own has= attributes; not required to match definition."""
     # Definition template with has="priority,task"
     def_tmpl = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1267,7 +1267,7 @@ spider-template:
 """
     # Reference template WITHOUT has attribute (should pass - ref decides its own attrs)
     ref_tmpl_simple = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1280,7 +1280,7 @@ spider-template:
 """
     # Reference template WITH has attribute (should also pass)
     ref_tmpl_full = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1328,7 +1328,7 @@ def test_nesting_validation_errors_on_wrong_parent(tmp_path: Path):
     """Nesting validation should error when artifact block has wrong parent."""
     # Template with nested structure: ##:outer contains ##:inner
     template_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -1383,7 +1383,7 @@ def test_nesting_validation_skips_repeat_many_parents(tmp_path: Path):
     """Nesting validation should skip blocks inside repeat='many' parents."""
     # Template with repeat="many" outer block
     template_content = """---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0

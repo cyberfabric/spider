@@ -1,6 +1,6 @@
 # PRD Rules
 
-ALWAYS open and follow `{spider_path}/requirements/template.md` FIRST
+ALWAYS open and follow `{spaider_path}/requirements/template.md` FIRST
 
 **Artifact**: PRD (Product Requirements Document)
 **Purpose**: Rules for PRD generation and validation
@@ -9,7 +9,7 @@ ALWAYS open and follow `{spider_path}/requirements/template.md` FIRST
 - `template.md` — required structure
 - `checklist.md` — semantic quality criteria
 - `examples/example.md` — reference implementation
-- `{spider_path}/requirements/template.md` — Spider template marker syntax specification
+- `{spaider_path}/requirements/template.md` — Spaider template marker syntax specification
 
 ---
 
@@ -50,7 +50,7 @@ Agent confirms understanding of requirements:
 
 - [ ] Vision is clear and explains WHY the product exists
   - ✓ "Enables developers to validate artifacts against templates" (explains purpose)
-  - ✗ "A tool for Spider" (doesn't explain why it matters)
+  - ✗ "A tool for Spaider" (doesn't explain why it matters)
 - [ ] All actors are identified with specific roles (not just "users")
   - ✓ "Framework Developer", "Project Maintainer", "CI Pipeline"
   - ✗ "Users", "Developers" (too generic)
@@ -99,7 +99,7 @@ PRD defines IDs with `covered_by` attributes that track downstream implementatio
   - All specs implement the constraint
   - Acceptance criteria are met and verified
 
-**Validation Checks** (automated via `python3 {spider_path}/skills/spider/scripts/spider.py validate`):
+**Validation Checks** (automated via `python3 {spaider_path}/skills/spaider/scripts/spaider.py validate`):
 - Will warn if `id:fr`/`id:nfr` has no references in `covered_by` artifacts
 - Will warn if reference is `[x]` but definition is not
 - Agent does NOT manually check `covered_by` — the CLI tool handles this automatically
@@ -136,7 +136,7 @@ Agent executes tasks during generation:
 - [ ] Generate actor IDs: `spd-{hierarchy-prefix}-actor-{slug}` (e.g., `spd-myapp-actor-admin-user`)
 - [ ] Generate capability IDs: `spd-{hierarchy-prefix}-cap-{slug}` (e.g., `spd-myapp-cap-user-management`)
 - [ ] Assign priorities based on business impact
-- [ ] Verify uniqueness with `python3 {spider_path}/skills/spider/scripts/spider.py list-ids`
+- [ ] Verify uniqueness with `python3 {spaider_path}/skills/spaider/scripts/spaider.py list-ids`
 
 ### Phase 4: Quality Check
 
@@ -152,7 +152,7 @@ Validation workflow applies rules in two phases:
 
 ### Phase 1: Structural Validation (Deterministic)
 
-Run `python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact <path>` for:
+Run `python3 {spaider_path}/skills/spaider/scripts/spaider.py validate --artifact <path>` for:
 - [ ] Template structure compliance
 - [ ] ID format validation
 - [ ] Priority markers present
@@ -198,7 +198,7 @@ Issues:
 **If `template.md` cannot be loaded**:
 ```
 ⚠ Template not found: weavers/sdlc/artifacts/PRD/template.md
-→ Verify Spider installation is complete
+→ Verify Spaider installation is complete
 → STOP — cannot proceed without template
 ```
 
@@ -240,7 +240,7 @@ After PRD generation/validation, offer these options:
 
 | Condition | Suggested Next Step |
 |-----------|---------------------|
-| PRD complete | `/spider-generate DESIGN` — create technical design |
-| Need architecture decision | `/spider-generate ADR` — document key decision |
+| PRD complete | `/spaider-generate DESIGN` — create technical design |
+| Need architecture decision | `/spaider-generate ADR` — document key decision |
 | PRD needs revision | Continue editing PRD |
-| Want checklist review only | `/spider-analyze semantic` — semantic validation (skip deterministic) |
+| Want checklist review only | `/spaider-analyze semantic` — semantic validation (skip deterministic) |

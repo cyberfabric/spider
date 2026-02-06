@@ -1,11 +1,11 @@
-# Spider Adapter Creation Guide
+# Spaider Adapter Creation Guide
 
 ## Core Principle
 
-Adapters extend Spider with project-specific context. Start files with:
+Adapters extend Spaider with project-specific context. Start files with:
 
 ```text
-Extends: ../Spider/path/to/file.md
+Extends: ../Spaider/path/to/file.md
 ```
 
 **You can override/add anything EXCEPT the immutable rules below.**
@@ -28,9 +28,9 @@ Must reference parent level, never contradict.
 - **SPEC DESIGN**: Actor flows, algorithms, requirements
 - **CODE**: Implementation following spec design
 
-### 2. Mandatory Spider Rules
+### 2. Mandatory Spaider Rules
 - Actor Flows (Section B) are PRIMARY - always start from what actors do
-- Use Spider DSL (SDSL) for flows/algorithms/states - NEVER code in DESIGN.md
+- Use Spaider DSL (SDSL) for flows/algorithms/states - NEVER code in DESIGN.md
 - Never redefine types - reference domain model from Overall Design
 - Validate before proceeding (Overall ≥90/100, Spec 100/100)
 - Spec size limits: ≤3000 lines (recommended), ≤4000 (hard limit)
@@ -60,7 +60,7 @@ architecture/
 - Section C: Algorithms
 - Section D: States (optional)
 - Section E: Technical Details
-- Section F: Requirements (formalized scope + Testing Scenarios in Spider DSL (SDSL))
+- Section F: Requirements (formalized scope + Testing Scenarios in Spaider DSL (SDSL))
 
 ### 5. Validation Scores
 - Overall Design: ≥90/100
@@ -72,14 +72,14 @@ architecture/
 
 Everything else is adapter-specific. Define as needed:
 
-**Note**: All Spider operation workflows now support **CREATE and UPDATE modes**. Adapters can be created once and updated anytime as project evolves. Use `adapter.md` workflow to create or update your adapter.
+**Note**: All Spaider operation workflows now support **CREATE and UPDATE modes**. Adapters can be created once and updated anytime as project evolves. Use `adapter.md` workflow to create or update your adapter.
 
 ### Tech Stack
 
 Example location (in your adapter):
 
 ```text
-.spider-adapter/specs/tech-stack.md
+.spaider-adapter/specs/tech-stack.md
 ```
 - Primary language and version
 - Frameworks (backend, frontend)
@@ -92,7 +92,7 @@ Example location (in your adapter):
 Example location (in your adapter):
 
 ```text
-.spider-adapter/specs/domain-model.md
+.spaider-adapter/specs/domain-model.md
 ```
 - Technology (TypeScript, JSON Schema, Protobuf, GTS, etc.)
 - Location (`architecture/domain-model/`, per-spec, etc.)
@@ -106,7 +106,7 @@ Example location (in your adapter):
 Example location (in your adapter):
 
 ```text
-.spider-adapter/specs/api-contracts.md
+.spaider-adapter/specs/api-contracts.md
 ```
 - Technology (OpenAPI, GraphQL, gRPC, CLISPEC, etc.)
 - Location (`architecture/api-specs/`, `architecture/cli-specs/`, etc.)
@@ -122,7 +122,7 @@ Example location (in your adapter):
 Example location (in your adapter):
 
 ```text
-.spider-adapter/specs/patterns.md
+.spaider-adapter/specs/patterns.md
 ```
 - Architecture style (layered, hexagonal, microservices, etc.)
 - Core design patterns (DI, repository, error handling, etc.)
@@ -134,7 +134,7 @@ Example location (in your adapter):
 Example location (in your adapter):
 
 ```text
-.spider-adapter/specs/conventions.md
+.spaider-adapter/specs/conventions.md
 ```
 - Naming conventions (files, directories, variables, functions, classes)
 - Code style (indentation, line length, braces, imports)
@@ -146,7 +146,7 @@ Example location (in your adapter):
 Example location (in your adapter):
 
 ```text
-.spider-adapter/specs/testing.md
+.spaider-adapter/specs/testing.md
 ```
 - Test frameworks (unit, integration, E2E)
 - Test organization and structure
@@ -159,7 +159,7 @@ Example location (in your adapter):
 Example location (in your adapter):
 
 ```text
-.spider-adapter/specs/build-deploy.md
+.spaider-adapter/specs/build-deploy.md
 ```
 - Build tool and commands
 - Development environment setup
@@ -172,7 +172,7 @@ Example location (in your adapter):
 Example location (in your adapter):
 
 ```text
-.spider-adapter/specs/linting.md
+.spaider-adapter/specs/linting.md
 ```
 - Linter configuration
 - Formatting tools
@@ -185,7 +185,7 @@ Example location (in your adapter):
 Example location (in your adapter):
 
 ```text
-.spider-adapter/specs/security.md
+.spaider-adapter/specs/security.md
 ```
 - Authentication and authorization strategy
 - Input validation requirements
@@ -199,7 +199,7 @@ Example location (in your adapter):
 Example location (in your adapter):
 
 ```text
-.spider-adapter/specs/performance.md
+.spaider-adapter/specs/performance.md
 ```
 - Performance requirements and SLAs
 - Benchmarking strategy and tools
@@ -213,11 +213,11 @@ Example location (in your adapter):
 Example location (in your adapter):
 
 ```text
-.spider-adapter/specs/project-structure.md
+.spaider-adapter/specs/project-structure.md
 ```
 - Directory organization
 - File naming conventions
-- Spider artifact locations
+- Spaider artifact locations
 - Source code structure
 - Test and documentation locations
 
@@ -226,12 +226,12 @@ Example location (in your adapter):
 Examples (in your adapter):
 
 ```text
-.spider-adapter/specs/rest-api-guidelines.md
-.spider-adapter/specs/graphql-guidelines.md
-.spider-adapter/specs/architectural-lints.md
-.spider-adapter/specs/module-creation.md
-.spider-adapter/specs/rust-guidelines.md
-.spider-adapter/specs/typescript-guidelines.md
+.spaider-adapter/specs/rest-api-guidelines.md
+.spaider-adapter/specs/graphql-guidelines.md
+.spaider-adapter/specs/architectural-lints.md
+.spaider-adapter/specs/module-creation.md
+.spaider-adapter/specs/rust-guidelines.md
+.spaider-adapter/specs/typescript-guidelines.md
 ```
 
 **Required in all spec files**:
@@ -242,13 +242,13 @@ Examples (in your adapter):
 **Validation output format**: MUST be chat output only, NO report files
 
 ### Behavior Description Language (Optional Override)
-- **Default**: Spider DSL (SDSL) for flows/algorithms/states
+- **Default**: Spaider DSL (SDSL) for flows/algorithms/states
 - **Can override**: Create custom behavior specification in `{adapter-directory}/`
 - **Example**:
 
 ```text
-Replace: {spider_path}/requirements/SDSL.md
-With:    {project-root}/.spider-adapter/CustomBDL.md
+Replace: {spaider_path}/requirements/SDSL.md
+With:    {project-root}/.spaider-adapter/CustomBDL.md
 ```
 - **Requirements**: Define control flow keywords, syntax rules, validation criteria
 - **Note**: Must update workflows 05 and 06 to reference custom spec
@@ -265,7 +265,7 @@ With:    {project-root}/.spider-adapter/CustomBDL.md
 
 ```bash
 {project-root}/
-├── .spider-adapter/                 # Your project-specific extensions (at root level)
+├── .spaider-adapter/                 # Your project-specific extensions (at root level)
 │   ├── AGENTS.md                # Navigation rules (WHEN executing workflows: ...)
 │   └── specs/                   # Detailed specifications
 │       ├── tech-stack.md        # Languages, frameworks, databases, versions
@@ -279,17 +279,17 @@ With:    {project-root}/.spider-adapter/CustomBDL.md
 │       ├── security.md          # Security requirements and practices
 │       ├── performance.md       # Performance requirements and optimization
 │       └── project-structure.md # Directory structure and organization
-└── Spider/                         # Core Spider (as git submodule or direct copy)
+└── Spaider/                         # Core Spaider (as git submodule or direct copy)
 ```
 
-**Important**: .spider-adapter MUST be at project root level, discoverable from `{project-root}/.spider-adapter/`
+**Important**: .spaider-adapter MUST be at project root level, discoverable from `{project-root}/.spaider-adapter/`
 
 **Alternative locations** (if needed):
-- `{project-root}/guidelines/.spider-adapter/`
-- `{project-root}/spec/.spider-adapter/`
-- `{project-root}/docs/.spider-adapter/`
+- `{project-root}/guidelines/.spaider-adapter/`
+- `{project-root}/spec/.spaider-adapter/`
+- `{project-root}/docs/.spaider-adapter/`
 
-**Avoid**: Deep nesting like `{project-root}/guidelines/subfolder/.spider-adapter/` ❌
+**Avoid**: Deep nesting like `{project-root}/guidelines/subfolder/.spaider-adapter/` ❌
 
 **Common spec files** (create as needed):
 - **Core**: tech-stack, domain-model, api-contracts, conventions, testing, build-deploy
@@ -302,9 +302,9 @@ With:    {project-root}/.spider-adapter/CustomBDL.md
 ## Template: AGENTS.md
 
 ```markdown
-# Spider Adapter: {Project Name}
+# Spaider Adapter: {Project Name}
 
-**Extends**: `../../Spider/AGENTS.md`
+**Extends**: `../../Spaider/AGENTS.md`
 
 **Version**: 1.0  
 **Status**: COMPLETE  
@@ -328,7 +328,7 @@ ALWAYS open and follow `specs/conventions.md` WHEN executing workflows: adapter.
 **Example spec file** (in your adapter):
 
 ```text
-.spider-adapter/specs/domain-model.md
+.spaider-adapter/specs/domain-model.md
 ```
 ```markdown
 # Domain Model Specification

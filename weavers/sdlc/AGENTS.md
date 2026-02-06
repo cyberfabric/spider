@@ -1,4 +1,4 @@
-# Spider Weaver: SDLC (`spider-sdlc`)
+# Spaider Weaver: SDLC (`spaider-sdlc`)
 
 Agent quick reference.
 
@@ -15,4 +15,4 @@ Artifact-first SDLC pipeline (PRD → ADR + DESIGN → DECOMPOSITION → SPEC �
 | DESIGN | System blueprint: architecture, components, boundaries, interfaces, drivers, principles/constraints. | `artifacts/DESIGN/rules.md`, `artifacts/DESIGN/template.md`, `artifacts/DESIGN/checklist.md`, `artifacts/DESIGN/examples/example.md` |
 | DECOMPOSITION | Executable plan: SPEC list, ordering, dependencies, and coverage links back to PRD/DESIGN. | `artifacts/DECOMPOSITION/rules.md`, `artifacts/DECOMPOSITION/template.md`, `artifacts/DECOMPOSITION/checklist.md`, `artifacts/DECOMPOSITION/examples/example.md` |
 | SPEC | Precise behavior + DoD: SDSL flows/algos/states + test scenarios for implementability. | `artifacts/SPEC/rules.md`, `artifacts/SPEC/template.md`, `artifacts/SPEC/checklist.md`, `artifacts/SPEC/examples/example.md` |
-| CODE | Implementation of SPEC with optional `@spider-*` markers and checkbox cascade/coverage validation. | `codebase/rules.md`, `codebase/checklist.md` |
+| CODE | Implementation of SPEC with optional `@spaider-*` markers and checkbox cascade/coverage validation. | `codebase/rules.md`, `codebase/checklist.md` |

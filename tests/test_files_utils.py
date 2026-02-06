@@ -9,12 +9,12 @@ import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spider" / "scripts"))
+sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spaider" / "scripts"))
 
-from spider.utils.files import load_text, find_adapter_directory
-from spider.utils.files import (
+from spaider.utils.files import load_text, find_adapter_directory
+from spaider.utils.files import (
     cfg_get_str,
-    spider_root_from_project_config,
+    spaider_root_from_project_config,
     iter_registry_entries,
     load_adapter_config,
     load_artifacts_registry,
@@ -101,11 +101,11 @@ class TestFindAdapterDirectory(unittest.TestCase):
             # Create .git to mark as project root
             (root / ".git").mkdir()
             
-            adapter_dir = root / ".spider-adapter"
+            adapter_dir = root / ".spaider-adapter"
             adapter_dir.mkdir()
             
             # Create AGENTS.md with adapter markers
-            (adapter_dir / "AGENTS.md").write_text("# Spider Adapter: Test\n\nThis is an Spider adapter for testing.")
+            (adapter_dir / "AGENTS.md").write_text("# Spaider Adapter: Test\n\nThis is an Spaider adapter for testing.")
             
             # Create specs directory (required for validation)
             specs_dir = adapter_dir / "specs"
@@ -122,10 +122,10 @@ class TestFindAdapterDirectory(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "cfg-adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "cfg-adapter"}', encoding="utf-8")
             adapter_dir = root / "cfg-adapter"
             adapter_dir.mkdir()
-            (adapter_dir / "AGENTS.md").write_text("# Spider Adapter: X\n", encoding="utf-8")
+            (adapter_dir / "AGENTS.md").write_text("# Spaider Adapter: X\n", encoding="utf-8")
 
             result = find_adapter_directory(root)
             self.assertIsNotNone(result)
@@ -136,12 +136,12 @@ class TestFindAdapterDirectory(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "missing"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "missing"}', encoding="utf-8")
 
             # A valid adapter exists elsewhere, but must NOT be used.
-            adapter_dir = root / ".spider-adapter"
+            adapter_dir = root / ".spaider-adapter"
             adapter_dir.mkdir()
-            (adapter_dir / "AGENTS.md").write_text("# Spider Adapter: X\n", encoding="utf-8")
+            (adapter_dir / "AGENTS.md").write_text("# Spaider Adapter: X\n", encoding="utf-8")
             (adapter_dir / "specs").mkdir()
 
             result = find_adapter_directory(root)
@@ -166,23 +166,23 @@ class TestFindAdapterDirectory(unittest.TestCase):
             finally:
                 Path.iterdir = orig_iterdir  # type: ignore
 
-    def test_find_adapter_extends_matches_spider_root(self):
-        """Cover is_adapter_directory Extends path validation with provided spider_root."""
+    def test_find_adapter_extends_matches_spaider_root(self):
+        """Cover is_adapter_directory Extends path validation with provided spaider_root."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
 
-            spider_root = root / "Spider"
-            spider_root.mkdir()
-            (spider_root / "AGENTS.md").write_text("# Core\n", encoding="utf-8")
-            (spider_root / "requirements").mkdir()
-            (spider_root / "workflows").mkdir()
+            spaider_root = root / "Spaider"
+            spaider_root.mkdir()
+            (spaider_root / "AGENTS.md").write_text("# Core\n", encoding="utf-8")
+            (spaider_root / "requirements").mkdir()
+            (spaider_root / "workflows").mkdir()
 
-            adapter_dir = root / ".spider-adapter"
+            adapter_dir = root / ".spaider-adapter"
             adapter_dir.mkdir()
-            (adapter_dir / "AGENTS.md").write_text("# Spider Adapter: P\n\n**Extends**: `../Spider/AGENTS.md`\n", encoding="utf-8")
+            (adapter_dir / "AGENTS.md").write_text("# Spaider Adapter: P\n\n**Extends**: `../Spaider/AGENTS.md`\n", encoding="utf-8")
 
-            found = find_adapter_directory(root, spider_root=spider_root)
+            found = find_adapter_directory(root, spaider_root=spaider_root)
             self.assertIsNotNone(found)
             self.assertEqual(found.resolve(), adapter_dir.resolve())
 
@@ -197,26 +197,26 @@ class TestConfigHelpers(unittest.TestCase):
     def test_load_project_config_invalid_json_returns_none(self):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            (root / ".spider-config.json").write_text("{not json", encoding="utf-8")
+            (root / ".spaider-config.json").write_text("{not json", encoding="utf-8")
             self.assertIsNone(load_project_config(root))
 
     def test_load_project_config_non_dict_returns_none(self):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
-            (root / ".spider-config.json").write_text("[]", encoding="utf-8")
+            (root / ".spaider-config.json").write_text("[]", encoding="utf-8")
             self.assertIsNone(load_project_config(root))
 
-    def test_spider_root_from_project_config_success(self):
+    def test_spaider_root_from_project_config_success(self):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            spider_core = root / "Spider"
-            spider_core.mkdir()
-            (spider_core / "AGENTS.md").write_text("# Core\n", encoding="utf-8")
-            (spider_core / "requirements").mkdir()
-            (spider_core / "workflows").mkdir()
+            spaider_core = root / "Spaider"
+            spaider_core.mkdir()
+            (spaider_core / "AGENTS.md").write_text("# Core\n", encoding="utf-8")
+            (spaider_core / "requirements").mkdir()
+            (spaider_core / "workflows").mkdir()
 
-            (root / ".spider-config.json").write_text('{"spiderCorePath": "Spider"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderCorePath": "Spaider"}', encoding="utf-8")
 
             # Run from a subdir to exercise find_project_root via cwd.
             sub = root / "src"
@@ -225,39 +225,39 @@ class TestConfigHelpers(unittest.TestCase):
             try:
                 import os
                 os.chdir(str(sub))
-                found = spider_root_from_project_config()
+                found = spaider_root_from_project_config()
                 self.assertIsNotNone(found)
-                self.assertEqual(found.resolve(), spider_core.resolve())
+                self.assertEqual(found.resolve(), spaider_core.resolve())
             finally:
                 import os
                 os.chdir(str(cwd))
 
-    def test_spider_root_from_project_config_missing_key_returns_none(self):
+    def test_spaider_root_from_project_config_missing_key_returns_none(self):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text("{}", encoding="utf-8")
+            (root / ".spaider-config.json").write_text("{}", encoding="utf-8")
             sub = root / "src"
             sub.mkdir()
             cwd = Path.cwd()
             try:
                 import os
                 os.chdir(str(sub))
-                self.assertIsNone(spider_root_from_project_config())
+                self.assertIsNone(spaider_root_from_project_config())
             finally:
                 import os
                 os.chdir(str(cwd))
 
-    def test_spider_root_from_project_config_invalid_core_dir_returns_none(self):
+    def test_spaider_root_from_project_config_invalid_core_dir_returns_none(self):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()
-            (root / ".spider-config.json").write_text('{"spiderCorePath": "MissingSpider"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderCorePath": "MissingSpaider"}', encoding="utf-8")
             cwd = Path.cwd()
             try:
                 import os
                 os.chdir(str(root))
-                self.assertIsNone(spider_root_from_project_config())
+                self.assertIsNone(spaider_root_from_project_config())
             finally:
                 import os
                 os.chdir(str(cwd))
@@ -268,7 +268,7 @@ class TestLoadAdapterConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             ad = Path(tmpdir) / "adapter"
             ad.mkdir()
-            (ad / "AGENTS.md").write_text("# Spider Adapter: MyProj\n", encoding="utf-8")
+            (ad / "AGENTS.md").write_text("# Spaider Adapter: MyProj\n", encoding="utf-8")
             (ad / "specs").mkdir()
             (ad / "specs" / "a.md").write_text("# A\n", encoding="utf-8")
             (ad / "specs" / "b.md").write_text("# B\n", encoding="utf-8")
@@ -281,7 +281,7 @@ class TestLoadAdapterConfig(unittest.TestCase):
         with TemporaryDirectory() as tmpdir:
             ad = Path(tmpdir) / "adapter"
             ad.mkdir()
-            (ad / "AGENTS.md").write_text("# Spider Adapter: MyProj\n", encoding="utf-8")
+            (ad / "AGENTS.md").write_text("# Spaider Adapter: MyProj\n", encoding="utf-8")
             cfg = load_adapter_config(ad)
             self.assertEqual(cfg.get("project_name"), "MyProj")
             self.assertEqual(cfg.get("specs"), [])
@@ -306,7 +306,7 @@ class TestLoadAdapterConfig(unittest.TestCase):
             # Create .git to mark as project root
             (root / ".git").mkdir()
             
-            adapter_dir = root / ".spider-adapter"
+            adapter_dir = root / ".spaider-adapter"
             adapter_dir.mkdir()
             
             # Create AGENTS.md (required)
@@ -363,7 +363,7 @@ class TestLoadAdapterConfigExceptionHandling(unittest.TestCase):
             ad = Path(tmpdir) / "adapter"
             ad.mkdir()
             agents = ad / "AGENTS.md"
-            agents.write_text("# Spider Adapter: Test\n", encoding="utf-8")
+            agents.write_text("# Spaider Adapter: Test\n", encoding="utf-8")
 
             orig = Path.read_text
 
@@ -393,7 +393,7 @@ class TestIsAdapterDirectoryContentBased(unittest.TestCase):
             adapter_dir.mkdir()
             # AGENTS.md mentions "spec" but no specs/ directory
             (adapter_dir / "AGENTS.md").write_text(
-                "# Spider Adapter: Test\n\nSee our spec documents.\n",
+                "# Spaider Adapter: Test\n\nSee our spec documents.\n",
                 encoding="utf-8",
             )
 
@@ -410,29 +410,29 @@ class TestIsAdapterDirectoryContentBased(unittest.TestCase):
             # Create deeply nested adapter (beyond default max_depth of 5)
             deep = root / "a" / "b" / "c" / "d" / "e" / "f" / "g" / "adapter"
             deep.mkdir(parents=True)
-            (deep / "AGENTS.md").write_text("# Spider Adapter: Deep\n", encoding="utf-8")
+            (deep / "AGENTS.md").write_text("# Spaider Adapter: Deep\n", encoding="utf-8")
             (deep / "specs").mkdir()
 
             result = find_adapter_directory(root)
             self.assertIsNone(result)
 
 
-class TestSpiderRootFromProjectConfigEdgeCases(unittest.TestCase):
-    def test_spider_root_no_project_root_returns_none(self):
-        """Cover spider_root_from_project_config returning None when no project root."""
+class TestSpaiderRootFromProjectConfigEdgeCases(unittest.TestCase):
+    def test_spaider_root_no_project_root_returns_none(self):
+        """Cover spaider_root_from_project_config returning None when no project root."""
         with TemporaryDirectory() as tmpdir:
-            # No .git or .spider-config.json - no project root
+            # No .git or .spaider-config.json - no project root
             cwd = Path.cwd()
             try:
                 import os
                 os.chdir(tmpdir)
-                result = spider_root_from_project_config()
+                result = spaider_root_from_project_config()
                 self.assertIsNone(result)
             finally:
                 os.chdir(str(cwd))
 
-    def test_spider_root_no_config_returns_none(self):
-        """Cover spider_root_from_project_config returning None when config missing."""
+    def test_spaider_root_no_config_returns_none(self):
+        """Cover spaider_root_from_project_config returning None when config missing."""
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             (root / ".git").mkdir()  # Project root exists but no config
@@ -440,7 +440,7 @@ class TestSpiderRootFromProjectConfigEdgeCases(unittest.TestCase):
             try:
                 import os
                 os.chdir(str(root))
-                result = spider_root_from_project_config()
+                result = spaider_root_from_project_config()
                 self.assertIsNone(result)
             finally:
                 os.chdir(str(cwd))

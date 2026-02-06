@@ -1,12 +1,12 @@
 ---
-spider: true
+spaider: true
 type: requirement
 name: Adapter Structure
 version: 1.1
-purpose: Define validation rules for Spider adapter files
+purpose: Define validation rules for Spaider adapter files
 ---
 
-# Spider Adapter Structure Requirements
+# Spaider Adapter Structure Requirements
 
 ---
 
@@ -29,7 +29,7 @@ purpose: Define validation rules for Spider adapter files
 
 **ALWAYS open and follow**: `../workflows/adapter.md` WHEN executing workflow
 
-**ALWAYS open**: `../.spider-adapter/AGENTS.md` WHEN reviewing a valid adapter AGENTS.md example (this repository)
+**ALWAYS open**: `../.spaider-adapter/AGENTS.md` WHEN reviewing a valid adapter AGENTS.md example (this repository)
 
 **Prerequisite**: Agent confirms understanding before proceeding:
 - [ ] Agent has read and understood this requirement
@@ -43,7 +43,7 @@ purpose: Define validation rules for Spider adapter files
 - **Template defines**: Structure for generation (HOW to create)
 - **Workflow defines**: Process (STEP by STEP)
 
-**Spider Adapter** — Dynamic project-specific configuration that evolves with the project
+**Spaider Adapter** — Dynamic project-specific configuration that evolves with the project
 
 **Philosophy**: 
 - Adapter specs derive from design decisions, not predefined templates
@@ -78,21 +78,21 @@ purpose: Define validation rules for Spider adapter files
 
 ## Required Files
 
-### .spider-config.json
+### .spaider-config.json
 
-**Location**: `{project-root}/.spider-config.json`
+**Location**: `{project-root}/.spaider-config.json`
 
 **Mandatory fields**:
 ```json
 {
-  "spiderAdapterPath": ".spider-adapter"
+  "spaiderAdapterPath": ".spaider-adapter"
 }
 ```
 
 **Validation**:
 - [ ] File exists at project root
 - [ ] Valid JSON format
-- [ ] `spiderAdapterPath` field present
+- [ ] `spaiderAdapterPath` field present
 - [ ] Path points to existing directory with AGENTS.md
 
 ### AGENTS.md
@@ -140,7 +140,7 @@ ALWAYS open and follow `specs/tech-stack.md` WHEN working on project
 → FIX: Be specific about the action
 
 # Tied to weaver (legacy format)
-ALWAYS open and follow `specs/tech-stack.md` WHEN Spider uses weaver `spider-sdlc` for codebase
+ALWAYS open and follow `specs/tech-stack.md` WHEN Spaider uses weaver `spaider-sdlc` for codebase
 → FIX: Use action-based format: WHEN writing code, choosing technologies, or adding dependencies
 
 # Tied to artifact kind (legacy format)
@@ -158,9 +158,9 @@ ALWAYS open and follow `specs/domain-model.md` WHEN generating DESIGN
 
 **Required content**:
 ```markdown
-# Spider Adapter: {Project Name}
+# Spaider Adapter: {Project Name}
 
-**Extends**: `{path}/Spider/AGENTS.md`
+**Extends**: `{path}/Spaider/AGENTS.md`
 ```
 
 ### Phase 2: Evolved Adapter
@@ -172,7 +172,7 @@ ALWAYS open and follow `specs/domain-model.md` WHEN generating DESIGN
 - Last Updated
 - Tech Stack
 
-**Required spec files** (created by `/spider-adapter` during Discovery phase or manually):
+**Required spec files** (created by `/spaider-adapter` during Discovery phase or manually):
 
 | Spec File | Contains | Created When |
 |-----------|----------|--------------|
@@ -190,13 +190,13 @@ ALWAYS open and follow `specs/domain-model.md` WHEN generating DESIGN
 | `reliability.md` | Error handling, recovery, fallbacks | Production system |
 | `compliance.md` | Regulations, standards, audit | Regulated industry |
 
-**Creation trigger**: Run `/spider-adapter --rescan` to auto-detect and propose spec files based on project state.
+**Creation trigger**: Run `/spaider-adapter --rescan` to auto-detect and propose spec files based on project state.
 
 ---
 
 ## Spec Discovery Guide
 
-This section defines **what to look for** and **where to find it** when discovering project-specific knowledge for adapter specs. The domains are derived from the expertise areas in Spider checklists (PRD, DESIGN, DECOMPOSITION, ADR, SPEC, and codebase).
+This section defines **what to look for** and **where to find it** when discovering project-specific knowledge for adapter specs. The domains are derived from the expertise areas in Spaider checklists (PRD, DESIGN, DECOMPOSITION, ADR, SPEC, and codebase).
 
 ### Discovery Methodology
 
@@ -461,7 +461,7 @@ Each spec file MUST include:
 
 ### Missing Referenced Files
 
-**If adapter example file not found** (`../.spider-adapter/AGENTS.md`):
+**If adapter example file not found** (`../.spaider-adapter/AGENTS.md`):
 ```
 ⚠️ Example not found: {path}
 → Proceed without example (reduced quality assurance)
@@ -480,14 +480,14 @@ Each spec file MUST include:
 **If Phase 1 validation fails**:
 1. Check AGENTS.md exists at adapter path
 2. Verify `**Extends**:` declaration present
-3. Verify Extends path points to valid Spider AGENTS.md
+3. Verify Extends path points to valid Spaider AGENTS.md
 
 **If Phase 2 validation fails**:
 1. Identify which spec files are missing
-2. Run `/spider-adapter --rescan` to regenerate
+2. Run `/spaider-adapter --rescan` to regenerate
 3. For each failed check, see [Consolidated Validation Checklist](#consolidated-validation-checklist)
 
-**Recovery**: After fixing issues, re-run `/spider-analyze` to confirm resolution.
+**Recovery**: After fixing issues, re-run `/spaider-analyze` to confirm resolution.
 
 ---
 
@@ -499,11 +499,11 @@ Each spec file MUST include:
 
 | # | Check | Required | How to Verify |
 |---|-------|----------|---------------|
-| 1.1 | `{project-root}/.spider-config.json` exists at project root | YES | File exists check |
-| 1.2 | `{project-root}/.spider-config.json` is valid JSON | YES | JSON parse succeeds |
-| 1.3 | `spiderAdapterPath` field present | YES | Field exists in JSON |
+| 1.1 | `{project-root}/.spaider-config.json` exists at project root | YES | File exists check |
+| 1.2 | `{project-root}/.spaider-config.json` is valid JSON | YES | JSON parse succeeds |
+| 1.3 | `spaiderAdapterPath` field present | YES | Field exists in JSON |
 | 1.4 | Adapter path points to directory with AGENTS.md | YES | Path + `AGENTS.md` exists |
-| 1.5 | AGENTS.md has project name heading | YES | `# Spider Adapter: {name}` present |
+| 1.5 | AGENTS.md has project name heading | YES | `# Spaider Adapter: {name}` present |
 | 1.6 | AGENTS.md has `**Extends**:` declaration | YES | Pattern match |
 | 1.7 | Extends path resolves to valid file | YES | File exists at path |
 | 1.8 | No PRD content in adapter | YES | No problem/solution/scope sections |
@@ -545,19 +545,19 @@ Each spec file MUST include:
 
 | Issue | Symptom | Fix |
 |-------|---------|-----|
-| Missing Extends | Validation fails at 1.6 | Add `**Extends**: \`{path}/Spider/AGENTS.md\`` |
+| Missing Extends | Validation fails at 1.6 | Add `**Extends**: \`{path}/Spaider/AGENTS.md\`` |
 | Legacy WHEN format | Validation fails at 2.5 | Convert to action-based: `WHEN writing code, ...` |
 | Orphaned WHEN rules | Validation fails at 2.6 | Create missing spec OR remove rule |
 | Inconsistent tech refs | Spec conflicts with DESIGN | Update spec to match DESIGN source of truth |
-| Missing spec files | Validation fails at 2.7-2.13 | Run `/spider-adapter --rescan` to generate |
+| Missing spec files | Validation fails at 2.7-2.13 | Run `/spaider-adapter --rescan` to generate |
 | PRD content in adapter | Validation fails at 1.8 | Move to PRD artifact |
 
 ---
 
 ## References
 
-**Example (this repo)**: `../.spider-adapter/AGENTS.md`
+**Example (this repo)**: `../.spaider-adapter/AGENTS.md`
 
 **Related**:
-- `../AGENTS.md` — Core Spider requirements
+- `../AGENTS.md` — Core Spaider requirements
 - `workflow-requirements.md` — Workflow structure requirements

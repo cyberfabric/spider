@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/spider/artifacts.schema.json",
-  "title": "Spider Artifact Registry (artifacts.json)",
+  "$id": "https://example.com/spaider/artifacts.schema.json",
+  "title": "Spaider Artifact Registry (artifacts.json)",
   "type": "object",
   "additionalProperties": false,
   "required": ["version", "systems", "weavers"],
@@ -10,8 +10,8 @@
       "version": "1.0",
       "project_root": "..",
       "weavers": {
-        "spider-sdlc": {
-          "format": "Spider",
+        "spaider-sdlc": {
+          "format": "Spaider",
           "path": "weavers/sdlc"
         }
       },
@@ -19,7 +19,7 @@
         {
           "name": "MyApp",
           "slug": "myapp",
-          "weaver": "spider-sdlc",
+          "weaver": "spaider-sdlc",
           "artifacts_dir": "architecture",
           "artifacts": [
             { "name": "Product Requirements", "path": "architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
@@ -35,7 +35,7 @@
             {
               "name": "Auth",
               "slug": "auth",
-              "weaver": "spider-sdlc",
+              "weaver": "spaider-sdlc",
               "artifacts_dir": "modules/auth/architecture",
               "artifacts": [
                 { "path": "modules/auth/architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
@@ -90,7 +90,7 @@
         "format": {
           "type": "string",
           "minLength": 1,
-          "description": "Template format identifier. Use 'Spider' for full Spider tooling support with validation. Other values are treated as custom formats with LLM-only semantic processing."
+          "description": "Template format identifier. Use 'Spaider' for full Spaider tooling support with validation. Other values are treated as custom formats with LLM-only semantic processing."
         },
         "path": {
           "type": "string",

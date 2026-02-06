@@ -9,7 +9,7 @@
 - `template.md` — required structure
 - `checklist.md` — decomposition quality criteria
 - `examples/example.md` — reference implementation
-- `{spider_path}/requirements/template.md` — Spider template marker syntax specification
+- `{spaider_path}/requirements/template.md` — Spaider template marker syntax specification
 
 ---
 
@@ -154,7 +154,7 @@ Agent executes tasks during generation:
 - [ ] Assign priorities based on dependency order
 - [ ] Set initial status to NOT_STARTED
 - [ ] Link to DESIGN elements being implemented
-- [ ] Verify uniqueness with `python3 {spider_path}/skills/spider/scripts/spider.py list-ids`
+- [ ] Verify uniqueness with `python3 {spaider_path}/skills/spaider/scripts/spaider.py list-ids`
 
 ### Phase 4: Spec Scaffolding
 
@@ -187,7 +187,7 @@ Create stub files for all specs defined in decomposition to ensure links are val
 <!-- spd:id:spec has="priority,task" -->
 - [ ] `p1` - **ID**: `spd-{hierarchy-prefix}-spec-{slug}`
 
-This spec design is a placeholder. Generate full content with `spider make SPEC spec for {slug}`.
+This spec design is a placeholder. Generate full content with `spaider make SPEC spec for {slug}`.
 <!-- spd:##:overview -->
 <!-- spd:#:spec -->
 ```
@@ -220,13 +220,13 @@ This spec design is a placeholder. Generate full content with `spider make SPEC 
 
 **Spec Completion (Marking Spec Done)**:
 1. Verify ALL `id-ref` blocks within the spec have `[x]`
-2. Run `python3 {spider_path}/skills/spider/scripts/spider.py validate` to confirm no checkbox inconsistencies
+2. Run `python3 {spaider_path}/skills/spaider/scripts/spaider.py validate` to confirm no checkbox inconsistencies
 3. Change the `id:spec` line from `[ ]` to `[x]`
 4. Update spec status emoji (e.g., ⏳ → ✅)
 
 **Manifest Completion (Marking Overall Done)**:
 1. Verify ALL `id:spec` blocks have `[x]`
-2. Run `python3 {spider_path}/skills/spider/scripts/spider.py validate` to confirm cascade consistency
+2. Run `python3 {spaider_path}/skills/spaider/scripts/spaider.py validate` to confirm cascade consistency
 3. Change the `id:status` line from `[ ]` to `[x]`
 
 ---
@@ -237,7 +237,7 @@ Validation workflow applies rules in two phases:
 
 ### Phase 1: Structural Validation (Deterministic)
 
-Run `python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact <path>` for:
+Run `python3 {spaider_path}/skills/spaider/scripts/spaider.py validate --artifact <path>` for:
 - [ ] Template structure compliance
 - [ ] ID format validation
 - [ ] Priority markers present
@@ -277,7 +277,7 @@ Issues:
 **If `template.md` cannot be loaded**:
 ```
 ⚠ Template not found: weavers/sdlc/artifacts/DECOMPOSITION/template.md
-→ Verify Spider installation is complete
+→ Verify Spaider installation is complete
 → STOP — cannot proceed without template
 ```
 
@@ -319,8 +319,8 @@ After DECOMPOSITION generation/validation, offer these options:
 
 | Condition | Suggested Next Step |
 |-----------|---------------------|
-| Specs defined | `/spider-generate SPEC` — design first/next spec |
+| Specs defined | `/spaider-generate SPEC` — design first/next spec |
 | Spec IMPLEMENTED | Update spec status in decomposition |
-| All specs IMPLEMENTED | `/spider-analyze DESIGN` — validate design completion |
-| New spec needed | Add to decomposition, then `/spider-generate SPEC` |
-| Want checklist review only | `/spider-analyze semantic` — decomposition quality validation |
+| All specs IMPLEMENTED | `/spaider-analyze DESIGN` — validate design completion |
+| New spec needed | Add to decomposition, then `/spaider-generate SPEC` |
+| Want checklist review only | `/spaider-analyze semantic` — decomposition quality validation |

@@ -1,15 +1,15 @@
 <!-- spd:#:prd -->
-# PRD (Product Requirements Document): Spider
+# PRD (Product Requirements Document): Spaider
 
 <!-- spd:##:overview -->
 ## 1. Overview
 
 <!-- spd:paragraph:purpose -->
-**Purpose**: Spider is a methodology and productized system for guiding software development through stable artifacts, deterministic validation, and repeatable workflows.
+**Purpose**: Spaider is a methodology and productized system for guiding software development through stable artifacts, deterministic validation, and repeatable workflows.
 <!-- spd:paragraph:purpose -->
 
 <!-- spd:paragraph:context -->
-In this project, "Spider" means **Framework for Documentation and Development**: the project is developed by running workflows (flows), using skills/tools for deterministic checks, and iterating interactively with AI agents.
+In this project, "Spaider" means **Framework for Documentation and Development**: the project is developed by running workflows (flows), using skills/tools for deterministic checks, and iterating interactively with AI agents.
 <!-- spd:paragraph:context -->
 
 **Target Users**:
@@ -33,11 +33,11 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 
 **Success Criteria**:
 <!-- spd:list:success-criteria required="true" -->
-- A new user can complete adapter initialization and reach a first passing PRD validation (`spider validate --artifact {project-root}/architecture/PRD.md`) in ≤ 60 minutes. (Baseline: not measured; Target: v1.0)
+- A new user can complete adapter initialization and reach a first passing PRD validation (`spaider validate --artifact {project-root}/architecture/PRD.md`) in ≤ 60 minutes. (Baseline: not measured; Target: v1.0)
 - Deterministic validation of the PRD completes in ≤ 3 seconds on a typical developer laptop. (Baseline: ~1s current; Target: v1.0)
-- 100% of `spd-spider-actor-*` IDs defined in the PRD are resolvable via deterministic search (`spider where-defined`) without ambiguity. (Baseline: 100% current; Target: v1.0)
+- 100% of `spd-spaider-actor-*` IDs defined in the PRD are resolvable via deterministic search (`spaider where-defined`) without ambiguity. (Baseline: 100% current; Target: v1.0)
 - CI validation feedback for PRD changes is produced in ≤ 2 minutes from push to default branch. (Baseline: not measured; Target: v1.0)
-- Users can apply a small PRD update (single section change) via `/spider-prd` in ≤ 10 minutes end-to-end, including re-validation. (Baseline: not measured; Target: v1.0)
+- Users can apply a small PRD update (single section change) via `/spaider-prd` in ≤ 10 minutes end-to-end, including re-validation. (Baseline: not measured; Target: v1.0)
 <!-- spd:list:success-criteria -->
 
 **Capabilities**:
@@ -57,10 +57,10 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Product Manager
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-product-manager`
+**ID**: `spd-spaider-actor-product-manager`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Defines product requirements, captures use cases, and documents PRD content using Spider workflows
+**Role**: Defines product requirements, captures use cases, and documents PRD content using Spaider workflows
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
@@ -69,7 +69,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Architect
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-architect`
+**ID**: `spd-spaider-actor-architect`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
 **Role**: Designs system architecture, creates overall design documentation, and defines technical patterns
@@ -81,7 +81,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Developer
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-developer`
+**ID**: `spd-spaider-actor-developer`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
 **Role**: Implements specs according to validated designs, adds traceability tags to code
@@ -93,7 +93,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### QA Engineer
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-qa-engineer`
+**ID**: `spd-spaider-actor-qa-engineer`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
 **Role**: Validates implementation against design specifications and ensures test coverage
@@ -105,10 +105,10 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Technical Lead
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-technical-lead`
+**ID**: `spd-spaider-actor-technical-lead`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Sets up project adapters, configures Spider for project-specific conventions
+**Role**: Sets up project adapters, configures Spaider for project-specific conventions
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
@@ -117,7 +117,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Project Manager
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-project-manager`
+**ID**: `spd-spaider-actor-project-manager`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
 **Role**: Monitors development progress, ensures workflows are followed, tracks spec completion
@@ -129,10 +129,10 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Documentation Writer
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-documentation-writer`
+**ID**: `spd-spaider-actor-documentation-writer`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Creates and maintains project documentation using Spider artifacts as source
+**Role**: Creates and maintains project documentation using Spaider artifacts as source
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
@@ -141,7 +141,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### DevOps Engineer
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-devops-engineer`
+**ID**: `spd-spaider-actor-devops-engineer`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
 **Role**: Configures CI/CD pipelines, uses adapter specs for build and deployment automation
@@ -153,7 +153,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Security Engineer
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-security-engineer`
+**ID**: `spd-spaider-actor-security-engineer`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
 **Role**: Conducts security review of design and code, validates security requirements implementation
@@ -165,10 +165,10 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Business Analyst
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-prd-analyst`
+**ID**: `spd-spaider-actor-prd-analyst`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Analyzes product requirements and translates them into Spider format for Product Manager
+**Role**: Analyzes product requirements and translates them into Spaider format for Product Manager
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
@@ -177,7 +177,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### UX Designer
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-ux-designer`
+**ID**: `spd-spaider-actor-ux-designer`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
 **Role**: Designs user interfaces based on actor flows from spec design
@@ -189,7 +189,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Performance Engineer
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-performance-engineer`
+**ID**: `spd-spaider-actor-performance-engineer`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
 **Role**: Defines performance targets, reviews designs for performance risks, and validates performance requirements implementation
@@ -201,7 +201,7 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Database Architect
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-database-architect`
+**ID**: `spd-spaider-actor-database-architect`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
 **Role**: Designs data models and storage strategies, reviews domain model impacts, and validates database-related constraints
@@ -213,10 +213,10 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Release Manager
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-release-manager`
+**ID**: `spd-spaider-actor-release-manager`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Manages releases and tracks spec readiness using Spider artifacts (for example via a Spec Manifest when used)
+**Role**: Manages releases and tracks spec readiness using Spaider artifacts (for example via a Spec Manifest when used)
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
@@ -225,19 +225,19 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### AI Coding Assistant
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-ai-assistant`
+**ID**: `spd-spaider-actor-ai-assistant`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Executes Spider workflows interactively, generates artifacts, and validates against requirements
+**Role**: Executes Spaider workflows interactively, generates artifacts, and validates against requirements
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
 
 <!-- spd:###:actor-title repeat="many" -->
-### Spider Validation Tool
+### Spaider Validation Tool
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-spider-tool`
+**ID**: `spd-spaider-actor-spaider-tool`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
 **Role**: Automated validation engine that checks artifact structure, ID formats, and traceability
@@ -249,10 +249,10 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### CI/CD Pipeline
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-ci-pipeline`
+**ID**: `spd-spaider-actor-ci-pipeline`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Automatically validates Spider artifacts on every commit through GitHub Actions or GitLab CI
+**Role**: Automatically validates Spaider artifacts on every commit through GitHub Actions or GitLab CI
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
@@ -261,10 +261,10 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### Documentation Generator
 
 <!-- spd:id:actor -->
-**ID**: `spd-spider-actor-doc-generator`
+**ID**: `spd-spaider-actor-doc-generator`
 
 <!-- spd:paragraph:actor-role repeat="many" -->
-**Role**: Automatically generates external documentation from Spider artifacts (API docs, architecture diagrams)
+**Role**: Automatically generates external documentation from Spaider artifacts (API docs, architecture diagrams)
 <!-- spd:paragraph:actor-role -->
 <!-- spd:id:actor -->
 <!-- spd:###:actor-title repeat="many" -->
@@ -279,15 +279,15 @@ In this project, "Spider" means **Framework for Documentation and Development**:
 ### FR-001 Workflow-Driven Development
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-workflow-execution`
+- [x] `p1` - **ID**: `spd-spaider-fr-workflow-execution`
 
 <!-- spd:free:fr-summary -->
-The system MUST provide a clear, documented workflow catalog that users and AI agents can execute. Artifact locations MUST be adapter-defined; workflows MUST NOT hardcode repository paths. The core workflow set MUST cover at least: Adapter bootstrap and configuration, PRD creation/update, Overall design creation/update, ADR creation/update, Spec design creation/update, Spec implementation (`implement` as the primary implementation workflow), and Deterministic validation workflows for the above artifacts and for code traceability (when enabled). The system MUST provide a unified agent entrypoint workflow (`/spider`) that selects and executes the appropriate workflow (create/update/validate) based on context, or runs `spider` tool commands when requested. This includes interactive question-answer flow with AI agents, automated validation after artifact creation, step-by-step guidance for complex operations, and independent workflows (no forced sequence).
+The system MUST provide a clear, documented workflow catalog that users and AI agents can execute. Artifact locations MUST be adapter-defined; workflows MUST NOT hardcode repository paths. The core workflow set MUST cover at least: Adapter bootstrap and configuration, PRD creation/update, Overall design creation/update, ADR creation/update, Spec design creation/update, Spec implementation (`implement` as the primary implementation workflow), and Deterministic validation workflows for the above artifacts and for code traceability (when enabled). The system MUST provide a unified agent entrypoint workflow (`/spaider`) that selects and executes the appropriate workflow (create/update/validate) based on context, or runs `spaider` tool commands when requested. This includes interactive question-answer flow with AI agents, automated validation after artifact creation, step-by-step guidance for complex operations, and independent workflows (no forced sequence).
 <!-- spd:free:fr-summary -->
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-product-manager`, `spd-spider-actor-architect`, `spd-spider-actor-technical-lead`, `spd-spider-actor-project-manager`, `spd-spider-actor-release-manager`, `spd-spider-actor-developer`, `spd-spider-actor-qa-engineer`, `spd-spider-actor-security-engineer`, `spd-spider-actor-performance-engineer`, `spd-spider-actor-database-architect`, `spd-spider-actor-devops-engineer`, `spd-spider-actor-documentation-writer`, `spd-spider-actor-prd-analyst`, `spd-spider-actor-ux-designer`, `spd-spider-actor-ai-assistant`, `spd-spider-actor-spider-tool`, `spd-spider-actor-ci-pipeline`
+`spd-spaider-actor-product-manager`, `spd-spaider-actor-architect`, `spd-spaider-actor-technical-lead`, `spd-spaider-actor-project-manager`, `spd-spaider-actor-release-manager`, `spd-spaider-actor-developer`, `spd-spaider-actor-qa-engineer`, `spd-spaider-actor-security-engineer`, `spd-spaider-actor-performance-engineer`, `spd-spaider-actor-database-architect`, `spd-spaider-actor-devops-engineer`, `spd-spaider-actor-documentation-writer`, `spd-spaider-actor-prd-analyst`, `spd-spaider-actor-ux-designer`, `spd-spaider-actor-ai-assistant`, `spd-spaider-actor-spaider-tool`, `spd-spaider-actor-ci-pipeline`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -296,7 +296,7 @@ The system MUST provide a clear, documented workflow catalog that users and AI a
 ### FR-002 Artifact Structure Validation
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-validation`
+- [x] `p1` - **ID**: `spd-spaider-fr-validation`
 
 <!-- spd:free:fr-summary -->
 Deterministic validators for structural checks (sections, IDs, format). Deterministic content validation for semantic quality and boundaries: Content MUST be internally consistent (no contradictions), Content MUST NOT include information that belongs in other artifacts, Content MUST include required information expected for the artifact kind, Content MUST be semantically consistent with upstream/downstream artifacts (no cross-artifact contradictions), Content MUST not omit critical details that are explicitly defined in other artifacts. Deterministic validation for key artifacts defined by the adapter (no hardcoded repository paths). 100-point scoring system with category breakdown. Pass/fail thresholds (typically ≥90 or 100/100). Cross-reference validation (actor/capability IDs). Placeholder detection (incomplete markers). Detailed issue reporting with recommendations.
@@ -304,7 +304,7 @@ Deterministic validators for structural checks (sections, IDs, format). Determin
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-technical-lead`, `spd-spider-actor-developer`, `spd-spider-actor-qa-engineer`, `spd-spider-actor-security-engineer`, `spd-spider-actor-performance-engineer`, `spd-spider-actor-database-architect`, `spd-spider-actor-ai-assistant`, `spd-spider-actor-spider-tool`, `spd-spider-actor-ci-pipeline`
+`spd-spaider-actor-architect`, `spd-spaider-actor-technical-lead`, `spd-spaider-actor-developer`, `spd-spaider-actor-qa-engineer`, `spd-spaider-actor-security-engineer`, `spd-spaider-actor-performance-engineer`, `spd-spaider-actor-database-architect`, `spd-spaider-actor-ai-assistant`, `spd-spaider-actor-spaider-tool`, `spd-spaider-actor-ci-pipeline`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -313,7 +313,7 @@ Deterministic validators for structural checks (sections, IDs, format). Determin
 ### FR-003 Adapter Configuration System
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-adapter-config`
+- [x] `p1` - **ID**: `spd-spaider-fr-adapter-config`
 
 <!-- spd:free:fr-summary -->
 Technology-agnostic core methodology. Project-specific adapter specifications. Adapter MUST define an explicit registry of artifacts and their properties (for example: locations, scope, normative vs context-only). Adapter MUST support per-artifact configuration, including enabling/disabling code traceability checks. Tech stack definition (languages, frameworks, tools). Domain model format specification. API contract format specification. Adapter MUST be able to define deterministic tools/commands used to validate domain model sources and API contract sources. Testing strategy and build tool configuration. Auto-detection from existing codebase.
@@ -321,7 +321,7 @@ Technology-agnostic core methodology. Project-specific adapter specifications. A
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-technical-lead`, `spd-spider-actor-architect`, `spd-spider-actor-database-architect`, `spd-spider-actor-performance-engineer`, `spd-spider-actor-devops-engineer`, `spd-spider-actor-developer`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-technical-lead`, `spd-spaider-actor-architect`, `spd-spaider-actor-database-architect`, `spd-spaider-actor-performance-engineer`, `spd-spaider-actor-devops-engineer`, `spd-spaider-actor-developer`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -330,15 +330,15 @@ Technology-agnostic core methodology. Project-specific adapter specifications. A
 ### FR-004 Adaptive Design Bootstrapping
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-design-first`
+- [x] `p1` - **ID**: `spd-spaider-fr-design-first`
 
 <!-- spd:free:fr-summary -->
-Users MAY start implementation without having pre-existing design artifacts. When a workflow needs a traceability source and design artifacts are missing, the workflow MUST bootstrap the minimum viable design interactively and then continue. Once created, design artifacts become the single source of truth (code follows design). Design iteration MUST be workflow-driven and MUST be followed by deterministic validation. Clear separation between PRD, overall design, ADRs, and spec designs. Behavioral specifications MUST use Spider DSL (SDSL) (plain-English algorithms).
+Users MAY start implementation without having pre-existing design artifacts. When a workflow needs a traceability source and design artifacts are missing, the workflow MUST bootstrap the minimum viable design interactively and then continue. Once created, design artifacts become the single source of truth (code follows design). Design iteration MUST be workflow-driven and MUST be followed by deterministic validation. Clear separation between PRD, overall design, ADRs, and spec designs. Behavioral specifications MUST use Spaider DSL (SDSL) (plain-English algorithms).
 <!-- spd:free:fr-summary -->
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-product-manager`, `spd-spider-actor-architect`, `spd-spider-actor-developer`, `spd-spider-actor-prd-analyst`, `spd-spider-actor-ux-designer`, `spd-spider-actor-security-engineer`, `spd-spider-actor-performance-engineer`, `spd-spider-actor-database-architect`
+`spd-spaider-actor-product-manager`, `spd-spaider-actor-architect`, `spd-spaider-actor-developer`, `spd-spaider-actor-prd-analyst`, `spd-spaider-actor-ux-designer`, `spd-spaider-actor-security-engineer`, `spd-spaider-actor-performance-engineer`, `spd-spaider-actor-database-architect`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -347,15 +347,15 @@ Users MAY start implementation without having pre-existing design artifacts. Whe
 ### FR-005 Traceability Management
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-traceability`
+- [x] `p1` - **ID**: `spd-spaider-fr-traceability`
 
 <!-- spd:free:fr-summary -->
-Unique ID system for all design elements using structured format. Code tags (@spider-*) linking implementation to design. Traceability validation MUST be configurable per artifact (enabled/disabled via adapter). Spider-ID MAY be versioned by appending a `-vN` suffix (example: `<base-id>-v2`). When an identifier is replaced (REPLACE), the new identifier version MUST be incremented: If the prior identifier has no version suffix, the new identifier MUST end with `-v1`; If the prior identifier ends with `-vN`, the new identifier MUST increment the version by 1 (example: `-v1` → `-v2`). Once an identifier becomes versioned, the version suffix MUST NOT be removed in future references. When an identifier is replaced (REPLACE), all references MUST be updated (all artifacts and all code traceability tags, including qualified `:ph-N:inst-*` references). Qualified IDs for phases and instructions (:ph-N:inst-*). Repository-wide ID scanning and search. where-defined and where-used commands. Design-to-code validation (implemented items must have code tags).
+Unique ID system for all design elements using structured format. Code tags (@spaider-*) linking implementation to design. Traceability validation MUST be configurable per artifact (enabled/disabled via adapter). Spaider-ID MAY be versioned by appending a `-vN` suffix (example: `<base-id>-v2`). When an identifier is replaced (REPLACE), the new identifier version MUST be incremented: If the prior identifier has no version suffix, the new identifier MUST end with `-v1`; If the prior identifier ends with `-vN`, the new identifier MUST increment the version by 1 (example: `-v1` → `-v2`). Once an identifier becomes versioned, the version suffix MUST NOT be removed in future references. When an identifier is replaced (REPLACE), all references MUST be updated (all artifacts and all code traceability tags, including qualified `:ph-N:inst-*` references). Qualified IDs for phases and instructions (:ph-N:inst-*). Repository-wide ID scanning and search. where-defined and where-used commands. Design-to-code validation (implemented items must have code tags).
 <!-- spd:free:fr-summary -->
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-developer`, `spd-spider-actor-qa-engineer`, `spd-spider-actor-spider-tool`
+`spd-spaider-actor-developer`, `spd-spaider-actor-qa-engineer`, `spd-spaider-actor-spaider-tool`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -364,7 +364,7 @@ Unique ID system for all design elements using structured format. Code tags (@sp
 ### FR-006 Quickstart Guides
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-fr-interactive-docs`
+- [x] `p2` - **ID**: `spd-spaider-fr-interactive-docs`
 
 <!-- spd:free:fr-summary -->
 QUICKSTART guides with copy-paste prompts. Progressive disclosure (human-facing overview docs, AI navigation rules for agents).
@@ -372,7 +372,7 @@ QUICKSTART guides with copy-paste prompts. Progressive disclosure (human-facing 
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-documentation-writer`, `spd-spider-actor-product-manager`, `spd-spider-actor-release-manager`, `spd-spider-actor-ai-assistant`, `spd-spider-actor-doc-generator`
+`spd-spaider-actor-documentation-writer`, `spd-spaider-actor-product-manager`, `spd-spaider-actor-release-manager`, `spd-spaider-actor-ai-assistant`, `spd-spaider-actor-doc-generator`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -381,15 +381,15 @@ QUICKSTART guides with copy-paste prompts. Progressive disclosure (human-facing 
 ### FR-007 Artifact Templates
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-artifact-templates`
+- [x] `p1` - **ID**: `spd-spaider-fr-artifact-templates`
 
 <!-- spd:free:fr-summary -->
-The system MUST provide an artifact template catalog for core Spider artifacts (PRD, Overall Design, ADRs, Spec Manifest, Spec Designs). Agents MUST be able to use these templates during workflow execution.
+The system MUST provide an artifact template catalog for core Spaider artifacts (PRD, Overall Design, ADRs, Spec Manifest, Spec Designs). Agents MUST be able to use these templates during workflow execution.
 <!-- spd:free:fr-summary -->
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-documentation-writer`, `spd-spider-actor-ai-assistant`, `spd-spider-actor-doc-generator`, `spd-spider-actor-technical-lead`
+`spd-spaider-actor-documentation-writer`, `spd-spaider-actor-ai-assistant`, `spd-spaider-actor-doc-generator`, `spd-spaider-actor-technical-lead`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -398,15 +398,15 @@ The system MUST provide an artifact template catalog for core Spider artifacts (
 ### FR-008 Artifact Examples
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-fr-artifact-examples`
+- [x] `p2` - **ID**: `spd-spaider-fr-artifact-examples`
 
 <!-- spd:free:fr-summary -->
-The system MUST provide an artifact example catalog for core Spider artifacts (PRD, Overall Design, ADRs, Spec Manifest, Spec Designs). Agents MUST be able to use these examples during workflow execution.
+The system MUST provide an artifact example catalog for core Spaider artifacts (PRD, Overall Design, ADRs, Spec Manifest, Spec Designs). Agents MUST be able to use these examples during workflow execution.
 <!-- spd:free:fr-summary -->
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-documentation-writer`, `spd-spider-actor-ai-assistant`, `spd-spider-actor-doc-generator`, `spd-spider-actor-technical-lead`
+`spd-spaider-actor-documentation-writer`, `spd-spaider-actor-ai-assistant`, `spd-spaider-actor-doc-generator`, `spd-spaider-actor-technical-lead`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -415,7 +415,7 @@ The system MUST provide an artifact example catalog for core Spider artifacts (P
 ### FR-009 ADR Management
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-fr-arch-decision-mgmt`
+- [x] `p2` - **ID**: `spd-spaider-fr-arch-decision-mgmt`
 
 <!-- spd:free:fr-summary -->
 Create and track architecture decisions with structured format. Link ADRs to affected design sections and spec IDs. Decision status tracking (PROPOSED, ACCEPTED, DEPRECATED, SUPERSEDED). Impact analysis when ADR changes affect multiple specs. Search ADRs by status, date, or affected components. Version history for decision evolution.
@@ -423,7 +423,7 @@ Create and track architecture decisions with structured format. Link ADRs to aff
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-technical-lead`, `spd-spider-actor-security-engineer`, `spd-spider-actor-performance-engineer`, `spd-spider-actor-database-architect`
+`spd-spaider-actor-architect`, `spd-spaider-actor-technical-lead`, `spd-spaider-actor-security-engineer`, `spd-spaider-actor-performance-engineer`, `spd-spaider-actor-database-architect`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -432,7 +432,7 @@ Create and track architecture decisions with structured format. Link ADRs to aff
 ### FR-010 PRD Management
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-prd-mgmt`
+- [x] `p1` - **ID**: `spd-spaider-fr-prd-mgmt`
 
 <!-- spd:free:fr-summary -->
 Create and update PRD content through workflows. Enforce stable IDs for actors and capabilities. PRD deterministic validation integration.
@@ -440,7 +440,7 @@ Create and update PRD content through workflows. Enforce stable IDs for actors a
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-product-manager`, `spd-spider-actor-prd-analyst`, `spd-spider-actor-ai-assistant`, `spd-spider-actor-spider-tool`
+`spd-spaider-actor-product-manager`, `spd-spaider-actor-prd-analyst`, `spd-spaider-actor-ai-assistant`, `spd-spaider-actor-spaider-tool`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -449,7 +449,7 @@ Create and update PRD content through workflows. Enforce stable IDs for actors a
 ### FR-011 Overall Design Management
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-overall-design-mgmt`
+- [x] `p1` - **ID**: `spd-spaider-fr-overall-design-mgmt`
 
 <!-- spd:free:fr-summary -->
 Create and update Overall Design through workflows. Link requirements to PRD actors and capabilities. Deterministic validation integration for Overall Design.
@@ -457,7 +457,7 @@ Create and update Overall Design through workflows. Link requirements to PRD act
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-technical-lead`, `spd-spider-actor-ai-assistant`, `spd-spider-actor-spider-tool`
+`spd-spaider-actor-architect`, `spd-spaider-actor-technical-lead`, `spd-spaider-actor-ai-assistant`, `spd-spaider-actor-spaider-tool`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -466,7 +466,7 @@ Create and update Overall Design through workflows. Link requirements to PRD act
 ### FR-012 Spec Manifest Management
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-fr-spec-manifest-mgmt`
+- [x] `p2` - **ID**: `spd-spaider-fr-spec-manifest-mgmt`
 
 <!-- spd:free:fr-summary -->
 Create and update Spec Manifest (DECOMPOSITION) through workflows. Maintain stable IDs for specs and tracking fields. Deterministic validation integration for Spec Manifest.
@@ -474,7 +474,7 @@ Create and update Spec Manifest (DECOMPOSITION) through workflows. Maintain stab
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-project-manager`, `spd-spider-actor-release-manager`, `spd-spider-actor-ai-assistant`, `spd-spider-actor-spider-tool`
+`spd-spaider-actor-project-manager`, `spd-spaider-actor-release-manager`, `spd-spaider-actor-ai-assistant`, `spd-spaider-actor-spaider-tool`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -483,7 +483,7 @@ Create and update Spec Manifest (DECOMPOSITION) through workflows. Maintain stab
 ### FR-013 Spec Design Management
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-spec-design-mgmt`
+- [x] `p1` - **ID**: `spd-spaider-fr-spec-design-mgmt`
 
 <!-- spd:free:fr-summary -->
 Create and update Spec Design through workflows. Maintain stable IDs for flows, algorithms, and requirements. Deterministic validation integration for Spec Design.
@@ -491,7 +491,7 @@ Create and update Spec Design through workflows. Maintain stable IDs for flows, 
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-ai-assistant`, `spd-spider-actor-spider-tool`
+`spd-spaider-actor-architect`, `spd-spaider-actor-ai-assistant`, `spd-spaider-actor-spaider-tool`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -500,7 +500,7 @@ Create and update Spec Design through workflows. Maintain stable IDs for flows, 
 ### FR-014 Spec Lifecycle Management
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-fr-spec-lifecycle`
+- [x] `p2` - **ID**: `spd-spaider-fr-spec-lifecycle`
 
 <!-- spd:free:fr-summary -->
 Track spec status from NOT_STARTED through IN_DESIGN, DESIGNED, READY, IN_PROGRESS to DONE. Track progress using the project's selected spec tracking approach (for example a spec manifest when used). Spec dependency management and blocking detection. Milestone tracking and release planning integration. Historical spec completion metrics and velocity tracking. Status transition validation (cannot skip states).
@@ -508,7 +508,7 @@ Track spec status from NOT_STARTED through IN_DESIGN, DESIGNED, READY, IN_PROGRE
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-project-manager`, `spd-spider-actor-release-manager`, `spd-spider-actor-developer`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-project-manager`, `spd-spaider-actor-release-manager`, `spd-spaider-actor-developer`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -517,7 +517,7 @@ Track spec status from NOT_STARTED through IN_DESIGN, DESIGNED, READY, IN_PROGRE
 ### FR-015 Code Generation from Design
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-fr-code-generation`
+- [x] `p2` - **ID**: `spd-spaider-fr-code-generation`
 
 <!-- spd:free:fr-summary -->
 Provide an implementation process that is adapter-aware and works with any programming language. Apply general best practices that are applicable across languages. Prefer TDD where feasible and follow SOLID principles. Use adapter-defined domain model and API contract sources when present. Add traceability tags when traceability is enabled for the relevant artifacts.
@@ -525,7 +525,7 @@ Provide an implementation process that is adapter-aware and works with any progr
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-developer`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-developer`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -534,32 +534,32 @@ Provide an implementation process that is adapter-aware and works with any progr
 ### FR-016 Brownfield Support
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-fr-brownfield-support`
+- [x] `p2` - **ID**: `spd-spaider-fr-brownfield-support`
 
 <!-- spd:free:fr-summary -->
-Add Spider to existing projects without disruption. Auto-detect existing architecture from code and configs. Reverse-engineer the PRD from requirements documentation. Extract Overall Design patterns from implementation. Incremental Spider adoption (start with adapter, add artifacts gradually). Legacy system integration with minimal refactoring.
+Add Spaider to existing projects without disruption. Auto-detect existing architecture from code and configs. Reverse-engineer the PRD from requirements documentation. Extract Overall Design patterns from implementation. Incremental Spaider adoption (start with adapter, add artifacts gradually). Legacy system integration with minimal refactoring.
 <!-- spd:free:fr-summary -->
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-technical-lead`, `spd-spider-actor-architect`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-technical-lead`, `spd-spaider-actor-architect`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
 
 <!-- spd:###:fr-title repeat="many" -->
-### FR-017 Spider DSL (SDSL)
+### FR-017 Spaider DSL (SDSL)
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-sdsl`
+- [x] `p1` - **ID**: `spd-spaider-fr-sdsl`
 
 <!-- spd:free:fr-summary -->
-Plain English algorithm description language for actor flows (Spider DSL, abbreviated SDSL). Structured numbered lists with bold keywords (**IF**, **ELSE**, **WHILE**, **FOR EACH**). Instruction markers with checkboxes (- [ ] Inst-label: description). Phase-based organization (p1, p2, etc.) for implementation tracking. Readable by non-programmers for validation and review. Translates directly to code with traceability tags. Keywords: **AND**, **OR**, **NOT**, **MUST**, **REQUIRED**, **OPTIONAL**. Actor-centric (steps start with **Actor** or **System**).
+Plain English algorithm description language for actor flows (Spaider DSL, abbreviated SDSL). Structured numbered lists with bold keywords (**IF**, **ELSE**, **WHILE**, **FOR EACH**). Instruction markers with checkboxes (- [ ] Inst-label: description). Phase-based organization (p1, p2, etc.) for implementation tracking. Readable by non-programmers for validation and review. Translates directly to code with traceability tags. Keywords: **AND**, **OR**, **NOT**, **MUST**, **REQUIRED**, **OPTIONAL**. Actor-centric (steps start with **Actor** or **System**).
 <!-- spd:free:fr-summary -->
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-developer`, `spd-spider-actor-prd-analyst`, `spd-spider-actor-ux-designer`, `spd-spider-actor-product-manager`
+`spd-spaider-actor-architect`, `spd-spaider-actor-developer`, `spd-spaider-actor-prd-analyst`, `spd-spaider-actor-ux-designer`, `spd-spaider-actor-product-manager`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -568,15 +568,15 @@ Plain English algorithm description language for actor flows (Spider DSL, abbrev
 ### FR-018 IDE Integration and Tooling
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [ ] `p3` - **ID**: `spd-spider-fr-ide-integration`
+- [ ] `p3` - **ID**: `spd-spaider-fr-ide-integration`
 
 <!-- spd:free:fr-summary -->
-VS Code extension for Spider artifact editing. Click-to-navigate for Spider IDs (jump to definition). where-used and where-defined commands in IDE. Inline validation errors and warnings. Autocomplete for Spider IDs and section references. Syntax highlighting for Spider DSL (SDSL). Integration with `spider` skill commands. Code lens showing traceability status.
+VS Code extension for Spaider artifact editing. Click-to-navigate for Spaider IDs (jump to definition). where-used and where-defined commands in IDE. Inline validation errors and warnings. Autocomplete for Spaider IDs and section references. Syntax highlighting for Spaider DSL (SDSL). Integration with `spaider` skill commands. Code lens showing traceability status.
 <!-- spd:free:fr-summary -->
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-developer`, `spd-spider-actor-architect`, `spd-spider-actor-devops-engineer`
+`spd-spaider-actor-developer`, `spd-spaider-actor-architect`, `spd-spaider-actor-devops-engineer`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -585,15 +585,15 @@ VS Code extension for Spider artifact editing. Click-to-navigate for Spider IDs 
 ### FR-019 Multi-Agent IDE Integration
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-fr-multi-agent-integration`
+- [x] `p2` - **ID**: `spd-spaider-fr-multi-agent-integration`
 
 <!-- spd:free:fr-summary -->
-The system MUST provide a unified `agents` command to generate and maintain agent-specific workflow proxy files and skill entry points for multiple AI coding assistants. Supported agents MUST include Claude, Cursor, Windsurf, and Copilot. The `agents` command MUST generate workflow entry points in each agent's native format (e.g., `.claude/commands/`, `.cursor/commands/`, `.windsurf/workflows/`, `.github/prompts/`) and skill/rule entry points that point to the core Spider skill. Configuration MUST be externalized to a unified JSON file (`spider-agents.json`) with sensible defaults for recognized agents.
+The system MUST provide a unified `agents` command to generate and maintain agent-specific workflow proxy files and skill entry points for multiple AI coding assistants. Supported agents MUST include Claude, Cursor, Windsurf, and Copilot. The `agents` command MUST generate workflow entry points in each agent's native format (e.g., `.claude/commands/`, `.cursor/commands/`, `.windsurf/workflows/`, `.github/prompts/`) and skill/rule entry points that point to the core Spaider skill. Configuration MUST be externalized to a unified JSON file (`spaider-agents.json`) with sensible defaults for recognized agents.
 <!-- spd:free:fr-summary -->
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-technical-lead`, `spd-spider-actor-devops-engineer`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-technical-lead`, `spd-spaider-actor-devops-engineer`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -602,15 +602,15 @@ The system MUST provide a unified `agents` command to generate and maintain agen
 ### FR-020 Extensible Weaver Package System
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-rules-packages`
+- [x] `p1` - **ID**: `spd-spaider-fr-rules-packages`
 
 <!-- spd:free:fr-summary -->
-The system MUST support extensible weaver packages that define templates, checklists, and validation rules for artifact types. Each weaver package MUST be identified in the adapter registry and MUST contain a `template.md` file with Spider markers for each artifact kind. Weaver packages MAY contain `checklist.md` for semantic validation criteria and `rules.md` for generation guidance. The `validate-weavers` command MUST validate that weaver packages are structurally correct and that templates follow the spider-template frontmatter specification.
+The system MUST support extensible weaver packages that define templates, checklists, and validation rules for artifact types. Each weaver package MUST be identified in the adapter registry and MUST contain a `template.md` file with Spaider markers for each artifact kind. Weaver packages MAY contain `checklist.md` for semantic validation criteria and `rules.md` for generation guidance. The `validate-weavers` command MUST validate that weaver packages are structurally correct and that templates follow the spaider-template frontmatter specification.
 <!-- spd:free:fr-summary -->
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-technical-lead`, `spd-spider-actor-spider-tool`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-technical-lead`, `spd-spaider-actor-spaider-tool`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -619,7 +619,7 @@ The system MUST support extensible weaver packages that define templates, checkl
 ### FR-021 Template Quality Assurance
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-fr-template-qa`
+- [x] `p2` - **ID**: `spd-spaider-fr-template-qa`
 
 <!-- spd:free:fr-summary -->
 The system MUST provide a `self-check` command that validates example artifacts against their templates. The adapter registry MAY define `templates` entries with `template_path`, `example_path`, and `validation_level` properties. When `validation_level` is `STRICT`, the self-check command MUST validate that the example artifact passes all template validation rules. This ensures that templates and examples remain synchronized and that templates are valid.
@@ -627,7 +627,7 @@ The system MUST provide a `self-check` command that validates example artifacts 
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-technical-lead`, `spd-spider-actor-spider-tool`, `spd-spider-actor-documentation-writer`
+`spd-spaider-actor-technical-lead`, `spd-spaider-actor-spaider-tool`, `spd-spaider-actor-documentation-writer`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -636,7 +636,7 @@ The system MUST provide a `self-check` command that validates example artifacts 
 ### FR-022 Cross-Artifact Validation
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-fr-cross-artifact-validation`
+- [x] `p1` - **ID**: `spd-spaider-fr-cross-artifact-validation`
 
 <!-- spd:free:fr-summary -->
 The system MUST validate cross-artifact relationships when multiple artifacts are validated together. ID blocks with `covered_by` attributes MUST have at least one reference in artifacts whose template kind matches the covered_by list. All ID references MUST resolve to a definition in some artifact. When a reference is marked as checked (`[x]`), the corresponding definition MUST also be marked as checked. Cross-artifact validation MUST be deterministic and report all consistency violations with line numbers and artifact paths.
@@ -644,7 +644,7 @@ The system MUST validate cross-artifact relationships when multiple artifacts ar
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-spider-tool`, `spd-spider-actor-ci-pipeline`, `spd-spider-actor-architect`
+`spd-spaider-actor-spaider-tool`, `spd-spaider-actor-ci-pipeline`, `spd-spaider-actor-architect`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -653,7 +653,7 @@ The system MUST validate cross-artifact relationships when multiple artifacts ar
 ### FR-023 Hierarchical System Registry
 
 <!-- spd:id:fr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-fr-hierarchical-registry`
+- [x] `p2` - **ID**: `spd-spaider-fr-hierarchical-registry`
 
 <!-- spd:free:fr-summary -->
 The system MUST support hierarchical organization of systems in the artifacts registry. Each system MUST have a `name`, `rules` reference, and lists of `artifacts` and optional `codebase` entries. Systems MAY have `children` arrays for nested subsystems. Each artifact entry MUST specify `name`, `path`, `kind`, and `traceability` level (`FULL` or `DOCS-ONLY`). Each codebase entry MUST specify `name`, `path`, and `extensions` for code scanning. The `adapter-info` command MUST display the resolved hierarchical structure.
@@ -661,7 +661,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-technical-lead`, `spd-spider-actor-spider-tool`, `spd-spider-actor-architect`
+`spd-spaider-actor-technical-lead`, `spd-spaider-actor-spaider-tool`, `spd-spaider-actor-architect`
 <!-- spd:id-ref:actor -->
 <!-- spd:id:fr -->
 <!-- spd:###:fr-title repeat="many" -->
@@ -673,14 +673,14 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ## 4. Use Cases
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-001 Bootstrap New Project with Spider
+### UC-001 Bootstrap New Project with Spaider
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-bootstrap-project`
+**ID**: `spd-spaider-usecase-bootstrap-project`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-technical-lead`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-technical-lead`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -692,14 +692,14 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Technical Lead initiates Spider setup by requesting AI Assistant to add the Spider framework
-2. AI Assistant establishes minimal adapter configuration (uses capability `spd-spider-fr-adapter-config`)
+1. Technical Lead initiates Spaider setup by requesting AI Assistant to add the Spaider framework
+2. AI Assistant establishes minimal adapter configuration (uses capability `spd-spaider-fr-adapter-config`)
 3. If adapter is missing, the system offers to bootstrap it; the user MAY decline and continue with reduced automation
 4. The system confirms that adapter discovery is possible when the adapter exists
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Project has working Spider adapter, ready for PRD and design workflows
+**Postconditions**: Project has working Spaider adapter, ready for PRD and design workflows
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -710,11 +710,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-002 Create PRD
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-create-prd`
+**ID**: `spd-spaider-usecase-create-prd`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-product-manager`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-product-manager`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -726,12 +726,12 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Product Manager runs `/spider-prd` and asks AI Assistant to create or refine PRD
+1. Product Manager runs `/spaider-prd` and asks AI Assistant to create or refine PRD
 2. AI Assistant asks questions about vision, target users, and problems solved
 3. Product Manager answers; AI Assistant proposes PRD content based on available context
-4. AI Assistant defines actors and capabilities with stable IDs (uses capability `spd-spider-fr-traceability`)
+4. AI Assistant defines actors and capabilities with stable IDs (uses capability `spd-spaider-fr-traceability`)
 5. AI Assistant updates the PRD according to answers
-6. Product Manager validates PRD by running `/spider-prd-validate` (see `spd-spider-usecase-validate-prd`)
+6. Product Manager validates PRD by running `/spaider-prd-validate` (see `spd-spaider-usecase-validate-prd`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
@@ -746,11 +746,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-003 Design Spec with AI Assistance
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-design-spec`
+**ID**: `spd-spaider-usecase-design-spec`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-ai-assistant`, `spd-spider-actor-database-architect`, `spd-spider-actor-performance-engineer`
+`spd-spaider-actor-architect`, `spd-spaider-actor-ai-assistant`, `spd-spaider-actor-database-architect`, `spd-spaider-actor-performance-engineer`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -762,10 +762,10 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Architect runs `/spider-spec` and specifies the spec scope and desired outcomes
-2. AI Assistant helps define actor flows in Spider DSL (SDSL) (uses capability `spd-spider-fr-design-first`)
+1. Architect runs `/spaider-spec` and specifies the spec scope and desired outcomes
+2. AI Assistant helps define actor flows in Spaider DSL (SDSL) (uses capability `spd-spaider-fr-design-first`)
 3. Architect defines requirements, constraints, and interfaces at spec scope
-4. Architect runs `/spider-spec-validate`; the system validates the Spec Design deterministically (uses capability `spd-spider-fr-validation`)
+4. Architect runs `/spaider-spec-validate`; the system validates the Spec Design deterministically (uses capability `spd-spaider-fr-validation`)
 5. Validation reports 100/100 score (required for spec design)
 <!-- spd:numbered-list:flow-steps -->
 
@@ -781,11 +781,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-004 Validate Design Against Requirements - Overall Design
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-validate-design`
+**ID**: `spd-spaider-usecase-validate-design`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-spider-tool`
+`spd-spaider-actor-architect`, `spd-spaider-actor-spaider-tool`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -797,9 +797,9 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Architect runs `/spider-design-validate` to request deterministic validation of overall design
-2. The system validates structure, required content, and cross-artifact consistency (uses capability `spd-spider-fr-validation`)
-3. The system validates ID formats and cross-references (uses capability `spd-spider-fr-traceability`)
+1. Architect runs `/spaider-design-validate` to request deterministic validation of overall design
+2. The system validates structure, required content, and cross-artifact consistency (uses capability `spd-spaider-fr-validation`)
+3. The system validates ID formats and cross-references (uses capability `spd-spaider-fr-traceability`)
 4. The system reports a score breakdown with actionable issues
 <!-- spd:numbered-list:flow-steps -->
 
@@ -815,11 +815,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-005 Trace Requirement to Implementation
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-trace-requirement`
+**ID**: `spd-spaider-usecase-trace-requirement`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-developer`, `spd-spider-actor-spider-tool`
+`spd-spaider-actor-developer`, `spd-spaider-actor-spaider-tool`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -832,7 +832,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- spd:numbered-list:flow-steps -->
 1. Developer selects a requirement ID to verify
-2. The system locates the normative definition and where it is used (uses capability `spd-spider-fr-traceability`)
+2. The system locates the normative definition and where it is used (uses capability `spd-spaider-fr-traceability`)
 3. The system reports traceability coverage and gaps
 <!-- spd:numbered-list:flow-steps -->
 
@@ -848,15 +848,15 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-006 Update Existing Spec Design
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-update-spec-design`
+**ID**: `spd-spaider-usecase-update-spec-design`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-architect`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Spec Design exists and previously validated at 100/100 (triggers `spd-spider-usecase-design-spec`)
+**Preconditions**: Spec Design exists and previously validated at 100/100 (triggers `spd-spaider-usecase-design-spec`)
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -865,13 +865,13 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- spd:numbered-list:flow-steps -->
 1. Architect identifies need to add new algorithm to existing spec
-2. AI Assistant runs `/spider-spec` in update mode, loads existing spec design, and presents current content
+2. AI Assistant runs `/spaider-spec` in update mode, loads existing spec design, and presents current content
 3. AI Assistant asks: "What to update?" with options (Add actor flow, Edit algorithm, Add requirement, etc.)
 4. Architect selects "Add new algorithm" option
-5. Architect specifies new algorithm details in Spider DSL (SDSL) (uses capability `spd-spider-fr-design-first`)
+5. Architect specifies new algorithm details in Spaider DSL (SDSL) (uses capability `spd-spaider-fr-design-first`)
 6. AI Assistant updates Spec Design while preserving unchanged sections
-7. AI Assistant generates new algorithm ID following format `spd-<project>-spec-<spec>-algo-<name>` (uses capability `spd-spider-fr-traceability`)
-8. Spider Validation Tool re-validates the updated design by running `/spider-spec-validate` (uses capability `spd-spider-fr-validation`)
+7. AI Assistant generates new algorithm ID following format `spd-<project>-spec-<spec>-algo-<name>` (uses capability `spd-spaider-fr-traceability`)
+8. Spaider Validation Tool re-validates the updated design by running `/spaider-spec-validate` (uses capability `spd-spaider-fr-validation`)
 9. Validation confirms 100/100 score maintained
 <!-- spd:numbered-list:flow-steps -->
 
@@ -887,11 +887,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-007 Implement Spec
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-plan-implementation`
+**ID**: `spd-spaider-usecase-plan-implementation`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-developer`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-developer`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -904,11 +904,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- spd:numbered-list:flow-steps -->
 1. Developer requests to code the spec
-2. AI Assistant executes `/spider-code` workflow (uses capability `spd-spider-fr-workflow-execution`)
+2. AI Assistant executes `/spaider-code` workflow (uses capability `spd-spaider-fr-workflow-execution`)
 3. The system uses Spec Design to extract the minimal implementation scope
 4. AI Assistant and Developer code iteratively, keeping design and code aligned
-5. Developer adds code traceability tags where used (uses capability `spd-spider-fr-traceability`)
-6. Spider Validation Tool validates implementation and traceability by running `/spider-code-validate` (uses capability `spd-spider-fr-validation`)
+5. Developer adds code traceability tags where used (uses capability `spd-spaider-fr-traceability`)
+6. Spaider Validation Tool validates implementation and traceability by running `/spaider-code-validate` (uses capability `spd-spaider-fr-validation`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
@@ -923,11 +923,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-009 Validate Spec Implementation
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-validate-implementation`
+**ID**: `spd-spaider-usecase-validate-implementation`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-qa-engineer`, `spd-spider-actor-spider-tool`
+`spd-spaider-actor-qa-engineer`, `spd-spaider-actor-spaider-tool`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -939,11 +939,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. QA Engineer runs `/spider-code-validate` to request validation of spec implementation
-2. Spider Validation Tool validates codebase traceability when enabled (uses capability `spd-spider-fr-validation`)
+1. QA Engineer runs `/spaider-code-validate` to request validation of spec implementation
+2. Spaider Validation Tool validates codebase traceability when enabled (uses capability `spd-spaider-fr-validation`)
 3. Tool validates prerequisite design artifacts first
-4. For each `[x]` marked scope in design, tool expects matching tags in code when traceability is enabled (uses capability `spd-spider-fr-traceability`)
-5. For each `[x]` marked Spider DSL (SDSL) instruction, tool expects instruction-level tag in code when traceability is enabled
+4. For each `[x]` marked scope in design, tool expects matching tags in code when traceability is enabled (uses capability `spd-spaider-fr-traceability`)
+5. For each `[x]` marked Spaider DSL (SDSL) instruction, tool expects instruction-level tag in code when traceability is enabled
 6. Tool reports missing tags, extra tags, and format issues
 7. Tool checks build passes and tests run successfully
 <!-- spd:numbered-list:flow-steps -->
@@ -960,11 +960,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-010 Auto-Generate Adapter from Codebase
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-auto-generate-adapter`
+**ID**: `spd-spaider-usecase-auto-generate-adapter`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-technical-lead`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-technical-lead`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -976,9 +976,9 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Technical Lead wants to add Spider to existing project
-2. AI Assistant runs `/spider-adapter-auto` to analyze existing codebase (uses capability `spd-spider-fr-workflow-execution`)
-3. AI Assistant scans project for documentation (README, ARCHITECTURE, CONTRIBUTING) (uses capability `spd-spider-fr-adapter-config`)
+1. Technical Lead wants to add Spaider to existing project
+2. AI Assistant runs `/spaider-adapter-auto` to analyze existing codebase (uses capability `spd-spaider-fr-workflow-execution`)
+3. AI Assistant scans project for documentation (README, ARCHITECTURE, CONTRIBUTING) (uses capability `spd-spaider-fr-adapter-config`)
 4. AI Assistant analyzes config files (package.json, requirements.txt, Cargo.toml, etc.)
 5. AI Assistant detects tech stack (languages, frameworks, versions)
 6. AI Assistant analyzes code structure and naming conventions
@@ -991,7 +991,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Adapter with auto-generated specs from existing codebase, validated and ready for Spider workflows
+**Postconditions**: Adapter with auto-generated specs from existing codebase, validated and ready for Spaider workflows
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -999,18 +999,18 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-011 Configure CI/CD Pipeline for Spider Validation
+### UC-011 Configure CI/CD Pipeline for Spaider Validation
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-configure-cicd`
+**ID**: `spd-spaider-usecase-configure-cicd`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-devops-engineer`, `spd-spider-actor-ci-pipeline`
+`spd-spaider-actor-devops-engineer`, `spd-spaider-actor-ci-pipeline`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Project has Spider adapter configured (triggers `spd-spider-usecase-bootstrap-project`)
+**Preconditions**: Project has Spaider adapter configured (triggers `spd-spaider-usecase-bootstrap-project`)
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1018,18 +1018,18 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. DevOps Engineer wants to automate Spider artifact validation in CI/CD
-2. DevOps Engineer reads the adapter build/deploy specification for test and build commands (uses capability `spd-spider-fr-adapter-config`)
+1. DevOps Engineer wants to automate Spaider artifact validation in CI/CD
+2. DevOps Engineer reads the adapter build/deploy specification for test and build commands (uses capability `spd-spaider-fr-adapter-config`)
 3. DevOps Engineer creates GitHub Actions workflow or GitLab CI config
-4. Workflow configured to run `/spider analyze` on changed artifacts in pull requests
-5. CI/CD Pipeline executes validation automatically on every commit (uses capability `spd-spider-fr-validation`)
+4. Workflow configured to run `/spaider analyze` on changed artifacts in pull requests
+5. CI/CD Pipeline executes validation automatically on every commit (uses capability `spd-spaider-fr-validation`)
 6. Pipeline reports validation results as PR status checks
-7. Pipeline blocks merge if any artifact validation fails (uses capability `spd-spider-fr-validation`)
+7. Pipeline blocks merge if any artifact validation fails (uses capability `spd-spaider-fr-validation`)
 8. DevOps Engineer configures notifications for validation failures
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: CI/CD Pipeline automatically validates all Spider artifacts, prevents invalid designs from being merged
+**Postconditions**: CI/CD Pipeline automatically validates all Spaider artifacts, prevents invalid designs from being merged
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -1040,15 +1040,15 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-012 Security Review of Spec Design
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-security-review`
+**ID**: `spd-spaider-usecase-security-review`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-security-engineer`, `spd-spider-actor-architect`
+`spd-spaider-actor-security-engineer`, `spd-spaider-actor-architect`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Spec Design exists and validated (triggers `spd-spider-usecase-design-spec`)
+**Preconditions**: Spec Design exists and validated (triggers `spd-spaider-usecase-design-spec`)
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1057,11 +1057,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- spd:numbered-list:flow-steps -->
 1. Security Engineer receives notification that new spec design ready for review
-2. Security Engineer reviews spec design content to identify data flows, trust boundaries, and sensitive data handling (uses capability `spd-spider-fr-design-first`)
+2. Security Engineer reviews spec design content to identify data flows, trust boundaries, and sensitive data handling (uses capability `spd-spaider-fr-design-first`)
 3. Security Engineer reviews authentication and authorization expectations
-4. Security Engineer identifies missing security controls or vulnerabilities (uses capability `spd-spider-fr-validation`)
+4. Security Engineer identifies missing security controls or vulnerabilities (uses capability `spd-spaider-fr-validation`)
 5. Security Engineer adds security requirements with stable IDs `spd-<project>-spec-<spec>-req-security-*`
-6. Architect updates the spec design based on security feedback (triggers `spd-spider-usecase-update-spec-design`)
+6. Architect updates the spec design based on security feedback (triggers `spd-spaider-usecase-update-spec-design`)
 7. Security Engineer approves design after security requirements are added
 <!-- spd:numbered-list:flow-steps -->
 
@@ -1077,15 +1077,15 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-013 Product Requirements Analysis
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-prd-analysis`
+**ID**: `spd-spaider-usecase-prd-analysis`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-prd-analyst`, `spd-spider-actor-product-manager`
+`spd-spaider-actor-prd-analyst`, `spd-spaider-actor-product-manager`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Stakeholder requirements gathered but not yet documented in Spider format
+**Preconditions**: Stakeholder requirements gathered but not yet documented in Spaider format
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1095,17 +1095,17 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:numbered-list:flow-steps -->
 1. Business Analyst collects raw requirements from stakeholders (interviews, documents, meetings)
 2. Business Analyst analyzes requirements and identifies actors (human and system)
-3. Business Analyst groups related requirements into capabilities (uses capability `spd-spider-fr-design-first`)
+3. Business Analyst groups related requirements into capabilities (uses capability `spd-spaider-fr-design-first`)
 4. Business Analyst creates draft structure for the PRD with actors and capabilities
 5. Business Analyst works with Product Manager to refine vision and success criteria
-6. Product Manager runs `/spider-prd` with Business Analyst's draft (uses capability `spd-spider-fr-workflow-execution`)
+6. Product Manager runs `/spaider-prd` with Business Analyst's draft (uses capability `spd-spaider-fr-workflow-execution`)
 7. AI Assistant updates the PRD based on analyzed requirements
-8. Business Analyst reviews generated PRD for completeness and accuracy (uses capability `spd-spider-fr-validation`)
+8. Business Analyst reviews generated PRD for completeness and accuracy (uses capability `spd-spaider-fr-validation`)
 9. Business Analyst confirms all stakeholder requirements covered by capabilities
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Well-structured PRD capturing all stakeholder requirements in Spider format (triggers `spd-spider-usecase-create-prd`)
+**Postconditions**: Well-structured PRD capturing all stakeholder requirements in Spaider format (triggers `spd-spaider-usecase-create-prd`)
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -1116,15 +1116,15 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-014 Design User Interface from Flows
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-design-ui`
+**ID**: `spd-spaider-usecase-design-ui`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-ux-designer`, `spd-spider-actor-architect`
+`spd-spaider-actor-ux-designer`, `spd-spaider-actor-architect`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Spec design exists with documented actor flows (triggers `spd-spider-usecase-design-spec`)
+**Preconditions**: Spec design exists with documented actor flows (triggers `spd-spaider-usecase-design-spec`)
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1132,15 +1132,15 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. UX Designer reviews the spec design actor flows to understand user journeys (uses capability `spd-spider-fr-design-first`)
+1. UX Designer reviews the spec design actor flows to understand user journeys (uses capability `spd-spaider-fr-design-first`)
 2. UX Designer identifies UI screens needed for each flow step
-3. UX Designer creates wireframes mapping each Spider DSL (SDSL) instruction to UI element
+3. UX Designer creates wireframes mapping each Spaider DSL (SDSL) instruction to UI element
 4. For each flow phase (p1, p2, etc.), UX Designer designs corresponding screen state
-5. UX Designer validates that UI covers all actor interactions from flows (uses capability `spd-spider-fr-traceability`)
+5. UX Designer validates that UI covers all actor interactions from flows (uses capability `spd-spaider-fr-traceability`)
 6. UX Designer creates UI mockups with annotations linking to flow IDs (e.g., "Implements `spd-<project>-spec-<spec>-flow-<name>:p1`")
 7. Architect reviews UI mockups against the spec design to ensure completeness
 8. UX Designer updates UI based on feedback if flows were unclear
-9. Architect may update the spec design actor flows if UI reveals missing flow steps (triggers `spd-spider-usecase-update-spec-design`)
+9. Architect may update the spec design actor flows if UI reveals missing flow steps (triggers `spd-spaider-usecase-update-spec-design`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
@@ -1155,11 +1155,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-015 Plan Release with Spec Tracking
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-plan-release`
+**ID**: `spd-spaider-usecase-plan-release`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-release-manager`, `spd-spider-actor-project-manager`
+`spd-spaider-actor-release-manager`, `spd-spaider-actor-project-manager`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -1175,7 +1175,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 2. Team defines spec list and assigns initial statuses (NOT_STARTED, IN_DESIGN)
 3. Architect designs specs iteratively (IN_DESIGN → DESIGNED → READY)
 4. Developers code specs (IN_PROGRESS → DONE)
-5. Validation is run after each meaningful update (uses capability `spd-spider-fr-validation`)
+5. Validation is run after each meaningful update (uses capability `spd-spaider-fr-validation`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
@@ -1190,11 +1190,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-016 Record Architecture Decision
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-record-adr`
+**ID**: `spd-spaider-usecase-record-adr`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-technical-lead`
+`spd-spaider-actor-architect`, `spd-spaider-actor-technical-lead`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -1207,11 +1207,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- spd:numbered-list:flow-steps -->
 1. Architect identifies significant technical decision requiring documentation
-2. Architect runs `/spider-adr` to create new ADR (uses capability `spd-spider-fr-workflow-execution`)
+2. Architect runs `/spaider-adr` to create new ADR (uses capability `spd-spaider-fr-workflow-execution`)
 3. AI Assistant assigns sequential ADR ID (e.g., ADR-0001, ADR-0002)
-4. Architect documents decision context, considered options, and chosen solution (uses capability `spd-spider-fr-arch-decision-mgmt`)
+4. Architect documents decision context, considered options, and chosen solution (uses capability `spd-spaider-fr-arch-decision-mgmt`)
 5. ADR is created with status ACCEPTED
-6. AI Assistant updates affected design sections to reference ADR (uses capability `spd-spider-fr-traceability`)
+6. AI Assistant updates affected design sections to reference ADR (uses capability `spd-spaider-fr-traceability`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
@@ -1226,11 +1226,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-017 Generate Code from Spec Design
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-generate-code`
+**ID**: `spd-spaider-usecase-generate-code`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-developer`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-developer`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -1243,12 +1243,12 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- spd:numbered-list:flow-steps -->
 1. Developer wants to generate initial code scaffolding
-2. If spec design is missing, AI Assistant bootstraps the minimal spec design (uses capability `spd-spider-fr-design-first`)
-3. AI Assistant reads adapter specs for language-specific patterns and project conventions (uses capability `spd-spider-fr-adapter-config`)
-4. AI Assistant uses adapter-defined domain model and API contract sources when present (uses capability `spd-spider-fr-code-generation`)
-5. AI Assistant generates code scaffolding and test scaffolding following best practices (uses capability `spd-spider-fr-code-generation`)
-6. AI Assistant adds traceability tags when enabled (uses capability `spd-spider-fr-traceability`)
-7. Developer runs `/spider-code` to continue implementation from the validated spec design
+2. If spec design is missing, AI Assistant bootstraps the minimal spec design (uses capability `spd-spaider-fr-design-first`)
+3. AI Assistant reads adapter specs for language-specific patterns and project conventions (uses capability `spd-spaider-fr-adapter-config`)
+4. AI Assistant uses adapter-defined domain model and API contract sources when present (uses capability `spd-spaider-fr-code-generation`)
+5. AI Assistant generates code scaffolding and test scaffolding following best practices (uses capability `spd-spaider-fr-code-generation`)
+6. AI Assistant adds traceability tags when enabled (uses capability `spd-spaider-fr-traceability`)
+7. Developer runs `/spaider-code` to continue implementation from the validated spec design
 8. Developer reviews generated code and adjusts as needed
 <!-- spd:numbered-list:flow-steps -->
 
@@ -1264,15 +1264,15 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-018 Navigate Traceability in IDE
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-ide-navigation`
+**ID**: `spd-spaider-usecase-ide-navigation`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-developer`
+`spd-spaider-actor-developer`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: VS Code Spider extension installed, project has Spider artifacts
+**Preconditions**: VS Code Spaider extension installed, project has Spaider artifacts
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1281,13 +1281,13 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- spd:numbered-list:flow-steps -->
 1. Developer opens Spec Design in VS Code
-2. Developer sees Spider ID `spd-spider-seq-intent-to-workflow` highlighted with syntax coloring (uses capability `spd-spider-fr-ide-integration`)
+2. Developer sees Spaider ID `spd-spaider-seq-intent-to-workflow` highlighted with syntax coloring (uses capability `spd-spaider-fr-ide-integration`)
 3. Developer Cmd+Click (or Ctrl+Click) on flow ID to jump to definition in same file
 4. Developer right-clicks on flow ID and selects "Find where-used" from context menu
-5. IDE shows list of references in design docs and code files (uses capability `spd-spider-fr-traceability`)
+5. IDE shows list of references in design docs and code files (uses capability `spd-spaider-fr-traceability`)
 6. Developer clicks on code reference to navigate to implementation file
 7. Developer sees inline validation errors if ID format is incorrect
-8. Developer uses autocomplete to insert valid Spider IDs when editing
+8. Developer uses autocomplete to insert valid Spaider IDs when editing
 9. Code lens above function shows traceability status (✅ tagged or ⚠️ missing tags)
 <!-- spd:numbered-list:flow-steps -->
 
@@ -1300,18 +1300,18 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-019 Migrate Existing Project to Spider
+### UC-019 Migrate Existing Project to Spaider
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-migrate-project`
+**ID**: `spd-spaider-usecase-migrate-project`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-technical-lead`, `spd-spider-actor-ai-assistant`, `spd-spider-actor-documentation-writer`, `spd-spider-actor-doc-generator`
+`spd-spaider-actor-technical-lead`, `spd-spaider-actor-ai-assistant`, `spd-spaider-actor-documentation-writer`, `spd-spaider-actor-doc-generator`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
-**Preconditions**: Existing project with code but no Spider artifacts
+**Preconditions**: Existing project with code but no Spaider artifacts
 <!-- spd:paragraph:preconditions -->
 
 <!-- spd:paragraph:flow -->
@@ -1319,8 +1319,8 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Technical Lead wants to adopt Spider for legacy project
-2. AI Assistant runs `/spider-adapter-auto` to analyze existing codebase (uses capability `spd-spider-fr-brownfield-support`)
+1. Technical Lead wants to adopt Spaider for legacy project
+2. AI Assistant runs `/spaider-adapter-auto` to analyze existing codebase (uses capability `spd-spaider-fr-brownfield-support`)
 3. AI Assistant scans existing project documentation for PRD content
 4. AI Assistant proposes PRD content based on discovered information
 5. Technical Lead reviews and refines proposed PRD content
@@ -1328,11 +1328,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 7. AI Assistant proposes Overall Design content from implementation patterns
 8. Technical Lead identifies which specs to document first (incremental adoption)
 9. AI Assistant creates or updates Spec Design for priority specs using the adapter-defined locations
-10. Developer adds traceability tags to existing code incrementally (uses capability `spd-spider-fr-traceability`)
+10. Developer adds traceability tags to existing code incrementally (uses capability `spd-spaider-fr-traceability`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
-**Postconditions**: Legacy project has Spider artifacts documenting current state, team can use Spider workflows for new specs while preserving existing code
+**Postconditions**: Legacy project has Spaider artifacts documenting current state, team can use Spaider workflows for new specs while preserving existing code
 <!-- spd:paragraph:postconditions -->
 <!-- spd:id:usecase -->
 <!-- spd:###:uc-title repeat="many" -->
@@ -1343,11 +1343,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-020 Track Spec Progress Through Lifecycle
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-track-spec-lifecycle`
+**ID**: `spd-spaider-usecase-track-spec-lifecycle`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-project-manager`, `spd-spider-actor-developer`
+`spd-spaider-actor-project-manager`, `spd-spaider-actor-developer`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -1359,12 +1359,12 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Project Manager opens a spec manifest to review current status (uses capability `spd-spider-fr-spec-lifecycle`)
+1. Project Manager opens a spec manifest to review current status (uses capability `spd-spaider-fr-spec-lifecycle`)
 2. Project Manager sees spec statuses: ⏳ NOT_STARTED, 🔄 IN_PROGRESS, ✅ DONE
 3. Developer marks spec as 🔄 IN_PROGRESS when starting implementation work
 4. System validates spec has Spec Design at 100/100 before allowing IN_PROGRESS status
 5. As developer completes implementation work, system suggests status update
-6. Developer runs final validation before marking spec ✅ DONE (uses capability `spd-spider-fr-validation`)
+6. Developer runs final validation before marking spec ✅ DONE (uses capability `spd-spaider-fr-validation`)
 7. Project Manager tracks velocity by counting completed specs per sprint
 8. Project Manager identifies blocking dependencies (Spec B depends on Spec A)
 9. System alerts if Spec B IN_PROGRESS but Spec A still NOT_STARTED
@@ -1380,14 +1380,14 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ---
 
 <!-- spd:###:uc-title repeat="many" -->
-### UC-022 Write Actor Flow in Spider DSL (SDSL)
+### UC-022 Write Actor Flow in Spaider DSL (SDSL)
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-write-sdsl-flow`
+**ID**: `spd-spaider-usecase-write-sdsl-flow`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-prd-analyst`
+`spd-spaider-actor-architect`, `spd-spaider-actor-prd-analyst`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -1400,14 +1400,14 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- spd:numbered-list:flow-steps -->
 1. Architect opens the spec design and navigates to the actor flows
-2. Architect creates new flow: "Login Flow" with ID `spd-spider-seq-intent-to-workflow` (uses capability `spd-spider-fr-design-first`)
-3. Architect writes flow in Spider DSL (SDSL) using plain English with bold keywords (uses capability `spd-spider-fr-sdsl`)
-4. Business Analyst reviews the Spider DSL (SDSL) flow and confirms it matches product requirements
+2. Architect creates new flow: "Login Flow" with ID `spd-spaider-seq-intent-to-workflow` (uses capability `spd-spaider-fr-design-first`)
+3. Architect writes flow in Spaider DSL (SDSL) using plain English with bold keywords (uses capability `spd-spaider-fr-sdsl`)
+4. Business Analyst reviews the Spaider DSL (SDSL) flow and confirms it matches product requirements
 5. Business Analyst identifies missing case: "What if user forgot password?"
 6. Architect adds step with **OPTIONAL** path to password reset
 7. UX Designer reads flow and creates UI mockups matching each step and instruction
 8. Architect marks instructions with phases for implementation: p1 (validation), p2 (authentication), p3 (session)
-9. Developer reads the Spider DSL (SDSL) flow and understands exact implementation requirements without ambiguity
+9. Developer reads the Spaider DSL (SDSL) flow and understands exact implementation requirements without ambiguity
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
@@ -1422,11 +1422,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-024 Validate PRD
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-validate-prd`
+**ID**: `spd-spaider-usecase-validate-prd`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-product-manager`, `spd-spider-actor-spider-tool`
+`spd-spaider-actor-product-manager`, `spd-spaider-actor-spaider-tool`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -1438,8 +1438,8 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Product Manager runs `/spider-prd-validate` to request PRD validation
-2. Spider Validation Tool validates structure, cross-references, and semantic boundaries (uses capability `spd-spider-fr-validation`)
+1. Product Manager runs `/spaider-prd-validate` to request PRD validation
+2. Spaider Validation Tool validates structure, cross-references, and semantic boundaries (uses capability `spd-spaider-fr-validation`)
 3. Tool reports PASS/FAIL with actionable issues
 <!-- spd:numbered-list:flow-steps -->
 
@@ -1460,11 +1460,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-025 Create Overall Design
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-create-overall-design`
+**ID**: `spd-spaider-usecase-create-overall-design`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-technical-lead`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-architect`, `spd-spaider-actor-technical-lead`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -1476,10 +1476,10 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Architect runs `/spider-design` and defines system-level scope, constraints, and key requirements
-2. Technical Lead provides project-specific technical context via adapter (uses capability `spd-spider-fr-adapter-config`)
+1. Architect runs `/spaider-design` and defines system-level scope, constraints, and key requirements
+2. Technical Lead provides project-specific technical context via adapter (uses capability `spd-spaider-fr-adapter-config`)
 3. AI Assistant drafts Overall Design with stable IDs and cross-references to PRD actors and capabilities
-4. Spider Validation Tool runs deterministic validation for Overall Design by running `/spider-design-validate` (uses capability `spd-spider-fr-validation`)
+4. Spaider Validation Tool runs deterministic validation for Overall Design by running `/spaider-design-validate` (uses capability `spd-spaider-fr-validation`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
@@ -1494,11 +1494,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-026 Update Overall Design
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-update-overall-design`
+**ID**: `spd-spaider-usecase-update-overall-design`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-technical-lead`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-architect`, `spd-spaider-actor-technical-lead`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -1510,10 +1510,10 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Architect runs `/spider-design` in update mode and identifies what system-level decision, requirement, or constraint must change
+1. Architect runs `/spaider-design` in update mode and identifies what system-level decision, requirement, or constraint must change
 2. AI Assistant proposes updates while preserving stable IDs where appropriate
 3. Technical Lead checks alignment with project conventions and adapter configuration
-4. Spider Validation Tool re-validates Overall Design by running `/spider-design-validate` (uses capability `spd-spider-fr-validation`)
+4. Spaider Validation Tool re-validates Overall Design by running `/spaider-design-validate` (uses capability `spd-spaider-fr-validation`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
@@ -1528,11 +1528,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-027 Validate ADRs
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-validate-adrs`
+**ID**: `spd-spaider-usecase-validate-adrs`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-architect`, `spd-spider-actor-technical-lead`, `spd-spider-actor-spider-tool`
+`spd-spaider-actor-architect`, `spd-spaider-actor-technical-lead`, `spd-spaider-actor-spaider-tool`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -1544,8 +1544,8 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Team runs `/spider-adr-validate` to request deterministic validation of ADRs
-2. Spider Validation Tool checks required ADR fields, IDs, and cross-references (uses capability `spd-spider-fr-validation`)
+1. Team runs `/spaider-adr-validate` to request deterministic validation of ADRs
+2. Spaider Validation Tool checks required ADR fields, IDs, and cross-references (uses capability `spd-spaider-fr-validation`)
 3. Tool reports PASS/FAIL with issues
 <!-- spd:numbered-list:flow-steps -->
 
@@ -1561,11 +1561,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### UC-028 Create Spec Manifest
 
 <!-- spd:id:usecase -->
-**ID**: `spd-spider-usecase-create-spec-manifest`
+**ID**: `spd-spaider-usecase-create-spec-manifest`
 
 **Actors**:
 <!-- spd:id-ref:actor -->
-`spd-spider-actor-project-manager`, `spd-spider-actor-release-manager`, `spd-spider-actor-ai-assistant`
+`spd-spaider-actor-project-manager`, `spd-spaider-actor-release-manager`, `spd-spaider-actor-ai-assistant`
 <!-- spd:id-ref:actor -->
 
 <!-- spd:paragraph:preconditions -->
@@ -1577,10 +1577,10 @@ The system MUST support hierarchical organization of systems in the artifacts re
 <!-- spd:paragraph:flow -->
 
 <!-- spd:numbered-list:flow-steps -->
-1. Project Manager runs `/spider-specs` and defines the initial spec list and statuses
+1. Project Manager runs `/spaider-specs` and defines the initial spec list and statuses
 2. Release Manager defines readiness expectations for releases
-3. AI Assistant creates the Spec Manifest with stable IDs and deterministic status values (uses capability `spd-spider-fr-spec-lifecycle`)
-4. Spider Validation Tool validates the Spec Manifest structure and references by running `/spider-specs-validate` (uses capability `spd-spider-fr-validation`)
+3. AI Assistant creates the Spec Manifest with stable IDs and deterministic status values (uses capability `spd-spaider-fr-spec-lifecycle`)
+4. Spaider Validation Tool validates the Spec Manifest structure and references by running `/spaider-specs-validate` (uses capability `spd-spaider-fr-validation`)
 <!-- spd:numbered-list:flow-steps -->
 
 <!-- spd:paragraph:postconditions -->
@@ -1599,7 +1599,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### Validation performance
 
 <!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-nfr-validation-performance`
+- [x] `p2` - **ID**: `spd-spaider-nfr-validation-performance`
 
 <!-- spd:list:nfr-statements -->
 - Deterministic validation SHOULD complete in ≤ 10 seconds for typical repositories (≤ 50k LOC).
@@ -1612,7 +1612,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### Security and integrity
 
 <!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p1` - **ID**: `spd-spider-nfr-security-integrity`
+- [x] `p1` - **ID**: `spd-spaider-nfr-security-integrity`
 
 <!-- spd:list:nfr-statements -->
 - Validation MUST NOT execute untrusted code from artifacts.
@@ -1625,7 +1625,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### Reliability and recoverability
 
 <!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-nfr-reliability-recoverability`
+- [x] `p2` - **ID**: `spd-spaider-nfr-reliability-recoverability`
 
 <!-- spd:list:nfr-statements -->
 - Validation failures MUST include enough context to remediate without reverse-engineering the validator.
@@ -1638,10 +1638,10 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### Adoption and usability
 
 <!-- spd:id:nfr has="priority,task" covered_by="DESIGN,DECOMPOSITION,SPEC" -->
-- [x] `p2` - **ID**: `spd-spider-nfr-adoption-usability`
+- [x] `p2` - **ID**: `spd-spaider-nfr-adoption-usability`
 
 <!-- spd:list:nfr-statements -->
-- Workflow instructions SHOULD be executable by a new user without prior Spider context, with ≤ 3 clarifying questions per workflow on average.
+- Workflow instructions SHOULD be executable by a new user without prior Spaider context, with ≤ 3 clarifying questions per workflow on average.
 - Documentation SHOULD prioritize discoverability of next steps and prerequisites.
 <!-- spd:list:nfr-statements -->
 <!-- spd:id:nfr -->
@@ -1651,15 +1651,15 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### Intentional Exclusions
 
 <!-- spd:list:exclusions -->
-- **Authentication/Authorization** (SEC-PRD-001/002): Not applicable — Spider is a local CLI tool and methodology, not a multi-user system requiring access control.
-- **Availability/Recovery** (REL-PRD-001/002): Not applicable — Spider runs locally as a CLI, not as a service requiring uptime guarantees.
-- **Scalability** (ARCH-PRD-003): Not applicable — Spider processes single repositories locally; traditional user/data volume scaling does not apply.
-- **Throughput/Capacity** (PERF-PRD-002/003): Not applicable — Spider is a local development tool, not a high-throughput system.
+- **Authentication/Authorization** (SEC-PRD-001/002): Not applicable — Spaider is a local CLI tool and methodology, not a multi-user system requiring access control.
+- **Availability/Recovery** (REL-PRD-001/002): Not applicable — Spaider runs locally as a CLI, not as a service requiring uptime guarantees.
+- **Scalability** (ARCH-PRD-003): Not applicable — Spaider processes single repositories locally; traditional user/data volume scaling does not apply.
+- **Throughput/Capacity** (PERF-PRD-002/003): Not applicable — Spaider is a local development tool, not a high-throughput system.
 - **Accessibility/Internationalization** (UX-PRD-002/003): Not applicable — CLI tool for developers; English-only is acceptable for developer tooling.
-- **Regulatory/Legal** (COMPL-PRD-001/002/003): Not applicable — Spider is a methodology with no user data or regulated industry context.
-- **Data Ownership/Lifecycle** (DATA-PRD-001/003): Not applicable — Spider does not persist user data; artifacts are owned by the project.
-- **Support Requirements** (MAINT-PRD-002): Not applicable — Spider is an open methodology; support is community-driven.
-- **Deployment/Monitoring** (OPS-PRD-001/002): Not applicable — Spider is installed locally via pip; no server deployment or monitoring required.
+- **Regulatory/Legal** (COMPL-PRD-001/002/003): Not applicable — Spaider is a methodology with no user data or regulated industry context.
+- **Data Ownership/Lifecycle** (DATA-PRD-001/003): Not applicable — Spaider does not persist user data; artifacts are owned by the project.
+- **Support Requirements** (MAINT-PRD-002): Not applicable — Spaider is an open methodology; support is community-driven.
+- **Deployment/Monitoring** (OPS-PRD-001/002): Not applicable — Spaider is installed locally via pip; no server deployment or monitoring required.
 <!-- spd:list:exclusions -->
 <!-- spd:###:intentional-exclusions -->
 <!-- spd:##:nfrs -->
@@ -1673,11 +1673,11 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### Non-Goals
 
 <!-- spd:list:nongoals -->
-- Spider does NOT replace project management tools (Jira, Linear, etc.) — it complements them by providing design artifacts that can be referenced from tickets.
-- Spider does NOT enforce specific programming languages or frameworks — it is technology-agnostic and works with any stack via adapters.
-- Spider does NOT require full coverage — teams can adopt incrementally, starting with PRD and adding artifacts as needed.
-- Spider does NOT generate production code automatically — it provides design specifications that developers implement.
-- Spider does NOT replace code review — it provides design review capabilities that complement code review.
+- Spaider does NOT replace project management tools (Jira, Linear, etc.) — it complements them by providing design artifacts that can be referenced from tickets.
+- Spaider does NOT enforce specific programming languages or frameworks — it is technology-agnostic and works with any stack via adapters.
+- Spaider does NOT require full coverage — teams can adopt incrementally, starting with PRD and adding artifacts as needed.
+- Spaider does NOT generate production code automatically — it provides design specifications that developers implement.
+- Spaider does NOT replace code review — it provides design review capabilities that complement code review.
 <!-- spd:list:nongoals -->
 <!-- spd:###:nongoals-title -->
 
@@ -1686,7 +1686,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- spd:list:risks -->
 - **AI agent variability**: Different AI agents may interpret workflows differently, leading to inconsistent artifact quality. Mitigation: deterministic validation catches structural issues.
-- **Adoption resistance**: Teams may resist adding design documentation overhead. Mitigation: Spider supports incremental adoption and provides immediate validation value.
+- **Adoption resistance**: Teams may resist adding design documentation overhead. Mitigation: Spaider supports incremental adoption and provides immediate validation value.
 - **Template rigidity**: Fixed templates may not fit all project types. Mitigation: adapters allow customization of artifact locations and optional sections.
 <!-- spd:list:risks -->
 <!-- spd:###:risks-title -->
@@ -1702,7 +1702,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- spd:list:assumptions -->
 - AI coding assistants (Claude Code, Cursor, etc.) can follow structured markdown workflows with embedded instructions.
-- Developers have access to Python 3.6+ for running the `spider` CLI tool.
+- Developers have access to Python 3.6+ for running the `spaider` CLI tool.
 - Projects use Git for version control (adapter discovery relies on `.git` directory).
 - Teams are willing to maintain design artifacts as part of their development workflow.
 <!-- spd:list:assumptions -->
@@ -1726,7 +1726,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 ### Terminology
 
 <!-- spd:free:prd-context-notes -->
-This PRD uses "Spider" to mean Framework for Documentation and Development.
+This PRD uses "Spaider" to mean Framework for Documentation and Development.
 <!-- spd:free:prd-context-notes -->
 <!-- spd:###:context-title repeat="many" -->
 <!-- spd:##:context -->

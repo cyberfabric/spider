@@ -1,15 +1,15 @@
 ---
-spider: true
+spaider: true
 type: workflow
-name: spider-adapter
-description: Create/update project Spider adapter - scan structure, configure rules, generate AGENTS.md and artifacts.json
+name: spaider-adapter
+description: Create/update project Spaider adapter - scan structure, configure rules, generate AGENTS.md and artifacts.json
 version: 1.0
-purpose: Unified Spider adapter workflow - scan, configure, validate
+purpose: Unified Spaider adapter workflow - scan, configure, validate
 ---
 
-# Spider Adapter Workflow
+# Spaider Adapter Workflow
 
-Set `{spider_mode}` = `on` FIRST
+Set `{spaider_mode}` = `on` FIRST
 
 **Type**: Operation
 **Role**: Any
@@ -19,14 +19,14 @@ Set `{spider_mode}` = `on` FIRST
 
 ## Routing
 
-This workflow is invoked through the main Spider workflows:
+This workflow is invoked through the main Spaider workflows:
 
 | User Intent | Route | Example |
 |-------------|-------|---------|
 | Create/modify adapter | **generate.md** → adapter.md | "setup adapter", "update adapter" |
 | Check/validate adapter | **analyze.md** (adapter target) | "check adapter", "verify adapter" |
 
-**Direct invocation** via `/spider-adapter` routes to **generate.md** (assumes write intent).
+**Direct invocation** via `/spaider-adapter` routes to **generate.md** (assumes write intent).
 
 ---
 
@@ -59,15 +59,15 @@ Unified adapter workflow that handles the complete lifecycle:
 
 ---
 
-ALWAYS open and follow `{spider_path}/requirements/execution-protocol.md` WHEN executing this workflow
+ALWAYS open and follow `{spaider_path}/requirements/execution-protocol.md` WHEN executing this workflow
 
 ## Requirements
 
-**ALWAYS open and follow**: `{spider_path}/requirements/adapter-structure.md`
+**ALWAYS open and follow**: `{spaider_path}/requirements/adapter-structure.md`
 
-**ALWAYS open and follow**: `{spider_path}/schemas/artifacts.schema.json` WHEN generating artifacts.json
+**ALWAYS open and follow**: `{spaider_path}/schemas/artifacts.schema.json` WHEN generating artifacts.json
 
-**ALWAYS open and follow**: `{spider_path}/requirements/reverse-engineering.md` WHEN scanning project structure (Phase 1)
+**ALWAYS open and follow**: `{spaider_path}/requirements/reverse-engineering.md` WHEN scanning project structure (Phase 1)
 
 Extract:
 - Adapter structure requirements
@@ -91,7 +91,7 @@ Extract:
 Search for project root:
 ```yaml
 Markers (in priority order):
-  1. .spider-config.json (explicit Spider project)
+  1. .spaider-config.json (explicit Spaider project)
   2. .git directory (git repository root)
   3. package.json, pyproject.toml, Cargo.toml, go.mod (language markers)
 ```
@@ -103,8 +103,8 @@ Store as: `PROJECT_ROOT`
 Search for existing adapter:
 ```yaml
 Check in order:
-  1. .spider-config.json → spiderAdapterPath
-  2. Common locations: .spider-adapter/, spec/.spider-adapter/, docs/.spider-adapter/
+  1. .spaider-config.json → spaiderAdapterPath
+  2. Common locations: .spaider-adapter/, spec/.spaider-adapter/, docs/.spaider-adapter/
 
 If found:
   ADAPTER_EXISTS = true
@@ -145,7 +145,7 @@ Detect:
 
 #### Existing Artifacts Detection
 ```yaml
-Search for Spider artifacts:
+Search for Spaider artifacts:
   - PRD.md (product requirements)
   - DESIGN.md (architecture design)
   - DECOMPOSITION.md (specs manifest)
@@ -175,9 +175,9 @@ Propose level structure:
 
 ### 1.4 Spec Discovery Scan
 
-**Reference**: `{spider_path}/requirements/adapter-structure.md` → Spec Discovery Guide
+**Reference**: `{spaider_path}/requirements/adapter-structure.md` → Spec Discovery Guide
 
-Scan for domain-specific knowledge following the 12-domain model from Spider checklists:
+Scan for domain-specific knowledge following the 12-domain model from Spaider checklists:
 
 #### Core Specs (Always Scan)
 
@@ -224,7 +224,7 @@ Display discovered information:
 
 ```
 ═══════════════════════════════════════════════════════════════════════════════
-Spider Adapter: Project Scan Results
+Spaider Adapter: Project Scan Results
 ═══════════════════════════════════════════════════════════════════════════════
 
 Project: {PROJECT_NAME}
@@ -269,9 +269,9 @@ If adapter doesn't exist, ask user:
 Adapter Location
 
 Choose adapter directory:
-  1. .spider-adapter/ (recommended - hidden, clean)
-  2. .spider-adapter/ (visible, explicit)
-  3. docs/.spider-adapter/ (documentation-focused)
+  1. .spaider-adapter/ (recommended - hidden, clean)
+  2. .spaider-adapter/ (visible, explicit)
+  3. docs/.spaider-adapter/ (documentation-focused)
   4. Custom path
 
 Choice: [1-4]
@@ -286,10 +286,10 @@ Ask user about weaver preference:
 ```
 Weaver Package
 
-Spider supports multiple weaver packages:
+Spaider supports multiple weaver packages:
 
-  1. spider-sdlc (Recommended)
-     - Full Spider tooling support
+  1. spaider-sdlc (Recommended)
+     - Full Spaider tooling support
      - Code traceability
      - Complete validation rules
      - Templates, checklists, examples included
@@ -340,7 +340,7 @@ Traceability Configuration
 
 For each artifact, choose traceability level:
 
-  FULL - Full code traceability (Spider markers in code)
+  FULL - Full code traceability (Spaider markers in code)
          Best for: New code, active development
 
   DOCS-ONLY - Documentation only (no code markers)
@@ -358,7 +358,7 @@ Store as: `TRACEABILITY_CONFIG`
 
 **If user cancels** (selects "Cancel", provides no response, or explicitly declines):
 - Do NOT create any files
-- Inform user: "Adapter setup cancelled. Run `/spider-adapter` to restart."
+- Inform user: "Adapter setup cancelled. Run `/spaider-adapter` to restart."
 - Return to normal assistant mode
 - Do NOT partially save configuration
 
@@ -381,16 +381,16 @@ Create `{ADAPTER_DIR}/artifacts.json` following schema:
   "version": "1.0",
   "project_root": "{relative_path_to_project_root}",
   "weavers": {
-    "spider-sdlc": {
-      "format": "Spider",
-      "path": "{spider_core}/weavers/sdlc"
+    "spaider-sdlc": {
+      "format": "Spaider",
+      "path": "{spaider_core}/weavers/sdlc"
     }
   },
   "systems": [
     {
       "name": "{SYSTEM_NAME}",
       "slug": "{system-slug}",
-      "weaver": "spider-sdlc",
+      "weaver": "spaider-sdlc",
       "artifacts_dir": "{artifacts_dir}",
       "artifacts": [
         { "name": "Product Requirements", "path": "{artifacts_dir}/PRD.md", "kind": "PRD", "traceability": "{TRACEABILITY}" },
@@ -441,9 +441,9 @@ Create `{ADAPTER_DIR}/artifacts.json` following schema:
 Create `{ADAPTER_DIR}/AGENTS.md`:
 
 ```markdown
-# Spider Adapter: {PROJECT_NAME}
+# Spaider Adapter: {PROJECT_NAME}
 
-**Extends**: `{relative_path_to_spider}/AGENTS.md`
+**Extends**: `{relative_path_to_spaider}/AGENTS.md`
 
 **Version**: 1.0
 **Last Updated**: {DATE}
@@ -577,14 +577,14 @@ Generate these only if discovery signals found:
 | `reliability.md` | Health checks found | Error handling, recovery, circuit breakers |
 | `compliance.md` | Regulatory markers found | Regulations, standards, audit |
 
-### 3.5 Create .spider-config.json
+### 3.5 Create .spaider-config.json
 
 At project root:
 
 ```json
 {
-  "spiderAdapterPath": "{relative_adapter_path}",
-  "spiderCorePath": "{relative_spider_core_path}"
+  "spaiderAdapterPath": "{relative_adapter_path}",
+  "spaiderCorePath": "{relative_spaider_core_path}"
 }
 ```
 
@@ -594,7 +594,7 @@ At project root:
 1. Note which files were created successfully
 2. Delete partially created files (incomplete AGENTS.md, malformed JSON, etc.)
 3. Log error to user with specific failure point
-4. Suggest: "Run `/spider-adapter` again to restart from Phase 1"
+4. Suggest: "Run `/spaider-adapter` again to restart from Phase 1"
 
 **Do NOT leave adapter in inconsistent state** — either complete all files or rollback to previous state.
 
@@ -623,12 +623,12 @@ AI Agent Integration
 
 Detected: {agent_name}
 
-Would you like to configure Spider integration?
+Would you like to configure Spaider integration?
 
 This will:
-  - Add Spider workflow commands
+  - Add Spaider workflow commands
   - Configure adapter references
-  - Enable Spider skill invocation
+  - Enable Spaider skill invocation
 
 Configure {agent_name}? [Yes] [No] [Later]
 ```
@@ -638,14 +638,14 @@ Configure {agent_name}? [Yes] [No] [Later]
 For each confirmed agent, run:
 
 ```bash
-spider agent-workflows --agent {agent}
-spider agent-skills --agent {agent}
+spaider agent-workflows --agent {agent}
+spaider agent-skills --agent {agent}
 ```
 
 **If CLI command fails**:
 - Log error output to user
 - Note which agent configuration failed
-- Suggest manual configuration or `/spider` to verify setup
+- Suggest manual configuration or `/spaider` to verify setup
 - Continue with other agents if multiple configured
 
 ---
@@ -658,10 +658,10 @@ Execute validation checks:
 
 ```yaml
 Validate:
-  1. .spider-config.json
+  1. .spaider-config.json
      - Exists at project root
      - Valid JSON
-     - Contains spiderAdapterPath
+     - Contains spaiderAdapterPath
      - Path points to valid adapter
 
   2. AGENTS.md
@@ -684,7 +684,7 @@ Validate:
 
 ```
 ═══════════════════════════════════════════════════════════════════════════════
-Spider Adapter: Validation Report
+Spaider Adapter: Validation Report
 ═══════════════════════════════════════════════════════════════════════════════
 
 Status: PASS ✅ | FAIL ❌
@@ -692,9 +692,9 @@ Status: PASS ✅ | FAIL ❌
 ───────────────────────────────────────────────────────────────────────────────
 CONFIGURATION
 ───────────────────────────────────────────────────────────────────────────────
-✅ .spider-config.json valid
-✅ spiderAdapterPath correct
-✅ spiderCorePath correct (if set)
+✅ .spaider-config.json valid
+✅ spaiderAdapterPath correct
+✅ spaiderCorePath correct (if set)
 
 ───────────────────────────────────────────────────────────────────────────────
 ADAPTER FILES
@@ -776,9 +776,9 @@ Run adapter workflow with --agent {windsurf|cursor|claude|copilot}
 ## Next Steps
 
 **After successful adapter setup**:
-- `/spider-generate PRD` — Define product requirements
-- `/spider-generate DESIGN` — Create architecture design
-- `/spider-generate DECOMPOSITION` — Create specs manifest
+- `/spaider-generate PRD` — Define product requirements
+- `/spaider-generate DESIGN` — Create architecture design
+- `/spaider-generate DECOMPOSITION` — Create specs manifest
 
 **For existing projects**:
 - Review detected artifacts
@@ -789,6 +789,6 @@ Run adapter workflow with --agent {windsurf|cursor|claude|copilot}
 
 ## References
 
-**Requirements**: `{spider_path}/requirements/adapter-structure.md`
-**Schema**: `{spider_path}/schemas/artifacts.schema.json`
-**Methodology**: `{spider_path}/requirements/reverse-engineering.md`
+**Requirements**: `{spaider_path}/requirements/adapter-structure.md`
+**Schema**: `{spaider_path}/schemas/artifacts.schema.json`
+**Methodology**: `{spaider_path}/requirements/reverse-engineering.md`

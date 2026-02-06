@@ -143,12 +143,12 @@ graph LR
 These IDs are typically marked `to_code="true"` in the template, which makes them subject to code coverage checks.
 
 **Transforms into**:
-- **CODE**: implement flows/algorithms/states/requirements in source code and tag implementation with Spider markers.
+- **CODE**: implement flows/algorithms/states/requirements in source code and tag implementation with Spaider markers.
 
 **Traceability**:
-- SPEC IDs are referenced from code using scope markers: `@spider-{kind}:{spd-id}:p{N}`.
+- SPEC IDs are referenced from code using scope markers: `@spaider-{kind}:{spd-id}:p{N}`.
 - Instruction-level implementations can be wrapped with block markers:
-  - `@spider-begin:{spd-id}:p{N}:inst-{local}` / `@spider-end:...`
+  - `@spaider-begin:{spd-id}:p{N}:inst-{local}` / `@spaider-end:...`
 
 Phase tokens:
 - SPEC step lines use `ph-{N}` (as part of the step formatting).
@@ -170,10 +170,10 @@ Phase tokens:
 **Purpose**: the implementation layer validated against SPEC IDs.
 
 **Defines**:
-- No new Spider IDs are defined in code. Code only references IDs that exist in artifacts.
+- No new Spaider IDs are defined in code. Code only references IDs that exist in artifacts.
 
 **Traceability**:
-- Mark code with Spider markers as specified in `requirements/traceability.md`.
+- Mark code with Spaider markers as specified in `requirements/traceability.md`.
 
 **Validation**:
 - Structure and pairing checks + cross-validation + coverage checks via `validate-code`.
@@ -185,9 +185,9 @@ Phase tokens:
 
 ## Validation commands
 
-- Validate artifacts (templates + cross-refs): `python3 {spider_path}/skills/spider/scripts/spider.py validate`
-- Validate code markers (pairing + coverage): `python3 {spider_path}/skills/spider/scripts/spider.py validate-code`
-- Validate weaver package itself: `python3 {spider_path}/skills/spider/scripts/spider.py validate-weavers`
+- Validate artifacts (templates + cross-refs): `python3 {spaider_path}/skills/spaider/scripts/spaider.py validate`
+- Validate code markers (pairing + coverage): `python3 {spaider_path}/skills/spaider/scripts/spaider.py validate-code`
+- Validate weaver package itself: `python3 {spaider_path}/skills/spaider/scripts/spaider.py validate-weavers`
 
 ## References
 

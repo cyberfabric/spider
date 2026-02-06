@@ -6,9 +6,9 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spider" / "scripts"))
+sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spaider" / "scripts"))
 
-from spider.utils.artifacts_meta import (
+from spaider.utils.artifacts_meta import (
     Artifact,
     ArtifactsMeta,
     CodebaseEntry,
@@ -22,20 +22,20 @@ from spider.utils.artifacts_meta import (
 
 class TestWeaver(unittest.TestCase):
     def test_weaver_from_dict(self):
-        data = {"format": "Spider", "path": "templates"}
+        data = {"format": "Spaider", "path": "templates"}
         weaver = Weaver.from_dict("test-weaver", data)
         self.assertEqual(weaver.weaver_id, "test-weaver")
-        self.assertEqual(weaver.format, "Spider")
+        self.assertEqual(weaver.format, "Spaider")
         self.assertEqual(weaver.path, "templates")
 
-    def test_weaver_is_spider_format(self):
-        weaver = Weaver("id", "Spider", "path")
-        self.assertTrue(weaver.is_spider_format())
+    def test_weaver_is_spaider_format(self):
+        weaver = Weaver("id", "Spaider", "path")
+        self.assertTrue(weaver.is_spaider_format())
         weaver2 = Weaver("id", "OTHER", "path")
-        self.assertFalse(weaver2.is_spider_format())
+        self.assertFalse(weaver2.is_spaider_format())
 
     def test_weaver_get_template_path(self):
-        weaver = Weaver("id", "Spider", "weavers/sdlc")
+        weaver = Weaver("id", "Spaider", "weavers/sdlc")
         self.assertEqual(weaver.get_template_path("PRD"), "weavers/sdlc/artifacts/PRD/template.md")
         self.assertEqual(weaver.get_template_path("UNKNOWN"), "weavers/sdlc/artifacts/UNKNOWN/template.md")
 
@@ -80,13 +80,13 @@ class TestSystemNode(unittest.TestCase):
     def test_system_node_from_dict_basic(self):
         data = {
             "name": "MySystem",
-            "weaver": "spider-sdlc",
+            "weaver": "spaider-sdlc",
             "artifacts": [{"path": "PRD.md", "kind": "PRD"}],
             "codebase": [{"path": "src/", "extensions": [".py"]}],
         }
         node = SystemNode.from_dict(data)
         self.assertEqual(node.name, "MySystem")
-        self.assertEqual(node.weaver, "spider-sdlc")
+        self.assertEqual(node.weaver, "spaider-sdlc")
         self.assertEqual(len(node.artifacts), 1)
         self.assertEqual(len(node.codebase), 1)
 
@@ -94,10 +94,10 @@ class TestSystemNode(unittest.TestCase):
         """Cover lines 135-136: parsing children."""
         data = {
             "name": "Parent",
-            "weaver": "spider",
+            "weaver": "spaider",
             "children": [
-                {"name": "Child1", "weaver": "spider"},
-                {"name": "Child2", "weaver": "spider"},
+                {"name": "Child1", "weaver": "spaider"},
+                {"name": "Child2", "weaver": "spaider"},
             ],
         }
         node = SystemNode.from_dict(data)
@@ -111,8 +111,8 @@ class TestArtifactsMeta(unittest.TestCase):
         data = {
             "version": "1.0",
             "project_root": "..",
-            "weavers": {"spider": {"format": "Spider", "path": "templates"}},
-            "systems": [{"name": "Test", "weaver": "spider", "artifacts": [{"path": "PRD.md", "kind": "PRD"}]}],
+            "weavers": {"spaider": {"format": "Spaider", "path": "templates"}},
+            "systems": [{"name": "Test", "weaver": "spaider", "artifacts": [{"path": "PRD.md", "kind": "PRD"}]}],
         }
         meta = ArtifactsMeta.from_dict(data)
         self.assertEqual(meta.version, "1.0")
@@ -145,8 +145,8 @@ class TestArtifactsMeta(unittest.TestCase):
         data = {
             "version": "1.0",
             "project_root": "..",
-            "weavers": {"spider": {"format": "Spider", "path": "templates"}},
-            "systems": [{"name": "Test", "weaver": "spider", "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}]}],
+            "weavers": {"spaider": {"format": "Spaider", "path": "templates"}},
+            "systems": [{"name": "Test", "weaver": "spaider", "artifacts": [{"path": "architecture/PRD.md", "kind": "PRD"}]}],
         }
         meta = ArtifactsMeta.from_dict(data)
         result = meta.get_artifact_by_path("architecture/PRD.md")
@@ -358,16 +358,16 @@ class TestCreateBackup(unittest.TestCase):
 
 class TestGenerateDefaultRegistry(unittest.TestCase):
     def test_generate_default_registry(self):
-        result = generate_default_registry("MyProject", "../Spider")
+        result = generate_default_registry("MyProject", "../Spaider")
         self.assertEqual(result["version"], "1.0")
         self.assertEqual(result["project_root"], "..")
-        self.assertIn("spider-sdlc", result["weavers"])
+        self.assertIn("spaider-sdlc", result["weavers"])
         self.assertEqual(len(result["systems"]), 1)
         self.assertEqual(result["systems"][0]["name"], "MyProject")
 
     def test_join_path_edge_cases(self):
         """Cover line 321: _join_path with empty base."""
-        from spider.utils.artifacts_meta import _join_path
+        from spaider.utils.artifacts_meta import _join_path
 
         self.assertEqual(_join_path("", "tail"), "tail")
         self.assertEqual(_join_path(".", "tail"), "tail")
@@ -387,17 +387,17 @@ class TestSystemNodeHierarchy(unittest.TestCase):
                 {
                     "name": "Platform",
                     "slug": "platform",
-                    "weaver": "spider-sdlc",
+                    "weaver": "spaider-sdlc",
                     "children": [
                         {
                             "name": "Core",
                             "slug": "core",
-                            "weaver": "spider-sdlc",
+                            "weaver": "spaider-sdlc",
                             "children": [
                                 {
                                     "name": "Auth",
                                     "slug": "auth",
-                                    "weaver": "spider-sdlc",
+                                    "weaver": "spaider-sdlc",
                                 }
                             ],
                         }
@@ -449,13 +449,13 @@ class TestArtifactsMetaIterators(unittest.TestCase):
                 {
                     "name": "Parent",
                     "slug": "parent",
-                    "weaver": "spider-sdlc",
+                    "weaver": "spaider-sdlc",
                     "codebase": [{"name": "Parent Code", "path": "src/parent"}],
                     "children": [
                         {
                             "name": "Child",
                             "slug": "child",
-                            "weaver": "spider-sdlc",
+                            "weaver": "spaider-sdlc",
                             "codebase": [{"name": "Child Code", "path": "src/child"}],
                         }
                     ],
@@ -479,14 +479,14 @@ class TestArtifactsMetaIterators(unittest.TestCase):
                 {
                     "name": "Root",
                     "slug": "root",
-                    "weaver": "spider-sdlc",
+                    "weaver": "spaider-sdlc",
                     "children": [
                         {
                             "name": "Child1",
                             "slug": "child1",
-                            "weaver": "spider-sdlc",
+                            "weaver": "spaider-sdlc",
                             "children": [
-                                {"name": "Grandchild", "slug": "grandchild", "weaver": "spider-sdlc"}
+                                {"name": "Grandchild", "slug": "grandchild", "weaver": "spaider-sdlc"}
                             ],
                         }
                     ],
@@ -511,8 +511,8 @@ class TestArtifactsMetaIterators(unittest.TestCase):
                 {
                     "name": "MyApp",
                     "slug": "myapp",
-                    "weaver": "spider-sdlc",
-                    "children": [{"name": "Module", "slug": "module", "weaver": "spider-sdlc"}],
+                    "weaver": "spaider-sdlc",
+                    "children": [{"name": "Module", "slug": "module", "weaver": "spaider-sdlc"}],
                 }
             ],
         }
@@ -530,8 +530,8 @@ class TestArtifactsMetaIterators(unittest.TestCase):
             "project_root": "..",
             "weavers": {},
             "systems": [
-                {"name": "Valid", "slug": "valid", "weaver": "spider-sdlc"},
-                {"name": "Invalid", "slug": "Invalid_Slug!", "weaver": "spider-sdlc"},
+                {"name": "Valid", "slug": "valid", "weaver": "spaider-sdlc"},
+                {"name": "Invalid", "slug": "Invalid_Slug!", "weaver": "spaider-sdlc"},
             ],
         }
         meta = ArtifactsMeta.from_dict(data)

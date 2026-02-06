@@ -1,9 +1,9 @@
 ---
-spider: true
+spaider: true
 type: requirement
 name: Agent Compliance Protocol
 version: 1.0
-purpose: Enforcement protocol for AI agents executing Spider workflows (STRICT mode only)
+purpose: Enforcement protocol for AI agents executing Spaider workflows (STRICT mode only)
 ---
 
 # Agent Compliance Protocol
@@ -29,7 +29,7 @@ purpose: Enforcement protocol for AI agents executing Spider workflows (STRICT m
 
 ## Overview
 
-This protocol defines mandatory behaviors for AI agents executing Spider workflows when Spider rules are enabled. It prevents common agent failure modes through structural enforcement.
+This protocol defines mandatory behaviors for AI agents executing Spaider workflows when Spaider rules are enabled. It prevents common agent failure modes through structural enforcement.
 
 **Key principle**: Trust but verify — agents must provide observable evidence (quotes, line numbers, tool call confirmations) for every claim. "I checked it" without evidence = violation.
 
@@ -154,7 +154,7 @@ Agent MUST structure validation output as follows:
 ## Validation Report
 
 ### 1. Protocol Compliance
-- Rules Mode: STRICT (spider-sdlc)
+- Rules Mode: STRICT (spaider-sdlc)
 - Artifact Read: {path} ({N} lines)
 - Checklist Loaded: {path} ({N} lines)
 
@@ -271,11 +271,11 @@ If agent or user detects anti-pattern violation:
 
 ## Relaxed Mode Behavior
 
-When Rules Mode = RELAXED (no Spider rules):
+When Rules Mode = RELAXED (no Spaider rules):
 
 - This compliance protocol does NOT apply
 - Agent uses best judgment
-- Output includes disclaimer: `⚠️ Validated without Spider rules (reduced rigor)`
+- Output includes disclaimer: `⚠️ Validated without Spaider rules (reduced rigor)`
 - User accepts reduced confidence in results
 
 ---

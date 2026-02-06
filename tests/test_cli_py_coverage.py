@@ -9,7 +9,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spider" / "scripts"))
+sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spaider" / "scripts"))
 
 
 def _write_json(path: Path, data: dict) -> None:
@@ -19,8 +19,8 @@ def _write_json(path: Path, data: dict) -> None:
 
 def _bootstrap_project_root(root: Path, adapter_rel: str = "adapter") -> Path:
     (root / ".git").mkdir()
-    (root / ".spider-config.json").write_text(
-        json.dumps({"spiderAdapterPath": adapter_rel}, ensure_ascii=False),
+    (root / ".spaider-config.json").write_text(
+        json.dumps({"spaiderAdapterPath": adapter_rel}, ensure_ascii=False),
         encoding="utf-8",
     )
     adapter = root / adapter_rel
@@ -37,18 +37,18 @@ def _bootstrap_self_check_weavers(root: Path, adapter: Path, *, with_example: bo
             "project_root": "..",
             "systems": [],
             "weavers": {
-                "spider-sdlc": {"format": "Spider", "path": "weavers/spider-sdlc"},
+                "spaider-sdlc": {"format": "Spaider", "path": "weavers/spaider-sdlc"},
             },
         },
     )
 
-    weavers_base = root / "weavers" / "spider-sdlc" / "artifacts" / "req"
+    weavers_base = root / "weavers" / "spaider-sdlc" / "artifacts" / "req"
     weavers_base.mkdir(parents=True, exist_ok=True)
 
     template = weavers_base / "template.md"
     template.write_text(
         "---\n"
-        "spider-template:\n"
+        "spaider-template:\n"
         "  kind: req\n"
         "  version:\n"
         "    major: 1\n"
@@ -68,7 +68,7 @@ def _bootstrap_self_check_weavers(root: Path, adapter: Path, *, with_example: bo
         if bad_example:
             example.write_text(
                 "---\n"
-                "spider-template:\n"
+                "spaider-template:\n"
                 "  kind: req\n"
                 "  version: 1.0\n"
                 "---\n"
@@ -89,7 +89,7 @@ def _bootstrap_self_check_weavers(root: Path, adapter: Path, *, with_example: bo
 
 class TestCLIPyCoverageSelfCheck(unittest.TestCase):
     def test_self_check_pass(self):
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -112,7 +112,7 @@ class TestCLIPyCoverageSelfCheck(unittest.TestCase):
                 os.chdir(cwd)
 
     def test_self_check_fail_on_validation_errors(self):
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -134,7 +134,7 @@ class TestCLIPyCoverageSelfCheck(unittest.TestCase):
                 os.chdir(cwd)
 
     def test_self_check_verbose_includes_warnings(self):
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -158,22 +158,22 @@ class TestCLIPyCoverageSelfCheck(unittest.TestCase):
 
     def test_self_check_template_validation_module_missing(self):
         # Force the inner import in `_cmd_self_check` to fail.
-        from spider import cli as spider_cli
+        from spaider import cli as spaider_cli
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             adapter = _bootstrap_project_root(root)
             _bootstrap_self_check_weavers(root, adapter, with_example=True, bad_example=False)
 
-            dummy = types.ModuleType("spider.utils.template")
+            dummy = types.ModuleType("spaider.utils.template")
 
             cwd = os.getcwd()
             try:
                 os.chdir(root)
                 stdout = io.StringIO()
-                with patch.dict("sys.modules", {"spider.utils.template": dummy}):
+                with patch.dict("sys.modules", {"spaider.utils.template": dummy}):
                     with redirect_stdout(stdout):
-                        exit_code = spider_cli._cmd_self_check([])
+                        exit_code = spaider_cli._cmd_self_check([])
                 self.assertEqual(exit_code, 1)
                 out = json.loads(stdout.getvalue())
                 self.assertEqual(out.get("status"), "ERROR")
@@ -185,18 +185,18 @@ class TestCLIPyCoverageSelfCheck(unittest.TestCase):
 class TestCLIPyCoverageValidateCode(unittest.TestCase):
     def test_validate_with_code_and_output_file(self):
         """Test validate command with code validation and output file."""
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             adapter = _bootstrap_project_root(root)
 
             # Weavers + template for kind=req
-            weavers_base = root / "weavers" / "spider-sdlc" / "artifacts" / "req"
+            weavers_base = root / "weavers" / "spaider-sdlc" / "artifacts" / "req"
             weavers_base.mkdir(parents=True, exist_ok=True)
             (weavers_base / "template.md").write_text(
                 "---\n"
-                "spider-template:\n"
+                "spaider-template:\n"
                 "  kind: req\n"
                 "  version:\n"
                 "    major: 1\n"
@@ -223,7 +223,7 @@ class TestCLIPyCoverageValidateCode(unittest.TestCase):
             src.mkdir(parents=True, exist_ok=True)
             code_file = src / "code.py"
             code_file.write_text(
-                "# @spider-req:spd-req-1:p1\n"
+                "# @spaider-req:spd-req-1:p1\n"
                 "print('ok')\n",
                 encoding="utf-8",
             )
@@ -232,11 +232,11 @@ class TestCLIPyCoverageValidateCode(unittest.TestCase):
                 adapter / "artifacts.json",
                 {
                     "project_root": "..",
-                    "weavers": {"spider-sdlc": {"format": "Spider", "path": "weavers/spider-sdlc"}},
+                    "weavers": {"spaider-sdlc": {"format": "Spaider", "path": "weavers/spaider-sdlc"}},
                     "systems": [
                         {
                             "name": "S",
-                            "weaver": "spider-sdlc",
+                            "weaver": "spaider-sdlc",
                             "artifacts": [
                                 {"path": "artifacts/reqs.md", "kind": "req", "traceability": "FULL"},
                             ],
@@ -268,14 +268,14 @@ class TestCLIPyCoverageValidateCode(unittest.TestCase):
 
 class TestCLIPyCoverageHelpers(unittest.TestCase):
     def test_prompt_path_eof_returns_default(self):
-        from spider.cli import _prompt_path
+        from spaider.cli import _prompt_path
 
         with patch("builtins.input", side_effect=EOFError):
             got = _prompt_path("Question?", "default")
         self.assertEqual(got, "default")
 
     def test_list_workflow_files_iterdir_exception(self):
-        from spider.cli import _list_workflow_files
+        from spaider.cli import _list_workflow_files
 
         with TemporaryDirectory() as tmpdir:
             core = Path(tmpdir)
@@ -291,7 +291,7 @@ class TestCLIPyCoverageSelfCheckFiltering(unittest.TestCase):
 
     def test_self_check_filter_by_rule(self):
         """self-check --weaver filters to specific weaver."""
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -313,7 +313,7 @@ class TestCLIPyCoverageSelfCheckFiltering(unittest.TestCase):
 
     def test_self_check_filter_matches_weaver(self):
         """self-check --weaver matches existing weaver."""
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -325,7 +325,7 @@ class TestCLIPyCoverageSelfCheckFiltering(unittest.TestCase):
                 os.chdir(root)
                 stdout = io.StringIO()
                 with redirect_stdout(stdout):
-                    exit_code = main(["self-check", "--weaver", "spider-sdlc"])
+                    exit_code = main(["self-check", "--weaver", "spaider-sdlc"])
                 self.assertEqual(exit_code, 0)
                 out = json.loads(stdout.getvalue())
                 self.assertEqual(out.get("weavers_checked"), 1)
@@ -338,7 +338,7 @@ class TestCLIPyCoverageInitUnchanged(unittest.TestCase):
 
     def test_init_unchanged_files(self):
         """init reports unchanged when files match desired content."""
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -372,18 +372,18 @@ class TestCLIPyCoverageValidateRules(unittest.TestCase):
 
     def test_validate_rules_single_template(self):
         """validate-weavers --template validates a single template file."""
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
 
             # Create a valid template (no adapter needed for --template)
-            weavers_base = root / "weavers" / "spider-sdlc" / "artifacts" / "req"
+            weavers_base = root / "weavers" / "spaider-sdlc" / "artifacts" / "req"
             weavers_base.mkdir(parents=True, exist_ok=True)
             template_path = weavers_base / "template.md"
             template_path.write_text(
                 "---\n"
-                "spider-template:\n"
+                "spaider-template:\n"
                 "  kind: req\n"
                 "  version:\n"
                 "    major: 1\n"
@@ -410,18 +410,18 @@ class TestCLIPyCoverageValidateRules(unittest.TestCase):
 
     def test_validate_rules_verbose_with_errors(self):
         """validate-weavers --verbose shows template errors."""
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
 
             # Create an invalid template (missing version)
-            weavers_base = root / "weavers" / "spider-sdlc" / "artifacts" / "req"
+            weavers_base = root / "weavers" / "spaider-sdlc" / "artifacts" / "req"
             weavers_base.mkdir(parents=True, exist_ok=True)
             template_path = weavers_base / "template.md"
             template_path.write_text(
                 "---\n"
-                "spider-template:\n"
+                "spaider-template:\n"
                 "  kind: req\n"
                 "---\n"
                 "\n"
@@ -445,19 +445,19 @@ class TestCLIPyCoverageValidateRules(unittest.TestCase):
 
     def test_validate_rules_all_from_registry(self):
         """validate-weavers without --template validates all templates from registry."""
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             adapter = _bootstrap_project_root(root)
 
             # Create weavers structure
-            weavers_base = root / "weavers" / "spider-sdlc" / "artifacts" / "req"
+            weavers_base = root / "weavers" / "spaider-sdlc" / "artifacts" / "req"
             weavers_base.mkdir(parents=True, exist_ok=True)
             template_path = weavers_base / "template.md"
             template_path.write_text(
                 "---\n"
-                "spider-template:\n"
+                "spaider-template:\n"
                 "  kind: req\n"
                 "  version:\n"
                 "    major: 1\n"
@@ -483,11 +483,11 @@ class TestCLIPyCoverageValidateRules(unittest.TestCase):
                 adapter / "artifacts.json",
                 {
                     "project_root": "..",
-                    "weavers": {"spider-sdlc": {"format": "Spider", "path": "weavers/spider-sdlc"}},
+                    "weavers": {"spaider-sdlc": {"format": "Spaider", "path": "weavers/spaider-sdlc"}},
                     "systems": [
                         {
                             "name": "S",
-                            "weaver": "spider-sdlc",
+                            "weaver": "spaider-sdlc",
                             "artifacts": [
                                 {"path": "artifacts/reqs.md", "kind": "req"},
                             ],
@@ -511,32 +511,32 @@ class TestCLIPyCoverageValidateRules(unittest.TestCase):
 
 
 class TestCLIPyCoverageTopLevelHelp(unittest.TestCase):
-    """Tests for spider --help (lines 2379-2392)."""
+    """Tests for spaider --help (lines 2379-2392)."""
 
     def test_top_level_help_flag(self):
-        """spider --help shows usage and commands."""
-        from spider.cli import main
+        """spaider --help shows usage and commands."""
+        from spaider.cli import main
 
         stdout = io.StringIO()
         with redirect_stdout(stdout):
             exit_code = main(["--help"])
         self.assertEqual(exit_code, 0)
         output = stdout.getvalue()
-        self.assertIn("usage: spider <command>", output)
+        self.assertIn("usage: spaider <command>", output)
         self.assertIn("Validation commands:", output)
         self.assertIn("Search and utility commands:", output)
         self.assertIn("validate", output)
 
     def test_top_level_help_short_flag(self):
-        """spider -h also shows usage."""
-        from spider.cli import main
+        """spaider -h also shows usage."""
+        from spaider.cli import main
 
         stdout = io.StringIO()
         with redirect_stdout(stdout):
             exit_code = main(["-h"])
         self.assertEqual(exit_code, 0)
         output = stdout.getvalue()
-        self.assertIn("usage: spider <command>", output)
+        self.assertIn("usage: spaider <command>", output)
 
 
 class TestCLIPyCoverageSlugValidation(unittest.TestCase):
@@ -544,17 +544,17 @@ class TestCLIPyCoverageSlugValidation(unittest.TestCase):
 
     def test_self_check_invalid_slugs(self):
         """self-check reports invalid slugs in artifacts.json."""
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             adapter = _bootstrap_project_root(root)
 
             # Create weavers structure with template
-            weavers_base = root / "weavers" / "spider-sdlc" / "artifacts" / "req"
+            weavers_base = root / "weavers" / "spaider-sdlc" / "artifacts" / "req"
             weavers_base.mkdir(parents=True, exist_ok=True)
             (weavers_base / "template.md").write_text(
-                "---\nspider-template:\n  kind: req\n  version:\n    major: 1\n    minor: 0\n---\n"
+                "---\nspaider-template:\n  kind: req\n  version:\n    major: 1\n    minor: 0\n---\n"
                 "<!-- spd:id:item -->\n<!-- spd:id:item -->\n",
                 encoding="utf-8",
             )
@@ -564,12 +564,12 @@ class TestCLIPyCoverageSlugValidation(unittest.TestCase):
                 adapter / "artifacts.json",
                 {
                     "project_root": "..",
-                    "weavers": {"spider-sdlc": {"format": "Spider", "path": "weavers/spider-sdlc"}},
+                    "weavers": {"spaider-sdlc": {"format": "Spaider", "path": "weavers/spaider-sdlc"}},
                     "systems": [
                         {
                             "name": "S",
                             "slug": "Invalid Slug With Spaces",  # Invalid: contains spaces
-                            "weaver": "spider-sdlc",
+                            "weaver": "spaider-sdlc",
                             "artifacts": [],
                         }
                     ],
@@ -595,7 +595,7 @@ class TestCLIPyCoverageAgentsCommand(unittest.TestCase):
 
     def test_agents_dry_run_default_config(self):
         """agents command creates default config for recognized agent."""
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -629,17 +629,17 @@ class TestCLIPyCoverageListIdsWithCode(unittest.TestCase):
 
     def test_list_ids_include_code_with_refs(self):
         """list-ids --include-code shows ID references from artifacts."""
-        from spider.cli import main
+        from spaider.cli import main
 
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             adapter = _bootstrap_project_root(root)
 
             # Create weavers structure with id-ref block
-            weavers_base = root / "weavers" / "spider-sdlc" / "artifacts" / "req"
+            weavers_base = root / "weavers" / "spaider-sdlc" / "artifacts" / "req"
             weavers_base.mkdir(parents=True, exist_ok=True)
             (weavers_base / "template.md").write_text(
-                "---\nspider-template:\n  kind: req\n  version:\n    major: 1\n    minor: 0\n---\n"
+                "---\nspaider-template:\n  kind: req\n  version:\n    major: 1\n    minor: 0\n---\n"
                 "<!-- spd:id:item -->\n<!-- spd:id:item -->\n"
                 "<!-- spd:id-ref:other -->\n<!-- spd:id-ref:other -->\n",
                 encoding="utf-8",
@@ -662,7 +662,7 @@ class TestCLIPyCoverageListIdsWithCode(unittest.TestCase):
             src = root / "src"
             src.mkdir(parents=True, exist_ok=True)
             (src / "code.py").write_text(
-                "# @spider-req:spd-test-item-1:p1\nprint('ok')\n",
+                "# @spaider-req:spd-test-item-1:p1\nprint('ok')\n",
                 encoding="utf-8",
             )
 
@@ -670,11 +670,11 @@ class TestCLIPyCoverageListIdsWithCode(unittest.TestCase):
                 adapter / "artifacts.json",
                 {
                     "project_root": "..",
-                    "weavers": {"spider-sdlc": {"format": "Spider", "path": "weavers/spider-sdlc"}},
+                    "weavers": {"spaider-sdlc": {"format": "Spaider", "path": "weavers/spaider-sdlc"}},
                     "systems": [
                         {
                             "name": "test",
-                            "weaver": "spider-sdlc",
+                            "weaver": "spaider-sdlc",
                             "artifacts": [{"path": "artifacts/reqs.md", "kind": "req"}],
                             "codebase": [{"path": "src", "extensions": [".py"]}],
                         }

@@ -1,5 +1,5 @@
 ---
-spider: true
+spaider: true
 type: requirement
 name: Execution Protocol
 version: 2.0
@@ -17,7 +17,7 @@ purpose: Common protocol executed by generate.md and analyze.md workflows
 - [Overview](#overview)
 - [Execution Protocol Violations](#-execution-protocol-violations)
 - [Compaction Recovery](#-compaction-recovery)
-- [Spider Mode Detection](#spider-mode-detection)
+- [Spaider Mode Detection](#spaider-mode-detection)
 - [Rules Mode Detection](#rules-mode-detection)
 - [Discover Adapter](#discover-adapter)
 - [Understand Registry](#understand-registry)
@@ -41,7 +41,7 @@ Common steps shared by `generate.md` and `analyze.md`. Both workflows MUST execu
 
 **Common violations**:
 1. ❌ Not reading this protocol first
-2. ❌ Not running `spider adapter-info`
+2. ❌ Not running `spaider adapter-info`
 3. ❌ Not following invoked workflow rules (`generate.md` / `analyze.md`)
 
 **Recovery**:
@@ -54,39 +54,39 @@ Common steps shared by `generate.md` and `analyze.md`. Both workflows MUST execu
 ## 🔄 Compaction Recovery
 
 **Problem**: After context compaction (conversation summarization), agent may lose:
-- Knowledge that Spider workflow was active
+- Knowledge that Spaider workflow was active
 - List of loaded specs
 - Current workflow phase
 
 **Detection signals** (agent should suspect compaction occurred):
 - Conversation starts with "This session is being continued from a previous conversation"
-- Summary mentions `/spider-generate`, `/spider-analyze`, or other Spider commands
-- Todo list contains Spider-related tasks in progress
+- Summary mentions `/spaider-generate`, `/spaider-analyze`, or other Spaider commands
+- Todo list contains Spaider-related tasks in progress
 
 **Recovery protocol**:
 
 1. Detect compaction from conversation summary signals
-2. Re-run: `spider adapter-info` + load required specs from `{spider_adapter_path}/AGENTS.md`
+2. Re-run: `spaider adapter-info` + load required specs from `{spaider_adapter_path}/AGENTS.md`
 3. Announce restored context (workflow, target, loaded specs), then continue
 
 **Agent MUST NOT**:
-- Continue Spider work without re-loading specs after compaction
+- Continue Spaider work without re-loading specs after compaction
 - Assume specs are "still loaded" from before compaction
 - Skip protocol because "it was already done"
 
 ---
 
-## Spider Mode Detection
+## Spaider Mode Detection
 
 **Default behavior**:
-- Treat request as workflow execution ONLY when Spider is enabled
-- User invoking Spider workflow (`/spider`, `/prd`, `/design`, etc.) = Spider enabled
-- User requesting `/spider off` = Spider disabled for conversation
+- Treat request as workflow execution ONLY when Spaider is enabled
+- User invoking Spaider workflow (`/spaider`, `/prd`, `/design`, etc.) = Spaider enabled
+- User requesting `/spaider off` = Spaider disabled for conversation
 - When disabled, behave as normal coding assistant
 
-**Announce Spider mode** (non-blocking):
+**Announce Spaider mode** (non-blocking):
 ```
-Spider mode: ENABLED. To disable: /spider off
+Spaider mode: ENABLED. To disable: /spaider off
 ```
 
 ---
@@ -95,7 +95,7 @@ Spider mode: ENABLED. To disable: /spider off
 
 After adapter discovery, determine **Rules Mode**:
 
-### Rules Mode: STRICT (Spider rules enabled)
+### Rules Mode: STRICT (Spaider rules enabled)
 
 **Condition**: `artifacts.json` found AND contains `rules` section AND target artifact/code matches registered system.
 
@@ -108,7 +108,7 @@ After adapter discovery, determine **Rules Mode**:
 
 **Announce**:
 ```
-Rules Mode: STRICT (spider-sdlc rules loaded)
+Rules Mode: STRICT (spaider-sdlc rules loaded)
 → Full validation protocol enforced
 ```
 
@@ -136,7 +136,7 @@ Available weavers:
 • {weaver_name} ({weaver.path})
   Artifacts: {kinds from weaver.path/artifacts/}
 
-→ `spider generate <KIND>` to create your first artifact
+→ `spaider generate <KIND>` to create your first artifact
 ```
 
 ALWAYS proceed with generate workflow without blocking WHEN user requests artifact generation in BOOTSTRAP mode
@@ -157,9 +157,9 @@ ALWAYS detect RELAXED mode WHEN no adapter found OR no `weavers` in artifacts.js
 
 ALWAYS propose initialization WHEN RELAXED mode:
 ```
-Spider adapter not configured
+Spaider adapter not configured
 
-→ `spider init` to initialize for this project
+→ `spaider init` to initialize for this project
 ```
 
 ALWAYS proceed as normal coding assistant WHEN user declines initialization
@@ -174,7 +174,7 @@ ALWAYS proceed as normal coding assistant WHEN user declines initialization
 | Checklist validation | ✓ Mandatory | ✓ Mandatory | ✗ Skipped |
 | Reverse-engineering | When needed | BROWNFIELD only | N/A |
 | Blocking | No | No | No |
-| Next step | Continue workflow | `spider generate <KIND>` | `spider init` |
+| Next step | Continue workflow | `spaider generate <KIND>` | `spaider init` |
 
 ### Project Type (BOOTSTRAP mode)
 
@@ -188,22 +188,22 @@ ALWAYS proceed as normal coding assistant WHEN user declines initialization
 ## Discover Adapter
 
 ```bash
-python3 {spider_path}/skills/spider/scripts/spider.py adapter-info --root {PROJECT_ROOT} --spider-root {spider_path}
+python3 {spaider_path}/skills/spaider/scripts/spaider.py adapter-info --root {PROJECT_ROOT} --spaider-root {spaider_path}
 ```
 
 **Parse output**: `status`, `adapter_dir`, `project_root`, `specs`, `rules`
 
-**If FOUND**: Load `{spider_adapter_path}/AGENTS.md` for navigation rules
+**If FOUND**: Load `{spaider_adapter_path}/AGENTS.md` for navigation rules
 
-**If NOT_FOUND**: Suggest running `/spider-adapter` to bootstrap
+**If NOT_FOUND**: Suggest running `/spaider-adapter` to bootstrap
 
 ---
 
 ## Understand Registry
 
-**MUST read** `{spider_adapter_path}/artifacts.json`:
+**MUST read** `{spaider_adapter_path}/artifacts.json`:
 
-1. **Rules**: What rule packages exist (`spider-sdlc`, `spd-core`, etc.)
+1. **Rules**: What rule packages exist (`spaider-sdlc`, `spd-core`, etc.)
 2. **Systems**: What systems are registered and their hierarchy
 3. **Artifacts**: What artifacts exist, their kinds, and traceability settings
 4. **Codebase**: What code directories are tracked
@@ -243,7 +243,7 @@ From `artifacts.json`:
 
 ```
 1. Find system containing target artifact
-2. Get weaver name: system.weaver (e.g., "spider-sdlc")
+2. Get weaver name: system.weaver (e.g., "spaider-sdlc")
 3. Look up path: artifacts.json.weavers[weaver_name].path
 4. WEAVER_BASE = resolved path (could be anything: "weavers/sdlc", "my-weaver", etc.)
 ```
@@ -252,11 +252,11 @@ From `artifacts.json`:
 ```json
 {
   "weavers": {
-    "spider-sdlc": { "path": "weavers/sdlc" }
+    "spaider-sdlc": { "path": "weavers/sdlc" }
   },
   "systems": [{
     "name": "MySystem",
-    "weaver": "spider-sdlc"
+    "weaver": "spaider-sdlc"
   }]
 }
 ```
@@ -268,8 +268,8 @@ From explicit parameter or artifacts.json lookup:
 
 | Source | Resolution |
 |--------|------------|
-| `spider generate PRD` | Explicit: PRD |
-| `spider analyze {path}` | Lookup: `artifacts.json.systems[].artifacts[path].kind` |
+| `spaider generate PRD` | Explicit: PRD |
+| `spaider analyze {path}` | Lookup: `artifacts.json.systems[].artifacts[path].kind` |
 | Path in `codebase[]` | CODE |
 
 ### 3. Load Rules.md
@@ -327,13 +327,13 @@ I understand the following requirements for {ARTIFACT_TYPE}:
 
 **After rules loaded and target type determined**, load applicable adapter specs:
 
-**Read adapter AGENTS.md** at `{spider_adapter_path}/AGENTS.md`
+**Read adapter AGENTS.md** at `{spaider_adapter_path}/AGENTS.md`
 
 **Parse WHEN clauses** matching current context:
 
 ```
-For each line matching: ALWAYS open and follow `{spec}` WHEN Spider follows rules `{rule}` for {target}
-  IF {rule} == loaded rules ID (e.g., "spider-sdlc"):
+For each line matching: ALWAYS open and follow `{spec}` WHEN Spaider follows rules `{rule}` for {target}
+  IF {rule} == loaded rules ID (e.g., "spaider-sdlc"):
     IF target includes current artifact kind:
       → Open and follow {spec}
     IF target includes "codebase" AND working on code:
@@ -342,7 +342,7 @@ For each line matching: ALWAYS open and follow `{spec}` WHEN Spider follows rule
 
 **Example resolution**:
 
-- Loaded rules: `spider-sdlc`
+- Loaded rules: `spaider-sdlc`
 - Target: `DESIGN`
 - Match WHEN clauses for that ruleset/target
 - Open matched specs (e.g. `specs/tech-stack.md`, `specs/domain-model.md`)
@@ -388,7 +388,7 @@ For each line matching: ALWAYS open and follow `{spec}` WHEN Spider follows rule
 **If adapter not found**:
 ```
 ⚠️ Adapter not found
-→ Run /spider-adapter to bootstrap
+→ Run /spaider-adapter to bootstrap
 ```
 **Action**: STOP.
 
@@ -397,7 +397,7 @@ For each line matching: ALWAYS open and follow `{spec}` WHEN Spider follows rule
 **If artifacts.json is malformed**:
 ```
 ⚠️ Cannot parse artifacts.json: {parse error}
-→ Fix JSON syntax errors in {spider_adapter_path}/artifacts.json
+→ Fix JSON syntax errors in {spaider_adapter_path}/artifacts.json
 → Validate with: python3 -m json.tool artifacts.json
 ```
 **Action**: STOP.
@@ -409,7 +409,7 @@ For each line matching: ALWAYS open and follow `{spec}` WHEN Spider follows rule
 ⚠️ Rules file not found: {WEAVERS_PATH}
 → Verify weaver package exists at {WEAVER_BASE}
 → Check artifacts.json weavers section has correct path
-→ Run /spider-adapter --rescan to regenerate
+→ Run /spaider-adapter --rescan to regenerate
 ```
 **Action**: STOP.
 
@@ -431,7 +431,7 @@ For each line matching: ALWAYS open and follow `{spec}` WHEN Spider follows rule
 ⚠️ System not found: {system_name}
 → Registered systems: {list from artifacts.json}
 → Options:
-  1. Register system via /spider-adapter
+  1. Register system via /spaider-adapter
   2. Use existing system
   3. Continue in RELAXED mode (no rules enforcement)
 ```
@@ -458,12 +458,12 @@ For each line matching: ALWAYS open and follow `{spec}` WHEN Spider follows rule
 
 ### Detection (D)
 
-- D.1 (YES): Spider mode detected (agent states Spider enabled)
+- D.1 (YES): Spaider mode detected (agent states Spaider enabled)
 - D.2 (YES): Rules mode determined (STRICT/RELAXED + reason)
 
 ### Discovery (DI)
 
-- DI.1 (YES): Adapter discovery executed (`spider adapter-info`)
+- DI.1 (YES): Adapter discovery executed (`spaider adapter-info`)
 - DI.2 (YES): `artifacts.json` read/understood (agent lists systems/rules)
 - DI.3 (YES): Rules directories explored (agent lists artifact kinds)
 

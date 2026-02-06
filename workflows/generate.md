@@ -1,7 +1,7 @@
 ---
-spider: true
+spaider: true
 type: workflow
-name: spider-generate
+name: spaider-generate
 description: Create/update artifacts or implement code
 version: 1.0
 purpose: Universal workflow for creating or updating any artifact or code
@@ -9,26 +9,26 @@ purpose: Universal workflow for creating or updating any artifact or code
 
 # Generate
 
-Set `{spider_mode}` = `on` FIRST
+Set `{spaider_mode}` = `on` FIRST
 
 **Type**: Operation
 
-ALWAYS open and follow `{spider_path}/requirements/execution-protocol.md` FIRST
+ALWAYS open and follow `{spaider_path}/requirements/execution-protocol.md` FIRST
 
-ALWAYS open and follow `{spider_path}/requirements/reverse-engineering.md` WHEN BROWNFIELD project AND user requests to analyze codebase, search in code, or generate artifacts from existing code
+ALWAYS open and follow `{spaider_path}/requirements/reverse-engineering.md` WHEN BROWNFIELD project AND user requests to analyze codebase, search in code, or generate artifacts from existing code
 
 NEVER open reverse-engineering.md WHEN GREENFIELD project — there is no code to reverse-engineer
 
-ALWAYS open and follow `{spider_path}/requirements/code-checklist.md` WHEN user requests implementing, generating, or editing code (Code mode)
+ALWAYS open and follow `{spaider_path}/requirements/code-checklist.md` WHEN user requests implementing, generating, or editing code (Code mode)
 
-OPEN and follow `{spider_path}/requirements/prompt-engineering.md` WHEN user requests generation or updates of:
+OPEN and follow `{spaider_path}/requirements/prompt-engineering.md` WHEN user requests generation or updates of:
 - System prompts, agent prompts, or LLM prompts
 - Agent instructions or agent guidelines
 - Skills, workflows, or methodologies
 - AGENTS.md or navigation rules
 - Any document containing instructions for AI agents
 
-For context compaction recovery during multi-phase workflows, follow `{spider_path}/requirements/execution-protocol.md` Section "Compaction Recovery".
+For context compaction recovery during multi-phase workflows, follow `{spaider_path}/requirements/execution-protocol.md` Section "Compaction Recovery".
 
 ---
 
@@ -85,7 +85,7 @@ ALWAYS SKIP this section WHEN GREENFIELD — nothing to reverse-engineer
 **BROWNFIELD only** — when existing code needs to inform artifacts:
 
 1. **Check if adapter has project analysis**:
-  - Does `spider.py adapter-info` report any `specs`?
+  - Does `spaider.py adapter-info` report any `specs`?
   - If specs exist, load and follow them before generating.
   - If no specs exist, offer rescan.
 
@@ -94,7 +94,7 @@ ALWAYS SKIP this section WHEN GREENFIELD — nothing to reverse-engineer
    BROWNFIELD project detected — existing code found.
 
    To generate artifacts informed by your codebase:
-   → `spider init --rescan` — analyze codebase structure and patterns
+   → `spaider init --rescan` — analyze codebase structure and patterns
 
    Skip? Artifacts will be created without codebase context.
    ```
@@ -111,14 +111,14 @@ Universal generation workflow. Handles three modes:
 - **Code mode**: Uses checklist only (implementation, fixes, refactoring)
 - **Adapter mode**: Uses adapter.md workflow (create/update adapter, specs, artifacts.json)
 
-**Adapter mode trigger**: When target is adapter files (AGENTS.md, artifacts.json, specs/), delegate to `{spider_path}/workflows/adapter.md`.
+**Adapter mode trigger**: When target is adapter files (AGENTS.md, artifacts.json, specs/), delegate to `{spaider_path}/workflows/adapter.md`.
 
 After executing `execution-protocol.md`, you have: TARGET_TYPE, RULES, KIND, PATH, MODE, and resolved dependencies.
 
 ### Resolved Variables (from `execution-protocol.md` + adapter-info)
 
-- `{spider_adapter_path}` — adapter directory from `spider.py adapter-info` (contains `artifacts.json`)
-- `{ARTIFACTS_REGISTRY}` — `{spider_adapter_path}/artifacts.json`
+- `{spaider_adapter_path}` — adapter directory from `spaider.py adapter-info` (contains `artifacts.json`)
+- `{ARTIFACTS_REGISTRY}` — `{spaider_adapter_path}/artifacts.json`
 - `{WEAVERS_PATH}` — weaver package base directory resolved from registry (registry schema uses `weavers`/`weaver`)
 - `{PATH}` — target artifact/code path for the current operation
 
@@ -140,7 +140,7 @@ This workflow can require loading multiple long templates/checklists/examples an
 
 ## ⛔ Agent Anti-Patterns (STRICT mode)
 
-**Reference**: `{spider_path}/requirements/agent-compliance.md` for full list.
+**Reference**: `{spaider_path}/requirements/agent-compliance.md` for full list.
 
 **Critical anti-patterns for generation**:
 
@@ -170,7 +170,7 @@ This workflow can require loading multiple long templates/checklists/examples an
 
 ## Rules Mode Behavior
 
-| Aspect | STRICT (Spider rules) | RELAXED (no rules) |
+| Aspect | STRICT (Spaider rules) | RELAXED (no rules) |
 |--------|-------------------|-------------------|
 | Template | Required | User-provided or best effort |
 | Checklist | Required for self-review | Optional |
@@ -180,7 +180,7 @@ This workflow can require loading multiple long templates/checklists/examples an
 
 **RELAXED mode disclaimer**:
 ```
-⚠️ Generated without Spider rules (reduced quality assurance)
+⚠️ Generated without Spaider rules (reduced quality assurance)
 ```
 
 ---
@@ -212,7 +212,7 @@ This workflow can require loading multiple long templates/checklists/examples an
 
 | Dependency | Purpose | If missing |
 |------------|---------|------------|
-| **Code checklist** | Baseline quality criteria for all code work | Load `{spider_path}/requirements/code-checklist.md` |
+| **Code checklist** | Baseline quality criteria for all code work | Load `{spaider_path}/requirements/code-checklist.md` |
 | **Design artifact** | Requirements to implement | Ask user to specify source |
 
 **MUST NOT proceed** to Phase 1 until all dependencies are available.
@@ -257,14 +257,14 @@ Where should the result go?
 **If generating code**:
 - Identify design artifact(s) being implemented
 - Extract requirement IDs to trace
-- Plan Spider markers for traceability (if FULL traceability)
+- Plan Spaider markers for traceability (if FULL traceability)
 
 ### ID Naming
 
 **For new artifacts with IDs**:
 - Use project prefix from adapter
 - Follow pattern: `spd-{system}-{kind}-{slug}`
-- Verify uniqueness with `spider list-ids`
+- Verify uniqueness with `spaider list-ids`
 
 ---
 
@@ -360,7 +360,7 @@ Standard checks (subset of [Validation Criteria](#validation-criteria)):
 
 Execute phases from codebase/rules.md:
 - **Phase 1: Setup** — load spec design, checklist
-- **Phase 2: Implementation** — implement with Spider markers
+- **Phase 2: Implementation** — implement with Spaider markers
 - **Phase 3: Marker Format** — use correct marker syntax
 - **Phase 4: Quality Check** — verify traceability
 
@@ -368,7 +368,7 @@ Standard checks (subset of [Validation Criteria](#validation-criteria)):
 - [ ] Follows conventions
 - [ ] Implements all requirements
 - [ ] Has tests (if required)
-- [ ] Spider markers present (if to_code="true")
+- [ ] Spaider markers present (if to_code="true")
 
 ### Content Rules
 
@@ -377,7 +377,7 @@ Standard checks (subset of [Validation Criteria](#validation-criteria)):
 - Use imperative language
 - Wrap IDs in backticks
 - Reference types from domain model (no redefinition)
-- Use Spider DSL (SDSL) for behavioral sections (if applicable)
+- Use Spaider DSL (SDSL) for behavioral sections (if applicable)
 
 **MUST NOT**:
 - Leave placeholders
@@ -402,7 +402,7 @@ Standard checks (subset of [Validation Criteria](#validation-criteria)):
 ```markdown
 ### Generation Checkpoint
 
-**Workflow**: /spider-generate {KIND}
+**Workflow**: /spaider-generate {KIND}
 **Phase**: 2 complete, ready for Phase 3
 **Inputs collected**:
 - {section}: {value summary}
@@ -444,7 +444,7 @@ Resume: Re-read this checkpoint, verify no file changes, continue to Phase 3.
 {additional files if any}
 
 ### Artifacts registry:
-- `{spider_adapter_path}/artifacts.json`: {entry additions/updates, if any}
+- `{spaider_adapter_path}/artifacts.json`: {entry additions/updates, if any}
 
 **Proceed?** [yes/no/modify]
 ```
@@ -460,7 +460,7 @@ Resume: Re-read this checkpoint, verify no file changes, continue to Phase 3.
 
 **Only after confirmation**:
 
-1. Update `{spider_adapter_path}/artifacts.json` if new artifact path introduced
+1. Update `{spaider_adapter_path}/artifacts.json` if new artifact path introduced
 2. Create directories if needed
 3. Write file(s)
 4. Verify content
@@ -481,12 +481,12 @@ Output:
 
 **Automatic**: Run validation after generation (do not list in Next Steps):
 ```
-/spider-analyze --artifact {PATH}
+/spaider-analyze --artifact {PATH}
 ```
 
 For code generation, use:
 ```
-/spider-analyze --code {PATH} --design {design-path}
+/spaider-analyze --code {PATH} --design {design-path}
 ```
 
 **If PASS**:
@@ -523,12 +523,12 @@ What would you like to do next?
 
 ### Tool Failures
 
-**If `spider.py` script fails**:
+**If `spaider.py` script fails**:
 ```
 ⚠️ Tool error: {error message}
 → Check Python environment and dependencies
 → Verify adapter is correctly configured
-→ Run /spider-adapter --rescan to refresh
+→ Run /spaider-adapter --rescan to refresh
 ```
 **STOP** — do not continue with incomplete state.
 
@@ -562,7 +562,7 @@ What would you like to do next?
 
 ## Validation Criteria
 
-- [ ] {spider_path}/requirements/execution-protocol.md executed
+- [ ] {spaider_path}/requirements/execution-protocol.md executed
 - [ ] Dependencies loaded (checklist, template, example)
 - [ ] System context clarified (if using rules)
 - [ ] Output destination clarified

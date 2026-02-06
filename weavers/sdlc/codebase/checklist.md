@@ -1,10 +1,10 @@
-# Spider SDLC Code Checklist (Weaver-Specific)
+# Spaider SDLC Code Checklist (Weaver-Specific)
 
-ALWAYS open and follow `{spider_path}/requirements/code-checklist.md` FIRST
+ALWAYS open and follow `{spaider_path}/requirements/code-checklist.md` FIRST
 
-**Artifact**: Code Implementation (Spider SDLC)
+**Artifact**: Code Implementation (Spaider SDLC)
 **Version**: 1.0
-**Purpose**: Weaver-specific checks that require Spider SDLC artifacts (PRD/DESIGN/DECOMPOSITION/SPEC/ADR) and/or Spider traceability.
+**Purpose**: Weaver-specific checks that require Spaider SDLC artifacts (PRD/DESIGN/DECOMPOSITION/SPEC/ADR) and/or Spaider traceability.
 
 ---
 
@@ -27,13 +27,13 @@ Before running the SDLC-specific checks:
 
 ## Semantic Alignment (SEM)
 
-These checks are **Spider SDLC-specific** because they require Spider artifacts (Spec Design, Overall Design, ADRs, PRD/DESIGN coverage) and/or Spider markers.
+These checks are **Spaider SDLC-specific** because they require Spaider artifacts (Spec Design, Overall Design, ADRs, PRD/DESIGN coverage) and/or Spaider markers.
 
 ### SEM-CODE-001: Resolve Design Sources
 **Severity**: HIGH
 
-- [ ] Resolve Spec Design via `@spider-*` markers using the `spider where-defined` or `spider where-used` skill
-- [ ] If no `@spider-*` markers exist, ask the user to provide the Spec Design location before proceeding
+- [ ] Resolve Spec Design via `@spaider-*` markers using the `spaider where-defined` or `spaider where-used` skill
+- [ ] If no `@spaider-*` markers exist, ask the user to provide the Spec Design location before proceeding
 - [ ] If the user is unsure, search the repository for candidate spec designs and present options for user selection
 - [ ] Resolve Overall Design by following references from the Spec Design (or ask the user for the design path)
 
@@ -91,4 +91,4 @@ These checks are **Spider SDLC-specific** because they require Spider artifacts 
 
 ---
 
-Use `{spider_path}/requirements/code-checklist.md` for all generic code quality checks.
+Use `{spaider_path}/requirements/code-checklist.md` for all generic code quality checks.

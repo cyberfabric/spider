@@ -1,25 +1,25 @@
 ---
-spider: true
+spaider: true
 type: workflow
-name: spider-analyze
-description: Analyze Spider artifacts against templates or code against design requirements with traceability verification (tool invocation is validate-only)
+name: spaider-analyze
+description: Analyze Spaider artifacts against templates or code against design requirements with traceability verification (tool invocation is validate-only)
 version: 1.0
-purpose: Universal workflow for analysing any Spider artifact or code
+purpose: Universal workflow for analysing any Spaider artifact or code
 ---
 
 # Analyze
 
-Set `{spider_mode}` = `on` FIRST
+Set `{spaider_mode}` = `on` FIRST
 
 **Type**: Analysis
 
-ALWAYS open and follow `{spider_path}/requirements/execution-protocol.md` FIRST
+ALWAYS open and follow `{spaider_path}/requirements/execution-protocol.md` FIRST
 
-ALWAYS open and follow `{spider_path}/requirements/code-checklist.md` WHEN user requests analysis of code, codebase changes, or implementation behavior (Code mode)
+ALWAYS open and follow `{spaider_path}/requirements/code-checklist.md` WHEN user requests analysis of code, codebase changes, or implementation behavior (Code mode)
 
-ALWAYS open and follow `{spider_path}/requirements/consistency-checklist.md` WHEN user requests analysis of documentation/artifact consistency, contradiction detection, or cross-document alignment (Consistency mode)
+ALWAYS open and follow `{spaider_path}/requirements/consistency-checklist.md` WHEN user requests analysis of documentation/artifact consistency, contradiction detection, or cross-document alignment (Consistency mode)
 
-OPEN and follow `{spider_path}/requirements/prompt-engineering.md` WHEN user requests analysis of:
+OPEN and follow `{spaider_path}/requirements/prompt-engineering.md` WHEN user requests analysis of:
 - System prompts, agent prompts, or LLM prompts
 - Agent instructions or agent guidelines
 - Skills, workflows, or methodologies
@@ -52,7 +52,7 @@ OPEN and follow `{spider_path}/requirements/prompt-engineering.md` WHEN user req
 
 ## ⛔ Agent Anti-Patterns (STRICT mode)
 
-**Reference**: `{spider_path}/requirements/agent-compliance.md` for full list.
+**Reference**: `{spaider_path}/requirements/agent-compliance.md` for full list.
 
 **Critical anti-patterns for analysis**:
 
@@ -85,11 +85,11 @@ Universal analysis workflow. Handles multiple modes:
 
 | Command | Mode | Description |
 |---------|------|-------------|
-| `/spider-analyze` | Full | Deterministic gate → Semantic review |
-| `/spider-analyze semantic` | Semantic only | Skip deterministic, checklist-based semantic analysis only |
-| `/spider-analyze --artifact <path>` | Full | Analyze specific artifact |
-| `/spider-analyze semantic --artifact <path>` | Semantic only | Semantic analysis for specific artifact |
-| `/spider-analyze prompt <path>` | Prompt review | Prompt engineering methodology (9-layer analysis) |
+| `/spaider-analyze` | Full | Deterministic gate → Semantic review |
+| `/spaider-analyze semantic` | Semantic only | Skip deterministic, checklist-based semantic analysis only |
+| `/spaider-analyze --artifact <path>` | Full | Analyze specific artifact |
+| `/spaider-analyze semantic --artifact <path>` | Semantic only | Semantic analysis for specific artifact |
+| `/spaider-analyze prompt <path>` | Prompt review | Prompt engineering methodology (9-layer analysis) |
 
 **Prompt review triggers** (auto-detected from context):
 - "analyze this system prompt"
@@ -117,8 +117,8 @@ This workflow can require loading multiple long checklists/specs. To prevent con
 
 **Check invocation**:
 
-- If user invoked `/spider-analyze semantic` or `spider analyze semantic` → Set `SEMANTIC_ONLY=true`
-- If user invoked `/spider-analyze prompt` or context indicates prompt/instruction review → Set `PROMPT_REVIEW=true`
+- If user invoked `/spaider-analyze semantic` or `spaider analyze semantic` → Set `SEMANTIC_ONLY=true`
+- If user invoked `/spaider-analyze prompt` or context indicates prompt/instruction review → Set `PROMPT_REVIEW=true`
 - Otherwise → Set `SEMANTIC_ONLY=false`, `PROMPT_REVIEW=false` (full analysis)
 
 **When `SEMANTIC_ONLY=true`**:
@@ -127,9 +127,9 @@ This workflow can require loading multiple long checklists/specs. To prevent con
 - Semantic review is MANDATORY regardless of STRICT/RELAXED mode
 
 **When `PROMPT_REVIEW=true`**:
-- Open and follow `{spider_path}/requirements/prompt-engineering.md`
+- Open and follow `{spaider_path}/requirements/prompt-engineering.md`
 - Execute 9-layer prompt engineering analysis
-- Skip standard Spider analysis (not applicable to prompts)
+- Skip standard Spaider analysis (not applicable to prompts)
 - Output using prompt-engineering.md format
 - Traceability checks: N/A (prompts don't have code markers)
 - Registry checks: N/A (prompts may not be in artifacts.json)
@@ -165,7 +165,7 @@ This workflow can require loading multiple long checklists/specs. To prevent con
 
 | Dependency | Purpose | If missing |
 |------------|---------|------------|
-| **Code checklist** | Baseline criteria for all code work | Load `{spider_path}/requirements/code-checklist.md` |
+| **Code checklist** | Baseline criteria for all code work | Load `{spaider_path}/requirements/code-checklist.md` |
 | **Design artifact** | Requirements that should be implemented | Ask user to specify source |
 
 **MUST NOT proceed** to Phase 1 until all dependencies are available.
@@ -192,7 +192,7 @@ What is the analysis scope?
 
 **If FULL traceability**:
 - Identify codebase directories from artifacts.json
-- Plan to check for `@spider-*` markers
+- Plan to check for `@spaider-*` markers
 - Plan to verify all IDs have code implementations
 
 ### Registry Consistency
@@ -203,8 +203,8 @@ What is the analysis scope?
 - Verify system assignment is correct
 
 **If not registered**:
-- Warn user and suggest registering it in `{spider_adapter_path}/artifacts.json` (preferred for STRICT analysis)
-- If user wants to proceed anyway, require `/spider-analyze semantic` and clearly label output as semantic-only (no deterministic gate)
+- Warn user and suggest registering it in `{spaider_adapter_path}/artifacts.json` (preferred for STRICT analysis)
+- If user wants to proceed anyway, require `/spaider-analyze semantic` and clearly label output as semantic-only (no deterministic gate)
 
 ### Cross-Reference Scope
 
@@ -230,7 +230,7 @@ What is the analysis scope?
 **If fails**:
 ```
 ✗ Target not found: {PATH}
-→ Run /spider-generate {TARGET_TYPE} {KIND} to create
+→ Run /spaider-generate {TARGET_TYPE} {KIND} to create
 ```
 STOP analysis.
 
@@ -243,24 +243,24 @@ STOP analysis.
 **MUST run first when available** (when not semantic-only).
 
 Deterministic gate is considered **available** when:
-- Target is registered in `{spider_adapter_path}/artifacts.json` under a system with a `weaver` configured (registry schema uses `weavers`/`weaver`), AND
-- The weaver `format` supports Spider CLI checks (typically `format: "Spider"`), AND
+- Target is registered in `{spaider_adapter_path}/artifacts.json` under a system with a `weaver` configured (registry schema uses `weavers`/`weaver`), AND
+- The weaver `format` supports Spaider CLI checks (typically `format: "Spaider"`), AND
 - You are analysing an artifact or code path supported by the CLI.
 
-If deterministic gate is **not available** (e.g., unregistered path, RELAXED mode without configured weaver/rules, or non-Spider weaver format):
-- Do **not** attempt to force `spider.py validate --artifact {PATH}`
-- Require semantic-only analysis (`/spider-analyze semantic`) or ask the user to register/provide rules first
+If deterministic gate is **not available** (e.g., unregistered path, RELAXED mode without configured weaver/rules, or non-Spaider weaver format):
+- Do **not** attempt to force `spaider.py validate --artifact {PATH}`
+- Require semantic-only analysis (`/spaider-analyze semantic`) or ask the user to register/provide rules first
 
 ### For Artifacts
 
 ```bash
-python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact {PATH}
+python3 {spaider_path}/skills/spaider/scripts/spaider.py validate --artifact {PATH}
 ```
 
 ### For Code
 
 ```bash
-python3 {spider_path}/skills/spider/scripts/spider.py validate --code {PATH} --design {design-path}
+python3 {spaider_path}/skills/spaider/scripts/spaider.py validate --code {PATH} --design {design-path}
 ```
 
 ### Evaluate
@@ -294,13 +294,13 @@ Blocking issues:
 
 | Invocation | Rules Mode | Semantic Review | Evidence Required |
 |------------|------------|-----------------|-------------------|
-| `/spider-analyze semantic` | Any | MANDATORY | Yes — per `agent-compliance.md` |
-| `/spider-analyze` | **STRICT** | MANDATORY | Yes — per `agent-compliance.md` |
-| `/spider-analyze` | **RELAXED** | Optional | No — best effort |
+| `/spaider-analyze semantic` | Any | MANDATORY | Yes — per `agent-compliance.md` |
+| `/spaider-analyze` | **STRICT** | MANDATORY | Yes — per `agent-compliance.md` |
+| `/spaider-analyze` | **RELAXED** | Optional | No — best effort |
 
 **If STRICT mode**:
 - Semantic review is MANDATORY, not optional
-- Agent MUST follow `{spider_path}/requirements/agent-compliance.md`
+- Agent MUST follow `{spaider_path}/requirements/agent-compliance.md`
 - Agent MUST provide evidence for each checklist category
 - Agent MUST NOT skip categories or report bulk "PASS"
 - Failure to complete semantic review → analysis INVALID
@@ -309,7 +309,7 @@ Blocking issues:
 1. Document which categories were checked with evidence
 2. Mark incomplete categories with reason (e.g., "INCOMPLETE: context limit reached")
 3. Output as `PARTIAL` — do NOT report overall PASS/FAIL
-4. Include checkpoint guidance: "Resume with `/spider-analyze semantic` after addressing blockers"
+4. Include checkpoint guidance: "Resume with `/spaider-analyze semantic` after addressing blockers"
 
 **If RELAXED mode**:
 - Semantic review is optional
@@ -327,7 +327,7 @@ Execute phases from rules.md:
 - **Phase 2: Semantic Validation** — checklist-based, from rules.md
 
 Use checklist from Phase 0 dependencies.
-Load adapter specs: `{spider_adapter_path}/AGENTS.md` → follow MANDATORY specs
+Load adapter specs: `{spaider_adapter_path}/AGENTS.md` → follow MANDATORY specs
 
 Check (from rules.md + standard):
 - [ ] Content quality per checklist
@@ -351,7 +351,7 @@ Check (from rules.md + standard):
 - [ ] All design requirements implemented
 - [ ] Code follows conventions
 - [ ] Tests cover requirements
-- [ ] Spider markers present where required (to_code="true" IDs)
+- [ ] Spaider markers present where required (to_code="true" IDs)
 - [ ] Implemented items marked `[x]` in SPEC design
 
 ### Completeness Checks
@@ -375,13 +375,13 @@ Check (from rules.md + standard):
 - [ ] All flow IDs have code markers
 - [ ] All algorithm IDs have code markers
 - [ ] All test IDs have test implementations
-- [ ] Code markers use the canonical format from `requirements/traceability.md` (`@spider-*` scope markers and `@spider-begin`/`@spider-end` blocks)
+- [ ] Code markers use the canonical format from `requirements/traceability.md` (`@spaider-*` scope markers and `@spaider-begin`/`@spaider-end` blocks)
 - [ ] No stale markers (ID no longer in design)
 
 ### ID Uniqueness & Format
 
 - [ ] No duplicate IDs within artifact
-- [ ] No duplicate IDs across system (use `spider list-ids`)
+- [ ] No duplicate IDs across system (use `spaider list-ids`)
 - [ ] All IDs follow naming convention
 - [ ] All IDs have correct prefix for project
 
@@ -450,7 +450,7 @@ Status: PASS
 ═══════════════════════════════════════════════
 ```
 
-### Semantic-Only Output (`/spider-analyze semantic`)
+### Semantic-Only Output (`/spaider-analyze semantic`)
 
 ```
 ═══════════════════════════════════════════════
@@ -575,7 +575,7 @@ Fix the issues above, then:
 
 | Question | Answer | Evidence |
 |----------|--------|----------|
-| Read execution-protocol? | YES | Loaded spider-sdlc rules, checklist.md |
+| Read execution-protocol? | YES | Loaded spaider-sdlc rules, checklist.md |
 | Read artifact via Read tool? | YES | Read DESIGN.md: 742 lines |
 | Checked every category? | YES | 12 categories in table above |
 | Evidence for each status? | YES | Quotes included per category |
@@ -589,14 +589,14 @@ Fix the issues above, then:
 
 In RELAXED mode, self-test is advisory only. Include disclaimer:
 ```
-⚠️ Self-test skipped (RELAXED mode — no Spider rules)
+⚠️ Self-test skipped (RELAXED mode — no Spaider rules)
 ```
 
 ---
 
 ## Validation Criteria
 
-- [ ] {spider_path}/requirements/execution-protocol.md executed
+- [ ] {spaider_path}/requirements/execution-protocol.md executed
 - [ ] Dependencies loaded (checklist, template, example)
 - [ ] Analysis scope clarified
 - [ ] Traceability mode determined

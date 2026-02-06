@@ -2,7 +2,7 @@
 
 Use this guide when you have a single repository with a single deployable (a monolith) organized into **modules** with strict boundaries.
 
-All prompts work through the `spider` skill — enable it with `spider on` and use natural language prompts.
+All prompts work through the `spaider` skill — enable it with `spaider on` and use natural language prompts.
 
 ## Goal
 
@@ -70,16 +70,16 @@ System → Subsystem → Component → Module:
   "version": "1.0",
   "project_root": "..",
   "weavers": {
-    "spider-sdlc": {
-      "format": "Spider",
-      "path": ".spider/weavers/sdlc"
+    "spaider-sdlc": {
+      "format": "Spaider",
+      "path": ".spaider/weavers/sdlc"
     }
   },
   "systems": [
     {
       "name": "Banking Platform",
       "slug": "banking",
-      "weaver": "spider-sdlc",
+      "weaver": "spaider-sdlc",
       "artifacts_dir": "architecture",
       "artifacts": [
         { "name": "Platform PRD", "path": "architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
@@ -92,7 +92,7 @@ System → Subsystem → Component → Module:
         {
           "name": "Core Banking",
           "slug": "core",
-          "weaver": "spider-sdlc",
+          "weaver": "spaider-sdlc",
           "artifacts_dir": "subsystems/core/architecture",
           "artifacts": [
             { "path": "subsystems/core/architecture/DESIGN.md", "kind": "DESIGN", "traceability": "FULL" }
@@ -104,7 +104,7 @@ System → Subsystem → Component → Module:
             {
               "name": "Accounts",
               "slug": "accounts",
-              "weaver": "spider-sdlc",
+              "weaver": "spaider-sdlc",
               "artifacts_dir": "subsystems/core/accounts/architecture",
               "artifacts": [
                 { "path": "subsystems/core/accounts/architecture/DESIGN.md", "kind": "DESIGN", "traceability": "FULL" }
@@ -116,7 +116,7 @@ System → Subsystem → Component → Module:
                 {
                   "name": "Savings",
                   "slug": "savings",
-                  "weaver": "spider-sdlc",
+                  "weaver": "spaider-sdlc",
                   "artifacts_dir": "subsystems/core/accounts/savings/architecture",
                   "artifacts": [
                     { "path": "subsystems/core/accounts/savings/architecture/specs/interest-calc.md", "kind": "SPEC", "traceability": "FULL" }
@@ -153,16 +153,16 @@ Each module has its own complete artifact set:
   "version": "1.0",
   "project_root": "..",
   "weavers": {
-    "spider-sdlc": {
-      "format": "Spider",
-      "path": ".spider/weavers/sdlc"
+    "spaider-sdlc": {
+      "format": "Spaider",
+      "path": ".spaider/weavers/sdlc"
     }
   },
   "systems": [
     {
       "name": "SaaS Platform",
       "slug": "saas",
-      "weaver": "spider-sdlc",
+      "weaver": "spaider-sdlc",
       "artifacts_dir": "architecture",
       "artifacts": [
         { "name": "Product Requirements", "path": "architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
@@ -177,7 +177,7 @@ Each module has its own complete artifact set:
         {
           "name": "Auth",
           "slug": "auth",
-          "weaver": "spider-sdlc",
+          "weaver": "spaider-sdlc",
           "artifacts_dir": "modules/auth/architecture",
           "artifacts": [
             { "path": "modules/auth/architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
@@ -193,7 +193,7 @@ Each module has its own complete artifact set:
         {
           "name": "Billing",
           "slug": "billing",
-          "weaver": "spider-sdlc",
+          "weaver": "spaider-sdlc",
           "artifacts_dir": "modules/billing/architecture",
           "artifacts": [
             { "path": "modules/billing/architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
@@ -220,16 +220,16 @@ Modules have only SPEC specs, sharing project-level DESIGN:
   "version": "1.0",
   "project_root": "..",
   "weavers": {
-    "spider-sdlc": {
-      "format": "Spider",
-      "path": ".spider/weavers/sdlc"
+    "spaider-sdlc": {
+      "format": "Spaider",
+      "path": ".spaider/weavers/sdlc"
     }
   },
   "systems": [
     {
       "name": "SaaS Platform",
       "slug": "saas",
-      "weaver": "spider-sdlc",
+      "weaver": "spaider-sdlc",
       "artifacts_dir": "architecture",
       "artifacts": [
         { "name": "Product Requirements", "path": "architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
@@ -243,7 +243,7 @@ Modules have only SPEC specs, sharing project-level DESIGN:
         {
           "name": "Auth",
           "slug": "auth",
-          "weaver": "spider-sdlc",
+          "weaver": "spaider-sdlc",
           "artifacts_dir": "modules/auth/architecture",
           "artifacts": [
             { "path": "modules/auth/architecture/specs/login.md", "kind": "SPEC", "traceability": "FULL" },
@@ -257,7 +257,7 @@ Modules have only SPEC specs, sharing project-level DESIGN:
         {
           "name": "Billing",
           "slug": "billing",
-          "weaver": "spider-sdlc",
+          "weaver": "spaider-sdlc",
           "artifacts_dir": "modules/billing/architecture",
           "artifacts": [
             { "path": "modules/billing/architecture/specs/invoices.md", "kind": "SPEC", "traceability": "FULL" }
@@ -282,16 +282,16 @@ Modules declared for codebase scoping only, no module-level artifacts:
   "version": "1.0",
   "project_root": "..",
   "weavers": {
-    "spider-sdlc": {
-      "format": "Spider",
-      "path": ".spider/weavers/sdlc"
+    "spaider-sdlc": {
+      "format": "Spaider",
+      "path": ".spaider/weavers/sdlc"
     }
   },
   "systems": [
     {
       "name": "SaaS Platform",
       "slug": "saas",
-      "weaver": "spider-sdlc",
+      "weaver": "spaider-sdlc",
       "artifacts_dir": "architecture",
       "artifacts": [
         { "name": "Product Requirements", "path": "architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
@@ -305,7 +305,7 @@ Modules declared for codebase scoping only, no module-level artifacts:
         {
           "name": "Auth",
           "slug": "auth",
-          "weaver": "spider-sdlc",
+          "weaver": "spaider-sdlc",
           "codebase": [
             { "name": "Auth Module", "path": "src/modules/auth", "extensions": [".ts"] }
           ],
@@ -314,7 +314,7 @@ Modules declared for codebase scoping only, no module-level artifacts:
         {
           "name": "Billing",
           "slug": "billing",
-          "weaver": "spider-sdlc",
+          "weaver": "spaider-sdlc",
           "codebase": [
             { "name": "Billing Module", "path": "src/modules/billing", "extensions": [".ts"] }
           ],
@@ -332,7 +332,7 @@ The registry maps to this file structure:
 
 ```text
 project-root/
-├── .spider-adapter/
+├── .spaider-adapter/
 │   └── artifacts.json
 ├── architecture/
 │   ├── PRD.md
@@ -367,12 +367,12 @@ When creating a component DESIGN, use the project (or parent) DESIGN as input fo
 ### Flow
 
 ```
-1. spider make DESIGN for component auth from project DESIGN
+1. spaider make DESIGN for component auth from project DESIGN
    → Reads project DESIGN
    → Extracts auth-related elements
    → Creates component DESIGN with references to project DESIGN
 
-2. spider validate DESIGN for component auth refs
+2. spaider validate DESIGN for component auth refs
    → Validates references to project DESIGN components
    → Ensures component doesn't contradict project architecture
 ```
@@ -381,15 +381,15 @@ When creating a component DESIGN, use the project (or parent) DESIGN as input fo
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider make DESIGN for component auth from project DESIGN` | Creates component DESIGN using project architecture |
-| `spider make DESIGN for component auth inheriting from project` | Same, alternative phrasing |
-| `spider sync DESIGN for component auth with project` | Updates component DESIGN to match project changes |
-| `spider compare DESIGN for component auth to project` | Shows differences from project DESIGN |
+| `spaider make DESIGN for component auth from project DESIGN` | Creates component DESIGN using project architecture |
+| `spaider make DESIGN for component auth inheriting from project` | Same, alternative phrasing |
+| `spaider sync DESIGN for component auth with project` | Updates component DESIGN to match project changes |
+| `spaider compare DESIGN for component auth to project` | Shows differences from project DESIGN |
 
 ### Example with Context
 
 ```
-spider make DESIGN for component auth from project DESIGN
+spaider make DESIGN for component auth from project DESIGN
 Context:
 - Component: auth
 - Project DESIGN: architecture/DESIGN.md
@@ -464,21 +464,21 @@ Child artifacts reference parent artifacts using full hierarchical IDs:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider trace spd-saas-fr-user-management` | Shows: PRD → DESIGN → component DESIGN → SPEC → CODE |
-| `spider trace spd-saas-component-auth-service` | Shows system component and all child implementations |
-| `spider trace spd-saas-auth-login-flow-token-validation` | Shows full path from system PRD to component code |
-| `spider find refs to spd-saas-component-auth-service` | Lists all child artifacts referencing this component |
-| `spider validate refs for component auth` | Validates all cross-level references in component |
-| `spider show orphans across levels` | Finds broken references between project and children |
+| `spaider trace spd-saas-fr-user-management` | Shows: PRD → DESIGN → component DESIGN → SPEC → CODE |
+| `spaider trace spd-saas-component-auth-service` | Shows system component and all child implementations |
+| `spaider trace spd-saas-auth-login-flow-token-validation` | Shows full path from system PRD to component code |
+| `spaider find refs to spd-saas-component-auth-service` | Lists all child artifacts referencing this component |
+| `spaider validate refs for component auth` | Validates all cross-level references in component |
+| `spaider show orphans across levels` | Finds broken references between project and children |
 
 ### Validation Across Levels
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate all` | Validates project + all children |
-| `spider validate all refs` | Validates all cross-references at all levels |
-| `spider validate component auth against project` | Checks component compatibility with project |
-| `spider compare component auth to project DESIGN` | Shows component drift from project architecture |
+| `spaider validate all` | Validates project + all children |
+| `spaider validate all refs` | Validates all cross-references at all levels |
+| `spaider validate component auth against project` | Checks component compatibility with project |
+| `spaider compare component auth to project DESIGN` | Shows component drift from project architecture |
 
 ---
 
@@ -492,7 +492,7 @@ In a modular monolith, the most important context is:
 
 **Example format:**
 ```
-spider make DESIGN
+spaider make DESIGN
 Context:
 - Scope: system
 - Architecture style: modular monolith
@@ -512,21 +512,21 @@ Describe the full system and cross-module rules.
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider make PRD` | Creates project PRD interactively |
-| `spider make PRD for SaaS platform` | Creates PRD with context |
+| `spaider make PRD` | Creates project PRD interactively |
+| `spaider make PRD for SaaS platform` | Creates PRD with context |
 
 **Update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider update PRD` | Updates project PRD |
-| `spider extend PRD with multi-tenant support` | Adds capability |
+| `spaider update PRD` | Updates project PRD |
+| `spaider extend PRD with multi-tenant support` | Adds capability |
 
 **Provide context:** product vision, component list, architecture style.
 
 **Example:**
 ```
-spider make PRD
+spaider make PRD
 Context:
 - Product: SaaS platform
 - Architecture style: modular monolith
@@ -537,9 +537,9 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate PRD` | Full validation (300+ criteria) |
-| `spider validate PRD semantic` | Semantic only |
-| `spider validate PRD structural` | Structural only |
+| `spaider validate PRD` | Full validation (300+ criteria) |
+| `spaider validate PRD semantic` | Semantic only |
+| `spaider validate PRD structural` | Structural only |
 
 ### 3. ADR + DESIGN (Project)
 
@@ -547,30 +547,30 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider make DESIGN` | Creates project DESIGN interactively |
-| `spider make DESIGN from PRD` | Transforms PRD into architecture |
+| `spaider make DESIGN` | Creates project DESIGN interactively |
+| `spaider make DESIGN from PRD` | Transforms PRD into architecture |
 
 **Update DESIGN**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider update DESIGN` | Updates project DESIGN |
-| `spider extend DESIGN with component notifications` | Adds component |
-| `spider update DESIGN dependency rules` | Updates component dependencies |
+| `spaider update DESIGN` | Updates project DESIGN |
+| `spaider extend DESIGN with component notifications` | Adds component |
+| `spaider update DESIGN dependency rules` | Updates component dependencies |
 
 **ADR**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider make ADR for component boundaries` | Creates ADR for architecture decision |
-| `spider make ADR for cross-component communication` | Creates ADR comparing approaches |
-| `spider update ADR 0001` | Updates specific ADR |
+| `spaider make ADR for component boundaries` | Creates ADR for architecture decision |
+| `spaider make ADR for cross-component communication` | Creates ADR comparing approaches |
+| `spaider update ADR 0001` | Updates specific ADR |
 
 **Provide context:** component list, dependency rules, integration approach.
 
 **Example:**
 ```
-spider make DESIGN
+spaider make DESIGN
 Context:
 - Scope: system
 - Architecture style: modular monolith
@@ -585,11 +585,11 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate DESIGN` | Full validation (380+ criteria) |
-| `spider validate DESIGN semantic` | Semantic only |
-| `spider validate DESIGN refs` | Cross-references |
-| `spider validate ADR` | Validates all ADRs |
-| `spider validate ADR 0001` | Validates specific ADR |
+| `spaider validate DESIGN` | Full validation (380+ criteria) |
+| `spaider validate DESIGN semantic` | Semantic only |
+| `spaider validate DESIGN refs` | Cross-references |
+| `spaider validate ADR` | Validates all ADRs |
+| `spaider validate ADR 0001` | Validates specific ADR |
 
 ### 5. DECOMPOSITION (Project)
 
@@ -597,21 +597,21 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider decompose` | Creates project decomposition |
-| `spider decompose by capability` | Groups by business capability |
+| `spaider decompose` | Creates project decomposition |
+| `spaider decompose by capability` | Groups by business capability |
 
 **Update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider add spec {slug}` | Adds project spec |
-| `spider update spec {slug} status` | Updates status |
+| `spaider add spec {slug}` | Adds project spec |
+| `spaider update spec {slug} status` | Updates status |
 
 **Provide context:** system-level specs (NOT components).
 
 **Example:**
 ```
-spider decompose
+spaider decompose
 Context:
 - Scope: system
 - System specs: pricing-plans, invoice-lifecycle, tenant-management
@@ -622,9 +622,9 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate DECOMPOSITION` | Full validation |
-| `spider validate DECOMPOSITION semantic` | Semantic only |
-| `spider validate DECOMPOSITION refs` | Cross-references |
+| `spaider validate DECOMPOSITION` | Full validation |
+| `spaider validate DECOMPOSITION semantic` | Semantic only |
+| `spaider validate DECOMPOSITION refs` | Cross-references |
 
 ---
 
@@ -640,21 +640,21 @@ Use when you want a component (or module in 4-level hierarchies) to have its own
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider make PRD for component auth` | Creates component PRD |
-| `spider make PRD` with component context | Creates interactively |
+| `spaider make PRD for component auth` | Creates component PRD |
+| `spaider make PRD` with component context | Creates interactively |
 
 **Update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider update PRD for component auth` | Updates component PRD |
-| `spider extend PRD for component auth with MFA` | Adds capability |
+| `spaider update PRD for component auth` | Updates component PRD |
+| `spaider extend PRD for component auth with MFA` | Adds capability |
 
 **Provide context:** scope, component name, component paths.
 
 **Example:**
 ```
-spider make PRD for component auth
+spaider make PRD for component auth
 Context:
 - Scope: component
 - Component: auth
@@ -668,22 +668,22 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider make DESIGN for component auth` | Creates component DESIGN |
-| `spider reverse DESIGN for component auth` | Reverse-engineers from code |
+| `spaider make DESIGN for component auth` | Creates component DESIGN |
+| `spaider reverse DESIGN for component auth` | Reverse-engineers from code |
 
 **Update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider update DESIGN for component auth` | Updates component DESIGN |
-| `spider extend DESIGN for component auth with sessions` | Adds internal component |
-| `spider sync DESIGN for component auth from code` | Syncs with code |
+| `spaider update DESIGN for component auth` | Updates component DESIGN |
+| `spaider extend DESIGN for component auth with sessions` | Adds internal component |
+| `spaider sync DESIGN for component auth from code` | Syncs with code |
 
 **Provide context:** component dependencies, public interface, data ownership.
 
 **Example:**
 ```
-spider make DESIGN for component auth
+spaider make DESIGN for component auth
 Context:
 - Scope: component
 - Component: auth
@@ -699,19 +699,19 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider decompose component auth` | Creates component decomposition |
-| `spider decompose component auth from code` | From existing code |
+| `spaider decompose component auth` | Creates component decomposition |
+| `spaider decompose component auth from code` | From existing code |
 
 **Update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider add spec {slug} to component auth` | Adds component spec |
-| `spider update spec {slug} in component auth` | Updates spec |
+| `spaider add spec {slug} to component auth` | Adds component spec |
+| `spaider update spec {slug} in component auth` | Updates spec |
 
 **Example:**
 ```
-spider decompose component auth
+spaider decompose component auth
 Context:
 - Scope: component
 - Component: auth
@@ -724,22 +724,22 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider make SPEC sessions for component auth` | Creates component spec |
-| `spider reverse SPEC sessions for component auth` | From existing code |
+| `spaider make SPEC sessions for component auth` | Creates component spec |
+| `spaider reverse SPEC sessions for component auth` | From existing code |
 
 **Update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider update SPEC sessions for component auth` | Updates spec |
-| `spider extend SPEC sessions with token refresh` | Adds scenario |
-| `spider sync SPEC sessions from code` | Syncs with code |
+| `spaider update SPEC sessions for component auth` | Updates spec |
+| `spaider extend SPEC sessions with token refresh` | Adds scenario |
+| `spaider sync SPEC sessions from code` | Syncs with code |
 
 **Provide context:** component, spec slug, scenarios, data ownership.
 
 **Example:**
 ```
-spider make SPEC sessions for component auth
+spaider make SPEC sessions for component auth
 Context:
 - Scope: component
 - Component: auth
@@ -752,9 +752,9 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate SPEC sessions for component auth` | Full validation |
-| `spider validate SPEC sessions for component auth semantic` | Semantic only |
-| `spider validate SPEC sessions for component auth refs` | Cross-references |
+| `spaider validate SPEC sessions for component auth` | Full validation |
+| `spaider validate SPEC sessions for component auth semantic` | Semantic only |
+| `spaider validate SPEC sessions for component auth refs` | Cross-references |
 
 ### 12. CODE (Component)
 
@@ -762,36 +762,36 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider implement sessions for component auth` | Generates code |
-| `spider implement sessions for component auth step by step` | With confirmation |
-| `spider implement sessions for component auth tests first` | Tests first |
+| `spaider implement sessions for component auth` | Generates code |
+| `spaider implement sessions for component auth step by step` | With confirmation |
+| `spaider implement sessions for component auth tests first` | Tests first |
 
 **Implement specific parts**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider implement sessions for component auth flow token-refresh` | Specific flow |
-| `spider implement sessions for component auth api` | API layer only |
-| `spider implement sessions for component auth tests` | Tests only |
+| `spaider implement sessions for component auth flow token-refresh` | Specific flow |
+| `spaider implement sessions for component auth api` | API layer only |
+| `spaider implement sessions for component auth tests` | Tests only |
 
 **Continue / update**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider continue implementing sessions for component auth` | Continue partial |
-| `spider implement sessions for component auth remaining` | Unimplemented only |
-| `spider sync code with SPEC sessions for component auth` | Sync with spec |
+| `spaider continue implementing sessions for component auth` | Continue partial |
+| `spaider implement sessions for component auth remaining` | Unimplemented only |
+| `spaider sync code with SPEC sessions for component auth` | Sync with spec |
 
 **Add markers**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider add markers for sessions in component auth` | Adds markers to existing code |
-| `spider fix markers in src/core/auth/` | Fixes incorrect markers |
+| `spaider add markers for sessions in component auth` | Adds markers to existing code |
+| `spaider fix markers in src/core/auth/` | Fixes incorrect markers |
 
 **Example:**
 ```
-spider implement sessions for component auth
+spaider implement sessions for component auth
 Context:
 - Component code path: src/core/auth/
 - Component architecture: subsystems/core/auth/architecture/
@@ -803,32 +803,32 @@ Context:
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate code for component auth` | All component code |
-| `spider validate code for sessions in component auth` | Specific spec |
-| `spider validate code in src/core/auth/` | Specific path |
+| `spaider validate code for component auth` | All component code |
+| `spaider validate code for sessions in component auth` | Specific spec |
+| `spaider validate code in src/core/auth/` | Specific path |
 
 **Coverage**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate code coverage for component auth` | Component coverage |
-| `spider validate code coverage for sessions in component auth` | Spec coverage |
-| `spider show uncovered for component auth` | Lists unimplemented |
+| `spaider validate code coverage for component auth` | Component coverage |
+| `spaider validate code coverage for sessions in component auth` | Spec coverage |
+| `spaider show uncovered for component auth` | Lists unimplemented |
 
 **Traceability**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider validate code orphans for component auth` | Orphaned markers |
-| `spider validate code refs for component auth` | Marker references |
-| `spider list code markers for component auth` | Lists component markers |
+| `spaider validate code orphans for component auth` | Orphaned markers |
+| `spaider validate code refs for component auth` | Marker references |
+| `spaider list code markers for component auth` | Lists component markers |
 
 **Consistency**
 
 | Prompt | What happens |
 |--------|--------------|
-| `spider compare code to SPEC sessions for component auth` | Shows drift |
-| `spider validate code consistency for component auth` | Checks code matches specs |
+| `spaider compare code to SPEC sessions for component auth` | Shows drift |
+| `spaider validate code consistency for component auth` | Checks code matches specs |
 
 ---
 
@@ -838,20 +838,20 @@ Context:
 
 | Step | Generate | Validate |
 |------|----------|----------|
-| 1 | `spider make PRD` | `spider validate PRD` |
-| 2 | `spider make DESIGN` | `spider validate DESIGN` |
-| 3 | `spider make ADR for ...` | `spider validate ADR` |
-| 4 | `spider decompose` | `spider validate DECOMPOSITION` |
+| 1 | `spaider make PRD` | `spaider validate PRD` |
+| 2 | `spaider make DESIGN` | `spaider validate DESIGN` |
+| 3 | `spaider make ADR for ...` | `spaider validate ADR` |
+| 4 | `spaider decompose` | `spaider validate DECOMPOSITION` |
 
 ### Component Level
 
 | Step | Generate | Validate |
 |------|----------|----------|
-| 1 | `spider make PRD for component {name}` | `spider validate PRD for component {name}` |
-| 2 | `spider make DESIGN for component {name}` | `spider validate DESIGN for component {name}` |
-| 3 | `spider decompose component {name}` | `spider validate DECOMPOSITION for component {name}` |
-| 4 | `spider make SPEC {slug} for component {name}` | `spider validate SPEC {slug} for component {name}` |
-| 5 | `spider implement {slug} for component {name}` | `spider validate code for {slug} in component {name}` |
+| 1 | `spaider make PRD for component {name}` | `spaider validate PRD for component {name}` |
+| 2 | `spaider make DESIGN for component {name}` | `spaider validate DESIGN for component {name}` |
+| 3 | `spaider decompose component {name}` | `spaider validate DECOMPOSITION for component {name}` |
+| 4 | `spaider make SPEC {slug} for component {name}` | `spaider validate SPEC {slug} for component {name}` |
+| 5 | `spaider implement {slug} for component {name}` | `spaider validate code for {slug} in component {name}` |
 
 > For 4-level hierarchies, use `module` instead of `component` to target the deepest level.
 
@@ -868,7 +868,7 @@ Context:
 Example adapter AGENTS.md for a modular monolith:
 
 ```markdown
-# Project Spider Adapter
+# Project Spaider Adapter
 
 WHEN working in this repo:
 - This is a modular monolith with hierarchy: System → Subsystem → Component

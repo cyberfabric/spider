@@ -1,16 +1,16 @@
 ---
-spider: true
+spaider: true
 type: requirement
-name: Spider Template Specification
+name: Spaider Template Specification
 version: 1.1
-purpose: Define marker-based template syntax for Spider artifacts
+purpose: Define marker-based template syntax for Spaider artifacts
 ---
 
-# Spider Template Specification
+# Spaider Template Specification
 
 ## Table of Contents
 
-- [Spider Template Specification](#spider-template-specification)
+- [Spaider Template Specification](#spaider-template-specification)
   - [Table of Contents](#table-of-contents)
   - [Quick Reference](#quick-reference)
   - [Prerequisite Checklist](#prerequisite-checklist)
@@ -26,7 +26,7 @@ purpose: Define marker-based template syntax for Spider artifacts
     - [ID Reference (`id-ref` block)](#id-reference-id-ref-block)
     - [Inline ID Reference](#inline-id-reference)
     - [ID Naming Convention](#id-naming-convention)
-  - [Spider DSL (SDSL) Format](#spider-dsl-sdsl-format)
+  - [Spaider DSL (SDSL) Format](#spaider-dsl-sdsl-format)
     - [SDSL Line Format](#sdsl-line-format)
   - [Template Example](#template-example)
   - [Artifact Validation](#artifact-validation)
@@ -60,7 +60,7 @@ content
 
 **Validate template**:
 ```bash
-python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact <path>
+python3 {spaider_path}/skills/spaider/scripts/spaider.py validate --artifact <path>
 ```
 
 ---
@@ -75,7 +75,7 @@ python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact <path>
 
 ## Overview
 
-Spider templates use paired HTML comment markers to define structural blocks in markdown documents. This enables deterministic validation of artifacts against their templates.
+Spaider templates use paired HTML comment markers to define structural blocks in markdown documents. This enables deterministic validation of artifacts against their templates.
 
 **Supported Version**: `1.0`
 
@@ -87,7 +87,7 @@ Templates MAY optionally begin with YAML frontmatter. If frontmatter is absent, 
 
 ```yaml
 ---
-spider-template:
+spaider-template:
   version:
     major: 2
     minor: 0
@@ -254,9 +254,9 @@ A **slug** is a machine-readable identifier derived from a human name. Slugs are
 
 ---
 
-## Spider DSL (SDSL) Format
+## Spaider DSL (SDSL) Format
 
-Spider DSL (SDSL) is used in `sdsl` blocks to define step-by-step instructions with traceability.
+Spaider DSL (SDSL) is used in `sdsl` blocks to define step-by-step instructions with traceability.
 
 ### SDSL Line Format
 
@@ -291,7 +291,7 @@ Components:
 
 ```markdown
 ---
-spider-template:
+spaider-template:
   version:
     major: 1
     minor: 0
@@ -405,9 +405,9 @@ Brief description of the spec.
 
 | Task | Command |
 |------|---------|
-| Validate artifact | `python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact <path>` |
-| List IDs | `python3 {spider_path}/skills/spider/scripts/spider.py list-ids` |
-| Check references | `python3 {spider_path}/skills/spider/scripts/spider.py check-refs` |
+| Validate artifact | `python3 {spaider_path}/skills/spaider/scripts/spaider.py validate --artifact <path>` |
+| List IDs | `python3 {spaider_path}/skills/spaider/scripts/spaider.py list-ids` |
+| Check references | `python3 {spaider_path}/skills/spaider/scripts/spaider.py check-refs` |
 
 ---
 
@@ -426,6 +426,6 @@ Brief description of the spec.
 
 ## References
 
-- **Schema**: `schemas/spider-template-frontmatter.schema.json`
-- **Implementation**: `skills/spider/scripts/spider/utils/template.py`
-- **CLI**: `python3 {spider_path}/skills/spider/scripts/spider.py validate --artifact <path>`
+- **Schema**: `schemas/spaider-template-frontmatter.schema.json`
+- **Implementation**: `skills/spaider/scripts/spaider/utils/template.py`
+- **CLI**: `python3 {spaider_path}/skills/spaider/scripts/spaider.py validate --artifact <path>`

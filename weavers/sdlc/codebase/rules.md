@@ -1,7 +1,7 @@
 # CODE Rules
 
 **Target**: Codebase Implementation
-**Purpose**: Rules for code generation and validation with Spider traceability
+**Purpose**: Rules for code generation and validation with Spaider traceability
 
 ---
 
@@ -17,7 +17,7 @@
 2. [Tasks](#tasks)
    - [Phase 1: Setup](#phase-1-setup)
    - [Phase 2: Implementation](#phase-2-implementation-work-packages)
-   - [Phase 3: Spider Markers](#phase-3-spider-markers-traceability-mode-on-only)
+   - [Phase 3: Spaider Markers](#phase-3-spaider-markers-traceability-mode-on-only)
    - [Phase 4: Sync SPEC](#phase-4-sync-spec-designmd-traceability-mode-on-only)
    - [Phase 5: Quality Check](#phase-5-quality-check)
    - [Phase 6: Tag Verification](#phase-6-tag-verification-traceability-mode-on-only)
@@ -39,11 +39,11 @@
 - `{adapter-dir}/AGENTS.md` — project conventions
 - **Source** (one of, in priority order):
   1. SPEC design — registered artifact with `to_code="true"` IDs
-  2. Other Spider artifact — PRD, DESIGN, ADR, DECOMPOSITION
+  2. Other Spaider artifact — PRD, DESIGN, ADR, DECOMPOSITION
   3. Similar content — user-provided description, spec, or requirements
   4. Prompt only — direct user instructions
 
-**ALWAYS open and follow** `{spider_path}/requirements/traceability.md` WHEN Traceability Mode is FULL (marker syntax, validation rules, coverage requirements)
+**ALWAYS open and follow** `{spaider_path}/requirements/traceability.md` WHEN Traceability Mode is FULL (marker syntax, validation rules, coverage requirements)
 
 **ALWAYS read** the SPEC artifact being implemented (the source of `to_code="true"` IDs). The SPEC contains flows, algorithms, state machines, and requirements that define what code must do.
 
@@ -62,14 +62,14 @@ Agent confirms understanding of requirements:
 
 ### Traceability Requirements
 
-**Reference**: `{spider_path}/requirements/traceability.md` for full specification
+**Reference**: `{spaider_path}/requirements/traceability.md` for full specification
 
 - [ ] Traceability Mode determined per spec (FULL vs DOCS-ONLY)
-- [ ] If Mode ON: markers follow spec syntax (`@spider-*`, `@spider-begin`/`@spider-end`)
+- [ ] If Mode ON: markers follow spec syntax (`@spaider-*`, `@spaider-begin`/`@spaider-end`)
 - [ ] If Mode ON: all `to_code="true"` IDs have markers
 - [ ] If Mode ON: no orphaned/stale markers
 - [ ] If Mode ON: design checkboxes synced with code
-- [ ] If Mode OFF: no Spider markers in code
+- [ ] If Mode OFF: no Spaider markers in code
 
 ### Checkbox Cascade (Code Markers → Upstream Artifacts)
 
@@ -77,10 +77,10 @@ CODE implementation triggers upstream checkbox updates through markers:
 
 | Code Marker | SPEC ID | Upstream Effect |
 |-------------|-----------|-----------------|
-| `@spider-flow:{spd-id}:p{N}` | `id:flow` | When all pN markers exist → check `id:flow` in SPEC |
-| `@spider-algo:{spd-id}:p{N}` | `id:algo` | When all pN markers exist → check `id:algo` in SPEC |
-| `@spider-state:{spd-id}:p{N}` | `id:state` | When all pN markers exist → check `id:state` in SPEC |
-| `@spider-req:{spd-id}:p{N}` | `id:req` | When all pN markers exist + tests pass → check `id:req` in SPEC |
+| `@spaider-flow:{spd-id}:p{N}` | `id:flow` | When all pN markers exist → check `id:flow` in SPEC |
+| `@spaider-algo:{spd-id}:p{N}` | `id:algo` | When all pN markers exist → check `id:algo` in SPEC |
+| `@spaider-state:{spd-id}:p{N}` | `id:state` | When all pN markers exist → check `id:state` in SPEC |
+| `@spaider-req:{spd-id}:p{N}` | `id:req` | When all pN markers exist + tests pass → check `id:req` in SPEC |
 
 **Full Cascade Chain**:
 
@@ -100,7 +100,7 @@ DESIGN: id:principle/constraint/component/seq/dbtable [x] when ALL refs [x]
 **When to Update Upstream Checkboxes**:
 
 1. **After implementing SDSL instruction**:
-   - Add `@spider-begin:{spd-id}:p{N}:inst-{slug}` / `@spider-end:...` markers
+   - Add `@spaider-begin:{spd-id}:p{N}:inst-{slug}` / `@spaider-end:...` markers
    - Mark corresponding SDSL step `[x]` in SPEC
 
 2. **After completing flow/algo/state/req**:
@@ -116,14 +116,14 @@ DESIGN: id:principle/constraint/component/seq/dbtable [x] when ALL refs [x]
    - If all refs for a PRD/DESIGN ID are `[x]` → mark that ID as `[x]` in PRD/DESIGN
 
 **Validation Checks**:
-- `spider validate` will warn if code marker exists but SPEC checkbox is `[ ]`
-- `spider validate` will warn if SPEC checkbox is `[x]` but code marker is missing
-- `spider validate` will report coverage: N% of SPEC IDs have code markers
+- `spaider validate` will warn if code marker exists but SPEC checkbox is `[ ]`
+- `spaider validate` will warn if SPEC checkbox is `[x]` but code marker is missing
+- `spaider validate` will report coverage: N% of SPEC IDs have code markers
 
 ### Versioning Requirements
 
 - [ ] When design ID versioned (`-v2`): update code markers to match
-- [ ] Marker format with version: `@spider-flow:{spd-id}-v2:p{N}`
+- [ ] Marker format with version: `@spaider-flow:{spd-id}-v2:p{N}`
 - [ ] Migration: update all markers when design version increments
 - [ ] Keep old markers commented during transition (optional)
 
@@ -168,10 +168,10 @@ Ask user for implementation source (if not provided):
 | Source Type | Traceability | Action |
 |-------------|--------------|--------|
 | SPEC design (registered) | FULL possible | Load artifact, extract `to_code="true"` IDs |
-| Other Spider artifact (PRD/DESIGN/ADR) | DOCS-ONLY | Load artifact, extract requirements |
+| Other Spaider artifact (PRD/DESIGN/ADR) | DOCS-ONLY | Load artifact, extract requirements |
 | User-provided spec/description | DOCS-ONLY | Use as requirements reference |
 | Prompt only | DOCS-ONLY | Implement per user instructions |
-| None | — | Suggest: `/spider-generate SPEC` to create design first |
+| None | — | Suggest: `/spaider-generate SPEC` to create design first |
 
 **1.2 Load Context**
 
@@ -216,28 +216,28 @@ If implementation cannot be completed in a single session:
    - Completed: {list of IDs}
    - In progress: {current ID, steps done}
    - Remaining: {list of IDs}
-   - Resume command: /spider-generate CODE --continue {spec-id}
+   - Resume command: /spaider-generate CODE --continue {spec-id}
    ```
 4. **On resume**:
    - Verify checkpoint state still valid (design unchanged)
    - Continue from documented resumption point
    - If design changed: restart affected work packages
 
-### Phase 3: Spider Markers (Traceability Mode ON only)
+### Phase 3: Spaider Markers (Traceability Mode ON only)
 
-**Reference**: `{spider_path}/requirements/traceability.md` for full marker syntax
+**Reference**: `{spaider_path}/requirements/traceability.md` for full marker syntax
 
 **Apply markers per spec:**
-- Scope markers: `@spider-{kind}:{spd-id}:p{N}` at function/class entry
-- Block markers: `@spider-begin:{spd-id}:p{N}:inst-{local}` / `@spider-end:...` wrapping SDSL steps
+- Scope markers: `@spaider-{kind}:{spd-id}:p{N}` at function/class entry
+- Block markers: `@spaider-begin:{spd-id}:p{N}:inst-{local}` / `@spaider-end:...` wrapping SDSL steps
 
 **Quick reference:**
 ```python
-# @spider-begin:spd-myapp-spec-auth-flow-login:p1:inst-validate-creds
+# @spaider-begin:spd-myapp-spec-auth-flow-login:p1:inst-validate-creds
 def validate_credentials(username, password):
     # implementation here
     pass
-# @spider-end:spd-myapp-spec-auth-flow-login:p1:inst-validate-creds
+# @spaider-end:spd-myapp-spec-auth-flow-login:p1:inst-validate-creds
 ```
 
 ### Phase 4: Sync SPEC (Traceability Mode ON only)
@@ -276,7 +276,7 @@ def validate_credentials(username, password):
 
 ### When Updating Existing Code
 
-- [ ] Preserve existing Spider markers
+- [ ] Preserve existing Spaider markers
 - [ ] Add markers for new design elements
 - [ ] Remove markers for deleted design elements
 - [ ] Update marker IDs if design IDs changed (with migration)
@@ -298,7 +298,7 @@ For each ID/scope marked as implemented:
 
 ### Phase 2: Traceability Validation (Mode ON only)
 
-**Reference**: `{spider_path}/requirements/traceability.md` for validation rules
+**Reference**: `{spaider_path}/requirements/traceability.md` for validation rules
 
 **Deterministic checks** (per spec):
 - [ ] Marker format valid
@@ -362,7 +362,7 @@ For each test scenario from design:
 
 **For each requirement marked IMPLEMENTED:**
 - [ ] Read requirement specification
-- [ ] Locate implementing code via @spider-req tags
+- [ ] Locate implementing code via @spaider-req tags
 - [ ] Verify code logic matches requirement (no contradictions)
 - [ ] Verify no skipped mandatory steps
 - [ ] Verify error handling matches design error specifications
@@ -381,7 +381,7 @@ For each test scenario from design:
 
 ### Traceability Report
 
-**Format**: See `{spider_path}/requirements/traceability.md` → Validation Report
+**Format**: See `{spaider_path}/requirements/traceability.md` → Validation Report
 
 ### Quality Report
 
@@ -492,22 +492,22 @@ After code generation/validation, offer these options to user:
 | Condition | Suggested Next Step |
 |-----------|---------------------|
 | Spec complete | Update spec status to IMPLEMENTED in DECOMPOSITION |
-| All specs done | `/spider-analyze DESIGN` — validate overall design completion |
-| New spec needed | `/spider-generate SPEC` — design next spec |
-| Want expert review only | `/spider-analyze semantic` — semantic validation (skip deterministic) |
+| All specs done | `/spaider-analyze DESIGN` — validate overall design completion |
+| New spec needed | `/spaider-generate SPEC` — design next spec |
+| Want expert review only | `/spaider-analyze semantic` — semantic validation (skip deterministic) |
 
 ### After Validation Issues
 
 | Issue Type | Suggested Next Step |
 |------------|---------------------|
-| Design mismatch | `/spider-generate SPEC` — update spec design |
-| Missing tests | Continue `/spider-generate CODE` — add tests |
-| Code quality issues | Continue `/spider-generate CODE` — refactor |
+| Design mismatch | `/spaider-generate SPEC` — update spec design |
+| Missing tests | Continue `/spaider-generate CODE` — add tests |
+| Code quality issues | Continue `/spaider-generate CODE` — refactor |
 
 ### If No Design Exists
 
 | Scenario | Suggested Next Step |
 |----------|---------------------|
-| Implementing new spec | `/spider-generate SPEC` — create spec design first |
-| Implementing from PRD | `/spider-generate DESIGN` then `/spider-generate DECOMPOSITION` — create design hierarchy |
-| Quick prototype | Proceed without traceability, suggest `/spider-generate SPEC` later |
+| Implementing new spec | `/spaider-generate SPEC` — create spec design first |
+| Implementing from PRD | `/spaider-generate DESIGN` then `/spaider-generate DECOMPOSITION` — create design hierarchy |
+| Quick prototype | Proceed without traceability, suggest `/spaider-generate SPEC` later |

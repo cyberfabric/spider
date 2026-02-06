@@ -15,10 +15,10 @@ import unittest
 from tempfile import TemporaryDirectory
 
 
-# Add skills/spider/scripts directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spider" / "scripts"))
+# Add skills/spaider/scripts directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "spaider" / "scripts"))
 
-from spider.utils.files import (
+from spaider.utils.files import (
     find_adapter_directory,
     find_project_root,
     load_artifacts_registry,
@@ -26,19 +26,19 @@ from spider.utils.files import (
     load_text,
 )
 
-from spider import cli as spider_cli
+from spaider import cli as spaider_cli
 
 
 def _bootstrap_registry(project_root: Path, *, entries: list) -> None:
     (project_root / ".git").mkdir(exist_ok=True)
-    (project_root / ".spider-config.json").write_text(
-        '{\n  "spiderAdapterPath": "adapter"\n}\n',
+    (project_root / ".spaider-config.json").write_text(
+        '{\n  "spaiderAdapterPath": "adapter"\n}\n',
         encoding="utf-8",
     )
     adapter_dir = project_root / "adapter"
     adapter_dir.mkdir(parents=True, exist_ok=True)
     (adapter_dir / "AGENTS.md").write_text(
-        "# Spider Adapter: Test\n\n**Extends**: `../AGENTS.md`\n",
+        "# Spaider Adapter: Test\n\n**Extends**: `../AGENTS.md`\n",
         encoding="utf-8",
     )
     (adapter_dir / "artifacts.json").write_text(
@@ -61,13 +61,13 @@ class TestMain(unittest.TestCase):
             _bootstrap_registry(
                 root,
                 entries=[
-                    {"kind": "PRD", "system": "Test", "path": "architecture/PRD.md", "format": "Spider"},
+                    {"kind": "PRD", "system": "Test", "path": "architecture/PRD.md", "format": "Spaider"},
                 ],
             )
 
             buf = io.StringIO()
             with contextlib.redirect_stdout(buf):
-                code = spider_cli.main([
+                code = spaider_cli.main([
                     "validate",
                     "--artifact",
                     str(prd),
@@ -80,7 +80,7 @@ class TestParsingUtils(unittest.TestCase):
     """Tests for utils/parsing.py"""
 
     def test_parse_required_sections(self):
-        from spider.utils.parsing import parse_required_sections
+        from spaider.utils.parsing import parse_required_sections
         with TemporaryDirectory() as td:
             req = Path(td) / "req.md"
             req.write_text("### Section A: Intro\n### Section B: Body\n", encoding="utf-8")
@@ -89,7 +89,7 @@ class TestParsingUtils(unittest.TestCase):
 
     def test_split_by_section_letter_with_offsets(self):
         import re
-        from spider.utils.parsing import split_by_section_letter_with_offsets
+        from spaider.utils.parsing import split_by_section_letter_with_offsets
         section_re = re.compile(r"^##\s+([A-Z])\.\s+(.+)?$", re.IGNORECASE)
         text = "# Header\n\n## A. First\n\nContent A.\n\n## B. Second\n\nContent B.\n"
         order, sections, offsets = split_by_section_letter_with_offsets(text, section_re)
@@ -110,14 +110,14 @@ class TestFilesUtilsCoverage(unittest.TestCase):
     def test_load_project_config_invalid_json_returns_none(self):
         with TemporaryDirectory() as td:
             root = Path(td)
-            (root / ".spider-config.json").write_text("{bad", encoding="utf-8")
+            (root / ".spaider-config.json").write_text("{bad", encoding="utf-8")
             self.assertIsNone(load_project_config(root))
 
     def test_find_adapter_directory_returns_none_when_config_path_invalid(self):
         with TemporaryDirectory() as td:
             root = Path(td)
             (root / ".git").mkdir(exist_ok=True)
-            (root / ".spider-config.json").write_text('{"spiderAdapterPath": "missing-adapter"}', encoding="utf-8")
+            (root / ".spaider-config.json").write_text('{"spaiderAdapterPath": "missing-adapter"}', encoding="utf-8")
             self.assertIsNone(find_adapter_directory(root))
 
     def test_load_artifacts_registry_error_branches(self):

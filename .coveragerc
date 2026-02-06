@@ -1,6 +1,6 @@
 [run]
 omit =
-    */spider/__main__.py
+    */spaider/__main__.py
     */__main__.py
 
 [report]

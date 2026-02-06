@@ -33,7 +33,7 @@
 - `template.md` — required structure
 - `checklist.md` — semantic quality criteria
 - `examples/example.md` — reference implementation
-- `{spider_path}/requirements/template.md` — Spider template marker syntax specification
+- `{spaider_path}/requirements/template.md` — Spaider template marker syntax specification
 
 ---
 
@@ -153,9 +153,9 @@ ADR defines IDs with `covered_by` attributes that track downstream incorporation
 | SUPERSEDED | `[x]` | Decision replaced by new ADR (reference new ADR) |
 
 **Validation Checks**:
-- `spider validate` will warn if `id:adr` has no references in DESIGN
-- `spider validate` will warn if ADR is ACCEPTED but no `id-ref:adr` exists in DESIGN
-- `spider validate` will warn if `id-ref:adr` is `[x]` but `id:adr` is not
+- `spaider validate` will warn if `id:adr` has no references in DESIGN
+- `spaider validate` will warn if ADR is ACCEPTED but no `id-ref:adr` exists in DESIGN
+- `spaider validate` will warn if `id-ref:adr` is `[x]` but `id:adr` is not
 
 ---
 
@@ -216,7 +216,7 @@ Agent executes tasks during generation:
 - [ ] Generate ID: `spd-{hierarchy-prefix}-adr-{slug}` (e.g., `spd-myapp-adr-use-postgresql`)
 - [ ] Assign priority based on impact
 - [ ] Link to DESIGN if applicable
-- [ ] Verify uniqueness with `spider list-ids`
+- [ ] Verify uniqueness with `spaider list-ids`
 
 ### Phase 4: Quality Check
 
@@ -234,7 +234,7 @@ Agent executes tasks during generation:
 
 ### Phase 1: Structural Validation (Deterministic)
 
-Run `spider validate` for:
+Run `spaider validate` for:
 - [ ] Template structure compliance
 - [ ] ID format validation
 - [ ] No placeholders
@@ -269,7 +269,7 @@ After ADR generation/validation, offer these options:
 | Condition | Suggested Next Step |
 |-----------|---------------------|
 | ADR PROPOSED | Share for review, then update status to ACCEPTED |
-| ADR ACCEPTED | `/spider-generate DESIGN` — incorporate decision into design |
-| Related ADR needed | `/spider-generate ADR` — create related decision record |
+| ADR ACCEPTED | `/spaider-generate DESIGN` — incorporate decision into design |
+| Related ADR needed | `/spaider-generate ADR` — create related decision record |
 | ADR supersedes another | Update original ADR status to SUPERSEDED |
-| Want checklist review only | `/spider-analyze semantic` — semantic validation (skip deterministic) |
+| Want checklist review only | `/spaider-analyze semantic` — semantic validation (skip deterministic) |

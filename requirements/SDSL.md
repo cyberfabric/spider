@@ -1,12 +1,12 @@
 ---
-spider: true
+spaider: true
 type: requirement
-name: Spider DSL (SDSL) Language
+name: Spaider DSL (SDSL) Language
 version: 1.1
 purpose: Define syntax and grammar for behavior description language
 ---
 
-# Spider DSL (SDSL)
+# Spaider DSL (SDSL)
 
 ---
 
@@ -40,17 +40,17 @@ purpose: Define syntax and grammar for behavior description language
 **Prerequisite**: Agent confirms understanding before proceeding:
 - [ ] Agent has read and understood this requirement
 - [ ] Agent will follow the rules defined here
-- [ ] Agent understands Spider DSL (SDSL) is language-agnostic (no code syntax)
+- [ ] Agent understands Spaider DSL (SDSL) is language-agnostic (no code syntax)
 
 ---
 
 ## Overview
 
-**Spider DSL (SDSL)** - Plain English behavior description using markdown lists and bold keywords
+**Spaider DSL (SDSL)** - Plain English behavior description using markdown lists and bold keywords
 
 **Format**: Numbered markdown lists (1, 2, 3...) + Bold keywords + Plain English
 
-**No code syntax**: Spider DSL (SDSL) is language-agnostic, implementation-independent
+**No code syntax**: Spaider DSL (SDSL) is language-agnostic, implementation-independent
 
 ---
 
@@ -228,9 +228,9 @@ Goal: Create new dashboard
 - Plain English descriptions
 - Indentation for nested steps
 - Each step line includes `[ ]` or `[x]`, `pN`, and an instruction ID token `inst-{short-id}`
-- For codebase traceability, every implemented instruction marker maps to code via paired Spider block markers wrapping non-empty code.
-   - Format: `@spider-begin:{spd-id}:p{N}:inst-{id}` ... code ... `@spider-end:{spd-id}:p{N}:inst-{id}`
-   - Example: `# @spider-begin:spd-system-spec-x-algo-validate:p1:inst-check-input`
+- For codebase traceability, every implemented instruction marker maps to code via paired Spaider block markers wrapping non-empty code.
+   - Format: `@spaider-begin:{spd-id}:p{N}:inst-{id}` ... code ... `@spaider-end:{spd-id}:p{N}:inst-{id}`
+   - Example: `# @spaider-begin:spd-system-spec-x-algo-validate:p1:inst-check-input`
 
 ### ❌ Prohibited
 
@@ -288,48 +288,48 @@ Goal: Create new dashboard
 
 ## Excluding Examples from Validation
 
-**Purpose**: Documentation and workflow files often contain **example** Spider tags that should not be validated as real implementation.
+**Purpose**: Documentation and workflow files often contain **example** Spaider tags that should not be validated as real implementation.
 
-**Solution**: Use `!no-spider-begin` / `!no-spider-end` block markers to exclude content from Spider scanning.
+**Solution**: Use `!no-spaider-begin` / `!no-spaider-end` block markers to exclude content from Spaider scanning.
 
 **Syntax**:
 
-- Markdown/HTML comments: `<!-- !no-spider-begin -->` ... `<!-- !no-spider-end -->`
-- Code comments (Python): `# !no-spider-begin` ... `# !no-spider-end`
-- Code comments (Rust/C++): `// !no-spider-begin` ... `// !no-spider-end`
+- Markdown/HTML comments: `<!-- !no-spaider-begin -->` ... `<!-- !no-spaider-end -->`
+- Code comments (Python): `# !no-spaider-begin` ... `# !no-spaider-end`
+- Code comments (Rust/C++): `// !no-spaider-begin` ... `// !no-spaider-end`
 
 **Behavior**:
 
 - Everything between markers is **completely ignored** by the validator
-- Unmatched `!no-spider-begin` (without closing `!no-spider-end`) excludes everything to end of file
+- Unmatched `!no-spaider-begin` (without closing `!no-spaider-end`) excludes everything to end of file
 - Nested exclusion blocks are supported
-- This is different from single-line `!no-spider` which only excludes one line
+- This is different from single-line `!no-spaider` which only excludes one line
 
 **Use Cases**:
 
-1. **Documentation examples**: Wrap example Spider tags in docs with exclusion blocks
-2. **Deprecated code**: Mark old code that still has Spider tags but shouldn't be validated
+1. **Documentation examples**: Wrap example Spaider tags in docs with exclusion blocks
+2. **Deprecated code**: Mark old code that still has Spaider tags but shouldn't be validated
 3. **Template/boilerplate code**: Exclude scaffolding/template code from validation
 
 **Example**:
 
 ```markdown
 Real implementation:
-<!-- spider-begin spd-myproject-spec-x-flow-y:p1:inst-real -->
+<!-- spaider-begin spd-myproject-spec-x-flow-y:p1:inst-real -->
 Actual workflow step
-<!-- spider-end   spd-myproject-spec-x-flow-y:p1:inst-real -->
+<!-- spaider-end   spd-myproject-spec-x-flow-y:p1:inst-real -->
 
 Documentation example (excluded from validation):
-<!-- !no-spider-begin -->
+<!-- !no-spaider-begin -->
 ```rust
-// spider-begin spd-example-spec-z-algo-w:p1:inst-example
+// spaider-begin spd-example-spec-z-algo-w:p1:inst-example
 example_code();
-// spider-end   spd-example-spec-z-algo-w:p1:inst-example
+// spaider-end   spd-example-spec-z-algo-w:p1:inst-example
 ```
-<!-- !no-spider-end -->
+<!-- !no-spaider-end -->
 ```
 
-**Important**: Use this sparingly. Most Spider tags should be real and validated. Only exclude genuine examples/documentation.
+**Important**: Use this sparingly. Most Spaider tags should be real and validated. Only exclude genuine examples/documentation.
 
 ---
 
@@ -344,7 +344,7 @@ example_code();
 → Found: {prohibited element}
 → Fix: Replace with plain English description
 ```
-**Action**: FAIL validation — Spider DSL (SDSL) must be language-agnostic.
+**Action**: FAIL validation — Spaider DSL (SDSL) must be language-agnostic.
 
 ### Missing Required Tokens
 
@@ -368,22 +368,22 @@ example_code();
 ```
 **Action**: FAIL validation — IDs must be unique within scope.
 
-### Unbalanced Spider Markers in Code
+### Unbalanced Spaider Markers in Code
 
-**If code has `spider-begin` without matching `spider-end`**:
+**If code has `spaider-begin` without matching `spaider-end`**:
 ```
-⚠️ Unbalanced Spider marker: {marker}
+⚠️ Unbalanced Spaider marker: {marker}
 → Location: {file}:{line}
-→ Found: spider-begin without spider-end (or vice versa)
+→ Found: spaider-begin without spaider-end (or vice versa)
 → Fix: Add matching marker or remove orphan
 ```
 **Action**: FAIL validation — markers must be paired.
 
-### Empty Spider Block in Code
+### Empty Spaider Block in Code
 
-**If `spider-begin`/`spider-end` wraps no code**:
+**If `spaider-begin`/`spaider-end` wraps no code**:
 ```
-⚠️ Empty Spider block: {marker}
+⚠️ Empty Spaider block: {marker}
 → Location: {file}:{line}
 → Block contains no implementation code
 → Fix: Add implementation OR remove markers if not implemented
@@ -446,8 +446,8 @@ example_code();
 | # | Check | Required | How to Verify |
 |---|-------|----------|---------------|
 | CT.1 | Implemented instructions have code markers | CONDITIONAL | If `[x]`, marker exists in code |
-| CT.2 | Code markers use `spider-begin`/`spider-end` format | YES | Paired block markers |
-| CT.3 | Spider blocks wrap non-empty code | YES | Code exists between markers |
+| CT.2 | Code markers use `spaider-begin`/`spaider-end` format | YES | Paired block markers |
+| CT.3 | Spaider blocks wrap non-empty code | YES | Code exists between markers |
 | CT.4 | No orphan markers in code | YES | All begin/end balanced |
 
 ### Final (F)
@@ -467,7 +467,7 @@ example_code();
 **This file is referenced by**:
 - DESIGN artifacts (behavioral sections)
 - SPEC artifacts (algorithms, flows)
-- Code files (via Spider markers)
+- Code files (via Spaider markers)
 
 **References**:
 - `overall-design-content.md` — Root DESIGN behavioral sections

@@ -1,5 +1,5 @@
 ---
-spider: true
+spaider: true
 type: requirement
 name: Reverse Engineering Methodology
 version: 1.0
@@ -718,11 +718,11 @@ This methodology applies to:
 - **Brownfield projects**: Understand before modification
 - **Acquisitions/transfers**: Due diligence and onboarding
 - **Legacy modernization**: Identify boundaries for strangler fig pattern
-- **Documentation generation**: Input for Spider artifact creation
+- **Documentation generation**: Input for Spaider artifact creation
 
-## Integration with Spider
+## Integration with Spaider
 
-This methodology feeds into Spider workflows:
+This methodology feeds into Spaider workflows:
 
 - **Adapter workflow**: Uses Layer 1-3 for project scan
 - **Generate workflow**: Uses all layers for artifact creation

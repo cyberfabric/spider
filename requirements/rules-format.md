@@ -1,12 +1,12 @@
 ---
-spider: true
+spaider: true
 type: requirement
-name: Spider Rules Format Specification
+name: Spaider Rules Format Specification
 version: 1.0
 purpose: Define rules.md format and workflow interaction protocol
 ---
 
-# Spider Rules Format Specification
+# Spaider Rules Format Specification
 
 ---
 
@@ -58,15 +58,15 @@ Weaver packages are defined in `artifacts.json`:
 ```json
 {
    "weavers": {
-    "spider-sdlc": {
-      "format": "Spider",
+    "spaider-sdlc": {
+      "format": "Spaider",
       "path": "weavers/sdlc"
     },
   },
   "systems": [
     {
       "name": "MySystem",
-         "weaver": "spider-sdlc",  // ← references weaver package
+         "weaver": "spaider-sdlc",  // ← references weaver package
       ...
     }
   ]
@@ -75,7 +75,7 @@ Weaver packages are defined in `artifacts.json`:
 
 **Package resolution**:
 1. Find system for target artifact in `artifacts.json`
-2. Get `weaver` name from system (e.g., `"spider-sdlc"`)
+2. Get `weaver` name from system (e.g., `"spaider-sdlc"`)
 3. Look up path from `weavers` section (e.g., `"weavers/sdlc"`)
 4. Build full path: `{weaver_path}/artifacts/{ARTIFACT_TYPE}/rules.md`
 
@@ -106,7 +106,7 @@ WEAVER_BASE = artifacts.json.weavers[{weaver_name}].path
     └── checklist.md
 ```
 
-**Example** (if `weavers["spider-sdlc"].path = "weavers/sdlc"`):
+**Example** (if `weavers["spaider-sdlc"].path = "weavers/sdlc"`):
 ```
 weavers/sdlc/
 ├── artifacts/
@@ -122,7 +122,7 @@ weavers/sdlc/
 
 Workflow determines artifact type from:
 
-1. **Explicit parameter**: `spider generate PRD`
+1. **Explicit parameter**: `spaider generate PRD`
 2. **From artifacts.json**: lookup artifact by path → get `kind`
    ```json
    { "path": "architecture/PRD.md", "kind": "PRD" }
@@ -209,7 +209,7 @@ Workflow determines artifact type from:
    ↓
 2. RESOLVE weaver package:
    - Find system in artifacts.json
-   - Get weaver name (e.g., "spider-sdlc")
+   - Get weaver name (e.g., "spaider-sdlc")
    - Look up path (e.g., "weavers/sdlc")
    ↓
 3. LOAD rules.md from {rules_path}/artifacts/{TYPE}/rules.md
@@ -241,7 +241,7 @@ Workflow determines artifact type from:
    ↓
 2. RESOLVE weaver package:
    - Find system in artifacts.json
-   - Get weaver name (e.g., "spider-sdlc")
+   - Get weaver name (e.g., "spaider-sdlc")
    - Look up path (e.g., "weavers/sdlc")
    ↓
 3. LOAD rules.md from {rules_path}/artifacts/{TYPE}/rules.md
@@ -302,18 +302,18 @@ Sections starting with `### Phase N:` under `## Validation`:
 
 When workflow starts, it should:
 
-1. **Check context**: Is this an Spider-managed project?
-   - Look for `.spider-adapter/` directory
-   - Read `.spider-adapter/artifacts.json`
+1. **Check context**: Is this an Spaider-managed project?
+   - Look for `.spaider-adapter/` directory
+   - Read `.spaider-adapter/artifacts.json`
 
-2. **If Spider context detected**:
+2. **If Spaider context detected**:
    - Parse `weavers` section from artifacts.json
    - Find system for target artifact
    - Resolve `WEAVER_BASE` from system's weaver reference
    - Load appropriate rules.md
    - Follow interaction protocol
 
-3. **If no Spider context**:
+3. **If no Spaider context**:
    - Proceed with standard workflow
    - No rules.md loading
 
@@ -322,13 +322,13 @@ When workflow starts, it should:
 ## Example: Generate PRD
 
 ```
-User: spider generate PRD
+User: spaider generate PRD
 
 Workflow:
 1. Artifact type: PRD (explicit)
 2. Resolve weaver:
-   - System "Spider" uses weaver "spider-sdlc"
-   - weavers["spider-sdlc"].path = "weavers/sdlc"
+   - System "Spaider" uses weaver "spaider-sdlc"
+   - weavers["spaider-sdlc"].path = "weavers/sdlc"
 3. Load: weavers/sdlc/artifacts/PRD/rules.md
 4. Parse Dependencies:
    - template.md
@@ -353,14 +353,14 @@ Workflow:
 ## Example: Validate SPEC
 
 ```
-User: spider validate architecture/specs/auth.md
+User: spaider validate architecture/specs/auth.md
 
 Workflow:
 1. Artifact type: SPEC (from path)
 2. Resolve weaver:
    - Find system containing artifact
-   - System "Spider" uses weaver "spider-sdlc"
-   - weavers["spider-sdlc"].path = "weavers/sdlc"
+   - System "Spaider" uses weaver "spaider-sdlc"
+   - weavers["spaider-sdlc"].path = "weavers/sdlc"
 3. Load: weavers/sdlc/artifacts/SPEC/rules.md
 4. Parse Dependencies
 5. Load: template.md, checklist.md, examples/example.md
@@ -501,7 +501,7 @@ Workflow:
 
 ## References
 
-- **Rules registry**: `{spider_adapter_path}/artifacts.json` → `rules` section
+- **Rules registry**: `{spaider_adapter_path}/artifacts.json` → `rules` section
 - **Artifact rules**: `{rules_path}/artifacts/{KIND}/rules.md`
 - **Codebase rules**: `{rules_path}/codebase/rules.md`
 - **Template spec**: `requirements/template.md`

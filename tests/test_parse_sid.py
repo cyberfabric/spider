@@ -10,11 +10,11 @@ Tests cover:
 """
 
 import pytest
-from skills.spider.scripts.spider.utils.template import parse_spd, ParsedSpiderId
+from skills.spaider.scripts.spaider.utils.template import parse_spd, ParsedSpaiderId
 
 
 class TestSimpleIds:
-    """Tests for simple Spider IDs: spd-{system}-{kind}-{slug}"""
+    """Tests for simple Spaider IDs: spd-{system}-{kind}-{slug}"""
 
     def test_basic_simple_id(self):
         """Parse a basic simple ID."""
@@ -132,7 +132,7 @@ class TestMultiWordSystems:
 
 
 class TestCompositeIds:
-    """Tests for composite Spider IDs: spd-{system}-{kind1}-{slug1}-{kind2}-{slug2}"""
+    """Tests for composite Spaider IDs: spd-{system}-{kind1}-{slug1}-{kind2}-{slug2}"""
 
     def test_basic_composite_id(self):
         """Parse a composite ID (spec-algo)."""
@@ -228,7 +228,7 @@ class TestCompositeIds:
 class TestCaseInsensitivity:
     """Tests for case-insensitive matching."""
 
-    def test_case_insensitive_spider_prefix(self):
+    def test_case_insensitive_spaider_prefix(self):
         """The spd- prefix should be case-insensitive."""
         result = parse_spd(
             spd="spd-myapp-spec-auth",
@@ -309,7 +309,7 @@ class TestEdgeCases:
         )
         assert result is None
 
-    def test_not_spider_prefix(self):
+    def test_not_spaider_prefix(self):
         """Return None if doesn't start with spd-."""
         result = parse_spd(
             spd="myapp-spec-auth",
@@ -336,7 +336,7 @@ class TestEdgeCases:
         )
         assert result is None
 
-    def test_only_spider_prefix(self):
+    def test_only_spaider_prefix(self):
         """Return None for just 'spd-'."""
         result = parse_spd(
             spd="spd-",
@@ -375,17 +375,17 @@ class TestEdgeCases:
 
 
 class TestRealWorldScenarios:
-    """Tests based on real Spider usage patterns."""
+    """Tests based on real Spaider usage patterns."""
 
-    def test_spider_self_referential(self):
-        """Parse Spider's own IDs (spd-spider-*)."""
+    def test_spaider_self_referential(self):
+        """Parse Spaider's own IDs (spd-spaider-*)."""
         result = parse_spd(
-            spd="spd-spider-adr-initial-architecture-v1",
+            spd="spd-spaider-adr-initial-architecture-v1",
             expected_kind="adr",
-            registered_systems={"spider"},
+            registered_systems={"spaider"},
         )
         assert result is not None
-        assert result.system == "spider"
+        assert result.system == "spaider"
         assert result.kind == "adr"
         assert result.slug == "initial-architecture-v1"
 
@@ -421,9 +421,9 @@ class TestRealWorldScenarios:
     def test_principle_id(self):
         """Parse a principle ID."""
         result = parse_spd(
-            spd="spd-spider-principle-tech-agnostic",
+            spd="spd-spaider-principle-tech-agnostic",
             expected_kind="principle",
-            registered_systems={"spider"},
+            registered_systems={"spaider"},
         )
         assert result is not None
         assert result.kind == "principle"
@@ -491,10 +491,10 @@ class TestWhereDefinedCallback:
 
 
 class TestDataclassProperties:
-    """Tests for ParsedSpiderId dataclass properties."""
+    """Tests for ParsedSpaiderId dataclass properties."""
 
     def test_parsed_spd_is_frozen(self):
-        """ParsedSpiderId should be immutable (frozen dataclass)."""
+        """ParsedSpaiderId should be immutable (frozen dataclass)."""
         result = parse_spd(
             spd="spd-myapp-spec-auth",
             expected_kind="spec",
@@ -506,7 +506,7 @@ class TestDataclassProperties:
             result.system = "other"
 
     def test_parsed_spd_equality(self):
-        """ParsedSpiderId instances with same values should be equal."""
+        """ParsedSpaiderId instances with same values should be equal."""
         result1 = parse_spd(
             spd="spd-myapp-spec-auth",
             expected_kind="spec",
@@ -520,7 +520,7 @@ class TestDataclassProperties:
         assert result1 == result2
 
     def test_parsed_spd_repr(self):
-        """ParsedSpiderId should have a readable repr."""
+        """ParsedSpaiderId should have a readable repr."""
         result = parse_spd(
             spd="spd-myapp-spec-auth",
             expected_kind="spec",

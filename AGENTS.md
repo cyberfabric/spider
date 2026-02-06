@@ -1,4 +1,4 @@
-# Spider AI Agent Navigation
+# Spaider AI Agent Navigation
 
 **Version**: 1.1
 
@@ -13,7 +13,7 @@
 **If you skip ANY MUST instruction**:
 - 🚫 Your execution is **INVALID**
 - 🚫 Output must be **DISCARDED**
-- 🚫 You are **NOT following Spider**
+- 🚫 You are **NOT following Spaider**
 
 **One skipped MUST = entire workflow FAILED**
 
@@ -21,26 +21,26 @@
 
 ## ⚠️ SCOPE LIMITATION (OPT-IN) ⚠️
 
-**MUST** treat Spider as opt-in.
+**MUST** treat Spaider as opt-in.
 
-**MUST NOT** apply Spider navigation rules unless the user explicitly enables Spider.
+**MUST NOT** apply Spaider navigation rules unless the user explicitly enables Spaider.
 
-Spider is considered disabled ONLY when at least one is true:
-- User explicitly requests disabling Spider (for example: `/spider off`)
+Spaider is considered disabled ONLY when at least one is true:
+- User explicitly requests disabling Spaider (for example: `/spaider off`)
 
-Spider disable MUST take precedence over Spider enable.
+Spaider disable MUST take precedence over Spaider enable.
 
-Spider is considered enabled ONLY when at least one is true:
-- User explicitly asks to use Spider (mentions `spider` or `Spider`) and confirms intent
-- User explicitly requests executing an Spider workflow (for example: `spider analyze`, `spider generate`, `spider rules`, `spider adapter`)
-- User explicitly requests the `spider` entrypoint workflow (`/spider`)
+Spaider is considered enabled ONLY when at least one is true:
+- User explicitly asks to use Spaider (mentions `spaider` or `Spaider`) and confirms intent
+- User explicitly requests executing an Spaider workflow (for example: `spaider analyze`, `spaider generate`, `spaider rules`, `spaider adapter`)
+- User explicitly requests the `spaider` entrypoint workflow (`/spaider`)
 
-**If Spider intent is unclear** (user mentions "spider" but doesn't explicitly request workflow):
-- Ask for clarification: "Would you like to enable Spider mode?"
+**If Spaider intent is unclear** (user mentions "spaider" but doesn't explicitly request workflow):
+- Ask for clarification: "Would you like to enable Spaider mode?"
 - Do NOT assume enabled without confirmation
 - Continue as normal assistant until confirmed
 
-If Spider is disabled OR NOT enabled:
+If Spaider is disabled OR NOT enabled:
 - **MUST** ignore the rest of this file
 - **MUST** behave as a normal coding assistant
 
@@ -49,7 +49,7 @@ If Spider is disabled OR NOT enabled:
 
 ## Agent Acknowledgment
 
-**Before proceeding with ANY Spider work, confirm you understand**:
+**Before proceeding with ANY Spaider work, confirm you understand**:
 
 - [ ] MUST = MANDATORY, not optional
 - [ ] Skipping ANY MUST instruction = INVALID execution
@@ -57,26 +57,26 @@ If Spider is disabled OR NOT enabled:
 - [ ] I will read ALL required files BEFORE proceeding
 - [ ] I will follow workflows step-by-step WITHOUT shortcuts
 - [ ] I will NOT create files without user confirmation (operation workflows)
-- [ ] I will end EVERY response with a list of Spider files read while producing the response, why each file was read, and which initial instruction triggered opening each file
+- [ ] I will end EVERY response with a list of Spaider files read while producing the response, why each file was read, and which initial instruction triggered opening each file
 
-**By proceeding with Spider work, I acknowledge and accept these requirements.**
+**By proceeding with Spaider work, I acknowledge and accept these requirements.**
 
 ---
 
 ## Variables
 
-**While Spider is enabled**, remember these variables:
+**While Spaider is enabled**, remember these variables:
 
 | Variable | Value | Description |
 |----------|-------|-------------|
-| `{spider_path}` | Directory containing this AGENTS.md | Project root for Spider navigation |
-| `{spider_mode}` | `on` or `off` | Current Spider mode state |
+| `{spaider_path}` | Directory containing this AGENTS.md | Project root for Spaider navigation |
+| `{spaider_mode}` | `on` or `off` | Current Spaider mode state |
 
-**Setting `{spider_mode}`**:
-- Explicit command: `spider on` / `spider off`
-- Spider prompts that activate/deactivate Spider workflows
+**Setting `{spaider_mode}`**:
+- Explicit command: `spaider on` / `spaider off`
+- Spaider prompts that activate/deactivate Spaider workflows
 
-Use `{spider_path}` as the base path for all relative Spider file references.
+Use `{spaider_path}` as the base path for all relative Spaider file references.
 
 ---
 
@@ -84,34 +84,34 @@ Use `{spider_path}` as the base path for all relative Spider file references.
 
 ALWAYS open and follow `requirements/extension.md` WHEN you see **Extends**: {file}
 
-ALWAYS open and follow `{adapter-directory}/AGENTS.md` WHEN starting any Spider work
+ALWAYS open and follow `{adapter-directory}/AGENTS.md` WHEN starting any Spaider work
 
-ALWAYS open and follow `skills/spider/SKILL.md` WHEN you see `spider` in the prompt
+ALWAYS open and follow `skills/spaider/SKILL.md` WHEN you see `spaider` in the prompt
 
 ## Skill registration
 
 <available_skills>
   <skill>
-    <name>spider</name>
-    <description>Framework for Documentation and Development - AI agent toolkit. Use when user works with PRD, DESIGN, DECOMPOSITION, ADR, spec specs, architecture documentation, requirements, or mentions Spider/workflow/artifact/adapter/traceability. Provides structured artifact templates, validation, design-to-code traceability, and guided code implementation with traceability markers. Opt-in - suggest enabling when design/architecture activities detected.</description>
-    <location>skills/spider/SKILL.md</location>
+    <name>spaider</name>
+    <description>Framework for Documentation and Development - AI agent toolkit. Use when user works with PRD, DESIGN, DECOMPOSITION, ADR, spec specs, architecture documentation, requirements, or mentions Spaider/workflow/artifact/adapter/traceability. Provides structured artifact templates, validation, design-to-code traceability, and guided code implementation with traceability markers. Opt-in - suggest enabling when design/architecture activities detected.</description>
+    <location>skills/spaider/SKILL.md</location>
   </skill>
 </available_skills>
 
 ### Dependency Error Handling
 
 **If referenced file not found**:
-- Log warning to user: "Spider dependency not found: {path}"
+- Log warning to user: "Spaider dependency not found: {path}"
 - Continue with available files — do NOT fail silently
-- If critical dependency missing (SKILL.md, workflow), inform user and suggest `/spider` to reinitialize
+- If critical dependency missing (SKILL.md, workflow), inform user and suggest `/spaider` to reinitialize
 
 ---
 
 ## Execution Logging
 
-ALWAYS provide execution visibility WHEN Spider is enabled.
+ALWAYS provide execution visibility WHEN Spaider is enabled.
 
-ALWAYS notify the user WHEN entering a major section (H2 heading `##`) of any Spider prompt (workflow, rules, requirements).
+ALWAYS notify the user WHEN entering a major section (H2 heading `##`) of any Spaider prompt (workflow, rules, requirements).
 
 ALWAYS notify the user WHEN completing a checklist task (a Markdown task line starting with `- [ ]`).
 
@@ -123,15 +123,15 @@ ALWAYS use this notification format WHEN emitting execution logs:
 
 ALWAYS set **CONTEXT** to the file or section being executed WHEN emitting execution logs (e.g., `workflows/generate.md`, `DESIGN rules`, `execution-protocol`).
 
-ALWAYS set **MESSAGE** to what Spider is doing and why WHEN emitting execution logs.
+ALWAYS set **MESSAGE** to what Spaider is doing and why WHEN emitting execution logs.
 
-ALWAYS ensure execution logging supports these goals WHEN Spider is enabled:
-- Help the user understand which Spider prompts are being followed
+ALWAYS ensure execution logging supports these goals WHEN Spaider is enabled:
+- Help the user understand which Spaider prompts are being followed
 - Help the user track decision points and branching logic
 - Help the user debug unexpected behavior
-- Help the user learn the Spider workflow
+- Help the user learn the Spaider workflow
 
-ALWAYS consider these examples as valid execution logs WHEN Spider is enabled:
+ALWAYS consider these examples as valid execution logs WHEN Spaider is enabled:
 
 ```
 🕷️ [execution-protocol]: Entering "Load Rules" — target is CODE, loading codebase/rules.md

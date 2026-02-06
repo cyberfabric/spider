@@ -1,5 +1,5 @@
 ---
-spider: true
+spaider: true
 type: requirement
 name: Prompt Engineering Review Methodology
 version: 1.0
@@ -35,7 +35,7 @@ This methodology provides a systematic approach to reviewing and improving any a
 9. [Layer 9: Improvement Synthesis](#layer-9-improvement-synthesis)
 10. [Execution Protocol](#execution-protocol)
 11. [Quick Reference: Anti-Pattern Codes](#quick-reference-anti-pattern-codes)
-12. [Integration with Spider](#integration-with-spider)
+12. [Integration with Spaider](#integration-with-spaider)
 13. [References](#references)
 
 ---
@@ -753,9 +753,9 @@ After completing all layers, produce:
 
 ---
 
-## Integration with Spider
+## Integration with Spaider
 
-This methodology integrates with Spider workflows:
+This methodology integrates with Spaider workflows:
 
 - **Validate workflow**: Use this methodology for semantic validation of instruction documents
 - **Generate workflow**: Apply these principles when creating new instruction documents

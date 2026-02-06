@@ -29,7 +29,7 @@
 - `template.md` — required structure
 - `checklist.md` — semantic quality criteria
 - `examples/example.md` — reference implementation
-- `{spider_path}/requirements/template.md` — Spider template marker syntax specification
+- `{spaider_path}/requirements/template.md` — Spaider template marker syntax specification
 
 ---
 
@@ -55,7 +55,7 @@ Agent confirms understanding of requirements:
 - [ ] When flow/algorithm/requirement significantly changes: add `-v{N}` suffix to ID
 - [ ] Format: `spd-{hierarchy-prefix}-flow-{slug}-v2`
 - [ ] Keep changelog of significant changes
-- [ ] Versioning code markers must match: `@spider-flow:spd-{hierarchy-prefix}-flow-{slug}-v2:p{N}`
+- [ ] Versioning code markers must match: `@spaider-flow:spd-{hierarchy-prefix}-flow-{slug}-v2:p{N}`
 
 ### Semantic Requirements
 
@@ -71,7 +71,7 @@ Agent confirms understanding of requirements:
 ### Traceability Requirements
 
 - [ ] All IDs with `to_code="true"` must be traced to code
-- [ ] Code must contain markers: `@spider-{kind}:{spd-id}:p{N}`
+- [ ] Code must contain markers: `@spaider-{kind}:{spd-id}:p{N}`
 - [ ] Each SDSL instruction maps to code marker
 
 ### SPEC Scope Guidelines
@@ -113,9 +113,9 @@ Agent confirms understanding of requirements:
 
 | Element | Check when... |
 |---------|---------------|
-| `id:flow` | ALL `@spider-flow:{spd-id}:p{N}` markers exist in code |
-| `id:algo` | ALL `@spider-algo:{spd-id}:p{N}` markers exist in code |
-| `id:state` | ALL `@spider-state:{spd-id}:p{N}` markers exist in code |
+| `id:flow` | ALL `@spaider-flow:{spd-id}:p{N}` markers exist in code |
+| `id:algo` | ALL `@spaider-algo:{spd-id}:p{N}` markers exist in code |
+| `id:state` | ALL `@spaider-state:{spd-id}:p{N}` markers exist in code |
 | `id:req` | Implementation complete AND tests pass |
 
 **Detailed Rules**:
@@ -133,15 +133,15 @@ SPEC defines IDs with `to_code="true"` attribute that track code implementation:
 
 1. **Flow Checkbox** (`id:flow`):
    - `[ ] - spd-{hierarchy-prefix}-flow-{slug}` — unchecked until implemented
-   - `[x] - spd-{hierarchy-prefix}-flow-{slug}` — checked when ALL code markers `@spider-flow:spd-{hierarchy-prefix}-flow-{slug}:p{N}` exist
+   - `[x] - spd-{hierarchy-prefix}-flow-{slug}` — checked when ALL code markers `@spaider-flow:spd-{hierarchy-prefix}-flow-{slug}:p{N}` exist
 
 2. **Algorithm Checkbox** (`id:algo`):
    - `[ ] - spd-{hierarchy-prefix}-algo-{slug}` — unchecked until implemented
-   - `[x] - spd-{hierarchy-prefix}-algo-{slug}` — checked when ALL code markers `@spider-algo:spd-{hierarchy-prefix}-algo-{slug}:p{N}` exist
+   - `[x] - spd-{hierarchy-prefix}-algo-{slug}` — checked when ALL code markers `@spaider-algo:spd-{hierarchy-prefix}-algo-{slug}:p{N}` exist
 
 3. **State Machine Checkbox** (`id:state`):
    - `[ ] - spd-{hierarchy-prefix}-state-{slug}` — unchecked until implemented
-   - `[x] - spd-{hierarchy-prefix}-state-{slug}` — checked when ALL code markers `@spider-state:spd-{hierarchy-prefix}-state-{slug}:p{N}` exist
+   - `[x] - spd-{hierarchy-prefix}-state-{slug}` — checked when ALL code markers `@spaider-state:spd-{hierarchy-prefix}-state-{slug}:p{N}` exist
 
 4. **Requirement Checkbox** (`id:req`):
    - `[ ] p1 - spd-{hierarchy-prefix}-req-{slug}` — unchecked until satisfied
@@ -173,9 +173,9 @@ SPEC references elements from PRD and DESIGN:
 - [ ] When spec is `[x]` → update upstream `id-ref` checkboxes in DECOMPOSITION (which cascades to PRD/DESIGN)
 
 **Validation Checks**:
-- `spider validate` will warn if `to_code="true"` ID has no code markers
-- `spider validate` will warn if `id-ref` references non-existent ID
-- `spider validate` will report code coverage: N% of SDSL instructions have markers
+- `spaider validate` will warn if `to_code="true"` ID has no code markers
+- `spaider validate` will warn if `id-ref` references non-existent ID
+- `spaider validate` will report code coverage: N% of SDSL instructions have markers
 
 ---
 
@@ -204,7 +204,7 @@ Agent executes tasks during generation:
 **If DECOMPOSITION not found**:
 ```
 ⚠ DECOMPOSITION not found
-→ Option 1: Run /spider-generate DECOMPOSITION first (recommended)
+→ Option 1: Run /spaider-generate DECOMPOSITION first (recommended)
 → Option 2: Continue without manifest (SPEC will lack traceability)
    - Document "DECOMPOSITION pending" in SPEC frontmatter
    - Skip parent spec reference validation
@@ -214,7 +214,7 @@ Agent executes tasks during generation:
 **If DESIGN not found or incomplete**:
 ```
 ⚠ DESIGN not found or incomplete
-→ Option 1: Run /spider-generate DESIGN first (recommended for architectural context)
+→ Option 1: Run /spaider-generate DESIGN first (recommended for architectural context)
 → Option 2: Continue without DESIGN (reduced domain model context)
    - Document "DESIGN pending" in SPEC frontmatter
    - Skip component/type references validation
@@ -280,7 +280,7 @@ If SPEC cannot be completed in a single session:
 - [ ] Generate state IDs: `spd-{hierarchy-prefix}-state-{slug}` (e.g., `spd-myapp-auth-state-session-lifecycle`)
 - [ ] Generate requirement IDs: `spd-{hierarchy-prefix}-req-{slug}` (e.g., `spd-myapp-auth-req-must-validate-token`)
 - [ ] Assign priorities (`p1`-`p9`) based on spec priority
-- [ ] Verify ID uniqueness with `spider list-ids`
+- [ ] Verify ID uniqueness with `spaider list-ids`
 
 ### Phase 4: Quality Check
 
@@ -297,7 +297,7 @@ Validation workflow applies rules in two phases:
 
 ### Phase 1: Structural Validation (Deterministic)
 
-Run `spider validate` for:
+Run `spaider validate` for:
 - [ ] Template structure compliance
 - [ ] ID format validation
 - [ ] Priority markers present
@@ -325,7 +325,7 @@ Apply `checklist.md` systematically:
 ### Phase 3: Traceability Validation (if FULL mode)
 
 For IDs with `to_code="true"`:
-- [ ] Verify code markers exist: `@spider-{kind}:{spd-id}:p{N}`
+- [ ] Verify code markers exist: `@spaider-{kind}:{spd-id}:p{N}`
 - [ ] Report missing markers
 - [ ] Report orphaned markers
 
@@ -352,9 +352,9 @@ After SPEC generation/validation, offer these options:
 
 | Condition | Suggested Next Step |
 |-----------|---------------------|
-| SPEC design complete | `/spider-generate CODE` — implement spec |
-| Code implementation done | `/spider-analyze CODE` — validate implementation |
+| SPEC design complete | `/spaider-generate CODE` — implement spec |
+| Code implementation done | `/spaider-analyze CODE` — validate implementation |
 | Spec IMPLEMENTED | Update status in DECOMPOSITION |
-| Another spec to design | `/spider-generate SPEC` — design next spec |
+| Another spec to design | `/spaider-generate SPEC` — design next spec |
 | SPEC needs revision | Continue editing SPEC design |
-| Want checklist review only | `/spider-analyze semantic` — semantic validation (skip deterministic) |
+| Want checklist review only | `/spaider-analyze semantic` — semantic validation (skip deterministic) |

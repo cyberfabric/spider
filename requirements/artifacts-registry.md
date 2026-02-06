@@ -1,12 +1,12 @@
 ---
-spider: true
+spaider: true
 type: requirement
 name: Artifacts Registry
 version: 1.0
 purpose: Define structure and usage of artifacts.json for agent operations
 ---
 
-# Spider Artifacts Registry Specification
+# Spaider Artifacts Registry Specification
 
 ---
 
@@ -35,13 +35,13 @@ purpose: Define structure and usage of artifacts.json for agent operations
 
 **Add to adapter AGENTS.md** (path relative to adapter directory):
 ```
-ALWAYS open and follow `{spider_path}/requirements/artifacts-registry.md` WHEN working with artifacts.json
+ALWAYS open and follow `{spaider_path}/requirements/artifacts-registry.md` WHEN working with artifacts.json
 ```
-Where `{spider_path}` is resolved from the adapter's `**Extends**:` declaration.
+Where `{spaider_path}` is resolved from the adapter's `**Extends**:` declaration.
 
-**ALWAYS use**: `python3 {spider_path}/skills/spider/scripts/spider.py adapter-info` to discover adapter location
+**ALWAYS use**: `python3 {spaider_path}/skills/spaider/scripts/spaider.py adapter-info` to discover adapter location
 
-**ALWAYS use**: `spider.py` CLI commands for artifact operations (list-ids, where-defined, where-used, validate)
+**ALWAYS use**: `spaider.py` CLI commands for artifact operations (list-ids, where-defined, where-used, validate)
 
 **Prerequisite**: Agent confirms understanding before proceeding:
 - [ ] Agent has read and understood this requirement
@@ -52,7 +52,7 @@ Where `{spider_path}` is resolved from the adapter's `**Extends**:` declaration.
 
 ## Overview
 
-**What**: `artifacts.json` is the Spider artifact registry - a JSON file that declares all Spider artifacts, their templates, and codebase locations.
+**What**: `artifacts.json` is the Spaider artifact registry - a JSON file that declares all Spaider artifacts, their templates, and codebase locations.
 
 **Location**: `{adapter-directory}/artifacts.json`
 
@@ -103,7 +103,7 @@ Schema file: `../schemas/artifacts.schema.json`
 {
   "weavers": {
     "weaver-id": {
-      "format": "Spider",
+      "format": "Spaider",
       "path": "weavers/sdlc"
     }
   }
@@ -114,7 +114,7 @@ Schema file: `../schemas/artifacts.schema.json`
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `format` | string | YES | Template format. `"Spider"` = full tooling support. Other values = custom (LLM-only) |
+| `format` | string | YES | Template format. `"Spaider"` = full tooling support. Other values = custom (LLM-only) |
 | `path` | string | YES | Path to weaver package directory (relative to project_root). Contains `artifacts/` and `codebase/` subdirectories. |
 
 ### Template Resolution
@@ -130,11 +130,11 @@ Template file path is resolved as: `{weaver.path}/artifacts/{KIND}/template.md`
 
 | Format | Meaning |
 |--------|---------|
-| `"Spider"` | Full Spider tooling support: validation, parsing, ID extraction |
+| `"Spaider"` | Full Spaider tooling support: validation, parsing, ID extraction |
 | Other | Custom format: LLM-only semantic processing, no CLI validation |
 
 **Agent behavior**:
-- `format: "Spider"` → Use `spider validate`, `list-ids`, `where-defined`, etc.
+- `format: "Spaider"` → Use `spaider validate`, `list-ids`, `where-defined`, etc.
 - Other format → Skip CLI validation, process semantically
 
 ---
@@ -398,7 +398,7 @@ When creating NEW artifacts:
 - Base directory: `artifacts_dir` (default: `architecture`)
 - Subdirectories for specific artifact kinds are defined by the weaver
 
-**Example** (spider-sdlc weaver):
+**Example** (spaider-sdlc weaver):
 ```
 artifacts_dir: "architecture"
 spec slug: "auth"
@@ -415,38 +415,38 @@ Codebase paths are resolved directly: `{project_root}/{codebase.path}`
 
 ## CLI Commands
 
-**Note**: All commands use `python3 {spider_path}/skills/spider/scripts/spider.py` where `{spider_path}` is the Spider installation path. Examples below use `spider.py` as shorthand.
+**Note**: All commands use `python3 {spaider_path}/skills/spaider/scripts/spaider.py` where `{spaider_path}` is the Spaider installation path. Examples below use `spaider.py` as shorthand.
 
 ### Discovery
 
 ```bash
 # Find adapter and registry
-spider.py adapter-info --root /project
+spaider.py adapter-info --root /project
 ```
 
 ### Artifact Operations
 
 ```bash
-# List all IDs from registered Spider artifacts
-spider.py list-ids
+# List all IDs from registered Spaider artifacts
+spaider.py list-ids
 
 # List IDs from specific artifact
-spider.py list-ids --artifact architecture/PRD.md
+spaider.py list-ids --artifact architecture/PRD.md
 
 # Find where ID is defined
-spider.py where-defined --id "myapp-actor-user"
+spaider.py where-defined --id "myapp-actor-user"
 
 # Find where ID is referenced
-spider.py where-used --id "myapp-actor-user"
+spaider.py where-used --id "myapp-actor-user"
 
 # Validate artifact against template
-spider.py validate --artifact architecture/PRD.md
+spaider.py validate --artifact architecture/PRD.md
 
 # Validate all registered artifacts
-spider.py validate
+spaider.py validate
 
 # Validate weavers and templates
-spider.py validate-weavers
+spaider.py validate-weavers
 ```
 
 ---
@@ -456,7 +456,7 @@ spider.py validate-weavers
 ### Finding the Registry
 
 1. Run `adapter-info` to discover adapter location
-2. Registry is at `{spider_adapter_path}/artifacts.json`
+2. Registry is at `{spaider_adapter_path}/artifacts.json`
 3. Parse JSON to get registry data
 
 ### Iterating Artifacts
@@ -473,8 +473,8 @@ for system in registry.systems:
 ### Resolving Template Path
 
 ```python
-# For artifact with kind="PRD" in system with weaver="spider-sdlc"
-weaver = registry.weavers["spider-sdlc"]
+# For artifact with kind="PRD" in system with weaver="spaider-sdlc"
+weaver = registry.weavers["spaider-sdlc"]
 template_path = f"{weaver.path}/artifacts/{artifact.kind}/template.md"
 # → "weavers/sdlc/artifacts/PRD/template.md"
 ```
@@ -483,9 +483,9 @@ template_path = f"{weaver.path}/artifacts/{artifact.kind}/template.md"
 
 ```python
 weaver = registry.weavers[system.weaver]
-if weaver.format == "Spider":
+if weaver.format == "Spaider":
     # Use CLI validation
-    run("spider validate --artifact {path}")
+    run("spaider validate --artifact {path}")
 else:
     # Custom format - LLM-only processing
     process_semantically(artifact)
@@ -499,9 +499,9 @@ else:
 
 **If artifacts.json doesn't exist at adapter location**:
 ```
-⚠️ Registry not found: {spider_adapter_path}/artifacts.json
+⚠️ Registry not found: {spaider_adapter_path}/artifacts.json
 → Adapter exists but registry not initialized
-→ Fix: Run /spider-adapter to create registry
+→ Fix: Run /spaider-adapter to create registry
 ```
 **Action**: STOP — cannot process artifacts without registry.
 
@@ -553,8 +553,8 @@ else:
   "version": "1.0",
   "project_root": "..",
   "weavers": {
-    "spider-sdlc": {
-      "format": "Spider",
+    "spaider-sdlc": {
+      "format": "Spaider",
       "path": "weavers/sdlc"
     }
   },
@@ -562,7 +562,7 @@ else:
     {
       "name": "MyApp",
       "slug": "myapp",
-      "weaver": "spider-sdlc",
+      "weaver": "spaider-sdlc",
       "artifacts_dir": "architecture",
       "artifacts": [
         { "name": "Product Requirements", "path": "architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
@@ -584,7 +584,7 @@ else:
         {
           "name": "Auth",
           "slug": "auth",
-          "weaver": "spider-sdlc",
+          "weaver": "spaider-sdlc",
           "artifacts_dir": "modules/auth/architecture",
           "artifacts": [
             { "path": "modules/auth/architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
@@ -609,7 +609,7 @@ else:
 
 | Issue | Cause | Fix |
 |-------|-------|-----|
-| "Artifact not in Spider registry" | Path not registered | Add artifact to system's `artifacts` array |
+| "Artifact not in Spaider registry" | Path not registered | Add artifact to system's `artifacts` array |
 | "Could not find template" | Missing template file | Create template at `{weaver.path}/artifacts/{KIND}/template.md` |
 | "Invalid weaver reference" | System references non-existent weaver | Add weaver to `weavers` section or fix `weaver` field |
 | "Path is a directory" | Artifact path ends with `/` or has no extension | Change to specific file path |
@@ -620,7 +620,7 @@ else:
 
 **Schema**: `../schemas/artifacts.schema.json`
 
-**CLI**: `skills/spider/spider.clispec`
+**CLI**: `skills/spaider/spaider.clispec`
 
 **Related**:
 - `adapter-structure.md` - Adapter AGENTS.md requirements
@@ -636,7 +636,7 @@ else:
 
 | # | Check | Required | How to Verify |
 |---|-------|----------|---------------|
-| R.1 | artifacts.json exists at adapter location | YES | File exists at `{spider_adapter_path}/artifacts.json` |
+| R.1 | artifacts.json exists at adapter location | YES | File exists at `{spaider_adapter_path}/artifacts.json` |
 | R.2 | JSON parses without errors | YES | `json.loads()` succeeds |
 | R.3 | `version` field present and non-empty | YES | Field exists and is string |
 | R.4 | `weavers` object present with ≥1 weaver | YES | Object with at least one key |

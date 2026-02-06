@@ -1,7 +1,7 @@
-# Spider SDLC Rule Package
+# Spaider SDLC Rule Package
 
-**ID**: `spider-sdlc`
-**Purpose**: Software Development Lifecycle artifacts for Spider projects
+**ID**: `spaider-sdlc`
+**Purpose**: Software Development Lifecycle artifacts for Spaider projects
 
 ---
 
@@ -24,7 +24,7 @@ weavers/sdlc/
 ├── README.md           # This file
 ├── artifacts/
 │   ├── PRD/
-│   │   ├── template.md     # PRD template with Spider markers
+│   │   ├── template.md     # PRD template with Spaider markers
 │   │   ├── checklist.md    # Expert review checklist
 │   │   └── examples/
 │   │       └── example.md  # Valid PRD example
@@ -72,7 +72,7 @@ example:   weavers/sdlc/artifacts/{KIND}/examples/example.md
 ```json
 {
   "rules": {
-    "spider-sdlc": {
+    "spaider-sdlc": {
       "path": "weavers/sdlc",
       "artifacts": ["PRD", "DESIGN", "ADR", "DECOMPOSITION", "SPEC"]
     }
