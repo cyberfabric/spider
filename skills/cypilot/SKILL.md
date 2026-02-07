@@ -49,6 +49,8 @@ Cypilot provides: template-based validation, cross-reference validation, code tr
 
 ---
 
+ALWAYS SET {cypilot_mode} = `on` FIRST when loading this skill
+
 ## Execution Logging
 
 ALWAYS provide execution visibility

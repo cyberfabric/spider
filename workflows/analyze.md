@@ -9,7 +9,7 @@ purpose: Universal workflow for analysing any Cypilot artifact or code
 
 # Analyze
 
-Set `{cypilot_mode}` = `on` FIRST
+ALWAYS open and follow `{cypilot_path}/skills/cypilot/SKILL.md` FIRST WHEN {cypilot_mode} is `off`
 
 **Type**: Analysis
 

@@ -7,9 +7,9 @@ version: 1.0
 purpose: Unified Cypilot adapter workflow - scan, configure, validate
 ---
 
-# Cypilot Adapter Workflow
+ALWAYS open and follow `{cypilot_path}/skills/cypilot/SKILL.md` FIRST WHEN {cypilot_mode} is `off`
 
-Set `{cypilot_mode}` = `on` FIRST
+# Cypilot Adapter Workflow
 
 **Type**: Operation
 **Role**: Any

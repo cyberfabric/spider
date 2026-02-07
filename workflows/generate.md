@@ -9,7 +9,7 @@ purpose: Universal workflow for creating or updating any artifact or code
 
 # Generate
 
-Set `{cypilot_mode}` = `on` FIRST
+ALWAYS open and follow `{cypilot_path}/skills/cypilot/SKILL.md` FIRST WHEN {cypilot_mode} is `off`
 
 **Type**: Operation
 
@@ -36,7 +36,7 @@ For context compaction recovery during multi-phase workflows, follow `{cypilot_p
 
 - [Generate](#generate)
   - [Table of Contents](#table-of-contents)
-  - [Reverse Engineering Prerequisite](#reverse-engineering-prerequisite)
+  - [Reverse Engineering Prerequisite (BROWNFIELD only)](#reverse-engineering-prerequisite-brownfield-only)
   - [Overview](#overview)
     - [Resolved Variables (from `execution-protocol.md` + adapter-info)](#resolved-variables-from-execution-protocolmd--adapter-info)
   - [Context Budget \& Overflow Prevention (CRITICAL)](#context-budget--overflow-prevention-critical)
