@@ -4,23 +4,6 @@
 
 ---
 
-## Variables
-
-**While Cypilot is enabled**, remember these variables:
-
-| Variable | Value | Description |
-|----------|-------|-------------|
-| `{cypilot_path}` | Directory containing this AGENTS.md | Project root for Cypilot navigation |
-| `{cypilot_mode}` | `on` or `off` | Current Cypilot mode state |
-
-**Setting `{cypilot_mode}`**:
-- Explicit command: `cypilot on` / `cypilot off`
-- Cypilot prompts that activate/deactivate Cypilot workflows
-
-Use `{cypilot_path}` as the base path for all relative Cypilot file references.
-
----
-
 ## Navigation Rules
 
 ALWAYS open and follow `{cypilot_path}/requirements/extension.md` WHEN you see **Extends**: {file}

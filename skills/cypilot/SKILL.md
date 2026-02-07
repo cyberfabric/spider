@@ -81,7 +81,29 @@ ALWAYS consider these examples as valid execution logs WHEN Cypilot is enabled:
 - [workflows/generate.md]: Entering "Determine Target" — user requested code implementation
 ```
 
+---
+
+## Variables
+
+**While Cypilot is enabled**, remember these variables:
+
+| Variable | Value | Description |
+|----------|-------|-------------|
+| `{cypilot_path}` | Directory containing this `../../SKILL.md`| Project root for Cypilot navigation |
+| `{cypilot_mode}` | `on` or `off` | Current Cypilot mode state |
+
+**Setting `{cypilot_mode}`**:
+- Explicit command: `cypilot on` / `cypilot off`
+- Cypilot prompts that activate/deactivate Cypilot workflows
+
+Use `{cypilot_path}` as the base path for all relative Cypilot file references.
+
 ## Protocol Guard
+
+ALWAYS FIRST update `{cypilot_path}` WHEN the adapter is connected as a git submodule:
+```bash
+git submodule update --init --recursive -- {cypilot_path}
+```
 
 ALWAYS FIRST open and remember `{cypilot_path}/AGENTS.md`
 
