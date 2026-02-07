@@ -790,6 +790,64 @@ class Artifact:
     def _extract_ids_and_refs(self) -> None:
         if self.id_definitions or self.id_references:
             return
+        try:
+            from .document import file_has_cypilot_markers, scan_cpt_ids_without_markers
+        except Exception:
+            file_has_cypilot_markers = None  # type: ignore[assignment]
+            scan_cpt_ids_without_markers = None  # type: ignore[assignment]
+
+        if file_has_cypilot_markers is not None and scan_cpt_ids_without_markers is not None:
+            if not file_has_cypilot_markers(self.path):
+                hits = scan_cpt_ids_without_markers(self.path)
+                if hits:
+                    dummy_tpl = TemplateBlock(
+                        type="free",
+                        name="markerless",
+                        required=False,
+                        repeat="one",
+                        attrs={},
+                        start_line=1,
+                        end_line=1,
+                    )
+                    dummy_blk = ArtifactBlock(
+                        template_block=dummy_tpl,
+                        content=[],
+                        start_line=1,
+                        end_line=1,
+                    )
+                    for h in hits:
+                        h_type = str(h.get("type", ""))
+                        h_id = str(h.get("id", "")).strip()
+                        if not h_id:
+                            continue
+                        line = int(h.get("line", 1) or 1)
+                        checked = bool(h.get("checked", False))
+                        priority = h.get("priority")
+                        prio = str(priority) if priority is not None else None
+                        if h_type == "definition":
+                            self.id_definitions.append(
+                                IdDefinition(
+                                    id=h_id,
+                                    line=line,
+                                    checked=checked,
+                                    priority=prio,
+                                    block=dummy_blk,
+                                    artifact_path=self.path,
+                                    to_code=False,
+                                )
+                            )
+                        elif h_type == "reference":
+                            self.id_references.append(
+                                IdReference(
+                                    id=h_id,
+                                    line=line,
+                                    checked=checked,
+                                    priority=prio,
+                                    block=dummy_blk,
+                                    artifact_path=self.path,
+                                )
+                            )
+                    return
         for blk in self.blocks:
             if blk.template_block.type == "id":
                 to_code = str(blk.template_block.attrs.get("to_code", "false")).strip().lower() == "true"

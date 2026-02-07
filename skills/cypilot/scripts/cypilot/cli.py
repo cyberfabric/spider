@@ -2141,8 +2141,16 @@ def _cmd_where_defined(argv: List[str]) -> int:
             if result:
                 artifact_meta, system_node = result
                 tmpl = ctx.get_template(system_node.kit, artifact_meta.kind)
-                if tmpl:
-                    artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
+                if tmpl is None:
+                    tmpl = Template(
+                        path=Path("<synthetic-template>"),
+                        kind=str(artifact_meta.kind),
+                        version=None,
+                        policy=None,
+                        blocks=[],
+                        _loaded=True,
+                    )
+                artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
         if not artifacts_to_scan:
             print(json.dumps({"status": "ERROR", "message": f"Artifact not in Cypilot registry: {args.artifact}"}, indent=None, ensure_ascii=False))
             return 1
@@ -2160,8 +2168,15 @@ def _cmd_where_defined(argv: List[str]) -> int:
         # Scan all Cypilot artifacts
         for artifact_meta, system_node in meta.iter_all_artifacts():
             tmpl = ctx.get_template(system_node.kit, artifact_meta.kind)
-            if not tmpl:
-                continue
+            if tmpl is None:
+                tmpl = Template(
+                    path=Path("<synthetic-template>"),
+                    kind=str(artifact_meta.kind),
+                    version=None,
+                    policy=None,
+                    blocks=[],
+                    _loaded=True,
+                )
             artifact_path = (project_root / artifact_meta.path).resolve()
             if artifact_path.exists():
                 artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
@@ -2174,24 +2189,6 @@ def _cmd_where_defined(argv: List[str]) -> int:
     definitions: List[Dict[str, object]] = []
 
     for artifact_path, tmpl, artifact_type in artifacts_to_scan:
-        from .utils.document import scan_cpt_ids_without_markers
-
-        fallback_hits = scan_cpt_ids_without_markers(artifact_path)
-        if fallback_hits:
-            for fh in fallback_hits:
-                if fh.get("type") != "definition":
-                    continue
-                if str(fh.get("id", "")) != target_id:
-                    continue
-                definitions.append({
-                    "artifact": str(artifact_path),
-                    "artifact_type": artifact_type,
-                    "line": int(fh.get("line", 0)),
-                    "kind": None,
-                    "checked": bool(fh.get("checked", False)),
-                })
-            continue
-
         parsed: TemplateArtifact = tmpl.parse(artifact_path)
         parsed._extract_ids_and_refs()  # Populate id_definitions
 
@@ -2268,8 +2265,16 @@ def _cmd_where_used(argv: List[str]) -> int:
             if result:
                 artifact_meta, system_node = result
                 tmpl = ctx.get_template(system_node.kit, artifact_meta.kind)
-                if tmpl:
-                    artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
+                if tmpl is None:
+                    tmpl = Template(
+                        path=Path("<synthetic-template>"),
+                        kind=str(artifact_meta.kind),
+                        version=None,
+                        policy=None,
+                        blocks=[],
+                        _loaded=True,
+                    )
+                artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
         if not artifacts_to_scan:
             print(json.dumps({"status": "ERROR", "message": f"Artifact not in Cypilot registry: {args.artifact}"}, indent=None, ensure_ascii=False))
             return 1
@@ -2287,8 +2292,15 @@ def _cmd_where_used(argv: List[str]) -> int:
         # Scan all Cypilot artifacts
         for artifact_meta, system_node in meta.iter_all_artifacts():
             tmpl = ctx.get_template(system_node.kit, artifact_meta.kind)
-            if not tmpl:
-                continue
+            if tmpl is None:
+                tmpl = Template(
+                    path=Path("<synthetic-template>"),
+                    kind=str(artifact_meta.kind),
+                    version=None,
+                    policy=None,
+                    blocks=[],
+                    _loaded=True,
+                )
             artifact_path = (project_root / artifact_meta.path).resolve()
             if artifact_path.exists():
                 artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
@@ -2301,26 +2313,6 @@ def _cmd_where_used(argv: List[str]) -> int:
     references: List[Dict[str, object]] = []
 
     for artifact_path, tmpl, artifact_type in artifacts_to_scan:
-        from .utils.document import scan_cpt_ids_without_markers
-
-        fallback_hits = scan_cpt_ids_without_markers(artifact_path)
-        if fallback_hits:
-            for fh in fallback_hits:
-                fh_type = str(fh.get("type", ""))
-                if fh_type == "definition" and not args.include_definitions:
-                    continue
-                if str(fh.get("id", "")) != target_id:
-                    continue
-                references.append({
-                    "artifact": str(artifact_path),
-                    "artifact_type": artifact_type,
-                    "line": int(fh.get("line", 0)),
-                    "kind": None,
-                    "type": fh_type,
-                    "checked": bool(fh.get("checked", False)),
-                })
-            continue
-
         parsed: TemplateArtifact = tmpl.parse(artifact_path)
         parsed._extract_ids_and_refs()  # Populate id_definitions and id_references
 
