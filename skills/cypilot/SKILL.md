@@ -18,6 +18,8 @@ Cypilot provides: template-based validation, cross-reference validation, code tr
 
 ## Protocol Guard
 
+ALWAYS FIRST open and remember `{cypilot_path}/AGENTS.md`
+
 ALWAYS FIRST run `python3 {cypilot_path}/skills/cypilot/scripts/cypilot.py adapter-info` BEFORE any Cypilot workflow action
 
 ALWAYS FIRST read `{cypilot_adapter_path}/AGENTS.md` WHEN adapter status is FOUND
