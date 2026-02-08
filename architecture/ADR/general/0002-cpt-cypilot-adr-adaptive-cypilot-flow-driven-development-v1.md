@@ -2,7 +2,7 @@
 # ADR-0002: Adaptive Cypilot - Framework for Documentation and Development
 
 <!-- cpt:id:adr has="priority,task" covered_by="DESIGN" -->
-- [x] `p1` - **ID**: `cpt-cypilot-adr-adaptive-cypilot-flow-driven-development-v1`
+**ID**: `cpt-cypilot-adr-adaptive-cypilot-flow-driven-development-v1`
 
 <!-- cpt:##:meta -->
 ## Meta

@@ -1,0 +1,236 @@
+{
+  "PRD": {
+    "name": "PRD constraints",
+    "description": "How PRD IDs must be represented and how downstream artifacts must reference them",
+    "identifiers": {
+      "actor": {
+        "name": "Actor",
+        "description": "A PRD actor definition",
+        "examples": ["cpt-myapp-actor-admin"],
+        "task": "prohibited",
+        "priority": "prohibited",
+        "headings": ["2. Actors"]
+      },
+      "fr": {
+        "name": "Functional Requirement",
+        "description": "A functional requirement ID",
+        "examples": ["cpt-myapp-fr-user-login"],
+        "task": "allowed",
+        "priority": "required",
+        "headings": ["3. Functional Requirements"],
+        "references": {
+          "DESIGN": {"coverage": "required", "task": "allowed", "priority": "allowed"},
+          "DECOMPOSITION": {"coverage": "optional"},
+          "SPEC": {"coverage": "optional"}
+        }
+      },
+      "usecase": {
+        "name": "Use Case",
+        "description": "A PRD use case definition",
+        "task": "allowed",
+        "priority": "allowed",
+        "examples": ["cpt-myapp-usecase-user-login"],
+        "headings": ["4. Use Cases"],
+        "references": {
+          "DESIGN": {"coverage": "optional", "task": "allowed", "priority": "allowed"},
+          "DECOMPOSITION": {"coverage": "optional"}
+        }
+      },
+      "nfr": {
+        "name": "Non-functional Requirement",
+        "description": "A non-functional requirement ID",
+        "examples": ["cpt-myapp-nfr-latency"],
+        "task": "allowed",
+        "priority": "required",
+        "headings": ["5. Non-functional requirements"],
+        "references": {
+          "DESIGN": {"coverage": "required", "task": "allowed", "priority": "allowed"},
+          "DECOMPOSITION": {"coverage": "optional"},
+          "SPEC": {"coverage": "optional"}
+        }
+      }
+    }
+  },
+  "ADR": {
+    "name": "ADR constraints",
+    "description": "How ADR IDs must be represented and referenced in DESIGN",
+    "identifiers": {
+      "adr": {
+        "name": "Architecture Decision Record",
+        "description": "An ADR ID",
+        "examples": ["cpt-myapp-adr-use-postgresql"],
+        "task": "prohibited",
+        "priority": "prohibited",
+        "references": {
+          "PRD": {"coverage": "prohibited"},
+          "DESIGN": {"coverage": "required", "task": "allowed", "priority": "allowed"}
+        }
+      }
+    }
+  },
+  "DESIGN": {
+    "name": "DESIGN constraints",
+    "description": "How DESIGN IDs must be represented and referenced downstream",
+    "identifiers": {
+      "principle": {
+        "name": "Design Principle",
+        "description": "A design principle that must be covered by implementation specs",
+        "examples": ["cpt-myapp-principle-loose-coupling"],
+        "task": "allowed",
+        "priority": "allowed",
+        "headings": ["2.1: Design Principles"],
+        "references": {
+          "PRD": {"coverage": "prohibited"},
+          "DECOMPOSITION": {"coverage": "required"},
+          "SPEC": {"coverage": "optional"}
+        }
+      },
+      "constraint": {
+        "name": "Design Constraint",
+        "description": "A design constraint that must be satisfied by implementation specs",
+        "examples": ["cpt-myapp-constraint-data-residency"],
+        "task": "allowed",
+        "priority": "allowed",
+        "headings": ["2.2: Constraints"],
+        "references": {
+          "PRD": {"coverage": "prohibited"},
+          "DECOMPOSITION": {"coverage": "required"},
+          "SPEC": {"coverage": "optional"}
+        }
+      },
+      "component": {
+        "name": "Component",
+        "description": "A design component that must be implemented by at least one spec",
+        "examples": ["cpt-myapp-component-auth-service"],
+        "task": "required",
+        "priority": "required",
+        "headings": ["3.2: Component Model"],
+        "references": {
+          "PRD": {"coverage": "prohibited"},
+          "DECOMPOSITION": {"coverage": "required"},
+          "SPEC": {"coverage": "optional"}
+        }
+      },
+      "seq": {
+        "name": "Sequence",
+        "description": "A sequence that must be implemented by at least one spec",
+        "examples": ["cpt-myapp-seq-user-login"],
+        "task": "allowed",
+        "priority": "allowed",
+        "headings": ["3.4: Interactions & Sequences"],
+        "references": {
+          "PRD": {"coverage": "prohibited"},
+          "DECOMPOSITION": {"coverage": "optional"},
+          "SPEC": {"coverage": "optional"}
+        }
+      },
+      "dbtable": {
+        "name": "Database Table",
+        "description": "A database table used by at least one spec",
+        "examples": ["cpt-myapp-dbtable-users"],
+        "task": "allowed",
+        "priority": "allowed",
+        "references": {
+          "PRD": {"coverage": "prohibited"},
+          "DECOMPOSITION": {"coverage": "required"},
+          "SPEC": {"coverage": "optional"}
+        }
+      },
+      "topology": {
+        "name": "Topology",
+        "description": "A topology entry",
+        "examples": ["cpt-myapp-topology-prod"],
+        "task": "allowed",
+        "priority": "prohibited",
+        "headings": ["3.6: Topology (optional)"],
+        "references": {
+          "PRD": {"coverage": "prohibited"}
+        }
+      }
+    }
+  },
+  "DECOMPOSITION": {
+    "name": "DECOMPOSITION constraints",
+    "description": "How DECOMPOSITION IDs must be represented",
+    "identifiers": {
+      "status": {
+        "name": "Overall Status",
+        "description": "Overall status ID for the decomposition manifest",
+        "examples": ["cpt-myapp-status-overall"],
+        "task": "required",
+        "priority": "required",
+        "references": {
+          "PRD": {"coverage": "prohibited"},
+          "DESIGN": {"coverage": "prohibited"},
+          "SPEC": {"coverage": "prohibited"}
+        }
+      },
+      "spec": {
+        "name": "Spec Entry",
+        "description": "A spec entry in the decomposition manifest",
+        "examples": ["cpt-myapp-spec-auth"],
+        "task": "required",
+        "priority": "required",
+        "references": {
+          "PRD": {"coverage": "prohibited"},
+          "DESIGN": {"coverage": "optional", "task": "allowed", "priority": "allowed"},
+          "SPEC": {"coverage": "optional"}
+        }
+      }
+    }
+  },
+  "SPEC": {
+    "name": "SPEC constraints",
+    "description": "How SPEC IDs must be represented and which IDs must be traced to code",
+    "identifiers": {
+      "flow": {
+        "name": "Flow",
+        "description": "An actor flow definition",
+        "examples": ["cpt-myapp-spec-auth-flow-user-login"],
+        "task": "required",
+        "priority": "prohibited",
+        "to_code": true,
+        "headings": ["2. Actor Flows"],
+        "references": {
+          "PRD": {"coverage": "prohibited"}
+        }
+      },
+      "algo": {
+        "name": "Algorithm",
+        "description": "An algorithm definition",
+        "examples": ["cpt-myapp-spec-auth-algo-validate"],
+        "task": "required",
+        "priority": "prohibited",
+        "to_code": true,
+        "headings": ["3. Algorithms"],
+        "references": {
+          "PRD": {"coverage": "prohibited"}
+        }
+      },
+      "state": {
+        "name": "State Machine",
+        "description": "A state machine definition",
+        "examples": ["cpt-myapp-spec-auth-state-session"],
+        "task": "required",
+        "priority": "prohibited",
+        "to_code": true,
+        "headings": ["4. States"],
+        "references": {
+          "PRD": {"coverage": "prohibited"}
+        }
+      },
+      "req": {
+        "name": "Definition of Done Requirement",
+        "description": "A testable requirement in Definition of Done",
+        "examples": ["cpt-myapp-spec-auth-req-login-works"],
+        "task": "required",
+        "priority": "required",
+        "to_code": true,
+        "headings": ["5. Definition of Done"],
+        "references": {
+          "PRD": {"coverage": "prohibited"}
+        }
+      }
+    }
+  }
+}

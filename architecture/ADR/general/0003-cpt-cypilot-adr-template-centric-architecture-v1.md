@@ -2,7 +2,7 @@
 # ADR-0003: Template-Centric Architecture and Workflow Consolidation
 
 <!-- cpt:id:adr has="priority,task" covered_by="DESIGN" -->
-- [x] `p1` - **ID**: `cpt-cypilot-adr-template-centric-architecture-v1`
+**ID**: `cpt-cypilot-adr-template-centric-architecture-v1`
 
 <!-- cpt:##:meta -->
 ## Meta

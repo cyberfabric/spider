@@ -16,7 +16,7 @@ def test_parse_kit_constraints_root_must_be_object():
 
 
 def test_parse_kit_constraints_rejects_non_string_kind_key():
-    kc, errs = parse_kit_constraints({1: {"defined-id": []}})
+    kc, errs = parse_kit_constraints({1: {"identifiers": {}}})
     assert kc is None
     assert any("non-string kind" in e for e in errs)
 
@@ -32,9 +32,8 @@ def test_parse_kit_constraints_valid_happy_path_and_normalizations():
         "prd": {
             "name": "PRD",
             "description": "desc",
-            "defined-id": [
-                {
-                    "kind": "item",
+            "identifiers": {
+                "item": {
                     "name": "Item",
                     "description": "An item",
                     "examples": ["cpt-test-item-1"],
@@ -47,7 +46,7 @@ def test_parse_kit_constraints_valid_happy_path_and_normalizations():
                         "SPEC": {"coverage": "required"},
                     },
                 }
-            ],
+            },
         }
     }
     kc, errs = parse_kit_constraints(data)
@@ -64,8 +63,8 @@ def test_parse_kit_constraints_valid_happy_path_and_normalizations():
     assert d0.name == "Item"
     assert d0.description == "An item"
     assert d0.examples == ["cpt-test-item-1"]
-    assert d0.task is True
-    assert d0.priority is False
+    assert d0.task == "required"
+    assert d0.priority == "prohibited"
     assert d0.to_code is True
     assert d0.headings == ["H1", "H2"]
     assert d0.references is not None
@@ -76,19 +75,22 @@ def test_parse_kit_constraints_valid_happy_path_and_normalizations():
 def test_parse_kit_constraints_duplicate_kind_detection():
     data = {
         "PRD": {
-            "defined-id": [{"kind": "item"}, {"kind": "item"}],
+            "identifiers": {
+                "item": {"kind": "item"},
+                "item ": {"kind": "item"},
+            },
         }
     }
     kc, errs = parse_kit_constraints(data)
     assert kc is None
-    assert any("defined-id has duplicate kind" in e for e in errs)
+    assert any("identifiers has duplicate kind" in e for e in errs)
 
 
 def test_parse_kit_constraints_reports_field_type_errors():
     data = {
         "PRD": {
             "name": 123,
-            "defined-id": [],
+            "identifiers": {},
         }
     }
     kc, errs = parse_kit_constraints(data)
@@ -97,26 +99,26 @@ def test_parse_kit_constraints_reports_field_type_errors():
 
 
 def test_parse_kit_constraints_entry_must_be_object_and_kind_required():
-    data1 = {"PRD": {"defined-id": ["x"]}}
+    data1 = {"PRD": {"identifiers": {"item": "x"}}}
     kc, errs = parse_kit_constraints(data1)
     assert kc is None
     assert any("Constraint entry must be an object" in e for e in errs)
 
-    data2 = {"PRD": {"defined-id": [{}]}}
+    data2 = {"PRD": {"identifiers": {"": {}}}}
     kc2, errs2 = parse_kit_constraints(data2)
     assert kc2 is None
-    assert any("missing required 'kind'" in e for e in errs2)
+    assert any("non-string kind key" in e for e in errs2)
 
 
 def test_parse_kit_constraints_entry_type_validation():
     data = {
         "PRD": {
-            "defined-id": [
-                {"kind": "item", "task": "yes"},
-                {"kind": "item2", "priority": "no"},
-                {"kind": "item3", "to_code": "nope"},
-                {"kind": "item4", "headings": "H"},
-            ],
+            "identifiers": {
+                "item": {"task": "yes"},
+                "item2": {"priority": "no"},
+                "item3": {"to_code": "nope"},
+                "item4": {"headings": "H"},
+            },
         }
     }
     kc, errs = parse_kit_constraints(data)
@@ -130,9 +132,9 @@ def test_parse_kit_constraints_entry_type_validation():
 def test_parse_id_constraint_examples_must_be_list():
     kc, errs = parse_kit_constraints({
         "PRD": {
-            "defined-id": [
-                {"kind": "item", "examples": "not-a-list"},
-            ],
+            "identifiers": {
+                "item": {"examples": "not-a-list"},
+            },
         }
     })
     assert kc is None
@@ -142,9 +144,9 @@ def test_parse_id_constraint_examples_must_be_list():
 def test_parse_id_constraint_name_and_description_must_be_string():
     kc, errs = parse_kit_constraints({
         "PRD": {
-            "defined-id": [
-                {"kind": "item", "name": 123},
-            ],
+            "identifiers": {
+                "item": {"name": 123},
+            },
         }
     })
     assert kc is None
@@ -152,9 +154,9 @@ def test_parse_id_constraint_name_and_description_must_be_string():
 
     kc2, errs2 = parse_kit_constraints({
         "PRD": {
-            "defined-id": [
-                {"kind": "item", "description": 123},
-            ],
+            "identifiers": {
+                "item": {"description": 123},
+            },
         }
     })
     assert kc2 is None
@@ -164,9 +166,9 @@ def test_parse_id_constraint_name_and_description_must_be_string():
 def test_parse_references_must_be_object_and_keys_strings():
     kc, errs = parse_kit_constraints({
         "PRD": {
-            "defined-id": [
-                {"kind": "item", "references": "bad"},
-            ],
+            "identifiers": {
+                "item": {"references": "bad"},
+            },
         }
     })
     assert kc is None
@@ -174,9 +176,9 @@ def test_parse_references_must_be_object_and_keys_strings():
 
     kc2, errs2 = parse_kit_constraints({
         "PRD": {
-            "defined-id": [
-                {"kind": "item", "references": {1: {"coverage": "required"}}},
-            ],
+            "identifiers": {
+                "item": {"references": {1: {"coverage": "required"}}},
+            },
         }
     })
     assert kc2 is None
@@ -187,9 +189,9 @@ def test_parse_reference_rule_validation_errors():
     # rule must be an object
     kc, errs = parse_kit_constraints({
         "PRD": {
-            "defined-id": [
-                {"kind": "item", "references": {"DESIGN": "bad"}},
-            ],
+            "identifiers": {
+                "item": {"references": {"DESIGN": "bad"}},
+            },
         }
     })
     assert kc is None
@@ -198,42 +200,42 @@ def test_parse_reference_rule_validation_errors():
     # invalid coverage
     kc2, errs2 = parse_kit_constraints({
         "PRD": {
-            "defined-id": [
-                {"kind": "item", "references": {"DESIGN": {"coverage": "bad"}}},
-            ],
+            "identifiers": {
+                "item": {"references": {"DESIGN": {"coverage": "bad"}}},
+            },
         }
     })
     assert kc2 is None
     assert any("coverage" in e and "must be one of" in e for e in errs2)
 
-    # task must be boolean
+    # task must be tri-state string (required|allowed|prohibited) (legacy booleans allowed)
     kc3, errs3 = parse_kit_constraints({
         "PRD": {
-            "defined-id": [
-                {"kind": "item", "references": {"DESIGN": {"coverage": "required", "task": "x"}}},
-            ],
+            "identifiers": {
+                "item": {"references": {"DESIGN": {"coverage": "required", "task": "x"}}},
+            },
         }
     })
     assert kc3 is None
-    assert any("Reference rule field 'task'" in e for e in errs3)
+    assert any("references.task" in e and "must be one of" in e for e in errs3)
 
-    # priority must be boolean
+    # priority must be tri-state string (required|allowed|prohibited) (legacy booleans allowed)
     kc4, errs4 = parse_kit_constraints({
         "PRD": {
-            "defined-id": [
-                {"kind": "item", "references": {"DESIGN": {"coverage": "required", "priority": "x"}}},
-            ],
+            "identifiers": {
+                "item": {"references": {"DESIGN": {"coverage": "required", "priority": "x"}}},
+            },
         }
     })
     assert kc4 is None
-    assert any("Reference rule field 'priority'" in e for e in errs4)
+    assert any("references.priority" in e and "must be one of" in e for e in errs4)
 
     # headings must be list[str]
     kc5, errs5 = parse_kit_constraints({
         "PRD": {
-            "defined-id": [
-                {"kind": "item", "references": {"DESIGN": {"coverage": "required", "headings": "H"}}},
-            ],
+            "identifiers": {
+                "item": {"references": {"DESIGN": {"coverage": "required", "headings": "H"}}},
+            },
         }
     })
     assert kc5 is None
@@ -247,7 +249,7 @@ def test_parse_kind_constraints_type_errors_for_kind_object():
 
     kc2, errs2 = parse_kit_constraints({
         "PRD": {
-            "defined-id": [],
+            "identifiers": {},
             "description": 123,
         }
     })
@@ -256,11 +258,11 @@ def test_parse_kind_constraints_type_errors_for_kind_object():
 
     kc3, errs3 = parse_kit_constraints({
         "PRD": {
-            "defined-id": {},
+            "identifiers": [],
         }
     })
     assert kc3 is None
-    assert any("field 'defined-id' must be a list" in e for e in errs3)
+    assert any("field 'identifiers' must be an object" in e for e in errs3)
 
 
 def test_load_constraints_json_missing_ok(tmp_path: Path):
@@ -286,7 +288,7 @@ def test_load_constraints_json_invalid_schema(tmp_path: Path):
 
 def test_load_constraints_json_valid(tmp_path: Path):
     (tmp_path / "constraints.json").write_text(
-        '{"PRD": {"defined-id": [{"kind": "item"}]}}',
+        '{"PRD": {"identifiers": {"item": {}}}}',
         encoding="utf-8",
     )
     kc, errs = load_constraints_json(tmp_path)

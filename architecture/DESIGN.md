@@ -303,8 +303,8 @@ AI agent integration is achieved through machine-readable specifications (AGENTS
 <!-- cpt:adr-title -->
 ##### ADR-001 Initial Architecture
 
-<!-- cpt:id-ref:adr has="priority,task" -->
-- [x] `p1` - `cpt-cypilot-adr-initial-architecture-v1`
+<!-- cpt:id-ref:adr -->
+`cpt-cypilot-adr-initial-architecture-v1`
 <!-- cpt:id-ref:adr -->
 
 Establishes the initial layered architecture and repository structure for Cypilot, including the separation between methodology core, adapter-owned specs, workflows, and deterministic validation.
@@ -1022,7 +1022,7 @@ Not applicable — Cypilot is a methodology framework that does not maintain its
 ### 3.6: Topology (optional)
 
 <!-- cpt:id:topology has="task" -->
-- [x] `p3` - **ID**: `cpt-cypilot-topology-local`
+**ID**: `cpt-cypilot-topology-local`
 
 <!-- cpt:free:topology-body -->
 Not applicable — Cypilot runs locally on developer machines. No cloud infrastructure, containers, or distributed deployment required. The `cypilot` CLI tool executes directly via Python interpreter.

@@ -71,7 +71,7 @@
 <!-- cpt:adr-title repeat="many" -->
 ##### {ADR Title 1}
 
-<!-- cpt:id-ref:adr has="priority,task" -->
+<!-- cpt:id-ref:adr -->
 - [ ] `p1` - `cpt-{system}-adr-{slug}`
 <!-- cpt:id-ref:adr -->
 
@@ -81,7 +81,7 @@
 <!-- cpt:adr-title repeat="many" -->
 ##### {ADR Title 2}
 
-<!-- cpt:id-ref:adr has="priority,task" -->
+<!-- cpt:id-ref:adr -->
 - [ ] `p2` - `cpt-{system}-adr-{slug}`
 <!-- cpt:id-ref:adr -->
 

@@ -1,8 +1,8 @@
 <!-- cpt:#:adr -->
 # ADR-0001: {short title, representative of solved problem and found solution}
 
-<!-- cpt:id:adr has="priority,task" covered_by="DESIGN" -->
-- [ ] `p1` - **ID**: `cpt-{system}-adr-{slug}`
+<!-- cpt:id:adr covered_by="DESIGN" -->
+**ID**: `cpt-{system}-adr-{slug}`
 
 <!-- cpt:##:meta -->
 ## Meta

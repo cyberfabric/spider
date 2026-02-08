@@ -9,22 +9,36 @@ from typing import Dict, List, Optional, Tuple
 @dataclass(frozen=True)
 class ReferenceRule:
     coverage: str  # required|optional|prohibited
-    task: Optional[bool] = None
-    priority: Optional[bool] = None
+    task: Optional[str] = None  # required|allowed|prohibited
+    priority: Optional[str] = None  # required|allowed|prohibited
     headings: Optional[List[str]] = None
 
 
 @dataclass(frozen=True)
 class IdConstraint:
     kind: str
+    required: bool = True
     name: Optional[str] = None
     description: Optional[str] = None
     examples: Optional[List[object]] = None
-    task: Optional[bool] = None
-    priority: Optional[bool] = None
+    task: Optional[str] = None  # required|allowed|prohibited
+    priority: Optional[str] = None  # required|allowed|prohibited
     to_code: Optional[bool] = None
     headings: Optional[List[str]] = None
     references: Optional[Dict[str, ReferenceRule]] = None
+
+
+def _parse_tri_state(v: object, field: str) -> Tuple[Optional[str], Optional[str]]:
+    if v is None:
+        return None, None
+    if isinstance(v, bool):
+        return ("required" if v else "prohibited"), None
+    if isinstance(v, str):
+        vv = v.strip().lower()
+        if vv in {"required", "allowed", "prohibited"}:
+            return vv, None
+        return None, f"Constraint field '{field}' must be one of: required, allowed, prohibited"
+    return None, f"Constraint field '{field}' must be string (required|allowed|prohibited)"
 
 
 @dataclass(frozen=True)
@@ -54,13 +68,13 @@ def _parse_reference_rule(obj: object) -> Tuple[Optional[ReferenceRule], Optiona
     if not isinstance(coverage, str) or coverage.strip() not in {"required", "optional", "prohibited"}:
         return None, "Reference rule field 'coverage' must be one of: required, optional, prohibited"
 
-    task = obj.get("task")
-    if task is not None and not isinstance(task, bool):
-        return None, "Reference rule field 'task' must be boolean"
+    task, task_err = _parse_tri_state(obj.get("task"), "references.task")
+    if task_err:
+        return None, task_err
 
-    priority = obj.get("priority")
-    if priority is not None and not isinstance(priority, bool):
-        return None, "Reference rule field 'priority' must be boolean"
+    priority, pr_err = _parse_tri_state(obj.get("priority"), "references.priority")
+    if pr_err:
+        return None, pr_err
 
     headings_raw = obj.get("headings")
     headings: Optional[List[str]] = None
@@ -101,6 +115,14 @@ def _parse_id_constraint(obj: object) -> Tuple[Optional[IdConstraint], Optional[
     if not isinstance(kind, str) or not kind.strip():
         return None, "Constraint entry missing required 'kind'"
 
+    required = obj.get("required")
+    if required is None:
+        required_bool = True
+    elif isinstance(required, bool):
+        required_bool = required
+    else:
+        return None, "Constraint field 'required' must be boolean"
+
     name = obj.get("name")
     if name is not None and not isinstance(name, str):
         return None, "Constraint field 'name' must be string"
@@ -113,13 +135,13 @@ def _parse_id_constraint(obj: object) -> Tuple[Optional[IdConstraint], Optional[
     if ex_err:
         return None, ex_err
 
-    task = obj.get("task")
-    if task is not None and not isinstance(task, bool):
-        return None, "Constraint field 'task' must be boolean"
+    task, task_err = _parse_tri_state(obj.get("task"), "task")
+    if task_err:
+        return None, task_err
 
-    priority = obj.get("priority")
-    if priority is not None and not isinstance(priority, bool):
-        return None, "Constraint field 'priority' must be boolean"
+    priority, pr_err = _parse_tri_state(obj.get("priority"), "priority")
+    if pr_err:
+        return None, pr_err
 
     to_code = obj.get("to_code")
     if to_code is not None and not isinstance(to_code, bool):
@@ -140,6 +162,7 @@ def _parse_id_constraint(obj: object) -> Tuple[Optional[IdConstraint], Optional[
     return (
         IdConstraint(
             kind=kind.strip(),
+            required=required_bool,
             name=name,
             description=description,
             examples=examples,
@@ -163,6 +186,10 @@ def parse_kit_constraints(data: object) -> Tuple[Optional[KitConstraints], List[
     errors: List[str] = []
 
     for kind, raw in data.items():
+        # Allow optional JSON Schema metadata keys.
+        # Example: {"$schema": "../../schemas/kit-constraints.schema.json", "PRD": {...}}
+        if isinstance(kind, str) and kind.strip().startswith("$"):
+            continue
         if not isinstance(kind, str) or not kind.strip():
             errors.append("constraints.json has non-string kind key")
             continue
@@ -170,8 +197,9 @@ def parse_kit_constraints(data: object) -> Tuple[Optional[KitConstraints], List[
             errors.append(f"constraints for {kind} must be an object")
             continue
 
-        if "defined-id" not in raw:
-            errors.append(f"constraints for {kind} must include 'defined-id'")
+        has_identifiers = "identifiers" in raw
+        if not has_identifiers:
+            errors.append(f"constraints for {kind} must include 'identifiers'")
             continue
 
         name = raw.get("name")
@@ -184,22 +212,44 @@ def parse_kit_constraints(data: object) -> Tuple[Optional[KitConstraints], List[
             errors.append(f"constraints for {kind} field 'description' must be string")
             continue
 
-        defined_raw = raw.get("defined-id")
-        if not isinstance(defined_raw, list):
-            errors.append(f"constraints for {kind} field 'defined-id' must be a list")
-            continue
-
         defined_id: List[IdConstraint] = []
         seen_defined: set[str] = set()
-        for i, entry in enumerate(defined_raw):
-            c, e = _parse_id_constraint(entry)
+
+        identifiers_raw = raw.get("identifiers")
+        if not isinstance(identifiers_raw, dict):
+            errors.append(f"constraints for {kind} field 'identifiers' must be an object")
+            continue
+        for kkind, entry in identifiers_raw.items():
+            if not isinstance(kkind, str) or not kkind.strip():
+                errors.append(f"constraints for {kind} field 'identifiers' has non-string kind key")
+                continue
+            if not isinstance(entry, dict):
+                errors.append(f"constraints for {kind} identifiers[{kkind}]: Constraint entry must be an object")
+                continue
+
+            # Infer kind from map key when omitted.
+            inferred_kind = kkind.strip()
+            if "kind" in entry:
+                vv = entry.get("kind")
+                if not isinstance(vv, str) or not vv.strip():
+                    errors.append(f"constraints for {kind} identifiers[{kkind}]: Constraint entry missing required 'kind'")
+                    continue
+                if vv.strip().lower() != inferred_kind.lower():
+                    errors.append(f"constraints for {kind} identifiers[{kkind}]: Constraint entry kind does not match identifiers key")
+                    continue
+                normalized = dict(entry)
+            else:
+                normalized = dict(entry)
+                normalized["kind"] = inferred_kind
+
+            c, e = _parse_id_constraint(normalized)
             if e:
-                errors.append(f"constraints for {kind} defined-id[{i}]: {e}")
+                errors.append(f"constraints for {kind} identifiers[{kkind}]: {e}")
                 continue
             if c is not None:
                 kk = c.kind.strip().lower()
                 if kk in seen_defined:
-                    errors.append(f"constraints for {kind} defined-id has duplicate kind '{c.kind.strip()}'")
+                    errors.append(f"constraints for {kind} identifiers has duplicate kind '{c.kind.strip()}'")
                     continue
                 seen_defined.add(kk)
                 defined_id.append(c)

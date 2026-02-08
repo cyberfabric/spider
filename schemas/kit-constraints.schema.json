@@ -15,30 +15,38 @@
     "artifact_kind_constraints": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["defined-id"],
+      "required": ["identifiers"],
       "properties": {
         "name": { "type": "string" },
         "description": { "type": "string" },
-        "defined-id": {
-          "type": "array",
-          "items": { "$ref": "#/$defs/id_constraint" }
+        "identifiers": {
+          "type": "object",
+          "description": "Map of id kind to its constraint entry.",
+          "propertyNames": { "type": "string", "minLength": 1 },
+          "additionalProperties": { "$ref": "#/$defs/id_constraint_entry" }
         }
       }
     },
-    "id_constraint": {
+    "id_constraint_entry": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind"],
       "properties": {
         "kind": { "type": "string", "minLength": 1 },
+        "required": { "type": "boolean" },
         "name": { "type": "string" },
         "description": { "type": "string" },
         "examples": {
           "type": "array",
           "items": {}
         },
-        "task": { "type": "boolean" },
-        "priority": { "type": "boolean" },
+        "task": {
+          "type": "string",
+          "enum": ["required", "allowed", "prohibited"]
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["required", "allowed", "prohibited"]
+        },
         "to_code": { "type": "boolean" },
         "headings": {
           "type": "array",
@@ -61,8 +69,14 @@
           "type": "string",
           "enum": ["required", "optional", "prohibited"]
         },
-        "task": { "type": "boolean" },
-        "priority": { "type": "boolean" },
+        "task": {
+          "type": "string",
+          "enum": ["required", "allowed", "prohibited"]
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["required", "allowed", "prohibited"]
+        },
         "headings": {
           "type": "array",
           "items": { "type": "string" }

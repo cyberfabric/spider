@@ -10,6 +10,9 @@ ALWAYS open and follow `{cypilot_path}/requirements/template.md` FIRST
 - `checklist.md` — semantic quality criteria
 - `examples/example.md` — reference implementation
 - `{cypilot_path}/requirements/template.md` — Cypilot template marker syntax specification
+- `../../constraints.json` — kit-level constraints (primary rules for ID definitions/references)
+- `{cypilot_path}/requirements/kit-constraints.md` — constraints specification
+- `{cypilot_path}/schemas/kit-constraints.schema.json` — constraints JSON Schema
 
 ---
 
@@ -73,36 +76,22 @@ Agent confirms understanding of requirements:
 - [ ] When capability fully implemented (all specs IMPLEMENTED) → mark capability `[x]`
 - [ ] When all capabilities `[x]` → product version complete
 
-### Checkbox Management (`covered_by` Attribute)
+### Constraints (`constraints.json`) — Mandatory
 
-PRD defines IDs with `covered_by` attributes that track downstream implementation:
+- [ ] ALWAYS open and follow `../../constraints.json` (kit root)
+- [ ] Treat `constraints.json` as primary validator for:
+  - where IDs are defined
+  - where IDs are referenced
+  - which cross-artifact references are required / optional / prohibited
 
-| ID Type | `covered_by` | Meaning |
-|---------|--------------|---------|
-| `id:fr` | `DESIGN,DECOMPOSITION,SPEC` | FR is covered when referenced in DESIGN, DECOMPOSITION, or SPEC artifacts |
-| `id:nfr` | `DESIGN,DECOMPOSITION,SPEC` | NFR is covered when referenced in downstream artifacts |
-
-**Checkbox States**:
-
-1. **FR/NFR Checkbox** (`id:fr`, `id:nfr`):
-   - `[ ] p1 - cpt-{hierarchy-prefix}-fr-{slug}` — unchecked until requirement is fully implemented
-   - `[x] p1 - cpt-{hierarchy-prefix}-fr-{slug}` — checked when ALL downstream references are `[x]`
-
-**When to Check FR/NFR Checkboxes**:
-
-- [ ] A FR can be checked when:
-  - All `id-ref:fr` references in DESIGN are `[x]` (if design addresses it)
-  - All `id-ref:fr` references in DECOMPOSITION are `[x]` (if specs cover it)
-  - Implementation is verified and tested
-- [ ] An NFR can be checked when:
-  - Design addresses the non-functional concern
-  - All specs implement the constraint
-  - Acceptance criteria are met and verified
+**References**:
+- `{cypilot_path}/requirements/kit-constraints.md`
+- `{cypilot_path}/schemas/kit-constraints.schema.json`
 
 **Validation Checks** (automated via `python3 {cypilot_path}/skills/cypilot/scripts/cypilot.py validate`):
-- Will warn if `id:fr`/`id:nfr` has no references in `covered_by` artifacts
-- Will warn if reference is `[x]` but definition is not
-- Agent does NOT manually check `covered_by` — the CLI tool handles this automatically
+- Enforces `defined-id[].references` rules (required / optional / prohibited)
+- Enforces headings scoping for ID definitions/references when constraints specify `headings`
+- Enforces "checked ref implies checked def" consistency
 
 ---
 

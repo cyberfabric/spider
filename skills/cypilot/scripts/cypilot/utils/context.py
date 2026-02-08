@@ -128,8 +128,8 @@ class CypilotContext:
 
             kits[kit_id] = LoadedKit(kit=kit, templates=templates, constraints=kit_constraints)
 
-        # Get all system names
-        registered_systems = meta.get_all_system_names()
+        # Get all system prefixes (slug hierarchy prefixes used in cpt-<system>-... IDs)
+        registered_systems = meta.get_all_system_prefixes()
 
         ctx = cls(
             adapter_dir=adapter_dir,

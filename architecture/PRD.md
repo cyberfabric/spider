@@ -1281,7 +1281,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- cpt:numbered-list:flow-steps -->
 1. Developer opens Spec Design in VS Code
-2. Developer sees Cypilot ID `cpt-cypilot-seq-intent-to-workflow` highlighted with syntax coloring (uses capability `cpt-cypilot-fr-ide-integration`)
+2. Developer sees Cypilot ID cpt-cypilot-seq-intent-to-workflow highlighted with syntax coloring (uses capability `cpt-cypilot-fr-ide-integration`)
 3. Developer Cmd+Click (or Ctrl+Click) on flow ID to jump to definition in same file
 4. Developer right-clicks on flow ID and selects "Find where-used" from context menu
 5. IDE shows list of references in design docs and code files (uses capability `cpt-cypilot-fr-traceability`)
@@ -1400,7 +1400,7 @@ The system MUST support hierarchical organization of systems in the artifacts re
 
 <!-- cpt:numbered-list:flow-steps -->
 1. Architect opens the spec design and navigates to the actor flows
-2. Architect creates new flow: "Login Flow" with ID `cpt-cypilot-seq-intent-to-workflow` (uses capability `cpt-cypilot-fr-design-first`)
+2. Architect creates new flow: "Login Flow" with ID cpt-cypilot-seq-intent-to-workflow (uses capability `cpt-cypilot-fr-design-first`)
 3. Architect writes flow in Cypilot DSL (CDSL) using plain English with bold keywords (uses capability `cpt-cypilot-fr-cdsl`)
 4. Business Analyst reviews the Cypilot DSL (CDSL) flow and confirms it matches product requirements
 5. Business Analyst identifies missing case: "What if user forgot password?"

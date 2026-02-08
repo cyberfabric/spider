@@ -43,8 +43,8 @@
 <!-- cpt:###:actor-title repeat="many" -->
 ### {Actor Name 1}
 
-<!-- cpt:id:actor has="task" -->
-- [ ] **ID**: `cpt-{system}-actor-{slug}`
+<!-- cpt:id:actor -->
+**ID**: `cpt-{system}-actor-{slug}`
 
 <!-- cpt:paragraph:actor-role -->
 **Role**: {1-3 sentences describing responsibilities and goals}
@@ -55,8 +55,8 @@
 <!-- cpt:###:actor-title repeat="many" -->
 ### {Actor Name 2}
 
-<!-- cpt:id:actor has="task" -->
-- [ ] **ID**: `cpt-{system}-actor-{slug}`
+<!-- cpt:id:actor -->
+**ID**: `cpt-{system}-actor-{slug}`
 
 <!-- cpt:paragraph:actor-role -->
 **Role**: {1-3 sentences describing responsibilities and goals}
@@ -67,8 +67,8 @@
 <!-- cpt:###:actor-title repeat="many" -->
 ### {Actor Name 3}
 
-<!-- cpt:id:actor has="task" -->
-- [ ] **ID**: `cpt-{system}-actor-{slug}`
+<!-- cpt:id:actor -->
+**ID**: `cpt-{system}-actor-{slug}`
 
 <!-- cpt:paragraph:actor-role -->
 **Role**: {1-3 sentences describing responsibilities and goals}

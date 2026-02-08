@@ -529,7 +529,7 @@ No persistent database is used in v1. The following “tables” describe the co
 ### 3.6: Topology (optional)
 
 <!-- cpt:id:topology has="task" -->
-- [x] **ID**: `cpt-overwork-alert-topology-single-daemon`
+**ID**: `cpt-overwork-alert-topology-single-daemon`
 
 <!-- cpt:free:topology-body -->
 A single user-level daemon process runs per logged-in user session. The CLI runs as short-lived processes that communicate with the daemon over a local-only control channel. Autostart is provided by a user LaunchAgent.

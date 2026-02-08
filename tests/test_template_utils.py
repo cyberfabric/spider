@@ -179,13 +179,14 @@ Summary
 
     kc, kerrs = parse_kit_constraints({
         "PRD": {
-            "defined-id": [{
-                "kind": "item",
-                "references": {"DESIGN": {"coverage": "required"}},
-            }],
+            "identifiers": {
+                "item": {
+                    "references": {"DESIGN": {"coverage": "required"}},
+                }
+            },
         },
         "DESIGN": {
-            "defined-id": [],
+            "identifiers": {},
         },
     })
     assert kerrs == []
@@ -260,9 +261,8 @@ cypilot-template:
 
     constraints_json = {
         "PRD": {
-            "defined-id": [
-                {
-                    "kind": "item",
+            "identifiers": {
+                "item": {
                     "priority": True,
                     "task": True,
                     "to_code": True,
@@ -271,7 +271,7 @@ cypilot-template:
                         "SPEC": {"coverage": "required"},
                     },
                 }
-            ],
+            },
         }
     }
     kc, kerrs = parse_kit_constraints(constraints_json)
@@ -307,7 +307,7 @@ cypilot-template:
 
     constraints_json = {
         "PRD": {
-            "defined-id": [{"kind": "item", "priority": False, "to_code": True}],
+            "identifiers": {"item": {"priority": False, "to_code": True}},
         }
     }
     kc, kerrs = parse_kit_constraints(constraints_json)
@@ -384,7 +384,7 @@ cypilot-template:
     tmpl, errs = load_template(tmpl_path)
     assert errs == []
 
-    kc, kerrs = parse_kit_constraints({"PRD": {"defined-id": [{"kind": "item"}]}})
+    kc, kerrs = parse_kit_constraints({"PRD": {"identifiers": {"item": {}}}})
     assert kerrs == []
     cerrs = apply_kind_constraints(tmpl, kc.by_kind["PRD"])
     assert cerrs == []
@@ -417,7 +417,7 @@ cypilot-template:
     tmpl, errs = load_template(tmpl_path)
     assert errs == []
 
-    kc, kerrs = parse_kit_constraints({"PRD": {"defined-id": [{"kind": "item"}, {"kind": "actor"}]}})
+    kc, kerrs = parse_kit_constraints({"PRD": {"identifiers": {"item": {}, "actor": {}}}})
     assert kerrs == []
     cerrs = apply_kind_constraints(tmpl, kc.by_kind["PRD"])
     assert cerrs == []
@@ -453,7 +453,7 @@ cypilot-template:
     tmpl, errs = load_template(tmpl_path)
     assert errs == []
 
-    kc, kerrs = parse_kit_constraints({"PRD": {"defined-id": [{"kind": "item", "headings": ["Good"]}]}})
+    kc, kerrs = parse_kit_constraints({"PRD": {"identifiers": {"item": {"headings": ["Good"]}}}})
     assert kerrs == []
     cerrs = apply_kind_constraints(tmpl, kc.by_kind["PRD"])
     assert cerrs == []

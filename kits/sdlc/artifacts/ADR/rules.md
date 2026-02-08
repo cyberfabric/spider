@@ -34,6 +34,9 @@
 - `checklist.md` — semantic quality criteria
 - `examples/example.md` — reference implementation
 - `{cypilot_path}/requirements/template.md` — Cypilot template marker syntax specification
+- `../../constraints.json` — kit-level constraints (primary rules for ID definitions/references)
+- `{cypilot_path}/requirements/kit-constraints.md` — constraints specification
+- `{cypilot_path}/schemas/kit-constraints.schema.json` — constraints JSON Schema
 
 ---
 
@@ -121,41 +124,20 @@ Use when:
 
 Keep REJECTED ADRs for historical record — do not delete.
 
-### Checkbox Management (`covered_by` Attribute)
+### Constraints (`constraints.json`) — Mandatory
 
-ADR defines IDs with `covered_by` attributes that track downstream incorporation:
+- [ ] ALWAYS open and follow `../../constraints.json` (kit root)
+- [ ] Treat `constraints.json` as primary validator for:
+  - where IDs are defined
+  - where IDs are referenced
+  - which cross-artifact references are required / optional / prohibited
 
-| ID Type | `covered_by` | Meaning |
-|---------|--------------|---------|
-| `id:adr` | `DESIGN` | ADR is covered when referenced in DESIGN document |
-
-**Checkbox States**:
-
-1. **ADR Checkbox** (`id:adr`):
-   - `[ ] p1 - cpt-{hierarchy-prefix}-adr-{slug}` — unchecked until decision incorporated into design
-   - `[x] p1 - cpt-{hierarchy-prefix}-adr-{slug}` — checked when DESIGN references this ADR and components are implemented
-
-**When to Check ADR Checkboxes**:
-
-- [ ] An ADR can be checked when:
-  - ADR status is ACCEPTED
-  - `id-ref:adr` reference in DESIGN is `[x]`
-  - All components implementing this decision are verified
-
-**Status vs Checkbox**:
-
-| ADR Status | Checkbox State | Meaning |
-|------------|---------------|---------|
-| PROPOSED | `[ ]` | Decision under review, not yet incorporated |
-| ACCEPTED | `[ ]` | Decision approved, implementation started |
-| ACCEPTED | `[x]` | Decision implemented and verified in DESIGN |
-| DEPRECATED | `[x]` | Decision no longer applies (keep checked for history) |
-| SUPERSEDED | `[x]` | Decision replaced by new ADR (reference new ADR) |
+**References**:
+- `{cypilot_path}/requirements/kit-constraints.md`
+- `{cypilot_path}/schemas/kit-constraints.schema.json`
 
 **Validation Checks**:
-- `cypilot validate` will warn if `id:adr` has no references in DESIGN
-- `cypilot validate` will warn if ADR is ACCEPTED but no `id-ref:adr` exists in DESIGN
-- `cypilot validate` will warn if `id-ref:adr` is `[x]` but `id:adr` is not
+- `cypilot validate` enforces `defined-id[].references` rules for ADR coverage in DESIGN
 
 ---
 

@@ -21,6 +21,8 @@ _ID_DEF_RE = re.compile(
     r"^(?:"
     r"\*\*ID\*\*:\s*`(?P<id>cpt-[a-z0-9][a-z0-9-]+)`"
     r"|"
+    r"(?:`(?P<priority_only2>p\d+)`\s*-\s*)?\*\*ID\*\*:\s*`(?P<id4>cpt-[a-z0-9][a-z0-9-]+)`"
+    r"|"
     r"`(?P<priority_only>p\d+)`\s*-\s*\*\*ID\*\*:\s*`(?P<id2>cpt-[a-z0-9][a-z0-9-]+)`"
     r"|"
     r"[-*]\s+(?P<task>\[\s*[xX]?\s*\])\s*(?:`(?P<priority>p\d+)`\s*-\s*)?\*\*ID\*\*:\s*`(?P<id3>cpt-[a-z0-9][a-z0-9-]+)`"
@@ -83,9 +85,10 @@ def apply_kind_constraints(template: "Template", constraints: "ArtifactKindConst
             existing_tokens = _normalize_has(attrs.get("has", ""))
             desired_tokens = set(existing_tokens)
 
-            if c.priority is not None:
+            pr = str(c.priority).strip().lower() if c.priority is not None else None
+            if pr is not None and pr != "allowed":
                 marker_val = "priority" in existing_tokens
-                if marker_val and not bool(c.priority):
+                if marker_val and pr == "prohibited":
                     errors.append(Template.error(
                         "constraints",
                         "Constraint contradicts template marker",
@@ -96,16 +99,17 @@ def apply_kind_constraints(template: "Template", constraints: "ArtifactKindConst
                         section=section,
                         field="priority",
                         marker=marker_val,
-                        constraint=bool(c.priority),
+                        constraint=pr,
                     ))
-                if c.priority:
+                if pr == "required":
                     desired_tokens.add("priority")
-                else:
+                elif pr == "prohibited":
                     desired_tokens.discard("priority")
 
-            if c.task is not None:
+            tk = str(c.task).strip().lower() if c.task is not None else None
+            if tk is not None and tk != "allowed":
                 marker_val = "task" in existing_tokens
-                if marker_val and not bool(c.task):
+                if marker_val and tk == "prohibited":
                     errors.append(Template.error(
                         "constraints",
                         "Constraint contradicts template marker",
@@ -116,11 +120,11 @@ def apply_kind_constraints(template: "Template", constraints: "ArtifactKindConst
                         section=section,
                         field="task",
                         marker=marker_val,
-                        constraint=bool(c.task),
+                        constraint=tk,
                     ))
-                if c.task:
+                if tk == "required":
                     desired_tokens.add("task")
-                else:
+                elif tk == "prohibited":
                     desired_tokens.discard("task")
 
             _write_has(attrs, desired_tokens)
@@ -633,6 +637,8 @@ class IdDefinition:
     line: int
     checked: bool
     priority: Optional[str]
+    has_task: bool
+    has_priority: bool
     block: ArtifactBlock
     artifact_path: Path
     to_code: bool = False  # from template attr to_code="true"
@@ -644,6 +650,8 @@ class IdReference:
     line: int
     checked: bool
     priority: Optional[str]
+    has_task: bool
+    has_priority: bool
     block: ArtifactBlock
     artifact_path: Path
 
@@ -931,7 +939,7 @@ class Artifact:
             return
 
         allowed_defs = {c.kind.strip().lower() for c in constraints.defined_id}
-        allowed_refs = set(allowed_defs)
+        constraint_by_kind = {c.kind.strip().lower(): c for c in constraints.defined_id if isinstance(getattr(c, "kind", None), str)}
 
         defs_by_kind: Dict[str, List[IdDefinition]] = {}
         for d in self.id_definitions:
@@ -952,38 +960,86 @@ class Artifact:
                     allowed=sorted(allowed_defs),
                 ))
 
-        refs_by_kind: Dict[str, List[IdReference]] = {}
-        for r in self.id_references:
-            k = str(getattr(r.block.template_block, "name", "") or "").strip().lower()
-            if not k or k == "markerless":
-                continue
-            refs_by_kind.setdefault(k, []).append(r)
-            if k not in allowed_refs:
-                errors.append(Template.error(
-                    "constraints",
-                    "ID ref kind not allowed by constraints",
-                    path=self.path,
-                    line=r.line,
-                    artifact_kind=self.template.kind,
-                    id_kind=k,
-                    id=r.id,
-                    section="referenced-id",
-                    allowed=sorted(allowed_refs),
-                ))
+            c = constraint_by_kind.get(k)
+            if c is not None:
+                tk = str(getattr(c, "task", "allowed") or "allowed").strip().lower()
+                pr = str(getattr(c, "priority", "allowed") or "allowed").strip().lower()
 
-        # Required presence: every constrained kind must appear at least once.
+                if tk == "required" and not bool(d.has_task):
+                    errors.append(Template.error(
+                        "constraints",
+                        "ID definition missing required task checkbox",
+                        path=self.path,
+                        line=d.line,
+                        artifact_kind=self.template.kind,
+                        id_kind=k,
+                        id=d.id,
+                        section="defined-id",
+                    ))
+                if tk == "prohibited" and bool(d.has_task):
+                    errors.append(Template.error(
+                        "constraints",
+                        "ID definition has prohibited task checkbox",
+                        path=self.path,
+                        line=d.line,
+                        artifact_kind=self.template.kind,
+                        id_kind=k,
+                        id=d.id,
+                        section="defined-id",
+                    ))
+
+                if pr == "required" and not bool(d.has_priority):
+                    errors.append(Template.error(
+                        "constraints",
+                        "ID definition missing required priority",
+                        path=self.path,
+                        line=d.line,
+                        artifact_kind=self.template.kind,
+                        id_kind=k,
+                        id=d.id,
+                        section="defined-id",
+                    ))
+                if pr == "prohibited" and bool(d.has_priority):
+                    errors.append(Template.error(
+                        "constraints",
+                        "ID definition has prohibited priority",
+                        path=self.path,
+                        line=d.line,
+                        artifact_kind=self.template.kind,
+                        id_kind=k,
+                        id=d.id,
+                        section="defined-id",
+                    ))
+
+        # Note: We intentionally do NOT enforce an allowlist for reference kinds here.
+        #
+        # Rationale:
+        # - `constraints.json` no longer has a `referenced-id` section.
+        # - Backticked IDs can appear in many non id-ref blocks (headings, paragraphs, etc.),
+        #   so using template-block names as the reference "kind" causes false positives.
+        #
+        # Cross-artifact reference requirements/prohibitions are enforced by
+        # `cross_validate_artifacts` using `defined-id[].references`.
+
+        # Required-kind presence: every constrained kind must appear at least once,
+        # unless explicitly marked as required=false.
         for c in constraints.defined_id:
-            k = c.kind.strip().lower()
-            if k and k not in defs_by_kind:
-                errors.append(Template.error(
-                    "constraints",
-                    "Required ID kind missing in artifact",
-                    path=self.path,
-                    line=1,
-                    artifact_kind=self.template.kind,
-                    id_kind=k,
-                    section="defined-id",
-                ))
+            k = str(getattr(c, "kind", "") or "").strip().lower()
+            if not k:
+                continue
+            is_required = bool(getattr(c, "required", True))
+            if not is_required:
+                continue
+            if k in defs_by_kind and defs_by_kind[k]:
+                continue
+            errors.append(Template.error(
+                "constraints",
+                "Required ID kind missing in artifact",
+                path=self.path,
+                line=1,
+                artifact_kind=self.template.kind,
+                id_kind=k,
+            ))
 
         # Headings scoping.
         # Build active heading titles per line (1-indexed), outside code fences.
@@ -1015,13 +1071,17 @@ class Artifact:
             if not c.headings:
                 return
             k = c.kind.strip().lower()
-            allowed = {h.strip() for h in c.headings if isinstance(h, str) and h.strip()}
+            def _norm_heading(s: str) -> str:
+                return " ".join(str(s or "").strip().lower().replace(":", "").split())
+
+            allowed = {_norm_heading(h) for h in c.headings if isinstance(h, str) and h.strip()}
             if not allowed:
                 return
             defs = defs_by_kind.get(k, [])
             found_ok = False
             for d in defs:
-                active = headings_at[d.line] if 0 <= d.line < len(headings_at) else []
+                active_raw = headings_at[d.line] if 0 <= d.line < len(headings_at) else []
+                active = [_norm_heading(h) for h in active_raw]
                 ok = any(h in allowed for h in active)
                 if not ok:
                     errors.append(Template.error(
@@ -1034,7 +1094,7 @@ class Artifact:
                         id=d.id,
                         section="defined-id",
                         headings=sorted(allowed),
-                        found_headings=active,
+                        found_headings=active_raw,
                     ))
                 else:
                     found_ok = True
@@ -1097,6 +1157,8 @@ class Artifact:
                                     line=line,
                                     checked=checked,
                                     priority=prio,
+                                    has_task=bool(h.get("has_task", False)),
+                                    has_priority=bool(h.get("has_priority", False)),
                                     block=dummy_blk,
                                     artifact_path=self.path,
                                     to_code=False,
@@ -1109,6 +1171,8 @@ class Artifact:
                                     line=line,
                                     checked=checked,
                                     priority=prio,
+                                    has_task=bool(h.get("has_task", False)),
+                                    has_priority=bool(h.get("has_priority", False)),
                                     block=dummy_blk,
                                     artifact_path=self.path,
                                 )
@@ -1125,12 +1189,16 @@ class Artifact:
                     checked = (m.group("task") or "").lower().find("x") != -1
                     priority = m.group("priority") or m.group("priority_only")
                     id_value = m.group("id") or m.group("id2") or m.group("id3")
+                    has_task = m.group("task") is not None
+                    has_priority = priority is not None and str(priority).strip() != ""
                     self.id_definitions.append(
                         IdDefinition(
                             id=id_value,
                             line=blk.start_line + rel_idx,
                             checked=checked,
                             priority=priority,
+                            has_task=has_task,
+                            has_priority=has_priority,
                             block=blk,
                             artifact_path=self.path,
                             to_code=to_code,
@@ -1149,12 +1217,16 @@ class Artifact:
                         continue
                     checked = (m.group("task") or "").lower().find("x") != -1
                     priority = m.group("priority") or m.group("priority_only")
+                    has_task = m.group("task") is not None
+                    has_priority = priority is not None and str(priority).strip() != ""
                     self.id_references.append(
                         IdReference(
                             id=m.group("id"),
                             line=blk.start_line + rel_idx,
                             checked=checked,
                             priority=priority,
+                            has_task=has_task,
+                            has_priority=has_priority,
                             block=blk,
                             artifact_path=self.path,
                         )
@@ -1170,6 +1242,8 @@ class Artifact:
                                 line=blk.start_line + rel_idx,
                                 checked=False,
                                 priority=None,
+                                has_task=False,
+                                has_priority=False,
                                 block=blk,
                                 artifact_path=self.path,
                             )
@@ -1340,6 +1414,7 @@ def cross_validate_artifacts(
     constraints_by_artifact_kind: Dict[str, object] = {}
     missing_constraints_kinds: set[str] = set()
     all_constrained_id_kinds: set[str] = set()
+    spec_constrained_id_kinds: set[str] = set()
 
     # Normalize registered_systems to lowercase for matching
     systems_set: set[str] = set()
@@ -1374,7 +1449,22 @@ def cross_validate_artifacts(
         remainder = cpt[len(prefix):]
         if not remainder:
             return None
-        return remainder.split("-", 1)[0].lower()
+
+        parts = [p for p in remainder.split("-") if p]
+        if not parts:
+            return None
+
+        base = parts[0].strip().lower()
+
+        # Composite IDs are only supported for SPEC-scoped nested kinds:
+        # cpt-{system}-spec-{spec-slug}-{kind}-{slug}
+        if base == "spec" and spec_constrained_id_kinds:
+            for p in reversed(parts[1:]):
+                pp = p.strip().lower()
+                if pp in spec_constrained_id_kinds and pp != "spec":
+                    return pp
+
+        return base
 
     # Collect constraints and build global set of known ID kinds from constraints
     for art in artifacts:
@@ -1387,6 +1477,15 @@ def cross_validate_artifacts(
         for ic in getattr(c, "defined_id", []) or []:
             try:
                 all_constrained_id_kinds.add(str(getattr(ic, "kind", "")).strip().lower())
+            except Exception:
+                pass
+
+    # Capture SPEC-only constrained kinds for composite SPEC IDs.
+    spec_c = constraints_by_artifact_kind.get("SPEC") or constraints_by_artifact_kind.get("spec")
+    if spec_c is not None:
+        for ic in getattr(spec_c, "defined_id", []) or []:
+            try:
+                spec_constrained_id_kinds.add(str(getattr(ic, "kind", "")).strip().lower())
             except Exception:
                 pass
 
@@ -1424,6 +1523,8 @@ def cross_validate_artifacts(
                 "line": line,
                 "checked": checked,
                 "priority": h.get("priority"),
+                "has_task": bool(h.get("has_task", False)),
+                "has_priority": bool(h.get("has_priority", False)),
                 "artifact_kind": kind,
                 "artifact_path": art.path,
                 "system": system,
@@ -1542,12 +1643,17 @@ def cross_validate_artifacts(
                 ))
 
     # checked ref implies checked def
+    # Only enforce when both sides explicitly track task status.
     for rid, rows in refs_by_id.items():
         for r in rows:
             if not bool(r.get("checked", False)):
                 continue
+            if not bool(r.get("has_task", False)):
+                continue
             defs = defs_by_id.get(rid, [])
             for d in defs:
+                if not bool(d.get("has_task", False)):
+                    continue
                 if bool(d.get("checked", False)):
                     continue
                 errors.append(Template.error(
@@ -1585,7 +1691,12 @@ def cross_validate_artifacts(
 
         for ic in getattr(c, "defined_id", []) or []:
             k = str(getattr(ic, "kind", "")).strip().lower()
-            if k and k not in seen_kinds:
+
+            # Required presence: every constrained kind must appear at least once,
+            # unless explicitly marked as required=false.
+            is_required = bool(getattr(ic, "required", True))
+            defs_of_kind = [d for d in defs_in_file if str(d.get("id_kind") or "").lower() == k]
+            if is_required and k and not defs_of_kind:
                 errors.append(Template.error(
                     "constraints",
                     "Required ID kind missing in artifact",
@@ -1594,12 +1705,12 @@ def cross_validate_artifacts(
                     artifact_kind=ak,
                     id_kind=k,
                 ))
+                continue
 
             # heading scope for definitions
             allowed_headings = set([h.strip() for h in (getattr(ic, "headings", None) or []) if isinstance(h, str) and h.strip()])
             if not allowed_headings:
                 continue
-            defs_of_kind = [d for d in defs_in_file if str(d.get("id_kind") or "").lower() == k]
             if not defs_of_kind:
                 continue
             ok_any = False
@@ -1620,16 +1731,6 @@ def cross_validate_artifacts(
                         headings=sorted(allowed_headings),
                         found_headings=active,
                     ))
-            if not ok_any:
-                errors.append(Template.error(
-                    "constraints",
-                    "Required headings contain no ID definitions",
-                    path=art.path,
-                    line=1,
-                    artifact_kind=ak,
-                    id_kind=k,
-                    headings=sorted(allowed_headings),
-                ))
 
     # Constraints: reference coverage rules (required|optional|prohibited)
     for ak, c in constraints_by_artifact_kind.items():
@@ -1656,6 +1757,8 @@ def cross_validate_artifacts(
                     for target_kind, rule in refs_rules.items():
                         tk = str(target_kind).strip().upper()
                         cov = str(getattr(rule, "coverage", "optional")).strip().lower()
+                        task_rule = str(getattr(rule, "task", "allowed") or "allowed").strip().lower()
+                        prio_rule = str(getattr(rule, "priority", "allowed") or "allowed").strip().lower()
                         allowed_headings = set([h.strip() for h in (getattr(rule, "headings", None) or []) if isinstance(h, str) and h.strip()])
 
                         refs_in_kind = [r for r in system_refs_by_kind.get(tk, []) if str(r.get("id")) == did]
@@ -1696,6 +1799,65 @@ def cross_validate_artifacts(
                                 target_kind=tk,
                             ))
                             continue
+
+                        if refs_in_kind:
+                            if task_rule == "required":
+                                for rr in refs_in_kind:
+                                    if bool(rr.get("has_task", False)):
+                                        continue
+                                    errors.append(Template.error(
+                                        "constraints",
+                                        "ID reference missing required task checkbox",
+                                        path=rr.get("artifact_path"),
+                                        line=int(rr.get("line", 1) or 1),
+                                        id=did,
+                                        artifact_kind=ak,
+                                        target_kind=tk,
+                                    ))
+                                    break
+                            elif task_rule == "prohibited":
+                                for rr in refs_in_kind:
+                                    if not bool(rr.get("has_task", False)):
+                                        continue
+                                    errors.append(Template.error(
+                                        "constraints",
+                                        "ID reference has prohibited task checkbox",
+                                        path=rr.get("artifact_path"),
+                                        line=int(rr.get("line", 1) or 1),
+                                        id=did,
+                                        artifact_kind=ak,
+                                        target_kind=tk,
+                                    ))
+                                    break
+
+                            if prio_rule == "required":
+                                for rr in refs_in_kind:
+                                    if bool(rr.get("has_priority", False)):
+                                        continue
+                                    errors.append(Template.error(
+                                        "constraints",
+                                        "ID reference missing required priority",
+                                        path=rr.get("artifact_path"),
+                                        line=int(rr.get("line", 1) or 1),
+                                        id=did,
+                                        artifact_kind=ak,
+                                        target_kind=tk,
+                                    ))
+                                    break
+                            elif prio_rule == "prohibited":
+                                for rr in refs_in_kind:
+                                    if not bool(rr.get("has_priority", False)):
+                                        continue
+                                    errors.append(Template.error(
+                                        "constraints",
+                                        "ID reference has prohibited priority",
+                                        path=rr.get("artifact_path"),
+                                        line=int(rr.get("line", 1) or 1),
+                                        id=did,
+                                        artifact_kind=ak,
+                                        target_kind=tk,
+                                    ))
+                                    break
 
                         if allowed_headings and refs_in_kind:
                             ok_any = False

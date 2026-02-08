@@ -29,6 +29,9 @@
 - `checklist.md` — semantic quality criteria
 - `examples/example.md` — reference implementation
 - `{cypilot_path}/requirements/template.md` — Cypilot template marker syntax specification
+- `../../constraints.json` — kit-level constraints (primary rules for ID definitions/references)
+- `{cypilot_path}/requirements/kit-constraints.md` — constraints specification
+- `{cypilot_path}/schemas/kit-constraints.schema.json` — constraints JSON Schema
 
 ---
 
@@ -98,62 +101,22 @@ Agent confirms understanding of requirements:
 - [ ] When all components for ADR implemented → update ADR status (PROPOSED → ACCEPTED)
 - [ ] When all design elements for PRD capability implemented → mark capability `[x]` in PRD
 
-### Checkbox Management (`covered_by` Attribute)
+### Constraints (`constraints.json`) — Mandatory
 
-**Quick Reference**: Check DESIGN element when ALL specs referencing it are `[x]`.
+- [ ] ALWAYS open and follow `../../constraints.json` (kit root)
+- [ ] Treat `constraints.json` as primary validator for:
+  - where IDs are defined
+  - where IDs are referenced
+  - which cross-artifact references are required / optional / prohibited
 
-| Element | Check when... |
-|---------|---------------|
-| `id:principle` | All specs applying principle are `[x]` |
-| `id:constraint` | All specs satisfying constraint are `[x]` |
-| `id:component` | All specs using component are `[x]` |
-| `id:seq` | All specs implementing sequence are `[x]` |
-| `id:dbtable` | All specs using table are `[x]` |
-
-**Detailed Rules**:
-
-DESIGN defines IDs with `covered_by` attributes that track downstream implementation:
-
-| ID Type | `covered_by` | Meaning |
-|---------|--------------|---------|
-| `id:principle` | `DECOMPOSITION,SPEC` | Principle is covered when applied in spec designs |
-| `id:constraint` | `DECOMPOSITION,SPEC` | Constraint is covered when satisfied by specs |
-| `id:component` | `DECOMPOSITION,SPEC` | Component is covered when integrated in specs |
-| `id:seq` | `DECOMPOSITION,SPEC` | Sequence is covered when implemented in specs |
-| `id:dbtable` | `DECOMPOSITION,SPEC` | Table is covered when used in specs |
-
-**Checkbox States**:
-
-1. **Principle Checkbox** (`id:principle`):
-   - `[ ] p1 - cpt-{hierarchy-prefix}-principle-{slug}` — unchecked until principle is applied
-   - `[x] p1 - cpt-{hierarchy-prefix}-principle-{slug}` — checked when ALL specs applying this principle are `[x]`
-
-2. **Constraint Checkbox** (`id:constraint`):
-   - `[ ] p1 - cpt-{hierarchy-prefix}-constraint-{slug}` — unchecked until constraint is satisfied
-   - `[x] p1 - cpt-{hierarchy-prefix}-constraint-{slug}` — checked when ALL specs satisfying this constraint are `[x]`
-
-3. **Component Checkbox** (`id:component`):
-   - `[ ] p1 - cpt-{hierarchy-prefix}-comp-{slug}` — unchecked until component is implemented
-   - `[x] p1 - cpt-{hierarchy-prefix}-comp-{slug}` — checked when ALL specs using this component are `[x]`
-
-4. **Sequence Checkbox** (`id:seq`):
-   - `[ ] p1 - cpt-{hierarchy-prefix}-seq-{slug}` — unchecked until sequence is implemented
-   - `[x] p1 - cpt-{hierarchy-prefix}-seq-{slug}` — checked when ALL specs implementing this sequence are `[x]`
-
-5. **Database Table Checkbox** (`id:dbtable`):
-   - `[ ] p1 - cpt-{hierarchy-prefix}-dbtable-{slug}` — unchecked until table is created
-   - `[x] p1 - cpt-{hierarchy-prefix}-dbtable-{slug}` — checked when ALL specs using this table are `[x]`
-
-**When to Check DESIGN Checkboxes**:
-
-- [ ] A design element (principle, constraint, component, etc.) can be checked when:
-  - All `id-ref` references in DECOMPOSITION manifest are `[x]`
-  - All `id-ref` references in individual SPEC designs are `[x]`
-  - Implementation is verified and tested
+**References**:
+- `{cypilot_path}/requirements/kit-constraints.md`
+- `{cypilot_path}/schemas/kit-constraints.schema.json`
 
 **Validation Checks**:
-- `cypilot validate` will warn if `id:*` has no references in `covered_by` artifacts
-- `cypilot validate` will warn if reference is `[x]` but definition is not
+- `cypilot validate` enforces `defined-id[].references` rules (required / optional / prohibited)
+- `cypilot validate` enforces headings scoping for ID definitions/references when constraints specify `headings`
+- `cypilot validate` enforces "checked ref implies checked def" consistency
 
 ---
 

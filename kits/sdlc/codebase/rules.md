@@ -37,6 +37,9 @@
 **Dependencies**:
 - `checklist.md` — code quality criteria
 - `{adapter-dir}/AGENTS.md` — project conventions
+- `../constraints.json` — kit-level constraints (primary rules for ID definitions/references)
+- `{cypilot_path}/requirements/kit-constraints.md` — constraints specification
+- `{cypilot_path}/schemas/kit-constraints.schema.json` — constraints JSON Schema
 - **Source** (one of, in priority order):
   1. SPEC design — registered artifact with `to_code="true"` IDs
   2. Other Cypilot artifact — PRD, DESIGN, ADR, DECOMPOSITION
@@ -44,6 +47,11 @@
   4. Prompt only — direct user instructions
 
 **ALWAYS open and follow** `{cypilot_path}/requirements/traceability.md` WHEN Traceability Mode is FULL (marker syntax, validation rules, coverage requirements)
+
+**ALWAYS open and follow** `../constraints.json` (kit root) and treat it as the primary validator for:
+- Allowed ID kinds
+- Required cross-artifact references (`defined-id[].references`)
+- Heading scoping rules (when constraints specify `headings`)
 
 **ALWAYS read** the SPEC artifact being implemented (the source of `to_code="true"` IDs). The SPEC contains flows, algorithms, state machines, and requirements that define what code must do.
 

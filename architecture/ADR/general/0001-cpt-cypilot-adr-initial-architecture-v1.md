@@ -2,7 +2,7 @@
 # ADR-0001: Initial Cypilot Architecture
 
 <!-- cpt:id:adr has="priority,task" covered_by="DESIGN" -->
-- [x] `p1` - **ID**: `cpt-cypilot-adr-initial-architecture-v1`
+**ID**: `cpt-cypilot-adr-initial-architecture-v1`
 
 <!-- cpt:##:meta -->
 ## Meta

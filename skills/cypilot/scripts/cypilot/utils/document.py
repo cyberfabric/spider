@@ -17,6 +17,8 @@ _ID_DEF_RE = re.compile(
     r"^(?:"
     r"\*\*ID\*\*:\s*`(?P<id>cpt-[a-z0-9][a-z0-9-]+)`"
     r"|"
+    r"(?:`(?P<priority_only2>p\d+)`\s*-\s*)?\*\*ID\*\*:\s*`(?P<id4>cpt-[a-z0-9][a-z0-9-]+)`"
+    r"|"
     r"`(?P<priority_only>p\d+)`\s*-\s*\*\*ID\*\*:\s*`(?P<id2>cpt-[a-z0-9][a-z0-9-]+)`"
     r"|"
     r"[-*]\s+(?P<task>\[\s*[xX]?\s*\])\s*(?:`(?P<priority>p\d+)`\s*-\s*)?\*\*ID\*\*:\s*`(?P<id3>cpt-[a-z0-9][a-z0-9-]+)`"
@@ -94,9 +96,16 @@ def scan_cpt_ids_without_markers(path: Path) -> List[Dict[str, object]]:
         m = _ID_DEF_RE.match(stripped)
         if m:
             checked = (m.group("task") or "").lower().find("x") != -1
-            priority = m.group("priority") or m.group("priority_only")
-            id_value = m.group("id") or m.group("id2") or m.group("id3")
-            h: Dict[str, object] = {"id": id_value, "line": idx0 + 1, "type": "definition", "checked": checked}
+            priority = m.group("priority") or m.group("priority_only") or m.group("priority_only2")
+            id_value = m.group("id") or m.group("id2") or m.group("id3") or m.group("id4")
+            h: Dict[str, object] = {
+                "id": id_value,
+                "line": idx0 + 1,
+                "type": "definition",
+                "checked": checked,
+                "has_task": m.group("task") is not None,
+                "has_priority": priority is not None and str(priority).strip() != "",
+            }
             if priority:
                 h["priority"] = priority
             hits.append(h)
@@ -112,7 +121,14 @@ def scan_cpt_ids_without_markers(path: Path) -> List[Dict[str, object]]:
         if mref:
             checked = (mref.group("task") or "").lower().find("x") != -1
             priority = mref.group("priority") or mref.group("priority_only")
-            h = {"id": mref.group("id"), "line": idx0 + 1, "type": "reference", "checked": checked}
+            h = {
+                "id": mref.group("id"),
+                "line": idx0 + 1,
+                "type": "reference",
+                "checked": checked,
+                "has_task": mref.group("task") is not None,
+                "has_priority": priority is not None and str(priority).strip() != "",
+            }
             if priority:
                 h["priority"] = priority
             hits.append(h)
@@ -153,9 +169,16 @@ def scan_cpt_ids_markerless(path: Path) -> List[Dict[str, object]]:
         m = _ID_DEF_RE.match(stripped)
         if m:
             checked = (m.group("task") or "").lower().find("x") != -1
-            priority = m.group("priority") or m.group("priority_only")
-            id_value = m.group("id") or m.group("id2") or m.group("id3")
-            h: Dict[str, object] = {"id": id_value, "line": idx0 + 1, "type": "definition", "checked": checked}
+            priority = m.group("priority") or m.group("priority_only") or m.group("priority_only2")
+            id_value = m.group("id") or m.group("id2") or m.group("id3") or m.group("id4")
+            h: Dict[str, object] = {
+                "id": id_value,
+                "line": idx0 + 1,
+                "type": "definition",
+                "checked": checked,
+                "has_task": m.group("task") is not None,
+                "has_priority": priority is not None and str(priority).strip() != "",
+            }
             if priority:
                 h["priority"] = priority
             hits.append(h)
@@ -171,7 +194,14 @@ def scan_cpt_ids_markerless(path: Path) -> List[Dict[str, object]]:
         if mref:
             checked = (mref.group("task") or "").lower().find("x") != -1
             priority = mref.group("priority") or mref.group("priority_only")
-            h = {"id": mref.group("id"), "line": idx0 + 1, "type": "reference", "checked": checked}
+            h = {
+                "id": mref.group("id"),
+                "line": idx0 + 1,
+                "type": "reference",
+                "checked": checked,
+                "has_task": mref.group("task") is not None,
+                "has_priority": priority is not None and str(priority).strip() != "",
+            }
             if priority:
                 h["priority"] = priority
             hits.append(h)

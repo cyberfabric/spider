@@ -297,6 +297,33 @@ class ArtifactsMeta:
         """Get a set of all system names (normalized to lowercase)."""
         return {name.lower() for name in self.iter_all_system_names()}
 
+    def iter_all_system_prefixes(self) -> Iterator[str]:
+        """Iterate over all system prefixes used in Cypilot IDs.
+
+        Cypilot IDs are prefixed as: cpt-<system>-<kind>-<slug>
+
+        Where <system> is the system node's slug hierarchy prefix (see
+        SystemNode.get_hierarchy_prefix()). This differs from the human-facing
+        system 'name'.
+        """
+
+        def _iter_system(node: SystemNode) -> Iterator[str]:
+            try:
+                prefix = node.get_hierarchy_prefix()
+            except Exception:
+                prefix = ""
+            if prefix:
+                yield prefix
+            for child in node.children:
+                yield from _iter_system(child)
+
+        for system in self.systems:
+            yield from _iter_system(system)
+
+    def get_all_system_prefixes(self) -> set:
+        """Get a set of all system prefixes (normalized to lowercase)."""
+        return {p.lower() for p in self.iter_all_system_prefixes()}
+
     def iter_all_systems(self) -> Iterator[SystemNode]:
         """Iterate over all system nodes in the registry (including nested children)."""
         def _iter_system(node: SystemNode) -> Iterator[SystemNode]:

@@ -53,7 +53,7 @@ It measures “work time” as **active time**: when you are idle longer than a 
 ### User
 
 <!-- cpt:id:actor has="task" -->
-- [x] **ID**: `cpt-overwork-alert-actor-user`
+**ID**: `cpt-overwork-alert-actor-user`
 
 <!-- cpt:paragraph:actor-role -->
 **Role**: Wants to be notified when they have worked too long, adjust configuration, and control the tracker (status/pause/resume/reset).
@@ -65,7 +65,7 @@ It measures “work time” as **active time**: when you are idle longer than a 
 ### macOS System
 
 <!-- cpt:id:actor has="task" -->
-- [x] **ID**: `cpt-overwork-alert-actor-macos`
+**ID**: `cpt-overwork-alert-actor-macos`
 
 <!-- cpt:paragraph:actor-role -->
 **Role**: Provides the runtime environment, surfaces user notifications, and exposes signals needed to estimate user idleness.
@@ -77,7 +77,7 @@ It measures “work time” as **active time**: when you are idle longer than a 
 ### Login Background Runner
 
 <!-- cpt:id:actor has="task" -->
-- [x] **ID**: `cpt-overwork-alert-actor-login-runner`
+**ID**: `cpt-overwork-alert-actor-login-runner`
 
 <!-- cpt:paragraph:actor-role -->
 **Role**: Starts the tool automatically on login and keeps it running in the background for continuous tracking.

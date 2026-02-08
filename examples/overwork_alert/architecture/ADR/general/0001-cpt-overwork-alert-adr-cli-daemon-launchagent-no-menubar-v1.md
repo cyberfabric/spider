@@ -2,7 +2,7 @@
 # ADR-0001: Use CLI daemon + LaunchAgent (no menubar UI)
 
 <!-- cpt:id:adr has="priority,task" covered_by="DESIGN" -->
-- [x] `p1` - **ID**: `cpt-overwork-alert-adr-cli-daemon-launchagent-no-menubar`
+**ID**: `cpt-overwork-alert-adr-cli-daemon-launchagent-no-menubar`
 
 <!-- cpt:##:meta -->
 ## Meta

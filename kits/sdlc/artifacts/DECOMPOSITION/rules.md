@@ -10,6 +10,9 @@
 - `checklist.md` — decomposition quality criteria
 - `examples/example.md` — reference implementation
 - `{cypilot_path}/requirements/template.md` — Cypilot template marker syntax specification
+- `../../constraints.json` — kit-level constraints (primary rules for ID definitions/references)
+- `{cypilot_path}/requirements/kit-constraints.md` — constraints specification
+- `{cypilot_path}/schemas/kit-constraints.schema.json` — constraints JSON Schema
 
 ---
 
@@ -114,6 +117,18 @@ Agent confirms understanding of requirements:
 | DESIGN | `id:component` | `DECOMPOSITION,SPEC` | Component is covered when integrated in specs |
 | DESIGN | `id:seq` | `DECOMPOSITION,SPEC` | Sequence is covered when implemented in specs |
 | DESIGN | `id:dbtable` | `DECOMPOSITION,SPEC` | Table is covered when used in specs |
+
+### Constraints (`constraints.json`) — Mandatory
+
+- [ ] ALWAYS open and follow `../../constraints.json` (kit root)
+- [ ] Treat `constraints.json` as the primary validator for:
+  - where IDs are defined
+  - where IDs are referenced
+  - which cross-artifact references are required / optional / prohibited
+
+**References**:
+- `{cypilot_path}/requirements/kit-constraints.md`
+- `{cypilot_path}/schemas/kit-constraints.schema.json`
 
 ---
 
