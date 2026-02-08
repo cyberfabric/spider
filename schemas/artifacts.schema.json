@@ -66,6 +66,13 @@
     "kits": {
       "$ref": "#/$defs/kits"
     },
+    "ignore": {
+      "type": "array",
+      "description": "Global ignore rules (visibility filter) applied to all scanning/traversal operations.",
+      "items": {
+        "$ref": "#/$defs/ignore_block"
+      }
+    },
     "systems": {
       "type": "array",
       "description": "Root-level systems (top of the hierarchy tree)",
@@ -75,6 +82,137 @@
     }
   },
   "$defs": {
+    "ignore_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason", "patterns"],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "patterns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "autodetect_rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kit": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Kit ID to use for autodetected artifacts. If omitted, defaults to system_node.kit."
+        },
+        "system_root": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Base directory for system-scoped resolution (supports placeholders like {project_root}, {parent_root}, {system})."
+        },
+        "artifacts_root": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Base directory where artifact patterns are resolved (supports placeholders like {system_root}, {system})."
+        },
+        "aliases": {
+          "type": "object",
+          "description": "Mapping from directory token (system slug) to metadata overrides.",
+          "additionalProperties": {
+            "$ref": "#/$defs/alias_meta"
+          }
+        },
+        "artifacts": {
+          "type": "object",
+          "description": "Mapping KIND -> pattern/traceability/required.",
+          "additionalProperties": {
+            "$ref": "#/$defs/autodetect_artifact_pattern"
+          }
+        },
+        "codebase": {
+          "type": "array",
+          "description": "Autodetected codebase entries.",
+          "items": {
+            "$ref": "#/$defs/codebase_entry"
+          }
+        },
+        "validation": {
+          "$ref": "#/$defs/autodetect_validation"
+        },
+        "children": {
+          "type": "array",
+          "description": "Nested autodetect rules for child scopes.",
+          "items": {
+            "$ref": "#/$defs/autodetect_rule"
+          }
+        }
+      }
+    },
+    "alias_meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slug"],
+      "properties": {
+        "slug": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "autodetect_artifact_pattern": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pattern", "traceability"],
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Single file path or glob pattern (resolved relative to artifacts_root)."
+        },
+        "traceability": {
+          "type": "string",
+          "enum": ["FULL", "DOCS-ONLY"],
+          "default": "FULL"
+        },
+        "required": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, pattern must resolve to at least one file."
+        }
+      }
+    },
+    "autodetect_validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "require_kind_registered_in_kit": {
+          "type": "boolean",
+          "default": false
+        },
+        "require_md_extension": {
+          "type": "boolean",
+          "default": false
+        },
+        "fail_on_unmatched_markdown": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
     "kits": {
       "type": "object",
       "description": "Registry of kit packages. Each kit defines a template directory and format.",
@@ -137,6 +275,13 @@
           "description": "Source code directories belonging to this system node",
           "items": {
             "$ref": "#/$defs/codebase_entry"
+          }
+        },
+        "autodetect": {
+          "type": "array",
+          "description": "Autodetect rules (v1.1+). Each rule defines patterns to discover artifacts and codebase entries.",
+          "items": {
+            "$ref": "#/$defs/autodetect_rule"
           }
         },
         "children": {

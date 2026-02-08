@@ -1460,6 +1460,14 @@ def _cmd_validate(argv: List[str]) -> int:
                     files_to_scan.extend(code_path.rglob(f"*{ext}"))
 
             for file_path in files_to_scan:
+                # Apply registry root ignore rules as a hard visibility filter.
+                try:
+                    rel = file_path.resolve().relative_to(project_root).as_posix()
+                except Exception:
+                    rel = None
+                if rel and meta.is_ignored(rel):
+                    continue
+
                 cf, errs = CodeFile.from_path(file_path)
                 if errs or cf is None:
                     if strict_code_validation and errs:
@@ -1907,6 +1915,14 @@ def _cmd_list_ids(argv: List[str]) -> int:
                     files.extend(code_path.rglob(f"*{ext}"))
 
             for file_path in files:
+                # Apply registry root ignore rules as a hard visibility filter.
+                try:
+                    rel = file_path.resolve().relative_to(ctx.project_root).as_posix()
+                except Exception:
+                    rel = None
+                if rel and ctx.meta.is_ignored(rel):
+                    continue
+
                 cf, errs = CodeFile.from_path(file_path)
                 if errs or cf is None:
                     continue

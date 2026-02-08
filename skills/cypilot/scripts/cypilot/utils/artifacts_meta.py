@@ -4,11 +4,13 @@ Cypilot Validator - Artifacts Metadata Registry
 Parses and provides access to artifacts.json with the hierarchical system structure.
 """
 
+import fnmatch
+import glob
 import json
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Tuple
+from typing import Callable, Dict, Iterator, List, Optional, Tuple
 
 from ..constants import ARTIFACTS_REGISTRY_FILENAME
 
@@ -91,6 +93,95 @@ class CodebaseEntry:
 
 
 @dataclass
+class IgnoreBlock:
+    """Global ignore rule block."""
+
+    reason: str
+    patterns: List[str] = field(default_factory=list)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "IgnoreBlock":
+        reason = str((data or {}).get("reason", "") or "").strip()
+        raw_patterns = (data or {}).get("patterns", [])
+        patterns: List[str] = []
+        if isinstance(raw_patterns, list):
+            patterns = [str(p).strip() for p in raw_patterns if isinstance(p, str) and str(p).strip()]
+        return cls(reason=reason, patterns=patterns)
+
+
+@dataclass
+class AutodetectArtifactPattern:
+    pattern: str
+    traceability: str
+    required: bool = True
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "AutodetectArtifactPattern":
+        return cls(
+            pattern=str((data or {}).get("pattern", "") or "").strip(),
+            traceability=str((data or {}).get("traceability", "FULL") or "FULL").strip(),
+            required=bool((data or {}).get("required", True)),
+        )
+
+
+@dataclass
+class AutodetectRule:
+    """Autodetect rule (v1.1+)."""
+
+    kit: Optional[str] = None
+    system_root: Optional[str] = None
+    artifacts_root: Optional[str] = None
+    aliases: Dict[str, dict] = field(default_factory=dict)
+    artifacts: Dict[str, AutodetectArtifactPattern] = field(default_factory=dict)
+    codebase: List[CodebaseEntry] = field(default_factory=list)
+    validation: Dict[str, object] = field(default_factory=dict)
+    children: List["AutodetectRule"] = field(default_factory=list)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "AutodetectRule":
+        raw_artifacts = (data or {}).get("artifacts", {})
+        artifacts: Dict[str, AutodetectArtifactPattern] = {}
+        if isinstance(raw_artifacts, dict):
+            for kind, v in raw_artifacts.items():
+                if isinstance(kind, str) and isinstance(v, dict):
+                    artifacts[kind] = AutodetectArtifactPattern.from_dict(v)
+
+        raw_codebase = (data or {}).get("codebase", [])
+        codebase: List[CodebaseEntry] = []
+        if isinstance(raw_codebase, list):
+            for c in raw_codebase:
+                if isinstance(c, dict):
+                    codebase.append(CodebaseEntry.from_dict(c))
+
+        raw_children = (data or {}).get("children", [])
+        children: List[AutodetectRule] = []
+        if isinstance(raw_children, list):
+            for r in raw_children:
+                if isinstance(r, dict):
+                    children.append(cls.from_dict(r))
+
+        aliases = (data or {}).get("aliases", {})
+        if not isinstance(aliases, dict):
+            aliases = {}
+
+        validation = (data or {}).get("validation", {})
+        if not isinstance(validation, dict):
+            validation = {}
+
+        kit = (data or {}).get("kit", None)
+        return cls(
+            kit=str(kit).strip() if isinstance(kit, str) and str(kit).strip() else None,
+            system_root=str((data or {}).get("system_root", "") or "").strip() or None,
+            artifacts_root=str((data or {}).get("artifacts_root", "") or "").strip() or None,
+            aliases={str(k): v for k, v in aliases.items() if isinstance(k, str) and isinstance(v, dict)},
+            artifacts=artifacts,
+            codebase=codebase,
+            validation=validation,
+            children=children,
+        )
+
+
+@dataclass
 class SystemNode:
     """A node in the system hierarchy (system, subsystem, component, module, etc.)."""
 
@@ -100,6 +191,7 @@ class SystemNode:
     artifacts: List[Artifact] = field(default_factory=list)
     codebase: List[CodebaseEntry] = field(default_factory=list)
     children: List["SystemNode"] = field(default_factory=list)
+    autodetect: List[AutodetectRule] = field(default_factory=list)
     parent: Optional["SystemNode"] = field(default=None, repr=False)
 
     def get_hierarchy_prefix(self) -> str:
@@ -161,6 +253,12 @@ class SystemNode:
                 if isinstance(child_data, dict):
                     node.children.append(cls.from_dict(child_data, parent=node))
 
+        raw_autodetect = data.get("autodetect", [])
+        if isinstance(raw_autodetect, list):
+            for r in raw_autodetect:
+                if isinstance(r, dict):
+                    node.autodetect.append(AutodetectRule.from_dict(r))
+
         return node
 
 
@@ -181,15 +279,37 @@ class ArtifactsMeta:
         project_root: str,
         kits: Dict[str, Kit],
         systems: List[SystemNode],
+        ignore: Optional[List[IgnoreBlock]] = None,
     ):
         self.version = version
         self.project_root = project_root
         self.kits = kits
         self.systems = systems
 
+        self.ignore = ignore or []
+        self._ignore_patterns: List[str] = []
+        for blk in self.ignore:
+            for p in (blk.patterns or []):
+                sp = str(p).strip()
+                if sp:
+                    self._ignore_patterns.append(sp)
+
         # Build indices for fast lookups
         self._artifacts_by_path: Dict[str, Tuple[Artifact, SystemNode]] = {}
         self._build_indices()
+
+    def is_ignored(self, rel_path: str) -> bool:
+        """Return True if rel_path matches any registry root ignore pattern."""
+        rp = self._normalize_path(rel_path)
+        for pat in self._ignore_patterns:
+            if fnmatch.fnmatch(rp, pat):
+                return True
+            # Treat "dir/*" as also ignoring "dir" itself (common expectation for directory ignores).
+            if pat.endswith("/*"):
+                base = pat[:-2]
+                if rp == base:
+                    return True
+        return False
 
     def _build_indices(self) -> None:
         """Build lookup indices from the system tree."""
@@ -200,6 +320,8 @@ class ArtifactsMeta:
         """Index a system node and its descendants."""
         # Index artifacts
         for artifact in node.artifacts:
+            if self.is_ignored(artifact.path):
+                continue
             normalized_path = self._normalize_path(artifact.path)
             self._artifacts_by_path[normalized_path] = (artifact, node)
 
@@ -221,6 +343,13 @@ class ArtifactsMeta:
         version = str(data.get("version", "1.0"))
         project_root = str(data.get("project_root", ".."))
 
+        ignore: List[IgnoreBlock] = []
+        raw_ignore = data.get("ignore", [])
+        if isinstance(raw_ignore, list):
+            for blk in raw_ignore:
+                if isinstance(blk, dict):
+                    ignore.append(IgnoreBlock.from_dict(blk))
+
         kits: Dict[str, Kit] = {}
         raw_kits = data.get("kits", {})
         if isinstance(raw_kits, dict):
@@ -240,7 +369,210 @@ class ArtifactsMeta:
             project_root=project_root,
             kits=kits,
             systems=systems,
+            ignore=ignore,
         )
+
+    def rebuild_indices(self) -> None:
+        self._artifacts_by_path = {}
+        self._build_indices()
+
+    def expand_autodetect(
+        self,
+        *,
+        adapter_dir: Path,
+        project_root: Path,
+        is_kind_registered: Optional[Callable[[str, str], bool]] = None,
+    ) -> List[str]:
+        """Expand autodetect rules into concrete artifact/codebase entries.
+
+        Returns a list of validation error messages (best-effort).
+        """
+
+        errors: List[str] = []
+
+        # Normalize roots to avoid path-prefix mismatches on macOS (e.g. /var vs /private/var)
+        adapter_dir = adapter_dir.resolve()
+        project_root = project_root.resolve()
+
+        def _substitute(s: str, *, system: str, system_root: str, parent_root: str) -> str:
+            out = str(s)
+            out = out.replace("{system}", system)
+            # {project_root} is the project root directory, not the registry's relative project_root string.
+            # It intentionally expands to '.' so templates like '{project_root}/subsystems' resolve under
+            # the provided `project_root` path.
+            out = out.replace("{project_root}", ".")
+            out = out.replace("{system_root}", system_root)
+            out = out.replace("{parent_root}", parent_root)
+            return out
+
+        def _resolve_path(expanded: str) -> Path:
+            e = str(expanded).strip()
+            pr = str(self.project_root).strip()
+            if pr and (e == pr or e.startswith(pr.rstrip("/") + "/")):
+                return (adapter_dir / e).resolve()
+            return (project_root / e).resolve()
+
+        def _rel_to_project_root(p: Path) -> Optional[str]:
+            try:
+                return p.relative_to(project_root).as_posix()
+            except Exception:
+                return None
+
+        def _glob_files(root_abs: Path, pat: str) -> List[Path]:
+            if not pat:
+                return []
+            g = str((root_abs / pat).as_posix())
+            hits = [Path(x) for x in glob.glob(g, recursive=True)]
+            out: List[Path] = []
+            for h in hits:
+                if not h.is_file():
+                    continue
+                rel = _rel_to_project_root(h.resolve())
+                if not rel:
+                    continue
+                if self.is_ignored(rel):
+                    continue
+                out.append(h.resolve())
+            return out
+
+        def _iter_markdown_files(root_abs: Path) -> List[Path]:
+            if not root_abs.is_dir():
+                return []
+            g = str((root_abs / "**" / "*.md").as_posix())
+            hits = [Path(x) for x in glob.glob(g, recursive=True)]
+            out: List[Path] = []
+            for h in hits:
+                if not h.is_file():
+                    continue
+                rel = _rel_to_project_root(h.resolve())
+                if not rel:
+                    continue
+                if self.is_ignored(rel):
+                    continue
+                out.append(h.resolve())
+            return out
+
+        def _apply_rule(node: SystemNode, rule: AutodetectRule, *, parent_root_str: str) -> Tuple[List[Artifact], List[CodebaseEntry], str, List[AutodetectRule]]:
+            kit_id = rule.kit or node.kit
+
+            # Resolve system_root
+            system_root_template = rule.system_root or "{project_root}"
+            system_root_str = _substitute(system_root_template, system=node.slug, system_root="", parent_root=parent_root_str)
+            system_root_abs = _resolve_path(system_root_str)
+            system_root_rel = _rel_to_project_root(system_root_abs)
+            if system_root_rel is None:
+                # If outside project_root, treat as out-of-scope
+                system_root_rel = ""
+
+            # Resolve artifacts_root
+            artifacts_root_template = rule.artifacts_root or "{system_root}"
+            artifacts_root_str = _substitute(artifacts_root_template, system=node.slug, system_root=system_root_str, parent_root=parent_root_str)
+            artifacts_root_abs = _resolve_path(artifacts_root_str)
+
+            discovered_artifacts: List[Artifact] = []
+            used_patterns: List[str] = []
+            for kind, ap in (rule.artifacts or {}).items():
+                kind_s = str(kind).strip()
+                if not kind_s:
+                    continue
+                if ap.pattern:
+                    used_patterns.append(str(ap.pattern))
+                if is_kind_registered is not None and bool(rule.validation.get("require_kind_registered_in_kit", False)):
+                    if not is_kind_registered(str(kit_id), kind_s):
+                        errors.append(f"Autodetect kind not registered in kit: kit={kit_id} kind={kind_s} system={node.slug}")
+                        continue
+
+                hits = _glob_files(artifacts_root_abs, ap.pattern)
+                if ap.required and not hits:
+                    errors.append(f"Required autodetect artifact missing: system={node.slug} kind={kind_s} pattern={ap.pattern}")
+                for h in hits:
+                    rel = _rel_to_project_root(h)
+                    if not rel:
+                        continue
+                    if bool(rule.validation.get("require_md_extension", False)) and not rel.lower().endswith(".md"):
+                        errors.append(f"Autodetect artifact must be .md: {rel}")
+                        continue
+                    discovered_artifacts.append(Artifact(path=rel, kind=kind_s, traceability=str(ap.traceability or "FULL")))
+
+            if bool(rule.validation.get("fail_on_unmatched_markdown", False)):
+                md_files = _iter_markdown_files(artifacts_root_abs)
+                for mf in md_files:
+                    try:
+                        rel_to_root = mf.relative_to(artifacts_root_abs).as_posix()
+                    except Exception:
+                        continue
+                    matched = False
+                    for pat in used_patterns:
+                        if pat and fnmatch.fnmatch(rel_to_root, pat):
+                            matched = True
+                            break
+                    if not matched:
+                        rel = _rel_to_project_root(mf)
+                        if rel:
+                            errors.append(f"Unmatched markdown under artifacts_root: system={node.slug} path={rel}")
+
+            discovered_codebase: List[CodebaseEntry] = []
+            for cb in (rule.codebase or []):
+                cb_path_t = cb.path
+                cb_path_expanded = _substitute(cb_path_t, system=node.slug, system_root=system_root_str, parent_root=parent_root_str)
+                cb_abs = _resolve_path(cb_path_expanded)
+                cb_rel = _rel_to_project_root(cb_abs)
+                if not cb_rel:
+                    continue
+                if self.is_ignored(cb_rel):
+                    continue
+                discovered_codebase.append(CodebaseEntry(path=cb_rel, extensions=list(cb.extensions or []), name=cb.name))
+
+            return discovered_artifacts, discovered_codebase, system_root_str, list(rule.children or [])
+
+        def _expand_node(node: SystemNode, inherited_rules: List[Tuple[AutodetectRule, str]]) -> List[Tuple[AutodetectRule, str]]:
+            effective: List[Tuple[AutodetectRule, str]] = list(inherited_rules)
+            default_parent_root = inherited_rules[0][1] if inherited_rules else str(self.project_root)
+            for r in (node.autodetect or []):
+                # Node-level rules use the current node's parent_root (derived from inheritance if any).
+                effective.append((r, default_parent_root))
+
+            # Apply rules in order
+            existing_artifacts_by_path: Dict[str, Artifact] = {self._normalize_path(a.path): a for a in node.artifacts}
+            existing_codebase_by_path: Dict[str, CodebaseEntry] = {self._normalize_path(c.path): c for c in node.codebase}
+
+            next_inherited: List[Tuple[AutodetectRule, str]] = []
+
+            for rule, parent_root_str in effective:
+                disc_artifacts, disc_codebase, system_root_str, child_rules = _apply_rule(node, rule, parent_root_str=parent_root_str)
+                for da in disc_artifacts:
+                    np = self._normalize_path(da.path)
+                    if np in existing_artifacts_by_path:
+                        # explicit wins; if kind differs, keep explicit and record error
+                        if str(existing_artifacts_by_path[np].kind) != str(da.kind):
+                            errors.append(f"Autodetect conflict on path with different kind: path={da.path} explicit={existing_artifacts_by_path[np].kind} detected={da.kind}")
+                        continue
+                    existing_artifacts_by_path[np] = da
+                    node.artifacts.append(da)
+
+                for dc in disc_codebase:
+                    np = self._normalize_path(dc.path)
+                    if np in existing_codebase_by_path:
+                        continue
+                    existing_codebase_by_path[np] = dc
+                    node.codebase.append(dc)
+
+                # Inherit child rules for next nesting level
+                for cr in child_rules:
+                    next_inherited.append((cr, system_root_str))
+
+            for child in node.children:
+                child_inherited = _expand_node(child, next_inherited)
+                # Child's own next_inherited is not propagated to siblings
+                _ = child_inherited
+
+            return next_inherited
+
+        for sys_node in self.systems:
+            _expand_node(sys_node, [])
+
+        self.rebuild_indices()
+        return errors
 
     @classmethod
     def from_json(cls, json_str: str) -> "ArtifactsMeta":
@@ -275,6 +607,8 @@ class ArtifactsMeta:
         """Iterate over all codebase entries with their owning systems."""
         def _iter_system(system: SystemNode) -> Iterator[Tuple["CodebaseEntry", SystemNode]]:
             for cb in system.codebase:
+                if self.is_ignored(cb.path):
+                    continue
                 yield cb, system
             for child in system.children:
                 yield from _iter_system(child)
@@ -468,6 +802,9 @@ __all__ = [
     "ArtifactsMeta",
     "SystemNode",
     "Artifact",
+    "IgnoreBlock",
+    "AutodetectRule",
+    "AutodetectArtifactPattern",
     "CodebaseEntry",
     "Kit",
     "SLUG_PATTERN",

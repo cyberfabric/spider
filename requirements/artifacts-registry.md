@@ -20,6 +20,7 @@ purpose: Define structure and usage of artifacts.json for agent operations
 - [Systems](#systems)
 - [Artifacts](#artifacts)
 - [Codebase](#codebase)
+- [Autodetect (Proposed)](#autodetect-proposed)
 - [Path Resolution](#path-resolution)
 - [CLI Commands](#cli-commands)
 - [Agent Operations](#agent-operations)
@@ -68,7 +69,14 @@ Where `{cypilot_path}` is resolved from the adapter's `**Extends**:` declaration
 
 Current version: `1.0`
 
+Proposed version: `1.1` (adds `autodetect`)
+
 Schema file: `../schemas/artifacts.schema.json`
+
+Notes:
+
+- Registry files with `version: "1.0"` MUST continue to work.
+- If `autodetect` is used, the registry version SHOULD be set to `"1.1"` and the JSON Schema MUST be updated accordingly.
 
 ---
 
@@ -79,6 +87,7 @@ Schema file: `../schemas/artifacts.schema.json`
   "version": "1.0",
   "project_root": "..",
   "kits": { ... },
+  "ignore": [ ... ],
   "systems": [ ... ]
 }
 ```
@@ -90,7 +99,23 @@ Schema file: `../schemas/artifacts.schema.json`
 | `version` | string | YES | Schema version (currently "1.0") |
 | `project_root` | string | NO | Relative path from artifacts.json to project root. Default: `".."` |
 | `kits` | object | YES | Kit package registry |
+| `ignore` | array | NO | Global ignore rules (visibility filter) applied to all CLI operations and autodetect scanning. |
 | `systems` | array | YES | Root-level system nodes |
+
+### Root Ignore (Visibility Filter)
+
+If `ignore` is present at the registry root, it defines paths that are **globally invisible** to:
+
+- Autodetect directory scanning
+- Codebase traceability scanning
+- CLI commands that traverse artifacts/codebase (`validate`, `list-ids`, `where-defined`, `where-used`)
+
+Ignore items are blocks with:
+
+- `reason` (string)
+- `patterns` (array of glob strings, resolved relative to `project_root`)
+
+This is a hard filter: the tool behaves as if ignored paths do not exist.
 
 ---
 
@@ -170,6 +195,7 @@ Template file path is resolved as: `{kit.path}/artifacts/{KIND}/template.md`
 | `artifacts_dir` | string | NO | Default base directory for NEW artifacts (default: `architecture`). Subdirectories defined by kit. |
 | `artifacts` | array | NO | Artifacts belonging to this node. Paths are FULL paths relative to `project_root`. |
 | `codebase` | array | NO | Source code directories for this node |
+| `autodetect` | array | NO | Autodetect configs for this system node. Proposed for `version >= 1.1`. |
 | `children` | array | NO | Nested child systems (subsystems, components) |
 
 ### Slug Convention
@@ -338,6 +364,8 @@ specs    # no extension = likely directory
 | `singleLineComments` | array | NO | Single-line comment prefixes (e.g., `["#", "//"]`). Defaults based on file extension. |
 | `multiLineComments` | array | NO | Multi-line comment delimiters. Each item has `start` and `end` properties. Defaults based on file extension. |
 
+---
+
 ### Extension Format
 
 Extensions MUST start with a dot and contain only alphanumeric characters.
@@ -373,6 +401,173 @@ Comment syntax can be explicitly configured per codebase entry, or left to defau
 - Mixed-language files
 - Custom comment syntax
 - Overriding defaults for specific directories
+
+---
+
+## Autodetect (Proposed)
+
+This section defines a proposed extension for `artifacts.json` that allows **pattern-based auto-discovery** of:
+
+- Artifacts (docs)
+- Codebase entries
+- Child systems (optional)
+
+The goal is to reduce manual registry maintenance in repos where documentation and code follow a predictable structure.
+
+### Principles
+
+- `autodetect` MUST be optional.
+- When `autodetect` is present, explicit `artifacts`/`codebase` entries are still allowed and remain authoritative.
+- Autodetected results MUST be deterministic and reproducible.
+
+### Location
+
+`autodetect` MAY exist only inside `systems[]` nodes (and their `children[]` nodes).
+
+Discovery/merge order:
+
+1. Scan directories and build a detected set (artifacts/codebase/children).
+2. Apply static config (`artifacts`, `codebase`, `children`) from `artifacts.json` and override detected entries by `path`.
+
+Multiple autodetect rules:
+
+- `system_node.autodetect` is a list of autodetect rules applied in-order.
+- A node's effective autodetect rules are the concatenation of inherited parent rules and the node's own rules.
+
+### Placeholders
+
+Autodetect patterns support placeholder expansion.
+
+- `{system}`: current system node `slug`
+
+Path template placeholders:
+
+- `{project_root}`: resolved registry `project_root` value
+- `{system_root}`: resolved `autodetect.system_root`
+- `{parent_root}`: resolved parent scope `system_root`
+
+Notes:
+
+- Placeholders are expanded BEFORE glob evaluation.
+- Globs are evaluated relative to `project_root`.
+
+### Autodetect Object
+
+```json
+{
+  "kit": "cypilot-sdlc",
+  "system_root": "{project_root}/subsystems/{system}",
+  "artifacts_root": "{system_root}/docs",
+  "aliases": {
+    "core": {"slug": "platform", "name": "Platform", "description": "Core platform module"}
+  },
+  "artifacts": {
+    "PRD": {"pattern": "PRD.md", "traceability": "FULL", "required": true},
+    "DESIGN": {"pattern": "DESIGN.md", "traceability": "FULL"},
+    "ADR": {"pattern": "ADR/*.md", "traceability": "DOCS-ONLY", "required": false},
+    "FEATURE": {"pattern": "features/*.md", "traceability": "DOCS-ONLY", "required": false},
+    "DECOMPOSITION": {"pattern": "DECOMPOSITION.md", "traceability": "FULL"}
+  },
+  "codebase": [
+    {"path": "tests/{system}", "extensions": [".rs", ".py"]},
+    {"path": "{system_root}/src", "extensions": [".rs", ".py"]}
+  ],
+  "validation": {
+    "require_kind_registered_in_kit": true,
+    "require_md_extension": true,
+    "fail_on_unmatched_markdown": true
+  },
+  "children": [
+    {
+      "kit": "cypilot-sdlc",
+      "system_root": "{parent_root}/modules/{system}",
+      "artifacts_root": "{system_root}/specs",
+      "aliases": {
+        "core": {"slug": "platform", "name": "Platform", "description": "Core platform module"}
+      },
+      "artifacts": {
+        "PRD": {"pattern": "PRD.md", "traceability": "FULL"},
+        "DESIGN": {"pattern": "DESIGN.md", "traceability": "FULL"}
+      },
+      "codebase": [
+        {"path": "{system_root}/src", "extensions": [".rs", ".py"]}
+      ]
+    }
+  ]
+}
+```
+
+Field semantics:
+
+- `kit` (string): kit ID to use for autodetected artifacts. If omitted, defaults to `system_node.kit`.
+- `system_root` (string): base directory for system-scoped resolution. It MAY use placeholders (e.g. `{project_root}`, `{parent_root}`, `{system}`).
+- `artifacts_root` (string): base directory where artifact include patterns are resolved. If omitted, include patterns are treated as project-root-relative.
+- `aliases` (object): mapping from discovered directory token (`{system}` value) to system metadata overrides.
+- `artifacts` (object): map `KIND -> { pattern: string, traceability, required }`.
+- `codebase` (array): list of codebase entries (same shape as system `codebase` entries).
+- `validation` (object): strictness rules.
+- `children` (array): nested autodetect rules applied recursively. Each item has the exact same structure as an autodetect rule.
+
+Recursive rule:
+
+- `autodetect` is applied at the current system node scope.
+- If any autodetect rule has `children`, the concatenated `children` rules become the inherited autodetect rules for the next nesting level.
+
+### Artifact Mapping Rules
+
+- Each `pattern` MUST be a single string (file path or glob) that resolves to zero or more files.
+- Each matched file becomes an artifact entry with:
+  - `path`: resolved relative to `project_root`
+  - `kind`: the map key (e.g., `"PRD"`)
+  - `traceability`: from the mapping entry (default: `FULL`)
+
+`required` behavior:
+
+- Each artifact mapping MAY include `required: true|false`.
+- Default: `required: true`.
+- If `required: true` and `pattern` resolves to zero files (after global ignore), validation MUST fail.
+
+### Validation Rules
+
+The `validation` object defines how strict autodetect is.
+
+- `require_kind_registered_in_kit` (bool): if true, any autodetected `kind` MUST be registered by the system's selected kit.
+- `require_md_extension` (bool): if true, autodetected artifact paths MUST end with `.md`.
+- `fail_on_unmatched_markdown` (bool): if true, then any `.md` file under `artifacts_root` (after global ignore) that does not match ANY `pattern` MUST fail.
+
+`artifacts_root` placeholder rule:
+
+- If `artifacts_root` is present:
+  - It MAY contain `{system}` and/or `{system_root}`.
+  - If neither `artifacts_root` nor `system_root` contains `{system}`, the rule still applies to the current system node (where `{system}` is the node's `slug`) and the resulting paths are treated as system-scoped.
+
+`system_root` placeholder rule:
+
+- If `system_root` is present, it MAY omit `{system}`.
+- If `{system}` is omitted in `system_root`, it is interpreted as the root directory for the current system node only (the `{system}` value is still taken from `system_node.slug` for any other templated fields like `tests/{system}`).
+
+Kind registration rule:
+
+- A `kind` is considered registered in the kit if its template is resolvable at:
+  - `{kit.path}/artifacts/{KIND}/template.md`
+
+If the kit format does not use templates, it MUST still define an authoritative set of known kinds and the registry validator MUST validate autodetected kinds against it.
+
+### Ignore Rules
+
+- Ignore patterns are defined at the registry root in `ignore`.
+- Ignore patterns are a global visibility filter applied to ALL artifact/code scanning/traversal.
+- Ignore evaluation occurs before validation.
+
+### Merge & Precedence
+
+When both explicit and autodetected entries exist:
+
+- Explicit `artifacts`/`codebase` entries always win.
+- Autodetected entries are appended.
+- If two entries resolve to the same `path`:
+  - If `kind` differs, validation MUST fail.
+  - If `kind` matches, the explicit entry wins and the autodetected duplicate is ignored.
 
 ---
 
@@ -542,7 +737,11 @@ else:
 → Kind "PRD" registered but template missing
 → Fix: Create template OR use different kit package
 ```
-**Action**: FAIL validation for that artifact, continue with others.
+**Action**:
+
+- Use a synthetic template and continue markerless validation.
+- If `constraints.json` defines constraints for this kind, attach them to the synthetic template.
+- WARN and continue validation.
 
 ---
 
@@ -550,7 +749,7 @@ else:
 
 ```json
 {
-  "version": "1.0",
+  "version": "1.1",
   "project_root": "..",
   "kits": {
     "cypilot-sdlc": {
@@ -558,12 +757,55 @@ else:
       "path": "kits/sdlc"
     }
   },
+  "ignore": [
+    {"reason": "Text", "patterns": ["modules/my_module/*"]}
+  ],
   "systems": [
     {
       "name": "MyApp",
       "slug": "myapp",
       "kit": "cypilot-sdlc",
       "artifacts_dir": "architecture",
+      "autodetect": [
+        {
+          "kit": "cypilot-sdlc",
+          "system_root": "{project_root}/subsystems/{system}",
+          "artifacts_root": "{system_root}/docs",
+          "aliases": {
+            "core": {"slug": "platform", "name": "Platform", "description": "Core platform module"}
+          },
+          "artifacts": {
+            "PRD": {"pattern": "PRD.md", "traceability": "FULL"},
+            "DESIGN": {"pattern": "DESIGN.md", "traceability": "FULL"},
+            "ADR": {"pattern": "ADR/*.md", "traceability": "DOCS-ONLY", "required": false},
+            "FEATURE": {"pattern": "features/*.md", "traceability": "DOCS-ONLY", "required": false},
+            "DECOMPOSITION": {"pattern": "DECOMPOSITION.md", "traceability": "FULL"}
+          },
+          "codebase": [
+            {"path": "tests/{system}", "extensions": [".rs", ".py"]},
+            {"path": "{system_root}/src", "extensions": [".rs", ".py"]}
+          ],
+          "validation": {
+            "require_kind_registered_in_kit": true,
+            "require_md_extension": true,
+            "fail_on_unmatched_markdown": true
+          },
+          "children": [
+            {
+              "kit": "cypilot-sdlc",
+              "system_root": "{parent_root}/modules/{system}",
+              "artifacts_root": "{system_root}/specs",
+              "artifacts": {
+                "PRD": {"pattern": "PRD.md", "traceability": "FULL"},
+                "DESIGN": {"pattern": "DESIGN.md", "traceability": "FULL"}
+              },
+              "codebase": [
+                {"path": "{system_root}/src", "extensions": [".rs", ".py"]}
+              ]
+            }
+          ]
+        }
+      ],
       "artifacts": [
         { "name": "Product Requirements", "path": "architecture/PRD.md", "kind": "PRD", "traceability": "DOCS-ONLY" },
         { "name": "Overall Design", "path": "architecture/DESIGN.md", "kind": "DESIGN", "traceability": "FULL" },
@@ -647,6 +889,8 @@ else:
 | R.9 | `artifacts_dir` is valid path (if specified) | CONDITIONAL | Non-empty string |
 | R.10 | `slug` matches pattern `^[a-z0-9]+(-[a-z0-9]+)*$` | YES | Lowercase, no spaces, hyphen-separated |
 | R.11 | `slug` is unique among siblings | YES | No duplicate slugs at same level |
+| R.12 | `autodetect` (if present) is only used when `version >= 1.1` | CONDITIONAL | `version` is "1.1"+ when any system node has non-null `autodetect` |
+| R.13 | `autodetect` (if present) has valid basic shape | CONDITIONAL | `kit` is string (optional); `artifacts_root` string; `artifacts` map; `ignore` list; `validation` object |
 
 ### Artifact Entries (A)
 

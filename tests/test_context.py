@@ -6,8 +6,10 @@ Tests cover:
 - Global context functions: get_context, set_context, ensure_context
 """
 
+import json
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "skills" / "cypilot" / "scripts"))
@@ -199,6 +201,117 @@ class TestCypilotContextLoad:
         mock_find.return_value = None
         result = CypilotContext.load()
         assert result is None
+
+    @patch("cypilot.utils.template.apply_kind_constraints")
+    @patch("cypilot.utils.context.Template.from_path")
+    @patch("cypilot.utils.context.load_constraints_json")
+    @patch("cypilot.utils.context.load_artifacts_meta")
+    @patch("cypilot.utils.files.find_adapter_directory")
+    def test_load_success_loads_templates_and_expands_autodetect(
+        self,
+        mock_find,
+        mock_load_meta,
+        mock_load_constraints,
+        mock_from_path,
+        mock_apply_constraints,
+    ):
+        with TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            adapter_dir = tmp / "adapter"
+            adapter_dir.mkdir(parents=True)
+
+            # project_root = adapter_dir / '..' => tmp
+            # Create kit template structure: <tmp>/kits/sdlc/artifacts/PRD/template.md
+            tmpl_dir = tmp / "kits" / "sdlc" / "artifacts" / "PRD"
+            tmpl_dir.mkdir(parents=True)
+            (tmpl_dir / "template.md").write_text("x", encoding="utf-8")
+
+            # Create autodetect target file: <tmp>/subsystems/docs/PRD.md
+            docs_dir = tmp / "subsystems" / "docs"
+            docs_dir.mkdir(parents=True)
+            (docs_dir / "PRD.md").write_text("x", encoding="utf-8")
+
+            meta = ArtifactsMeta.from_dict({
+                "version": "1.1",
+                "project_root": "..",
+                "kits": {"k": {"format": "Cypilot", "path": "kits/sdlc"}},
+                "systems": [
+                    {
+                        "name": "App",
+                        "slug": "app",
+                        "kit": "k",
+                        "autodetect": [
+                            {
+                                "kit": "k",
+                                "system_root": "{project_root}/subsystems",
+                                "artifacts_root": "{system_root}/docs",
+                                "artifacts": {
+                                    "PRD": {"pattern": "PRD.md", "traceability": "FULL"},
+                                    "UNKNOWN": {"pattern": "missing.md", "traceability": "FULL"},
+                                },
+                                "validation": {"require_kind_registered_in_kit": True},
+                            }
+                        ],
+                    }
+                ],
+            })
+
+            # Make constraints error branch execute, but still provide kit_constraints
+            kit_constraints = MagicMock()
+            kit_constraints.by_kind = {"PRD": MagicMock()}
+            mock_load_constraints.return_value = (kit_constraints, ["bad constraints"])
+
+            # Template.from_path returns a template for PRD
+            tmpl = MagicMock()
+            tmpl.kind = "PRD"
+            tmpl.blocks = []
+            mock_from_path.return_value = (tmpl, [])
+
+            # apply_kind_constraints returns one error to extend
+            mock_apply_constraints.return_value = [{"type": "constraints", "message": "ce"}]
+
+            mock_find.return_value = adapter_dir
+            mock_load_meta.return_value = (meta, None)
+
+            ctx = CypilotContext.load()
+            assert ctx is not None
+
+            # We should have:
+            # - constraints.json parse error surfaced
+            # - apply_kind_constraints error surfaced
+            # - autodetect kind-not-registered error surfaced
+            msgs = [str(e.get("message", "")) for e in (ctx._errors or [])]
+            assert any("Invalid constraints.json" in m for m in msgs)
+            assert any("ce" in m for m in msgs)
+            assert any("Autodetect validation error" in m for m in msgs)
+
+    @patch("cypilot.utils.context.load_artifacts_meta")
+    @patch("cypilot.utils.files.find_adapter_directory")
+    def test_load_autodetect_exception_is_captured(self, mock_find, mock_load_meta):
+        with TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            adapter_dir = tmp / "adapter"
+            adapter_dir.mkdir(parents=True)
+
+            meta = ArtifactsMeta.from_dict({
+                "version": "1.1",
+                "project_root": "..",
+                "kits": {},
+                "systems": [],
+            })
+
+            def boom(*args, **kwargs):
+                raise RuntimeError("boom")
+
+            meta.expand_autodetect = boom  # type: ignore[assignment]
+
+            mock_find.return_value = adapter_dir
+            mock_load_meta.return_value = (meta, None)
+
+            ctx = CypilotContext.load()
+            assert ctx is not None
+            msgs = [str(e.get("message", "")) for e in (ctx._errors or [])]
+            assert any("Autodetect expansion failed" in m for m in msgs)
 
     @patch("cypilot.utils.context.load_artifacts_meta")
     @patch("cypilot.utils.files.find_adapter_directory")

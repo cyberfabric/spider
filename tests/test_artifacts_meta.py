@@ -12,6 +12,7 @@ from cypilot.utils.artifacts_meta import (
     Artifact,
     ArtifactsMeta,
     CodebaseEntry,
+    IgnoreBlock,
     Kit,
     SystemNode,
     create_backup,
@@ -183,6 +184,104 @@ class TestArtifactsMeta(unittest.TestCase):
         meta = ArtifactsMeta.from_dict(data)
         artifacts = list(meta.iter_all_artifacts())
         self.assertEqual(len(artifacts), 2)
+
+    def test_root_ignore_filters_index_and_codebase(self):
+        data = {
+            "version": "1.1",
+            "project_root": "..",
+            "kits": {},
+            "ignore": [{"reason": "hide", "patterns": ["secret/*", "src/ignored/*"]}],
+            "systems": [
+                {
+                    "name": "Test",
+                    "kit": "",
+                    "artifacts": [
+                        {"path": "secret/a.md", "kind": "A"},
+                        {"path": "public/b.md", "kind": "B"},
+                    ],
+                    "codebase": [
+                        {"path": "src/ignored", "extensions": [".py"]},
+                        {"path": "src/ok", "extensions": [".py"]},
+                    ],
+                }
+            ],
+        }
+        meta = ArtifactsMeta.from_dict(data)
+        # Ignored artifact is not indexed
+        self.assertIsNone(meta.get_artifact_by_path("secret/a.md"))
+        self.assertIsNotNone(meta.get_artifact_by_path("public/b.md"))
+        # Ignored codebase entry is not iterated
+        codebase_paths = [cb.path for cb, _ in meta.iter_all_codebase()]
+        self.assertNotIn("src/ignored", codebase_paths)
+        self.assertIn("src/ok", codebase_paths)
+
+    def test_autodetect_system_root_without_system_placeholder(self):
+        """system_root may omit {system}; still uses node.slug for other placeholders."""
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            # Create: <root>/subsystems/docs/PRD.md
+            (root / "subsystems" / "docs").mkdir(parents=True)
+            (root / "subsystems" / "docs" / "PRD.md").write_text("x", encoding="utf-8")
+
+            data = {
+                "version": "1.1",
+                "project_root": "..",
+                "kits": {"k": {"format": "Cypilot", "path": "kits/sdlc"}},
+                "systems": [
+                    {
+                        "name": "App",
+                        "slug": "app",
+                        "kit": "k",
+                        "autodetect": [
+                            {
+                                "system_root": "{project_root}/subsystems",
+                                "artifacts_root": "{system_root}/docs",
+                                "artifacts": {"PRD": {"pattern": "PRD.md", "traceability": "FULL"}},
+                                "codebase": [{"path": "tests/{system}", "extensions": [".py"]}],
+                            }
+                        ],
+                    }
+                ],
+            }
+            meta = ArtifactsMeta.from_dict(data)
+            errs = meta.expand_autodetect(adapter_dir=root, project_root=root, is_kind_registered=lambda kit_id, kind: True)
+            self.assertEqual(errs, [])
+            # Autodetected artifact should exist in meta index
+            self.assertIsNotNone(meta.get_artifact_by_path("subsystems/docs/PRD.md"))
+            # Codebase path should include tests/app
+            cb_paths = [cb.path for cb, _ in meta.iter_all_codebase()]
+            self.assertIn("tests/app", cb_paths)
+
+    def test_autodetect_fail_on_unmatched_markdown(self):
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            (root / "subsystems" / "docs").mkdir(parents=True)
+            (root / "subsystems" / "docs" / "PRD.md").write_text("x", encoding="utf-8")
+            (root / "subsystems" / "docs" / "extra.md").write_text("x", encoding="utf-8")
+
+            data = {
+                "version": "1.1",
+                "project_root": "..",
+                "kits": {"k": {"format": "Cypilot", "path": "kits/sdlc"}},
+                "systems": [
+                    {
+                        "name": "App",
+                        "slug": "app",
+                        "kit": "k",
+                        "autodetect": [
+                            {
+                                "system_root": "{project_root}/subsystems",
+                                "artifacts_root": "{system_root}/docs",
+                                "artifacts": {"PRD": {"pattern": "PRD.md", "traceability": "FULL"}},
+                                "validation": {"fail_on_unmatched_markdown": True},
+                            }
+                        ],
+                    }
+                ],
+            }
+            meta = ArtifactsMeta.from_dict(data)
+            errs = meta.expand_autodetect(adapter_dir=root, project_root=root, is_kind_registered=lambda kit_id, kind: True)
+            self.assertTrue(any("Unmatched markdown" in str(e) for e in errs))
 
     def test_index_system_with_nested_children(self):
         """Cover lines 182: recursing into children during indexing."""

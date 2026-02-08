@@ -128,6 +128,46 @@ class CypilotContext:
 
             kits[kit_id] = LoadedKit(kit=kit, templates=templates, constraints=kit_constraints)
 
+        # Expand autodetect (v1.1+): turns pattern rules into concrete artifacts/codebase.
+        # This must happen after kits are loaded so we can validate kinds against templates/constraints.
+        def _is_kind_registered(kit_id: str, kind: str) -> bool:
+            lk = (kits or {}).get(str(kit_id))
+            if not lk:
+                return False
+            k = str(kind)
+            if k in (lk.templates or {}):
+                return True
+            kc = getattr(lk, "constraints", None)
+            if kc and getattr(kc, "by_kind", None) and k in kc.by_kind:
+                return True
+            return False
+
+        try:
+            autodetect_errs = meta.expand_autodetect(
+                adapter_dir=adapter_dir,
+                project_root=project_root,
+                is_kind_registered=_is_kind_registered,
+            )
+            if autodetect_errs:
+                registry_path = (adapter_dir / "artifacts.json").resolve()
+                for msg in autodetect_errs:
+                    errors.append(Template.error(
+                        "registry",
+                        "Autodetect validation error",
+                        path=registry_path,
+                        line=1,
+                        details=str(msg),
+                    ))
+        except Exception as e:
+            registry_path = (adapter_dir / "artifacts.json").resolve()
+            errors.append(Template.error(
+                "registry",
+                "Autodetect expansion failed",
+                path=registry_path,
+                line=1,
+                error=str(e),
+            ))
+
         # Get all system prefixes (slug hierarchy prefixes used in cpt-<system>-... IDs)
         registered_systems = meta.get_all_system_prefixes()
 
