@@ -1832,11 +1832,19 @@ def _cmd_list_ids(argv: List[str]) -> int:
             if result:
                 artifact_meta, system_node = result
                 tmpl = ctx.get_template(system_node.kit, artifact_meta.kind)
-                if tmpl:
-                    artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
+                if tmpl is None:
+                    tmpl = Template(
+                        path=Path("<synthetic-template>"),
+                        kind=str(artifact_meta.kind),
+                        version=None,
+                        policy=None,
+                        blocks=[],
+                        _loaded=True,
+                    )
+                artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
 
         if not artifacts_to_scan:
-            print(json.dumps({"status": "ERROR", "message": "Could not find template for artifact. Ensure artifact is registered in adapter."}, indent=None, ensure_ascii=False))
+            print(json.dumps({"status": "ERROR", "message": "Artifact not registered in adapter."}, indent=None, ensure_ascii=False))
             return 1
     else:
         # No artifact specified - use global context from cwd
@@ -1851,8 +1859,15 @@ def _cmd_list_ids(argv: List[str]) -> int:
 
         for artifact_meta, system_node in meta.iter_all_artifacts():
             tmpl = ctx.get_template(system_node.kit, artifact_meta.kind)
-            if not tmpl:
-                continue
+            if tmpl is None:
+                tmpl = Template(
+                    path=Path("<synthetic-template>"),
+                    kind=str(artifact_meta.kind),
+                    version=None,
+                    policy=None,
+                    blocks=[],
+                    _loaded=True,
+                )
             artifact_path = (project_root / artifact_meta.path).resolve()
             if artifact_path.exists():
                 artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
@@ -1865,7 +1880,24 @@ def _cmd_list_ids(argv: List[str]) -> int:
     hits: List[Dict[str, object]] = []
 
     for artifact_path, tmpl, artifact_type in artifacts_to_scan:
-        from .utils.document import scan_cpt_ids_without_markers
+        from .utils.document import scan_cpt_ids_markerless, scan_cpt_ids_without_markers
+
+        # If we don't have a real template, fall back to markerless heuristics.
+        if not getattr(tmpl, "blocks", None):
+            for fh in scan_cpt_ids_markerless(artifact_path):
+                h: Dict[str, object] = {
+                    "id": fh.get("id"),
+                    "kind": None,
+                    "type": fh.get("type"),
+                    "artifact_type": artifact_type,
+                    "line": fh.get("line"),
+                    "artifact": str(artifact_path),
+                    "checked": bool(fh.get("checked", False)),
+                }
+                if fh.get("priority") is not None:
+                    h["priority"] = fh.get("priority")
+                hits.append(h)
+            continue
 
         fallback_hits = scan_cpt_ids_without_markers(artifact_path)
         if fallback_hits:
@@ -2046,8 +2078,16 @@ def _cmd_list_id_kinds(argv: List[str]) -> int:
             if result:
                 artifact_meta, system_node = result
                 tmpl = ctx.get_template(system_node.kit, artifact_meta.kind)
-                if tmpl:
-                    artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
+                if tmpl is None:
+                    tmpl = Template(
+                        path=Path("<synthetic-template>"),
+                        kind=str(artifact_meta.kind),
+                        version=None,
+                        policy=None,
+                        blocks=[],
+                        _loaded=True,
+                    )
+                artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
 
         if not artifacts_to_scan:
             print(json.dumps({"status": "ERROR", "message": f"Artifact not found in registry: {args.artifact}"}, indent=None, ensure_ascii=False))
@@ -2065,8 +2105,15 @@ def _cmd_list_id_kinds(argv: List[str]) -> int:
 
         for artifact_meta, system_node in meta.iter_all_artifacts():
             tmpl = ctx.get_template(system_node.kit, artifact_meta.kind)
-            if not tmpl:
-                continue
+            if tmpl is None:
+                tmpl = Template(
+                    path=Path("<synthetic-template>"),
+                    kind=str(artifact_meta.kind),
+                    version=None,
+                    policy=None,
+                    blocks=[],
+                    _loaded=True,
+                )
             artifact_path = (project_root / artifact_meta.path).resolve()
             if artifact_path.exists():
                 artifacts_to_scan.append((artifact_path, tmpl, artifact_meta.kind))
@@ -2080,7 +2127,60 @@ def _cmd_list_id_kinds(argv: List[str]) -> int:
     kind_to_templates: Dict[str, Set[str]] = {}
     kind_counts: Dict[str, int] = {}
 
+    registered_systems = set((ctx.registered_systems or set()) if ctx else set())
+    known_kinds = set((ctx.get_known_id_kinds() if ctx else set()) or set())
+    if ctx:
+        for loaded_kit in (ctx.kits or {}).values():
+            kit_constraints = getattr(loaded_kit, "constraints", None)
+            if not kit_constraints:
+                continue
+            for kind_constraints in kit_constraints.by_kind.values():
+                for c in (kind_constraints.defined_id or []):
+                    if c and getattr(c, "kind", None):
+                        known_kinds.add(str(c.kind).strip().lower())
+
+    def _match_system_prefix(cpt_id: str) -> Optional[str]:
+        best: Optional[str] = None
+        for sys_slug in registered_systems:
+            prefix = f"cpt-{sys_slug}-"
+            if cpt_id.lower().startswith(prefix.lower()):
+                if best is None or len(sys_slug) > len(best):
+                    best = sys_slug
+        return best
+
+    def _infer_kinds(cpt_id: str) -> List[str]:
+        sys_slug = _match_system_prefix(cpt_id)
+        if not sys_slug:
+            return []
+        remainder = cpt_id[len(f"cpt-{sys_slug}-"):]
+        if not remainder:
+            return []
+        parts = [p for p in remainder.split("-") if p]
+        out: List[str] = []
+        for i in range(0, len(parts), 2):
+            k = parts[i].lower()
+            if known_kinds and k not in known_kinds:
+                continue
+            out.append(k)
+        return out
+
     for artifact_path, tmpl, artifact_type in artifacts_to_scan:
+        if not getattr(tmpl, "blocks", None):
+            from .utils.document import scan_cpt_ids_markerless
+            for h in scan_cpt_ids_markerless(artifact_path):
+                if h.get("type") != "definition":
+                    continue
+                cid = str(h.get("id") or "").strip()
+                if not cid:
+                    continue
+                for kind_name in _infer_kinds(cid) or [None]:
+                    if not kind_name:
+                        continue
+                    kind_to_templates.setdefault(kind_name, set()).add(artifact_type)
+                    template_to_kinds.setdefault(artifact_type, set()).add(kind_name)
+                    kind_counts[kind_name] = kind_counts.get(kind_name, 0) + 1
+            continue
+
         parsed: TemplateArtifact = tmpl.parse(artifact_path)
         parsed._extract_ids_and_refs()  # Populate id_definitions
 
@@ -2210,7 +2310,11 @@ def _cmd_get_content(argv: List[str]) -> int:
         # content via scope markup (see utils.document.get_content_scoped_without_markers).
         from .utils.document import get_content_scoped_without_markers
 
-        fallback = get_content_scoped_without_markers(artifact_path, id_value=args.id)
+        fallback = get_content_scoped_without_markers(
+            artifact_path,
+            id_value=args.id,
+            allow_markers=(not getattr(tmpl, "blocks", None)),
+        )
         if fallback is None:
             print(json.dumps({"status": "NOT_FOUND", "id": args.id}, indent=None, ensure_ascii=False))
             return 2
@@ -2319,6 +2423,22 @@ def _cmd_where_defined(argv: List[str]) -> int:
     definitions: List[Dict[str, object]] = []
 
     for artifact_path, tmpl, artifact_type in artifacts_to_scan:
+        if not getattr(tmpl, "blocks", None):
+            from .utils.document import scan_cpt_ids_markerless
+            for h in scan_cpt_ids_markerless(artifact_path):
+                if h.get("type") != "definition":
+                    continue
+                if str(h.get("id") or "") != target_id:
+                    continue
+                definitions.append({
+                    "artifact": str(artifact_path),
+                    "artifact_type": artifact_type,
+                    "line": int(h.get("line", 1) or 1),
+                    "kind": None,
+                    "checked": bool(h.get("checked", False)),
+                })
+            continue
+
         parsed: TemplateArtifact = tmpl.parse(artifact_path)
         parsed._extract_ids_and_refs()  # Populate id_definitions
 
@@ -2443,6 +2563,23 @@ def _cmd_where_used(argv: List[str]) -> int:
     references: List[Dict[str, object]] = []
 
     for artifact_path, tmpl, artifact_type in artifacts_to_scan:
+        if not getattr(tmpl, "blocks", None):
+            from .utils.document import scan_cpt_ids_markerless
+            for h in scan_cpt_ids_markerless(artifact_path):
+                if str(h.get("id") or "") != target_id:
+                    continue
+                if h.get("type") == "definition" and not bool(args.include_definitions):
+                    continue
+                references.append({
+                    "artifact": str(artifact_path),
+                    "artifact_type": artifact_type,
+                    "line": int(h.get("line", 1) or 1),
+                    "kind": None,
+                    "type": str(h.get("type")),
+                    "checked": bool(h.get("checked", False)),
+                })
+            continue
+
         parsed: TemplateArtifact = tmpl.parse(artifact_path)
         parsed._extract_ids_and_refs()  # Populate id_definitions and id_references
 

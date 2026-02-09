@@ -200,6 +200,72 @@ class TestCLIValidateCommand(unittest.TestCase):
                 os.chdir(cwd)
 
 
+class TestCLICommandsRulesOnlyKit(unittest.TestCase):
+    def test_rules_only_kit_markerless_commands_work(self):
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+
+            # Create kit structure with constraints.json but no template.md (rules-only kit)
+            kit_root = root / "kits" / "cf-sdlc"
+            (kit_root / "artifacts" / "PRD").mkdir(parents=True)
+            (kit_root / "constraints.json").write_text(
+                json.dumps({"PRD": {"identifiers": {"fr": {"required": False}}}}, indent=2) + "\n",
+                encoding="utf-8",
+            )
+
+            # Create an artifact that includes an ID line; include markers to emulate real artifacts.
+            (root / "modules" / "a" / "docs").mkdir(parents=True)
+            (root / "modules" / "a" / "docs" / "PRD.md").write_text(
+                "<!-- cpt:#:prd -->\n# PRD\n\n<!-- cpt:id:fr -->\n**ID**: `cpt-root-a-fr-test`\n<!-- cpt:id:fr -->\n",
+                encoding="utf-8",
+            )
+
+            _bootstrap_registry_new_format(
+                root,
+                kits={"cf-sdlc": {"format": "Cypilot", "path": "kits/cf-sdlc"}},
+                systems=[
+                    {
+                        "name": "root",
+                        "slug": "root",
+                        "kit": "cf-sdlc",
+                        "autodetect": [
+                            {
+                                "system_root": "{project_root}/modules/$system",
+                                "artifacts_root": "{system_root}/docs",
+                                "artifacts": {"PRD": {"pattern": "PRD.md", "traceability": "FULL"}},
+                                "validation": {"require_kind_registered_in_kit": True},
+                            }
+                        ],
+                    }
+                ],
+            )
+
+            cwd = os.getcwd()
+            try:
+                os.chdir(str(root))
+
+                stdout = io.StringIO()
+                with redirect_stdout(stdout):
+                    exit_code = main(["list-ids"])
+                self.assertEqual(exit_code, 0)
+                out = json.loads(stdout.getvalue())
+                self.assertGreaterEqual(int(out.get("count", 0)), 1)
+
+                stdout = io.StringIO()
+                with redirect_stdout(stdout):
+                    exit_code = main(["list-id-kinds"])
+                self.assertEqual(exit_code, 0)
+                out = json.loads(stdout.getvalue())
+                self.assertIn("kinds", out)
+
+                stdout = io.StringIO()
+                with redirect_stdout(stdout):
+                    exit_code = main(["where-defined", "--id", "cpt-root-a-fr-test"])
+                self.assertIn(exit_code, [0, 2])
+            finally:
+                os.chdir(cwd)
+
+
 class TestCLIInitCommand(unittest.TestCase):
     def test_init_creates_config_and_adapter_and_allows_agents(self):
         with TemporaryDirectory() as tmpdir:

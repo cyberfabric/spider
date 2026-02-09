@@ -313,7 +313,12 @@ def scan_cdsl_instructions_without_markers(path: Path) -> List[Dict[str, object]
     return hits
 
 
-def get_content_scoped_without_markers(path: Path, *, id_value: str) -> Optional[Tuple[str, int, int]]:
+def get_content_scoped_without_markers(
+    path: Path,
+    *,
+    id_value: str,
+    allow_markers: bool = False,
+) -> Optional[Tuple[str, int, int]]:
     """Best-effort get-content fallback for artifacts with no `<!-- cpt:... -->` markers.
 
     Supported formats:
@@ -342,9 +347,9 @@ def get_content_scoped_without_markers(path: Path, *, id_value: str) -> Optional
     if lines is None:
         return None
 
-    # Only apply fallback when the file truly has no Cypilot markers.
-    if any("<!--" in ln and "cpt:" in ln for ln in lines):
-        return None
+    if not allow_markers:
+        if any("<!--" in ln and "cpt:" in ln for ln in lines):
+            return None
 
     wanted = id_value.strip()
 
