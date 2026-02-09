@@ -2876,7 +2876,40 @@ def _cmd_adapter_info(argv: List[str]) -> int:
     if registry is None:
         config["artifacts_registry"] = None
         config["artifacts_registry_error"] = "MISSING_OR_INVALID_JSON" if registry_path.exists() else "MISSING"
+        config["autodetect_registry"] = None
     else:
+        def _extract_autodetect_registry(raw: object) -> Optional[dict]:
+            if not isinstance(raw, dict):
+                return None
+            if "systems" not in raw:
+                return None
+
+            def _extract_system(s: object) -> dict:
+                if not isinstance(s, dict):
+                    return {}
+                out: dict = {}
+                for k in ("name", "slug", "kit"):
+                    v = s.get(k)
+                    if isinstance(v, str):
+                        out[k] = v
+                if isinstance(s.get("autodetect"), list):
+                    out["autodetect"] = s.get("autodetect")
+                if isinstance(s.get("children"), list):
+                    out["children"] = [_extract_system(ch) for ch in (s.get("children") or [])]
+                else:
+                    out["children"] = []
+                return out
+
+            return {
+                "version": raw.get("version"),
+                "project_root": raw.get("project_root"),
+                "kits": raw.get("kits"),
+                "ignore": raw.get("ignore"),
+                "systems": [_extract_system(s) for s in (raw.get("systems") or [])],
+            }
+
+        config["autodetect_registry"] = _extract_autodetect_registry(registry)
+
         expanded: object = registry
         if isinstance(registry, dict) and "systems" in registry:
             try:

@@ -83,6 +83,7 @@ class TestAdapterInfoCommand(unittest.TestCase):
             self.assertIn("artifacts_registry", output)
             self.assertIsNone(output.get("artifacts_registry_error"))
             self.assertEqual(output["artifacts_registry"]["version"], "1.0")
+            self.assertIsNone(output.get("autodetect_registry"))
 
     def test_adapter_info_expands_autodetect_systems(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -146,6 +147,13 @@ class TestAdapterInfoCommand(unittest.TestCase):
             self.assertEqual(reg.get("version"), "1.1")
             self.assertIsInstance(reg.get("systems"), list)
             self.assertGreaterEqual(len(reg.get("systems", [])), 1)
+
+            raw_rules = output.get("autodetect_registry")
+            self.assertIsInstance(raw_rules, dict)
+            self.assertEqual(raw_rules.get("version"), "1.1")
+            self.assertIsInstance(raw_rules.get("systems"), list)
+            self.assertGreaterEqual(len(raw_rules.get("systems", [])), 1)
+            self.assertTrue(any((s.get("autodetect") or []) for s in (raw_rules.get("systems") or [])))
 
             def _iter_systems(systems):
                 for s in systems or []:
