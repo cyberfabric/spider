@@ -936,14 +936,20 @@ def main():
             sys.exit(1)
         arg = sys.argv[2]
         if arg.upper() == "ALL":
+            prs = _list_open_prs()
             excludes = _load_exclude_list()
-            for d in sorted(os.listdir(PRS_DIR)):
-                if d in excludes:
-                    print(f"  Skipping PR #{d} (excluded)")
+            for pr in prs:
+                num = str(pr["number"])
+                if num in excludes:
+                    print(
+                        f"  Skipping PR #{num} (excluded)",
+                    )
                     continue
-                p = os.path.join(PRS_DIR, d, "meta.json")
+                p = os.path.join(
+                    PRS_DIR, num, "meta.json",
+                )
                 if os.path.isfile(p):
-                    status(d)
+                    status(num)
         else:
             status(arg)
 
