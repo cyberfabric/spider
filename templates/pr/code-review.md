@@ -14,8 +14,6 @@ The `/cypilot-pr-review` workflow produces reports in `.prs/{ID}/review.md` foll
 **Author**: @{author}
 **Prompt**: {selected_prompt_name}
 **Review Decision**: {existing_review_decision_or_none}
-**IDE**: {ide_name}
-**Model**: {llm_model_name}
 
 ---
 
@@ -107,8 +105,6 @@ No reviewer comments found.
 ## Notes
 
 - `{placeholders}` are filled by the LLM during the `/pr-review` workflow.
-- `{ide_name}` is the IDE running the review (e.g. Windsurf, Cursor, VS Code).
-- `{llm_model_name}` is the LLM that performed the analysis (e.g. Claude Sonnet 4, GPT-4.1).
 - Sections with no findings may use a single "No issues" line.
 - Omit N/A sections entirely for minimal PRs (e.g. docs-only, config-only).
 - The **Reviewer Comment Analysis** section is mandatory — it ensures the

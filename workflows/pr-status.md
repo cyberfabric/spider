@@ -105,8 +105,6 @@ Previous results are stale the moment a new status request arrives.
    - Any CRITICAL or HIGH items that need immediate attention
    - CI/merge conflict status
    - Any suspicious resolved comments flagged during the audit
-   Include the current **IDE name** and **LLM model name** in the
-   report header (see template for exact placement).
 
 ---
 

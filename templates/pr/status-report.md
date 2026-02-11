@@ -22,8 +22,6 @@ This file documents the expected format for generated status reports.
 | **Review Decision** | {review_decision} |
 | **Code comments** | {N} unresolved / {N} resolved / {N} suspicious |
 | **PR comments** | {N} unreplied / {N} replied / {N} suspicious |
-| **IDE** | {ide_name} |
-| **Model** | {llm_model_name} |
 
 ## PR Description
 
@@ -83,7 +81,6 @@ None.
 
 {code context + full conversation}
 
----
 ```
 
 ## Notes

@@ -177,8 +177,6 @@ ALWAYS ask user "analyze (read-only) or generate (modify)?" WHEN intent is UNCLE
 
 ALWAYS re-fetch and re-analyze from scratch WHEN a PR review or status request is detected — even if the same PR was reviewed earlier in this conversation. Previous results are stale the moment a new request arrives. NEVER skip fetch or reuse earlier analysis.
 
-ALWAYS include the current **IDE name** (e.g. Windsurf, Cursor, VS Code) and **LLM model name** (e.g. Claude Sonnet 4, GPT-4.1) in the review or status report header.
-
 ALWAYS run `python3 {project_root}/.cypilot/skills/scripts/pr.py list` WHEN user intent matches PR list patterns:
 - `list PRs`, `list open PRs`, `cypilot list PRs`
 - `show PRs`, `show open PRs`, `what PRs are open`
@@ -212,7 +210,6 @@ When routed to PR review:
 5. Select prompt and checklist from `{cypilot_adapter_path}/pr-review.json` → `prompts`
 6. Load prompt from `promptFile` and checklist from `checklist` in matched entry
 7. Use templates from `.cypilot/templates/pr/`
-8. Include IDE name and LLM model name in the report header
 
 ### PR Status Workflow
 
@@ -221,7 +218,6 @@ When routed to PR status:
 2. Read `{cypilot_path}/workflows/pr-status.md` and follow its steps
 3. Use `python3 {project_root}/.cypilot/skills/scripts/pr.py` as the script
 4. When target is `ALL` or no PR number given, run `pr.py list` first to show available PRs
-5. Include IDE name and LLM model name in the report header
 
 ---
 

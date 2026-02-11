@@ -121,8 +121,6 @@ Previous results are stale the moment a new review request arrives.
       The review must follow the template format, including the mandatory
       **"Reviewer Comment Analysis"** section. The final verdict must
       factor in unresolved valid concerns from reviewers.
-      Include the current **IDE name** and **LLM model name** in the
-      report header (see template for exact placement).
 
 4. **Present results**
    Summarize the review findings to the user, including:
