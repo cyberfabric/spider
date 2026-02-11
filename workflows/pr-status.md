@@ -82,15 +82,34 @@ Previous results are stale the moment a new status request arrives.
 3. **Audit resolved comments** (LLM task)
    The status report contains a "Resolved Comments (Audit Required)" section.
    Each entry defaults to `- **Status**: ✅ RESOLVED — AI VERIFIED`.
-   For each resolved comment:
-   - Read the original concern.
-   - Open the **current version** of the file at the referenced path/line.
-   - Verify the concern was actually addressed in the code.
-   - If **verified**: leave the status line as-is.
-   - If **suspicious** (not actually fixed): change the status to
-     `- **Status**: ⚠️ RESOLVED — SUSPICIOUS`
-     and append a warning: `> ⚠️ **SUSPICIOUS**: <reason>`.
-     Then move the entire entry to the "Suspicious Resolutions" section.
+   For each resolved comment, apply these checks **in order**:
+
+   a. **Check for unanswered concerns**
+      Count the participants in the thread. If the comment author is
+      different from the PR author AND the PR author (or another team
+      member) never replied, the concern was left unanswered.
+      → Mark as **SUSPICIOUS**: "Concern by @{author} was resolved
+      without a reply from the PR author."
+
+   b. **Check the code**
+      Read the original concern. Open the **current version** of the
+      file at the referenced path/line. Determine whether the concern
+      was addressed by a code change, a valid explanation in a reply,
+      or is genuinely not applicable.
+      - **Addressed by code change**: the diff or current file shows
+        the concern was fixed → **VERIFIED**.
+      - **Addressed by explanation**: the PR author replied with a
+        valid technical rationale for not changing the code → **VERIFIED**.
+      - **Not addressed**: no code change AND no reply (or reply does
+        not address the concern) → **SUSPICIOUS**.
+
+   c. **Apply verdict**
+      - If **verified**: leave the status line as-is.
+      - If **suspicious**: change the status to
+        `- **Status**: ⚠️ RESOLVED — SUSPICIOUS`
+        and append a warning: `> ⚠️ **SUSPICIOUS**: <reason>`.
+        Then move the entire entry to the "Suspicious Resolutions" section.
+
    Update the suspicious counts in the header table accordingly.
 
 4. **Reorder by severity**
